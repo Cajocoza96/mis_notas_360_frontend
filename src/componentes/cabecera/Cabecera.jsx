@@ -5,8 +5,8 @@ import { HiMenuAlt3, HiArrowDown, HiDotsVertical } from "react-icons/hi";
 export default function Cabecera() {
 
     return (
-        <div className="flex-shrink-0 z-10 min-h-0 min-w-0 py-2 overflow-hidden">
-
+        <div className="flex-shrink-0 z-10 min-h-0 min-w-0 py-1 overflow-hidden">
+            
             <div className="w-[95%] mx-auto flex flex-row items-center justify-between">
 
                 <div className="active:bg-gray-300 w-fit p-2 rounded-sm cursor-pointer
@@ -15,9 +15,7 @@ export default function Cabecera() {
                     <HiArrowDown className="text-sm md:text-base  text-black" />
                 </div>
 
-                <div className="">
-                    <p className="text-base md:text-xl font-bold text-black truncate">MisNotas360</p>
-                </div>
+                <p className="w-full text-center text-base md:text-xl font-bold text-black truncate">MisNotas360</p>
 
                 <div className="active:bg-gray-300 w-fit p-2 rounded-sm cursor-pointer
                         flex items-center">
