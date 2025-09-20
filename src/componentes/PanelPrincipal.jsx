@@ -7,9 +7,11 @@ import Cuerpo from "./cuerpo/Cuerpo";
 export default function PanelPrincipal() {
 
     return (
-        <div className="h-[100svh] bg-white flex flex-col min-h-0">
+        <div className="h-[100svh] bg-white flex flex-col min-h-0 min-w-0 overflow-hidden">
             <Cabecera />
             <Cuerpo />
+
+            <div className="flex-shrink-0 h-15 lg:h-18"></div>
             <Footer />
         </div>
     );

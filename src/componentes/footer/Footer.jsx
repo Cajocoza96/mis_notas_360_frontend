@@ -7,7 +7,7 @@ import { HiSearch, HiPlus } from "react-icons/hi";
 export default function Footer() {
 
     return (
-        <div className="flex-shrink-0 mb-1 min-h-0">
+        <div className="fixed bottom-0 z-10 min-h-0 min-w-0 w-full">
 
             <div className="grid grid-cols-5 items-center">
 
