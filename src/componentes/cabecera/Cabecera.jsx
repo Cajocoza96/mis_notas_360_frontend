@@ -1,10 +1,21 @@
 import React from "react";
 
-import { HiMenuAlt3, HiCube, HiArrowDown, HiDotsVertical } from "react-icons/hi";
+import { HiMenuAlt3, HiArrowDown, HiDotsVertical } from "react-icons/hi";
 
 import { HiViewColumns } from "react-icons/hi2";
 
-export default function Cabecera({ toggleOrganizarPorColumna, organizarPorColumna }) {
+import { useSelector, useDispatch } from "react-redux";
+
+import { toggleOrganizarPorColumna } from "../../store/layoutSlice";
+
+export default function Cabecera() {
+
+    const organizarPorColumna = useSelector((state) => state.layout.organizarPorColumna);
+    const dispatch = useDispatch();
+
+    const handleOrganizacion = () => {
+        dispatch(toggleOrganizarPorColumna());
+    }
 
     return (
         <div className="flex-shrink-0 z-10 min-h-0 min-w-0 py-1 overflow-hidden">
@@ -13,7 +24,7 @@ export default function Cabecera({ toggleOrganizarPorColumna, organizarPorColumn
 
                 <div className="active:bg-gray-300 w-fit p-2 rounded-sm cursor-pointer
                                 flex items-center"
-                    onClick={toggleOrganizarPorColumna}>
+                    onClick={handleOrganizacion}>
 
                     {organizarPorColumna && (
                         <HiMenuAlt3 className="text-xl md:text-2xl text-black" />

@@ -2,7 +2,12 @@ import React from "react";
 
 import NotaVistaPrevia from "./nota_vista_previa/NotaVistaPrevia";
 
-export default function Cuerpo({ organizarPorColumna }) {
+import { useSelector } from "react-redux";
+
+export default function Cuerpo() {
+
+    const organizarPorColumna = useSelector((state) => state.layout.organizarPorColumna);
+
     return (
         <div className={`w-[95%] mx-auto overflow-y-auto overflow-x-hidden min-h-0 min-w-0 pb-3
                         grid 
