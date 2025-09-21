@@ -4,7 +4,7 @@ import { HiOutlineStar } from "react-icons/hi2";
 
 export default function NotaVistaPrevia({ texto }) {
     return (
-        <div className="w-full h-35 p-2 rounded-md bg-blue-200 
+        <div className="w-full h-35 p-2 rounded-md bg-blue-200 select-none
                         flex flex-col items-center gap-1 overflow-hidden">
 
             <div className="w-full flex flex-col items-start">
