@@ -19,7 +19,7 @@ export default function ContOpCabecera() {
     return (
         <>
             <div className="fixed inset-0 z-20 bg-black/50" onClick={handleVerOpcionesCabecera}></div>
-            <div className="z-20 w-full h-auto bg-white absolute bottom-0">
+            <div className="fixed bottom-0 z-20 w-full h-auto bg-white">
 
                 <div className="w-full p-1 border-b border-gray-400">
                     <OpcionesCabecera

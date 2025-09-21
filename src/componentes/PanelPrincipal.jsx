@@ -13,7 +13,7 @@ export default function PanelPrincipal() {
     const verOpcionesCabecera = useSelector((state) => state.layout.verOpcionesCabecera);
 
     return (
-        <div className="h-[100svh] bg-white min-h-0 min-w-0 overflow-hidden relative 
+        <div className="h-[100svh] bg-white min-h-0 min-w-0 overflow-hidden 
                         flex flex-col ">
 
             {verOpcionesCabecera && (
