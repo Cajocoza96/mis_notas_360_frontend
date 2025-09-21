@@ -1,12 +1,14 @@
 import React from "react";
 
-import { HiMenuAlt3, HiArrowDown, HiDotsVertical } from "react-icons/hi";
-
-import { HiViewColumns } from "react-icons/hi2";
-
 import { useSelector, useDispatch } from "react-redux";
 
 import { toggleOrganizarPorColumna } from "../../store/layoutSlice";
+
+import { toggleVerOpcionesCabecera } from "../../store/layoutSlice";
+
+import { HiMenuAlt3, HiArrowDown, HiDotsVertical } from "react-icons/hi";
+
+import { HiViewColumns } from "react-icons/hi2";
 
 export default function Cabecera() {
 
@@ -16,6 +18,11 @@ export default function Cabecera() {
     const handleOrganizacion = () => {
         dispatch(toggleOrganizarPorColumna());
     }
+
+    const handleVerOpcionesCabecera = () => {
+        dispatch(toggleVerOpcionesCabecera())
+    }
+
 
     return (
         <div className="flex-shrink-0 z-10 min-h-0 min-w-0 py-1 overflow-hidden">
@@ -40,7 +47,8 @@ export default function Cabecera() {
                 <p className="w-full text-center text-base md:text-xl font-bold text-black select-none truncate">MisNotas360</p>
 
                 <div className="active:bg-gray-300 w-fit p-2 rounded-sm cursor-pointer
-                        flex items-center">
+                                flex items-center"
+                    onClick={handleVerOpcionesCabecera}>
                     <HiDotsVertical className="text-2xl md:text-3xl text-black cursor-pointer" />
                 </div>
 
