@@ -5,19 +5,18 @@ import { useSelector } from "react-redux";
 import Cabecera from "./cabecera/Cabecera";
 import Footer from "./footer/Footer";
 import Cuerpo from "./cuerpo/Cuerpo";
-
-import ContOpCabecera from "./cabecera/opcionesCabecera/ContOpCabecera";
+import ContOpSubCabecera from "./cabecera/opcionesSubCabecera/ContOpSubCabecera"
 
 export default function PanelPrincipal() {
 
     const verOpcionesCabecera = useSelector((state) => state.layout.verOpcionesCabecera);
 
     return (
-        <div className="h-[100svh] bg-white min-h-0 min-w-0 overflow-hidden 
+        <div className="h-[100svh] bg-white dark:bg-gray-800 min-h-0 min-w-0 overflow-hidden 
                         flex flex-col ">
 
             {verOpcionesCabecera && (
-                <ContOpCabecera/>
+                <ContOpSubCabecera/>
             )}
 
             <Cabecera/>

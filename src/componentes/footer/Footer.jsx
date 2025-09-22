@@ -1,6 +1,6 @@
 import React from "react";
 
-import { HiSquares2X2, HiStar } from "react-icons/hi2";
+import { HiSquares2X2, HiOutlineStar } from "react-icons/hi2";
 
 import { HiSearch, HiPlus } from "react-icons/hi";
 
@@ -11,17 +11,20 @@ export default function Footer() {
 
             <div className="grid grid-cols-5 items-center">
 
-                <div className="w-full h-full p-1 active:bg-gray-300 rounded-sm cursor-pointer
+                <div className="w-full h-full p-1 active:bg-gray-300 dark:active:bg-gray-600
+                                rounded-sm cursor-pointer
                                 flex items-center justify-center">
-                    <HiSquares2X2 className="text-2xl md:text-3xl text-blue-600" />
+                    <HiSquares2X2 className="text-2xl md:text-3xl text-blue-600 dark:text-white" />
                 </div>
 
-                <div className="w-full h-full p-1 active:bg-gray-300 rounded-sm cursor-pointer
+                <div className="w-full h-full p-1 active:bg-gray-300 dark:active:bg-gray-600
+                                rounded-sm cursor-pointer
                                 flex items-center justify-center">
-                    <HiSearch className="text-2xl md:text-3xl text-blue-600" />
+                    <HiSearch className="text-2xl md:text-3xl text-blue-600 dark:text-white" />
                 </div>
 
-                <div className="w-full h-full p-1 active:bg-gray-300 rounded-sm cursor-pointer
+                <div className="w-full h-full p-1 active:bg-gray-300 dark:active:bg-gray-600
+                                rounded-sm cursor-pointer
                                 flex items-center justify-center">
                     <div className="bg-blue-600 rounded-[50%] p-2
                                 flex item-center justify-center">
@@ -29,15 +32,17 @@ export default function Footer() {
                     </div>
                 </div>
 
-                <div className="w-full h-full p-1 active:bg-gray-300 rounded-sm cursor-pointer
+                <div className="w-full h-full p-1 active:bg-gray-300 dark:active:bg-gray-600
+                                rounded-sm cursor-pointer
                                 flex items-center justify-center">
-                    <HiStar className="text-2xl md:text-3xl text-blue-600" />
+                    <HiOutlineStar className="text-2xl md:text-3xl text-blue-600 dark:text-white" />
                 </div>
 
-                <div className="w-full h-full p-1 active:bg-gray-300 rounded-sm cursor-pointer
+                <div className="w-full h-full p-1 active:bg-gray-300 dark:active:bg-gray-600
+                                rounded-sm cursor-pointer
                                 flex items-center justify-center">
                     <div className="rounded-[50%] p-3 border border-black
-                                    [background:linear-gradient(135deg,#2563eb_50%,white_50%)]"></div>
+                                    [background:linear-gradient(135deg,#2563eb_50%,transparent_50%)]"></div>
                 </div>
             </div>
 
