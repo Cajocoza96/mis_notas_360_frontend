@@ -1,10 +1,10 @@
 import React from "react";
 
-import { useTheme } from "../../../hooks/useTheme";
+import { useTheme } from "../../../../hooks/useTheme";
 
 import { useDispatch, useSelector } from "react-redux";
 
-import { toggleVerOpcionesCabecera, toogleVerModo } from "../../../store/layoutSlice";
+import { toggleVerOpcionesCabecera, toogleVerModo } from "../../../../store/layoutSlice";
 
 import OpcionesCabecera from "./OpcionesCabecera";
 

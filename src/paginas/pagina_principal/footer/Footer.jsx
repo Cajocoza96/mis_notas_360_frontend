@@ -4,10 +4,21 @@ import { HiSquares2X2, HiOutlineStar } from "react-icons/hi2";
 
 import { HiSearch, HiPlus } from "react-icons/hi";
 
+import { useDispatch } from "react-redux";
+
+import { toggleVerModalCrear } from "../../../store/layoutSlice";
+
 export default function Footer() {
 
+    const dispatch = useDispatch();
+
+    const handleVerModalCrear = () => {
+        dispatch(toggleVerModalCrear())
+    }
+
+
     return (
-        <div className="fixed bottom-1 z-10 min-h-0 min-w-0 w-full">
+        <div className="fixed bottom-0 p-2 z-10 min-h-0 min-w-0 w-full">
 
             <div className="grid grid-cols-5 items-center">
 
@@ -27,7 +38,8 @@ export default function Footer() {
                                 rounded-sm cursor-pointer
                                 flex items-center justify-center">
                     <div className="bg-blue-600 rounded-[50%] p-2
-                                flex item-center justify-center">
+                                flex item-center justify-center"
+                        onClick={handleVerModalCrear}>
                         <HiPlus className="text-2xl md:text-3xl text-white" />
                     </div>
                 </div>

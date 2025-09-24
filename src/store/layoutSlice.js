@@ -3,7 +3,8 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
     organizarPorColumna: true,
     verOpcionesCabecera: false,
-    verModo: false
+    verModo: false,
+    verModalCrear: false
 }
 
 const layoutSlice = createSlice({
@@ -29,11 +30,19 @@ const layoutSlice = createSlice({
         },
         setVerModo: (state, action) => {
             state.verModo = action.payload
+        },
+
+        toggleVerModalCrear: (state) => {
+            state.verModalCrear = !state.verModalCrear
+        },
+        setVerModalCrear: (state, action) => {
+            state.verModalCrear = action.payload
         }
     }
 })
 
 export const { toggleOrganizarPorColumna, setOrganizarPorColumna,
                 toggleVerOpcionesCabecera, setVerOpcionesCabecera,
-                toogleVerModo, setVerModo } = layoutSlice.actions
+                toogleVerModo, setVerModo,
+                toggleVerModalCrear, setVerModalCrear } = layoutSlice.actions
 export default layoutSlice.reducer

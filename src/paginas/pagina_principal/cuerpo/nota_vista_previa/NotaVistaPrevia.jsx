@@ -3,6 +3,7 @@ import React from "react";
 import { HiOutlineStar } from "react-icons/hi2";
 
 export default function NotaVistaPrevia({ texto }) {
+
     return (
         <div className="w-full h-35 p-2 rounded-md select-none
                         flex flex-col items-center gap-1 overflow-hidden

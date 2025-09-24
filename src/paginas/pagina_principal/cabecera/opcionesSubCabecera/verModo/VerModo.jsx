@@ -2,11 +2,11 @@ import React from "react";
 
 import { useDispatch } from "react-redux";
 
-import { toggleVerOpcionesCabecera, toogleVerModo } from "../../../../store/layoutSlice";
+import { toggleVerOpcionesCabecera, toogleVerModo } from "../../../../../store/layoutSlice";
 
 import SubOpcionesCabecera from "../SubOpcionesCabecera";
 
-import { useTheme } from "../../../../hooks/useTheme";
+import { useTheme } from "../../../../../hooks/useTheme";
 
 import { HiCheckCircle } from "react-icons/hi";
 

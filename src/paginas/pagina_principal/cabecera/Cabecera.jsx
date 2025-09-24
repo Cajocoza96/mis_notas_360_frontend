@@ -2,7 +2,7 @@ import React from "react";
 
 import { useSelector, useDispatch } from "react-redux";
 
-import { toggleOrganizarPorColumna, toggleVerOpcionesCabecera, toogleVerModo } from "../../store/layoutSlice";
+import { toggleOrganizarPorColumna, toggleVerOpcionesCabecera, toogleVerModo } from "../../../store/layoutSlice";
 
 import { HiMenuAlt3, HiArrowDown, HiDotsVertical } from "react-icons/hi";
 

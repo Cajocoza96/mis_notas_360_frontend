@@ -1,11 +1,11 @@
-import React from 'react';
-import PanelPrincipal from './componentes/PanelPrincipal';
+import React from "react";
+import Rutas from "./rutas/Rutas";
 
 function App() {
 
   return (
     <>
-      <PanelPrincipal />
+      <Rutas />
     </>
   )
 }
