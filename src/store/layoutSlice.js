@@ -4,7 +4,15 @@ const initialState = {
     organizarPorColumna: true,
     verOpcionesCabecera: false,
     verModo: false,
-    verModalCrear: false
+    verModalCrear: false,
+    
+    // Estados para CrearEditNota
+    isTituloFocused: false,
+    isNotaFocused: false,
+    titulo: "",
+    nota: "",
+    canUndo: false,
+    canRedo: false
 }
 
 const layoutSlice = createSlice({
@@ -37,12 +45,56 @@ const layoutSlice = createSlice({
         },
         setVerModalCrear: (state, action) => {
             state.verModalCrear = action.payload
+        },
+
+        // Nuevos reducers para CrearEditNota
+        setIsTituloFocused: (state, action) => {
+            state.isTituloFocused = action.payload
+        },
+        setIsNotaFocused: (state, action) => {
+            state.isNotaFocused = action.payload
+        },
+        setTitulo: (state, action) => {
+            state.titulo = action.payload
+        },
+        setNota: (state, action) => {
+            state.nota = action.payload
+        },
+        setCanUndo: (state, action) => {
+            state.canUndo = action.payload
+        },
+        setCanRedo: (state, action) => {
+            state.canRedo = action.payload
+        },
+
+        // Resetear estado de la nota
+        resetNotaState: (state) => {
+            state.isTituloFocused = false
+            state.isNotaFocused = false
+            state.titulo = ""
+            state.nota = ""
+            state.canUndo = false
+            state.canRedo = false
         }
     }
 })
 
-export const { toggleOrganizarPorColumna, setOrganizarPorColumna,
-                toggleVerOpcionesCabecera, setVerOpcionesCabecera,
-                toogleVerModo, setVerModo,
-                toggleVerModalCrear, setVerModalCrear } = layoutSlice.actions
+export const { 
+    toggleOrganizarPorColumna, 
+    setOrganizarPorColumna,
+    toggleVerOpcionesCabecera, 
+    setVerOpcionesCabecera,
+    toogleVerModo, 
+    setVerModo,
+    toggleVerModalCrear, 
+    setVerModalCrear,
+    setIsTituloFocused,
+    setIsNotaFocused,
+    setTitulo,
+    setNota,
+    setCanUndo,
+    setCanRedo,
+    resetNotaState
+} = layoutSlice.actions
+
 export default layoutSlice.reducer
