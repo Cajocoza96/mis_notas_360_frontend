@@ -1,12 +1,10 @@
 import React from "react";
 
-import { HiChevronLeft, HiDotsVertical, HiOutlinePencil } from "react-icons/hi";
-
-import { HiOutlineStar } from "react-icons/hi2";
+import { HiChevronLeft, HiOutlinePencil } from "react-icons/hi";
 
 import { Link } from "react-router-dom";
 
-export default function Cabecera() {
+export default function Cabecera({ textoBuscar, iconoEstrellaMenu }) {
     return (
         <div className="w-full fixed top-0 p-2
                         bg-white dark:bg-gray-800
@@ -18,10 +16,14 @@ export default function Cabecera() {
                     <HiChevronLeft className="text-xl md:text-2xl text-black dark:text-white cursor-pointer flex-shrink-0" />
                 </Link>
 
-                <div className="w-20 flex flex-row items-center justify-between">
-                    <HiOutlineStar className="text-2xl md:text-3xl cursor-pointer text-blue-600 dark:text-white" />
-                    <HiDotsVertical className="text-2xl md:text-3xl text-black dark:text-white cursor-pointer" />
-                </div>
+                <p className="text-base md:text-xl 
+                            text-blue-600 dark:text-white">
+                    {textoBuscar}
+                </p>
+
+                <>
+                    {iconoEstrellaMenu}
+                </>
             </div>
 
             <div className="w-full p-1 flex flex-row items-center justify-between">
@@ -42,9 +44,9 @@ export default function Cabecera() {
                     Sin título
                 </p>
 
-                <HiOutlinePencil className="text-2xl md:text-3xl cursor-pointer text-blue-600 dark:text-white"/>
+                <HiOutlinePencil className="text-2xl md:text-3xl cursor-pointer text-blue-600 dark:text-white" />
             </div>
-            
+
         </div>
     );
 }

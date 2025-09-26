@@ -1,6 +1,6 @@
 import React, { forwardRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { setIsNotaFocused } from "../../../store/layoutSlice";
+import { setIsNotaFocused } from "../../store/layoutSlice";
 
 const Cuerpo = forwardRef(({ handleNotaChange, handleNotaKeyDown }, notaRef) => {
     const dispatch = useDispatch();

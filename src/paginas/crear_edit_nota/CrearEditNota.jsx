@@ -4,7 +4,7 @@ import { useUndoRedo } from "../../hooks/useUndoRedo";
 import { useContentEditable } from "../../hooks/useContentEditable";
 import { resetNotaState, setCanUndo, setCanRedo, setTitulo, setNota } from "../../store/layoutSlice";
 import Cabecera from "./cabecera/Cabecera";
-import Cuerpo from "./cuerpo/Cuerpo";
+import Cuerpo from "../../componentes/cuerpo/Cuerpo";
 import Footer from "./footer/Footer";
 
 export default function CrearEditNota() {
