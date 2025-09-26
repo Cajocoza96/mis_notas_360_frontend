@@ -1,4 +1,4 @@
-import React, { useRef, forwardRef } from "react";
+import React, { forwardRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { HiChevronLeft } from "react-icons/hi";
 import { HiSquares2X2 } from "react-icons/hi2";

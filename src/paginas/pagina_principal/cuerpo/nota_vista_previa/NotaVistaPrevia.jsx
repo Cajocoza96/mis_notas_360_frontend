@@ -2,12 +2,19 @@ import React from "react";
 
 import { HiOutlineStar } from "react-icons/hi2";
 
+import { useNavigate } from "react-router-dom";
+
 export default function NotaVistaPrevia({ texto }) {
+
+    const navigate = useNavigate();
+
+    const handleVerVistaPrevia = () => navigate("/vista-previa/nota");
 
     return (
         <div className="w-full h-35 p-2 rounded-md select-none
                         flex flex-col items-center gap-1 overflow-hidden
-                        bg-blue-200 dark:bg-black">
+                        bg-blue-200 dark:bg-black"
+            onClick={handleVerVistaPrevia}>
 
             <div className="w-full flex flex-col items-start">
                 <HiOutlineStar className="text-2xl md:text-3xl cursor-pointer
