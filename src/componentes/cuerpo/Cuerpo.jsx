@@ -15,7 +15,7 @@ const Cuerpo = forwardRef(({ handleNotaChange, handleNotaKeyDown }, notaRef) => 
     };
 
     return (
-        <div className="w-[95%] mx-auto overflow-y-auto overflow-x-hidden min-h-0 min-w-0 pb-3 flex-1">
+        <div className="border border-black w-[95%] mx-auto overflow-y-auto overflow-x-hidden min-h-0 min-w-0 pb-3 flex-1">
             <div className="relative p-2">
                 <div
                     ref={notaRef}

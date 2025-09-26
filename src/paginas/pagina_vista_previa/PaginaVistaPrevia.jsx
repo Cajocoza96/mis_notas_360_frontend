@@ -7,9 +7,8 @@ import { resetNotaState, setCanUndo, setCanRedo, setTitulo, setNota } from "../.
 import { HiDotsVertical } from "react-icons/hi";
 import { HiOutlineStar } from "react-icons/hi2";
 
-import Cabecera from "../../componentes/cabecera/Cabecera";
+import Cabecera from "./cabecera/Cabecera";
 import Cuerpo from "../../componentes/cuerpo/Cuerpo";
-
 
 export default function PaginaVistaPrevia() {
 
@@ -87,15 +86,11 @@ export default function PaginaVistaPrevia() {
                 }
             />
 
-            <div className="flex-shrink-0 h-35 md:h-40"></div>
-
-            <div className="overflow-y-auto overflow-x-hidden min-h-0 min-w-0 pb-3 flex-1">
-                <Cuerpo
-                    ref={notaRef}
-                    handleNotaChange={handleNotaChangeAdapter}
-                    handleNotaKeyDown={handleNotaKeyDownAdapter}
-                />
-            </div>
+            <Cuerpo
+                ref={notaRef}
+                handleNotaChange={handleNotaChangeAdapter}
+                handleNotaKeyDown={handleNotaKeyDownAdapter}
+            />
 
         </div>
     );

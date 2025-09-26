@@ -79,7 +79,6 @@ export default function CrearEditNota() {
                 handleTituloKeyDown={handleTituloKeyDownAdapter}
             />
             
-            <div className="flex-shrink-0 h-11 lg:h-14"></div>
             
             <Cuerpo 
                 ref={notaRef}
