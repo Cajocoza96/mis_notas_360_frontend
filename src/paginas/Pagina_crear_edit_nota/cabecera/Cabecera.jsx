@@ -1,7 +1,6 @@
 import React, { forwardRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { HiChevronLeft } from "react-icons/hi";
-import { HiSquares2X2 } from "react-icons/hi2";
+import { HiChevronLeft, HiMinusCircle } from "react-icons/hi";
 import { Link } from "react-router-dom";
 import { setIsTituloFocused } from "../../../store/layoutSlice";
 
@@ -55,7 +54,7 @@ const Cabecera = forwardRef(({ handleTituloChange, handleTituloKeyDown }, titulo
                     </div>
                 </div>
 
-                <HiSquares2X2 className="text-2xl md:text-3xl text-black dark:text-white cursor-pointer flex-shrink-0" />
+                <HiMinusCircle className="text-2xl md:text-3xl text-black dark:text-white cursor-pointer flex-shrink-0" />
 
             </div>
 

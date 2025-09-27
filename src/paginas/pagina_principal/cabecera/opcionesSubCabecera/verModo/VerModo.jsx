@@ -28,7 +28,7 @@ export default function VerModo() {
 
     return (
         <>
-            <div className="w-full p-1 border-b border-gray-400
+            <div className="w-full p-1 border-b border-gray-400 select-none
                                         text-black dark:text-white
                                         bg-white dark:bg-gray-800 cursor-pointer"
                 onClick={() => handleThemeChange(themeKeys.light)}>
@@ -41,7 +41,7 @@ export default function VerModo() {
                 />
             </div>
 
-            <div className="w-full p-1 border-b border-gray-400
+            <div className="w-full p-1 border-b border-gray-400 select-none
                                         text-black dark:text-white 
                                         bg-white dark:bg-gray-800 cursor-pointer"
                 onClick={() => handleThemeChange(themeKeys.dark)}>
@@ -54,7 +54,7 @@ export default function VerModo() {
                 />
             </div>
 
-            <div className="w-full p-1 border-b border-gray-400
+            <div className="w-full p-1 border-b border-gray-400 select-none
                                         text-black dark:text-white 
                                         bg-white dark:bg-gray-800 cursor-pointer"
                 onClick={() => handleThemeChange(themeKeys.system)}>

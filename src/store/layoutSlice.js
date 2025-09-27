@@ -5,6 +5,7 @@ const initialState = {
     verOpcionesCabecera: false,
     verModo: false,
     verModalCrear: false,
+    verOrden: false,
     
     // Estados para CrearEditNota
     isTituloFocused: false,
@@ -47,6 +48,14 @@ const layoutSlice = createSlice({
             state.verModalCrear = action.payload
         },
 
+        toggleVerOrden: (state) => {
+            state.verOrden = !state.verOrden
+        },
+        setVerOrden: (state, action) => {
+            state.verOrden = action.payload
+        },
+
+
         // Nuevos reducers para CrearEditNota
         setIsTituloFocused: (state, action) => {
             state.isTituloFocused = action.payload
@@ -88,6 +97,8 @@ export const {
     setVerModo,
     toggleVerModalCrear, 
     setVerModalCrear,
+    toggleVerOrden,
+    setVerOrden,
     setIsTituloFocused,
     setIsNotaFocused,
     setTitulo,

@@ -1,34 +1,32 @@
 import React from "react";
 
-import { HiChevronLeft, HiOutlinePencil } from "react-icons/hi";
+import { HiChevronLeft, HiOutlinePencil, HiDotsVertical } from "react-icons/hi";
+
+import { HiOutlineStar } from "react-icons/hi2";
 
 import { Link } from "react-router-dom";
 
-export default function Cabecera({ textoBuscar, iconoEstrellaMenu }) {
+export default function Cabecera() {
     return (
         <div className="flex-shrink-0 z-10 min-h-0 min-w-0 py-1 overflow-hidden">
 
-            <div className="w-[95%] mx-auto flex flex-col gap-4">
+            <div className="w-[95%] mx-auto flex flex-col gap-2">
 
                 <div className="flex flex-row items-center justify-between p-2">
                     <Link to="/">
                         <HiChevronLeft className="text-xl md:text-2xl text-black dark:text-white cursor-pointer flex-shrink-0" />
                     </Link>
 
-                    <p className="text-base md:text-xl 
-                            text-blue-600 dark:text-white">
-                        {textoBuscar}
-                    </p>
-
-                    <>
-                        {iconoEstrellaMenu}
-                    </>
+                    <div className="w-20 flex flex-row items-center justify-between">
+                        <HiOutlineStar className="text-2xl md:text-3xl text-blue-600 dark:text-white cursor-pointer" />
+                        <HiDotsVertical className="text-2xl md:text-3xl text-black dark:text-white cursor-pointer" />
+                    </div>
                 </div>
 
                 <div className="p-1 flex flex-row items-center justify-between">
                     <p className="text-sm md:text-base 
                             text-blue-600 dark:text-white">
-                        Categoría
+                        Estado (finalizado, pendiente, no asignado)
                     </p>
 
                     <p className="text-sm md:text-base 

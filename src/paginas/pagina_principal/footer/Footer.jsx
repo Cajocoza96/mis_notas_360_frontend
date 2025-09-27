@@ -1,12 +1,14 @@
 import React from "react";
 
-import { HiSquares2X2, HiOutlineStar } from "react-icons/hi2";
+import { HiOutlineStar } from "react-icons/hi2";
 
-import { HiSearch, HiPlus } from "react-icons/hi";
+import { HiSearch, HiPlus, HiMinusCircle } from "react-icons/hi";
 
 import { useDispatch } from "react-redux";
 
 import { toggleVerModalCrear } from "../../../store/layoutSlice";
+
+import { useNavigate } from "react-router-dom";
 
 export default function Footer() {
 
@@ -16,6 +18,9 @@ export default function Footer() {
         dispatch(toggleVerModalCrear())
     }
 
+    const navigate = useNavigate();
+
+    const handleNavegarBuscar = () => navigate("/buscar");
 
     return (
         <div className="fixed bottom-0 p-2 z-10 min-h-0 min-w-0 w-full">
@@ -25,12 +30,13 @@ export default function Footer() {
                 <div className="w-full h-full p-1 active:bg-gray-300 dark:active:bg-gray-600
                                 rounded-sm cursor-pointer
                                 flex items-center justify-center">
-                    <HiSquares2X2 className="text-2xl md:text-3xl text-blue-600 dark:text-white" />
+                    <HiMinusCircle className="text-2xl md:text-3xl text-blue-600 dark:text-white" />
                 </div>
 
                 <div className="w-full h-full p-1 active:bg-gray-300 dark:active:bg-gray-600
                                 rounded-sm cursor-pointer
-                                flex items-center justify-center">
+                                flex items-center justify-center"
+                    onClick={handleNavegarBuscar}>
                     <HiSearch className="text-2xl md:text-3xl text-blue-600 dark:text-white" />
                 </div>
 

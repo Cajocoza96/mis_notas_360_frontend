@@ -4,10 +4,10 @@ import { useUndoRedo } from "../../hooks/useUndoRedo";
 import { useContentEditable } from "../../hooks/useContentEditable";
 import { resetNotaState, setCanUndo, setCanRedo, setTitulo, setNota } from "../../store/layoutSlice";
 import Cabecera from "./cabecera/Cabecera";
-import Cuerpo from "../../componentes/cuerpo/Cuerpo";
+import CuerpoEdicion from "../../componentes/cuerpo/CuerpoEdicion";
 import Footer from "./footer/Footer";
 
-export default function CrearEditNota() {
+export default function PaginaCrearEditNota() {
     const dispatch = useDispatch();
     const tituloRef = useRef(null);
     const notaRef = useRef(null);
@@ -78,9 +78,8 @@ export default function CrearEditNota() {
                 handleTituloChange={handleTituloChangeAdapter}
                 handleTituloKeyDown={handleTituloKeyDownAdapter}
             />
-            
-            
-            <Cuerpo 
+
+            <CuerpoEdicion 
                 ref={notaRef}
                 handleNotaChange={handleNotaChangeAdapter}
                 handleNotaKeyDown={handleNotaKeyDownAdapter}

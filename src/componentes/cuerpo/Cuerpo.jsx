@@ -1,51 +1,42 @@
-import React, { forwardRef } from "react";
-import { useSelector, useDispatch } from "react-redux";
-import { setIsNotaFocused } from "../../store/layoutSlice";
+import React from "react";
 
-const Cuerpo = forwardRef(({ handleNotaChange, handleNotaKeyDown }, notaRef) => {
-    const dispatch = useDispatch();
-    const { isNotaFocused, nota } = useSelector((state) => state.layout);
+import NotaVistaPrevia from "../../paginas/pagina_principal/cuerpo/nota_vista_previa/NotaVistaPrevia";
 
-    const handleFocus = () => {
-        dispatch(setIsNotaFocused(true));
-    };
+import { useSelector } from "react-redux";
 
-    const handleBlur = () => {
-        dispatch(setIsNotaFocused(false));
-    };
+export default function Cuerpo({ verContenidoCuerpo }) {
+
+    const organizarPorColumna = useSelector((state) => state.layout.organizarPorColumna);
 
     return (
-        <div className="border border-black w-[95%] mx-auto overflow-y-auto overflow-x-hidden min-h-0 min-w-0 pb-3 flex-1">
-            <div className="relative p-2">
-                <div
-                    ref={notaRef}
-                    contentEditable
-                    suppressContentEditableWarning={true}
-                    onInput={() => handleNotaChange(notaRef)}
-                    onFocus={handleFocus}
-                    onBlur={handleBlur}
-                    onKeyDown={(e) => handleNotaKeyDown(e, notaRef)}
-                    className="text-base md:text-xl text-black dark:text-white
-                                outline-none border-none bg-transparent
-                                min-h-[1.5em] w-full
-                                whitespace-pre-wrap"
-                    style={{
-                        wordBreak: 'break-word',
-                        overflowWrap: 'break-word',
-                        lineHeight: '1.5'
-                    }}
-                />
-                {!nota && !isNotaFocused && (
-                    <div className="absolute top-2 left-2 pointer-events-none
-                                    text-base md:text-xl text-gray-500 dark:text-gray-400">
-                        Nota
-                    </div>
-                )}
-            </div>
+        <div className={`w-[95%] mx-auto overflow-y-auto overflow-x-hidden min-h-0 min-w-0 pb-3
+                        grid 
+                        ${organizarPorColumna ? 'grid-cols-2 2xs:grid-cols-3 lg:grid-cols-5' : 'grid-cols-1'} gap-5 lg:gap-3`}>
+
+            {verContenidoCuerpo && (
+                Array.from({ length: 1 }, (_, index) => (
+                    <NotaVistaPrevia texto="Hola mundo" key={index} />
+                ))
+            )}
+
+            {verContenidoCuerpo && (
+                Array.from({ length: 1 }, (_, index) => (
+                    <NotaVistaPrevia texto="Hola mi nombre es Carlos Jose Cogollo Zapateiro tengo 29 años" key={index} />
+                ))
+            )}
+
+            {verContenidoCuerpo && (
+                Array.from({ length: 1 }, (_, index) => (
+                    <NotaVistaPrevia texto="Soy ingeniero de software, estudie en la universidad de Cartagena, termine mis estudios hace 1 año y un poco mas" key={index} />
+                ))
+            )}
+
+            {verContenidoCuerpo && (
+                Array.from({ length: 17 }, (_, index) => (
+                    <NotaVistaPrevia texto="Wandu se fue a la guerra que dolor que dolor que pena" key={index} />
+                ))
+            )}
+
         </div>
     );
-});
-
-Cuerpo.displayName = 'Cuerpo';
-
-export default Cuerpo;
+}

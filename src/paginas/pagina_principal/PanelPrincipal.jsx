@@ -2,9 +2,9 @@ import React from "react";
 
 import { useSelector } from "react-redux";
 
-import Cabecera from "./cabecera/Cabecera";
+import Cabecera from "../../componentes/cabecera/Cabecera";
 import Footer from "./footer/Footer";
-import Cuerpo from "./cuerpo/Cuerpo";
+import Cuerpo from "../../componentes/cuerpo/Cuerpo"
 import ContOpSubCabecera from "./cabecera/opcionesSubCabecera/ContOpSubCabecera";
 import ModalConfirmacion from "../../componentes/modal/ModalConfirmacion";
 
@@ -26,9 +26,15 @@ export default function PanelPrincipal() {
                 <ModalConfirmacion textoPregunta="¿Desea crear una nota?"/>
             )}
 
-            <Cabecera/>
+            <Cabecera 
+                    paginaPrincipal={true}
+                    paginaBusqueda={false}
+                    paginaPapelera={false}/>
 
-            <Cuerpo />
+            <Cuerpo 
+                    verContenidoCuerpo={true}
+            
+            />
 
             <div className="flex-shrink-0 h-15 lg:h-18"></div>
             <Footer />

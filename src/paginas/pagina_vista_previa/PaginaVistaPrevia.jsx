@@ -4,11 +4,8 @@ import { useUndoRedo } from "../../hooks/useUndoRedo";
 import { useContentEditable } from "../../hooks/useContentEditable";
 import { resetNotaState, setCanUndo, setCanRedo, setTitulo, setNota } from "../../store/layoutSlice";
 
-import { HiDotsVertical } from "react-icons/hi";
-import { HiOutlineStar } from "react-icons/hi2";
-
 import Cabecera from "./cabecera/Cabecera";
-import Cuerpo from "../../componentes/cuerpo/Cuerpo";
+import CuerpoEdicion from "../../componentes/cuerpo/CuerpoEdicion";
 
 export default function PaginaVistaPrevia() {
 
@@ -77,16 +74,9 @@ export default function PaginaVistaPrevia() {
         <div className="h-[100svh] bg-white dark:bg-gray-800 min-h-0 min-w-0 
                         overflow-hidden relative
                         flex flex-col">
-            <Cabecera
-                iconoEstrellaMenu={
-                    <div className="w-20 flex flex-row items-center justify-between">
-                        <HiOutlineStar className="text-2xl md:text-3xl text-blue-600 dark:text-white cursor-pointer" />
-                        <HiDotsVertical className="text-2xl md:text-3xl text-black dark:text-white cursor-pointer" />
-                    </div>
-                }
-            />
+            <Cabecera />
 
-            <Cuerpo
+            <CuerpoEdicion
                 ref={notaRef}
                 handleNotaChange={handleNotaChangeAdapter}
                 handleNotaKeyDown={handleNotaKeyDownAdapter}
