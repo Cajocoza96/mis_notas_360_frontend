@@ -8,11 +8,15 @@ import Cuerpo from "../../componentes/cuerpo/Cuerpo"
 import ContOpSubCabecera from "./cabecera/opcionesSubCabecera/ContOpSubCabecera";
 import ModalConfirmacion from "../../componentes/modal/ModalConfirmacion";
 
+import PaletaDeColores from "../../componentes/paleta_de_colores/PaletaDeColores";
+
 export default function PanelPrincipal() {
 
     const verOpcionesCabecera = useSelector((state) => state.layout.verOpcionesCabecera);
 
     const verModalCrear = useSelector((state) => state.layout.verModalCrear);
+
+    const verPaletaColores = useSelector((state) => state.layout.verPaletaColores);
 
     return (
         <div className="h-[100svh] bg-white dark:bg-gray-800 
@@ -20,23 +24,27 @@ export default function PanelPrincipal() {
                         flex flex-col">
 
             {verOpcionesCabecera && (
-                <ContOpSubCabecera/>
+                <ContOpSubCabecera />
             )}
 
             {verModalCrear && (
-                <ModalConfirmacion textoPregunta="¿Desea crear una nota?"/>
+                <ModalConfirmacion textoPregunta="¿Desea crear una nota?" />
             )}
 
-            <Cabecera 
-                    paginaPrincipal={true}
-                    paginaBusqueda={false}
-                    paginaPapelera={false}/>
+            {verPaletaColores && (
+                <PaletaDeColores />
+            )}
 
-            <Cuerpo 
+            <Cabecera
+                paginaPrincipal={true}
+                paginaBusqueda={false}
+                paginaPapelera={false} />
+
+            <Cuerpo
                 notaBusquedaNotaEliminada={false}
                 notaNoEliminada={true}
                 verContenidoCuerpo={true}
-            
+
             />
 
             <div className="flex-shrink-0 h-15 lg:h-18"></div>

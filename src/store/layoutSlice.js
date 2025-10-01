@@ -6,6 +6,7 @@ const initialState = {
     verModo: false,
     verModalCrear: false,
     verOrden: false,
+    verPaletaColores: false,
     
     // Estados para CrearEditNota
     isTituloFocused: false,
@@ -55,6 +56,13 @@ const layoutSlice = createSlice({
             state.verOrden = action.payload
         },
 
+        toggleVerPaletaColores: (state) => {
+            state.verPaletaColores = !state.verPaletaColores
+        },
+        setVerPaletaColores: (state, action) => {
+            state.verPaletaColores = action.payload
+        },
+
 
         // Nuevos reducers para CrearEditNota
         setIsTituloFocused: (state, action) => {
@@ -99,6 +107,8 @@ export const {
     setVerModalCrear,
     toggleVerOrden,
     setVerOrden,
+    toggleVerPaletaColores,
+    setVerPaletaColores,
     setIsTituloFocused,
     setIsNotaFocused,
     setTitulo,

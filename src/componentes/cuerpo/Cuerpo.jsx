@@ -29,7 +29,7 @@ export default function Cuerpo({ notaNoEliminada, notaBusquedaNotaEliminada,
 
                     {verContenidoCuerpo && (
                         Array.from({ length: 1 }, (_, index) => (
-                            <NotaVistaPrevia texto="Hola mi nombre es Carlos Jose Cogollo Zapateiro tengo 29 años" key={index} />
+                            <NotaVistaPrevia texto="Hola mi nombre es Carlos Jose Cogollo Zapateiro tengo 122 años" key={index} />
                         ))
                     )}
 

@@ -2,11 +2,11 @@ import React from "react";
 
 import { HiOutlineStar } from "react-icons/hi2";
 
-import { HiSearch, HiPlus, HiMinusCircle } from "react-icons/hi";
+import { HiSearch, HiPlus } from "react-icons/hi";
 
 import { useDispatch } from "react-redux";
 
-import { toggleVerModalCrear } from "../../../store/layoutSlice";
+import { toggleVerModalCrear, toggleVerPaletaColores } from "../../../store/layoutSlice";
 
 import { useNavigate } from "react-router-dom";
 
@@ -16,6 +16,10 @@ export default function Footer() {
 
     const handleVerModalCrear = () => {
         dispatch(toggleVerModalCrear())
+    }
+
+    const handleVerPaletaColores = () => {
+        dispatch(toggleVerPaletaColores())
     }
 
     const navigate = useNavigate();
@@ -64,9 +68,11 @@ export default function Footer() {
 
                 <div className="w-full h-full p-1 active:bg-gray-300 dark:active:bg-gray-600
                                 rounded-sm cursor-pointer
-                                flex items-center justify-center">
+                                flex items-center justify-center"
+                    onClick={handleVerPaletaColores}>
                     <div className="rounded-[50%] p-3 border border-black
                                     [background:linear-gradient(135deg,#2563eb_50%,transparent_50%)]"></div>
+
                 </div>
             </div>
 
