@@ -23,7 +23,9 @@ export default function PaginaBuscar() {
             </div>
 
             <Cuerpo 
-                verContenidoCuerpo={true}
+                notaBusquedaNotaEliminada={false}
+                notaNoEliminada={true}
+                verNotaBusqueda={true}
             />
         </div>
     );

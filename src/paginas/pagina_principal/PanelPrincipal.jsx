@@ -15,7 +15,8 @@ export default function PanelPrincipal() {
     const verModalCrear = useSelector((state) => state.layout.verModalCrear);
 
     return (
-        <div className="h-[100svh] bg-white dark:bg-gray-800 min-h-0 min-w-0 overflow-hidden 
+        <div className="h-[100svh] bg-white dark:bg-gray-800 
+                        min-h-0 min-w-0 overflow-hidden 
                         flex flex-col">
 
             {verOpcionesCabecera && (
@@ -32,7 +33,9 @@ export default function PanelPrincipal() {
                     paginaPapelera={false}/>
 
             <Cuerpo 
-                    verContenidoCuerpo={true}
+                notaBusquedaNotaEliminada={false}
+                notaNoEliminada={true}
+                verContenidoCuerpo={true}
             
             />
 

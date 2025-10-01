@@ -22,6 +22,8 @@ export default function Footer() {
 
     const handleNavegarBuscar = () => navigate("/buscar");
 
+    const handleNavegarEstado = () => navigate("/estados");
+
     return (
         <div className="fixed bottom-0 p-2 z-10 min-h-0 min-w-0 w-full">
 
@@ -29,8 +31,12 @@ export default function Footer() {
 
                 <div className="w-full h-full p-1 active:bg-gray-300 dark:active:bg-gray-600
                                 rounded-sm cursor-pointer
-                                flex items-center justify-center">
-                    <HiMinusCircle className="text-2xl md:text-3xl text-blue-600 dark:text-white" />
+                                flex items-center justify-center"
+                    onClick={handleNavegarEstado}>
+                    <p className="text-base md:text-xl 
+                                text-blue-600 dark:text-white">
+                        Estados
+                    </p>
                 </div>
 
                 <div className="w-full h-full p-1 active:bg-gray-300 dark:active:bg-gray-600

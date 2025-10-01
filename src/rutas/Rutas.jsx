@@ -7,6 +7,7 @@ import PaginaCrearEditNota from "../paginas/Pagina_crear_edit_nota/PaginaCrearEd
 import PaginaVistaPrevia from "../paginas/pagina_vista_previa/PaginaVistaPrevia";
 import PaginaBuscar from "../paginas/pagina_buscar/PaginaBuscar";
 import PaginaPapelera from "../paginas/pagina_papelera/PaginaPapelera";
+import PaginaEstado from "../paginas/pagina_estado/PaginaEstado";
 
 export default function Rutas(){
     return(
@@ -16,6 +17,7 @@ export default function Rutas(){
             <Route path="/vista-previa/nota" element={<PaginaVistaPrevia />}></Route>
             <Route path="/buscar" element={<PaginaBuscar />}></Route>
             <Route path="/papelera" element={<PaginaPapelera />}></Route>
+            <Route path="/estados" element={<PaginaEstado />}></Route>
         </Routes>
     );
 }

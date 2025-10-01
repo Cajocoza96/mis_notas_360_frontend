@@ -1,6 +1,6 @@
 import React, { forwardRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { HiChevronLeft, HiMinusCircle } from "react-icons/hi";
+import { HiChevronLeft, HiPlusCircle } from "react-icons/hi";
 import { Link } from "react-router-dom";
 import { setIsTituloFocused } from "../../../store/layoutSlice";
 
@@ -54,7 +54,13 @@ const Cabecera = forwardRef(({ handleTituloChange, handleTituloKeyDown }, titulo
                     </div>
                 </div>
 
-                <HiMinusCircle className="text-2xl md:text-3xl text-black dark:text-white cursor-pointer flex-shrink-0" />
+                <div className="select-none cursor-pointer 
+                                flex flex-row items-center gap-1 flex-shrink-0">
+                    <HiPlusCircle className="text-xl md:text-2xl text-blue-600" />
+                    <p className="text-base md:text-xl text-black dark:text-white">
+                        Agregar estado
+                    </p>
+                </div>
 
             </div>
 

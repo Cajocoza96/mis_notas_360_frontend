@@ -11,12 +11,13 @@ import {
 
 import {
     HiMenuAlt3, HiArrowDown, HiDotsVertical,
-    HiChevronLeft, HiX
+    HiChevronLeft, HiChevronDown, HiX
 } from "react-icons/hi";
 
 import { HiViewColumns } from "react-icons/hi2";
 
-export default function Cabecera({ paginaPrincipal, paginaBusqueda, paginaPapelera }) {
+export default function Cabecera({ paginaPrincipal, paginaBusqueda,
+    paginaPapelera, paginaEstado }) {
 
     const organizarPorColumna = useSelector((state) => state.layout.organizarPorColumna);
 
@@ -64,6 +65,12 @@ export default function Cabecera({ paginaPrincipal, paginaBusqueda, paginaPapele
                     </div>
                 )}
 
+                {paginaEstado && (
+                    <Link to="/">
+                        <HiChevronLeft className="text-xl md:text-2xl text-black dark:text-white cursor-pointer flex-shrink-0" />
+                    </Link>
+                )}
+
                 {paginaPrincipal && (
                     <div className="active:bg-gray-300 dark:active:bg-gray-600
                     w-fit rounded-sm cursor-pointer
@@ -95,6 +102,11 @@ export default function Cabecera({ paginaPrincipal, paginaBusqueda, paginaPapele
                 {paginaPapelera && (
                     <p className="w-full text-center text-base md:text-xl select-none truncate
                     text-red-600 dark:text-white">Papelera</p>
+                )}
+
+                {paginaEstado && (
+                    <p className="w-full text-center text-base md:text-xl select-none truncate
+                    text-blue-600 dark:text-white">Estados</p>
                 )}
 
                 {paginaPrincipal && (
