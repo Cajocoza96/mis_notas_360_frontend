@@ -52,10 +52,10 @@ export default function Footer() {
 
                 <div className="w-full h-full p-1 active:bg-gray-300 dark:active:bg-gray-600
                                 rounded-sm cursor-pointer
-                                flex items-center justify-center">
+                                flex items-center justify-center"
+                    onClick={handleVerModalCrear}>
                     <div className="bg-blue-600 rounded-[50%] p-2
-                                flex item-center justify-center"
-                        onClick={handleVerModalCrear}>
+                                flex item-center justify-center">
                         <HiPlus className="text-2xl md:text-3xl text-white" />
                     </div>
                 </div>
