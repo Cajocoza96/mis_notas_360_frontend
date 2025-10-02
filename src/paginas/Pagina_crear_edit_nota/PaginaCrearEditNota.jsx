@@ -1,11 +1,13 @@
 import React, { useRef, useEffect } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useUndoRedo } from "../../hooks/useUndoRedo";
 import { useContentEditable } from "../../hooks/useContentEditable";
 import { resetNotaState, setCanUndo, setCanRedo, setTitulo, setNota } from "../../store/layoutSlice";
 import Cabecera from "./cabecera/Cabecera";
 import CuerpoEdicion from "../../componentes/cuerpo/CuerpoEdicion";
 import Footer from "./footer/Footer";
+
+import ModalEstado from "../../componentes/modal/ModalEstado";
 
 export default function PaginaCrearEditNota() {
     const dispatch = useDispatch();
@@ -69,9 +71,15 @@ export default function PaginaCrearEditNota() {
         handleRedoClick(tituloRef, notaRef);
     };
 
+    const verModalEstado = useSelector((state) => state.layout.verModalEstado);
+
     return (
         <div className="h-[100svh] bg-white dark:bg-gray-800 min-h-0 min-w-0 overflow-hidden
                         flex flex-col">
+            
+            {verModalEstado && (
+                <ModalEstado />
+            )}
             
             <Cabecera 
                 ref={tituloRef}

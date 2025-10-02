@@ -2,11 +2,22 @@ import React from "react";
 
 import { HiChevronLeft, HiOutlinePencil, HiDotsVertical } from "react-icons/hi";
 
+import { useDispatch } from "react-redux";
+
+import { toggleVerOpcCabPagVisPrev } from "../../../store/layoutSlice";
+
 import { HiOutlineStar } from "react-icons/hi2";
 
 import { Link } from "react-router-dom";
 
 export default function Cabecera() {
+
+    const dispatch = useDispatch();
+
+    const handleVerOpcCabPagVisPrev = () => {
+        dispatch(toggleVerOpcCabPagVisPrev())
+    }
+
     return (
         <div className="flex-shrink-0 z-10 min-h-0 min-w-0 py-1 overflow-hidden">
 
@@ -19,7 +30,10 @@ export default function Cabecera() {
 
                     <div className="w-20 flex flex-row items-center justify-between">
                         <HiOutlineStar className="text-2xl md:text-3xl text-blue-600 dark:text-white cursor-pointer" />
-                        <HiDotsVertical className="text-2xl md:text-3xl text-black dark:text-white cursor-pointer" />
+                        
+                        <HiDotsVertical 
+                            className="text-2xl md:text-3xl text-black dark:text-white cursor-pointer"
+                            onClick={handleVerOpcCabPagVisPrev} />
                     </div>
                 </div>
 

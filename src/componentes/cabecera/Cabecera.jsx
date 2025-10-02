@@ -11,7 +11,7 @@ import {
 
 import {
     HiMenuAlt3, HiArrowDown, HiDotsVertical,
-    HiChevronLeft, HiChevronDown, HiX
+    HiChevronLeft, HiX
 } from "react-icons/hi";
 
 import { HiViewColumns } from "react-icons/hi2";

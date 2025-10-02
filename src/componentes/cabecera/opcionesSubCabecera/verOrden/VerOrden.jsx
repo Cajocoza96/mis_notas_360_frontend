@@ -2,7 +2,7 @@ import React from "react";
 
 import { useDispatch } from "react-redux";
 
-import { toggleVerOpcionesCabecera, toggleVerOrden } from "../../../../../store/layoutSlice";
+import { toggleVerOpcionesCabecera, toggleVerOrden } from "../../../../store/layoutSlice";
 
 import SubOpcionesCabecera from "../SubOpcionesCabecera";
 
@@ -27,6 +27,7 @@ export default function VerOrden() {
                                                 text-black dark:text-white
                                                 bg-white dark:bg-gray-800 cursor-pointer">
                 <SubOpcionesCabecera
+                    className="justify-center"
                     nombreOpcion="Ordenar por"
                 />
             </div>
@@ -36,6 +37,7 @@ export default function VerOrden() {
                                                     bg-gray-300 dark:bg-gray-700 cursor-pointer"
                 onClick={handleOrdenarNotas}>
                 <SubOpcionesCabecera
+                    className="justify-center"
                     nombreOpcion="Título"
 
                 /* 
@@ -51,6 +53,7 @@ export default function VerOrden() {
                                                     bg-gray-300 dark:bg-gray-700 cursor-pointer"
                 onClick={handleOrdenarNotas}>
                 <SubOpcionesCabecera
+                    className="justify-center"
                     nombreOpcion="Fecha de creación"
 
                 /* 
@@ -66,6 +69,7 @@ export default function VerOrden() {
                                                     bg-gray-300 dark:bg-gray-700 cursor-pointer"
                 onClick={handleOrdenarNotas}>
                 <SubOpcionesCabecera
+                    className="justify-center"
                     nombreOpcion="Fecha de modificación"
 
                 /* 

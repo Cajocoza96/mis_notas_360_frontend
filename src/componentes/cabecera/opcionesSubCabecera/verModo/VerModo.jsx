@@ -2,11 +2,11 @@ import React from "react";
 
 import { useDispatch } from "react-redux";
 
-import { toggleVerOpcionesCabecera, toogleVerModo } from "../../../../../store/layoutSlice";
+import { toggleVerOpcionesCabecera, toogleVerModo } from "../../../../store/layoutSlice";
 
 import SubOpcionesCabecera from "../SubOpcionesCabecera";
 
-import { useTheme } from "../../../../../hooks/useTheme";
+import { useTheme } from "../../../../hooks/useTheme.js";
 
 import { HiCheckCircle } from "react-icons/hi";
 
@@ -33,6 +33,7 @@ export default function VerModo() {
                                         bg-white dark:bg-gray-800 cursor-pointer"
                 onClick={() => handleThemeChange(themeKeys.light)}>
                 <SubOpcionesCabecera
+                    className="justify-center"
                     nombreOpcion="Claro"
 
                     circulo={theme === "light" && (
@@ -46,6 +47,7 @@ export default function VerModo() {
                                         bg-white dark:bg-gray-800 cursor-pointer"
                 onClick={() => handleThemeChange(themeKeys.dark)}>
                 <SubOpcionesCabecera
+                    className="justify-center"
                     nombreOpcion="Oscuro"
 
                     circulo={theme === "dark" && (
@@ -59,6 +61,7 @@ export default function VerModo() {
                                         bg-white dark:bg-gray-800 cursor-pointer"
                 onClick={() => handleThemeChange(themeKeys.system)}>
                 <SubOpcionesCabecera
+                    className="justify-center"
                     nombreOpcion="Sistema (predeterminado)"
 
                     circulo={theme === "system" && (

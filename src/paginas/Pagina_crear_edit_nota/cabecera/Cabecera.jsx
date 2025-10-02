@@ -2,7 +2,7 @@ import React, { forwardRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { HiChevronLeft, HiPlusCircle } from "react-icons/hi";
 import { Link } from "react-router-dom";
-import { setIsTituloFocused } from "../../../store/layoutSlice";
+import { setIsTituloFocused, toggleVerModalEstado } from "../../../store/layoutSlice";
 
 const Cabecera = forwardRef(({ handleTituloChange, handleTituloKeyDown }, tituloRef) => {
     const dispatch = useDispatch();
@@ -15,6 +15,10 @@ const Cabecera = forwardRef(({ handleTituloChange, handleTituloKeyDown }, titulo
     const handleBlur = () => {
         dispatch(setIsTituloFocused(false));
     };
+
+    const handleVerModalEstado = () => {
+        dispatch(toggleVerModalEstado())
+    }
 
     return (
         <div className="flex-shrink-0 z-10 min-h-0 min-w-0 py-1 overflow-hidden">
@@ -55,7 +59,8 @@ const Cabecera = forwardRef(({ handleTituloChange, handleTituloKeyDown }, titulo
                 </div>
 
                 <div className="select-none cursor-pointer 
-                                flex flex-row items-center gap-1 flex-shrink-0">
+                                flex flex-row items-center gap-1 flex-shrink-0"
+                    onClick={handleVerModalEstado}>
                     <HiPlusCircle className="text-xl md:text-2xl text-blue-600" />
                     <p className="text-base md:text-xl text-black dark:text-white">
                         Agregar estado

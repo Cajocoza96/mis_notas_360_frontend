@@ -5,7 +5,7 @@ import { useSelector } from "react-redux";
 import Cabecera from "../../componentes/cabecera/Cabecera";
 import Footer from "./footer/Footer";
 import Cuerpo from "../../componentes/cuerpo/Cuerpo"
-import ContOpSubCabecera from "./cabecera/opcionesSubCabecera/ContOpSubCabecera";
+import ContOpSubCabecera from "../../componentes/cabecera/opcionesSubCabecera/ContOpSubCabecera";
 import ModalConfirmacion from "../../componentes/modal/ModalConfirmacion";
 
 import PaletaDeColores from "../../componentes/paleta_de_colores/PaletaDeColores";

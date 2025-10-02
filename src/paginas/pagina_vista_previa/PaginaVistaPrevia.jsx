@@ -6,6 +6,7 @@ import { resetNotaState, setCanUndo, setCanRedo, setTitulo, setNota } from "../.
 
 import Cabecera from "./cabecera/Cabecera";
 import CuerpoEdicion from "../../componentes/cuerpo/CuerpoEdicion";
+import ContOpSubCabecera from "../../componentes/cabecera/opcionesSubCabecera/ContOpSubCabecera";
 
 export default function PaginaVistaPrevia() {
 
@@ -81,6 +82,8 @@ export default function PaginaVistaPrevia() {
                 handleNotaChange={handleNotaChangeAdapter}
                 handleNotaKeyDown={handleNotaKeyDownAdapter}
             />
+
+            <ContOpSubCabecera />
 
         </div>
     );

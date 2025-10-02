@@ -3,10 +3,13 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
     organizarPorColumna: true,
     verOpcionesCabecera: false,
+    verOpcCabPagVisPrev: false,
     verModo: false,
     verModalCrear: false,
+    verModalEstado: false,
     verOrden: false,
     verPaletaColores: false,
+    verFechaCreaModCantText: false,
     
     // Estados para CrearEditNota
     isTituloFocused: false,
@@ -35,6 +38,13 @@ const layoutSlice = createSlice({
             state.verOpcionesCabecera = action.payload
         },
 
+        toggleVerOpcCabPagVisPrev: (state) => {
+            state.verOpcCabPagVisPrev = !state.verOpcCabPagVisPrev
+        },
+        setVerOpcCabPagVisPrev: (state, action) => {
+            state.verOpcCabPagVisPrev = action.payload
+        },
+
         toogleVerModo: (state) => {
             state.verModo = !state.verModo
         },
@@ -49,6 +59,13 @@ const layoutSlice = createSlice({
             state.verModalCrear = action.payload
         },
 
+        toggleVerModalEstado: (state) => {
+            state.verModalEstado = !state.verModalEstado
+        },
+        setVerModalEstado: (state, action) => {
+            state.verModalEstado = action.payload
+        },
+
         toggleVerOrden: (state) => {
             state.verOrden = !state.verOrden
         },
@@ -61,6 +78,13 @@ const layoutSlice = createSlice({
         },
         setVerPaletaColores: (state, action) => {
             state.verPaletaColores = action.payload
+        },
+
+        toggleVerFechaCreaModCantText: (state) => {
+            state.verFechaCreaModCantText = !state.verFechaCreaModCantText
+        },
+        setVerFechaCreaModCantText: (state, action) => {
+            state.verFechaCreaModCantText = action.payload
         },
 
 
@@ -101,14 +125,20 @@ export const {
     setOrganizarPorColumna,
     toggleVerOpcionesCabecera, 
     setVerOpcionesCabecera,
+    toggleVerOpcCabPagVisPrev,
+    setVerOpcCabPagVisPrev,
     toogleVerModo, 
     setVerModo,
     toggleVerModalCrear, 
     setVerModalCrear,
+    toggleVerModalEstado,
+    setVerModalEstado,
     toggleVerOrden,
     setVerOrden,
     toggleVerPaletaColores,
     setVerPaletaColores,
+    toggleVerFechaCreaModCantText,
+    setVerFechaCreaModCantText,
     setIsTituloFocused,
     setIsNotaFocused,
     setTitulo,
