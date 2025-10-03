@@ -11,13 +11,13 @@ import {
 
 import {
     HiMenuAlt3, HiArrowDown, HiDotsVertical,
-    HiChevronLeft, HiX
+    HiChevronLeft, HiX, HiAnnotation
 } from "react-icons/hi";
 
 import { HiViewColumns } from "react-icons/hi2";
 
 export default function Cabecera({ paginaPrincipal, paginaBusqueda,
-    paginaPapelera, paginaEstado }) {
+    paginaPapelera, paginaEstado, paginaRegIniSesion }) {
 
     const organizarPorColumna = useSelector((state) => state.layout.organizarPorColumna);
 
@@ -47,7 +47,7 @@ export default function Cabecera({ paginaPrincipal, paginaBusqueda,
     return (
         <div className="flex-shrink-0 z-10 min-h-0 min-w-0 py-1 overflow-hidden">
 
-            <div className="w-[95%] mx-auto flex flex-row items-center justify-between p-2">
+            <div className="w-[95%] mx-auto flex flex-row items-center justify-between p-2 gap-2">
 
                 {paginaBusqueda && (
                     <div className="w-fit">
@@ -66,9 +66,17 @@ export default function Cabecera({ paginaPrincipal, paginaBusqueda,
                 )}
 
                 {paginaEstado && (
-                    <Link to="/">
-                        <HiChevronLeft className="text-xl md:text-2xl text-black dark:text-white cursor-pointer flex-shrink-0" />
-                    </Link>
+                    <div className="w-fit">
+                        <Link to="/">
+                            <HiChevronLeft className="text-xl md:text-2xl text-black dark:text-white cursor-pointer flex-shrink-0" />
+                        </Link>
+                    </div>
+                )}
+
+                {paginaRegIniSesion && (
+                    <div className="w-fit">
+                        <HiAnnotation className="text-xl md:text-2xl text-black dark:text-white" />
+                    </div>
                 )}
 
                 {paginaPrincipal && (
@@ -90,8 +98,16 @@ export default function Cabecera({ paginaPrincipal, paginaBusqueda,
                 )}
 
                 {paginaPrincipal && (
-                    <p className="w-full text-center text-base md:text-xl font-bold select-none truncate
-                    text-black dark:text-white">MisNotas360</p>
+                    <div className="flex flex-row items-center gap-2">
+                        <div className="w-fit">
+                            <HiAnnotation className="text-xl md:text-2xl text-black dark:text-white" />
+                        </div>
+                        <p className="w-full text-center text-base md:text-xl 
+                                    font-bold select-none truncate
+                                    text-black dark:text-white">
+                            MisNotas360
+                        </p>
+                    </div>
                 )}
 
                 {paginaBusqueda && (
@@ -107,6 +123,11 @@ export default function Cabecera({ paginaPrincipal, paginaBusqueda,
                 {paginaEstado && (
                     <p className="w-full text-center text-base md:text-xl select-none truncate
                     text-blue-600 dark:text-white">Estados</p>
+                )}
+
+                {paginaRegIniSesion && (
+                    <p className="w-full text-left text-base md:text-xl font-bold select-none truncate
+                    text-black dark:text-white">MisNotas360</p>
                 )}
 
                 {paginaPrincipal && (
