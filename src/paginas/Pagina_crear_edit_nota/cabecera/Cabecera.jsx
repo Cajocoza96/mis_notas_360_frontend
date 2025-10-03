@@ -1,12 +1,12 @@
 import React, { forwardRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { HiChevronLeft, HiPlusCircle } from "react-icons/hi";
+import { HiChevronLeft, HiPlusCircle, HiRefresh } from "react-icons/hi";
 import { Link } from "react-router-dom";
 import { setIsTituloFocused, toggleVerModalEstado } from "../../../store/layoutSlice";
 
 const Cabecera = forwardRef(({ handleTituloChange, handleTituloKeyDown }, tituloRef) => {
     const dispatch = useDispatch();
-    const { isTituloFocused, titulo } = useSelector((state) => state.layout);
+    const { isTituloFocused, titulo, estadoSeleccionado } = useSelector((state) => state.layout);
 
     const handleFocus = () => {
         dispatch(setIsTituloFocused(true));
@@ -18,6 +18,19 @@ const Cabecera = forwardRef(({ handleTituloChange, handleTituloKeyDown }, titulo
 
     const handleVerModalEstado = () => {
         dispatch(toggleVerModalEstado())
+    }
+
+    const obtenerTextoEstado = () => {
+        switch (estadoSeleccionado) {
+            case "noAsignado":
+                return "No asignado";
+            case "pendiente":
+                return "Pendiente";
+            case "finalizado":
+                return "Finalizado";
+            default:
+                return "Agregar estado";
+        }
     }
 
     return (
@@ -61,10 +74,23 @@ const Cabecera = forwardRef(({ handleTituloChange, handleTituloKeyDown }, titulo
                 <div className="select-none cursor-pointer 
                                 flex flex-row items-center gap-1 flex-shrink-0"
                     onClick={handleVerModalEstado}>
-                    <HiPlusCircle className="text-xl md:text-2xl text-blue-600" />
-                    <p className="text-base md:text-xl text-black dark:text-white">
-                        Agregar estado
-                    </p>
+
+                    {estadoSeleccionado ? (
+                        <>
+                            <HiRefresh className="text-xl md:text-2xl text-blue-600" />
+                            <p className="text-base md:text-xl text-black dark:text-white">
+                                {obtenerTextoEstado()}
+                            </p>
+                        </>
+                    ) : (
+                        <>
+                            <HiPlusCircle className="text-xl md:text-2xl text-blue-600" />
+                            <p className="text-base md:text-xl text-black dark:text-white">
+                                Agregar estado
+                            </p>
+                        </>
+                    )}
+
                 </div>
 
             </div>

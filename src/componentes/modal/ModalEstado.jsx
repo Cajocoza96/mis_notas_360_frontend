@@ -1,42 +1,35 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 import { FaRegCircle, FaCircle } from "react-icons/fa";
 
-import { toggleVerModalEstado } from "../../store/layoutSlice";
+import { toggleVerModalEstado, setEstadoSeleccionado } from "../../store/layoutSlice";
 
 export default function ModalEstado() {
 
-    const [estadoNoAsignado, setEstadoNoAsignado] = useState(false);
-
-    const handleEstadoNoAsignado = () => {
-        setEstadoNoAsignado(!estadoNoAsignado)
-    }
-
-
-    const [estadoPendiente, setEstadoPendiente] = useState(false);
-
-    const handleEstadoPendiente = () => {
-        setEstadoPendiente(!estadoPendiente)
-    }
-
-
-    const [estadoFinalizado, setEstadoFinalizado] = useState(false);
-
-    const handleEstadoFinalizado = () => {
-        setEstadoFinalizado(!estadoFinalizado)
-    }
-
-
-
     const dispatch = useDispatch();
+
+    const estadoSeleccionado = useSelector((state) => state.layout.estadoSeleccionado);
+
+    const [estadoTemporal, setEstadoTemporal] = useState(estadoSeleccionado);
+
+    useEffect(() => {
+        setEstadoTemporal(estadoSeleccionado);
+    }, [estadoSeleccionado]);
+
+    const handleSeleccionarEstado = (estado) => {
+        setEstadoTemporal(estado);
+    }
 
     const handleVerModalEstado = () => {
         dispatch(toggleVerModalEstado())
     }
 
-
+    const handleAceptar = () => {
+        dispatch(setEstadoSeleccionado(estadoTemporal));
+        dispatch(toggleVerModalEstado());
+    }
 
     return (
         <>
@@ -49,32 +42,34 @@ export default function ModalEstado() {
 
                 <div className="flex flex-col gap-2">
 
-                    <div className="flex flex-row items-center gap-4 select-none">
+                    <div className="flex flex-row items-center gap-4 select-none cursor-pointer"
+                        onClick={() => handleSeleccionarEstado("noAsignado")}>
 
-                        <div onClick={handleEstadoNoAsignado}>
-                        {estadoNoAsignado 
-                            ? 
-                            <FaCircle className="text-base md:text-xl text-black dark:text-white"/>
-                            :
-                            <FaRegCircle className="text-base md:text-xl text-black dark:text-white" />
-                        }
+                        <div>
+                            {estadoTemporal === "noAsignado"
+                                ?
+                                <FaCircle className="text-base md:text-xl text-black dark:text-white" />
+                                :
+                                <FaRegCircle className="text-base md:text-xl text-black dark:text-white" />
+                            }
                         </div>
-                        
+
 
                         <p className="text-base md:text-xl text-black dark:text-white">
                             No asignado
                         </p>
                     </div>
 
-                    <div className="flex flex-row items-center gap-4 select-none">
+                    <div className="flex flex-row items-center gap-4 select-none cursor-pointer"
+                        onClick={() => handleSeleccionarEstado("pendiente")}>
 
-                        <div onClick={handleEstadoPendiente}>
-                        {estadoPendiente 
-                            ? 
-                            <FaCircle className="text-base md:text-xl text-black dark:text-white"/>
-                            :
-                            <FaRegCircle className="text-base md:text-xl text-black dark:text-white" />
-                        }
+                        <div>
+                            {estadoTemporal === "pendiente"
+                                ?
+                                <FaCircle className="text-base md:text-xl text-black dark:text-white" />
+                                :
+                                <FaRegCircle className="text-base md:text-xl text-black dark:text-white" />
+                            }
                         </div>
 
                         <p className="text-base md:text-xl text-black dark:text-white">
@@ -82,15 +77,16 @@ export default function ModalEstado() {
                         </p>
                     </div>
 
-                    <div className="flex flex-row items-center gap-4 select-none">
+                    <div className="flex flex-row items-center gap-4 select-none cursor-pointer"
+                        onClick={() => handleSeleccionarEstado("finalizado")}>
 
-                        <div onClick={handleEstadoFinalizado}>
-                        {estadoFinalizado 
-                            ? 
-                            <FaCircle className="text-base md:text-xl text-black dark:text-white"/>
-                            :
-                            <FaRegCircle className="text-base md:text-xl text-black dark:text-white" />
-                        }
+                        <div>
+                            {estadoTemporal === "finalizado"
+                                ?
+                                <FaCircle className="text-base md:text-xl text-black dark:text-white" />
+                                :
+                                <FaRegCircle className="text-base md:text-xl text-black dark:text-white" />
+                            }
                         </div>
 
                         <p className="text-base md:text-xl text-black dark:text-white">
@@ -110,7 +106,8 @@ export default function ModalEstado() {
 
                     <p
                         className="text-base md:text-xl
-                                        text-blue-800 dark:text-white cursor-pointer">
+                                        text-blue-800 dark:text-white cursor-pointer"
+                        onClick={handleAceptar}>
                         Aceptar
                     </p>
                 </div>

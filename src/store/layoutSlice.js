@@ -10,6 +10,8 @@ const initialState = {
     verOrden: false,
     verPaletaColores: false,
     verFechaCreaModCantText: false,
+
+    estadoSeleccionado: null,
     
     // Estados para CrearEditNota
     isTituloFocused: false,
@@ -87,6 +89,10 @@ const layoutSlice = createSlice({
             state.verFechaCreaModCantText = action.payload
         },
 
+        setEstadoSeleccionado : (state, action) => {
+            state.estadoSeleccionado = action.payload
+        },
+
 
         // Nuevos reducers para CrearEditNota
         setIsTituloFocused: (state, action) => {
@@ -116,6 +122,7 @@ const layoutSlice = createSlice({
             state.nota = ""
             state.canUndo = false
             state.canRedo = false
+            state.estadoSeleccionado = null
         }
     }
 })
@@ -139,6 +146,7 @@ export const {
     setVerPaletaColores,
     toggleVerFechaCreaModCantText,
     setVerFechaCreaModCantText,
+    setEstadoSeleccionado,
     setIsTituloFocused,
     setIsNotaFocused,
     setTitulo,
