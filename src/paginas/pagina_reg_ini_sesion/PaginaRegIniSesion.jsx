@@ -18,7 +18,9 @@ export default function PaginaRegIniSesion() {
                 <Cuerpo />
             </div>
 
+            {/*
             <div className="flex-shrink-0 h-15 lg:h-18"></div>
+            */}
             <Footer />
         </div>
     );
