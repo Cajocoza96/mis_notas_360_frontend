@@ -14,7 +14,7 @@ export default function PaginaRegIniSesion() {
             />
 
             <Cuerpo />
-
+            
             <Footer />
 
         </div>
