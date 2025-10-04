@@ -7,7 +7,7 @@ import Footer from "./footer/Footer";
 
 export default function PaginaRegIniSesion() {
     return (
-        <div className="min-h-[100svh] bg-white dark:bg-gray-800 
+        <div className="min-h-screen bg-white dark:bg-gray-800 
                         min-w-0 overflow-hidden 
                         flex flex-col justify-between">
             <div>
@@ -18,9 +18,6 @@ export default function PaginaRegIniSesion() {
                 <Cuerpo />
             </div>
 
-            {/*
-            <div className="flex-shrink-0 h-15 lg:h-18"></div>
-            */}
             <Footer />
         </div>
     );
