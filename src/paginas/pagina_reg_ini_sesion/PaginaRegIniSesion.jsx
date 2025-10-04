@@ -9,8 +9,8 @@ export default function PaginaRegIniSesion() {
     return (
         <div className="min-h-[100svh] bg-white dark:bg-gray-800 
                         min-w-0 overflow-hidden 
-                        flex flex-col justify-between">
-            <div>
+                        flex flex-col">
+            <div className="flex-1 flex flex-col">
                 <Cabecera
                     paginaRegIniSesion={true}
                 />
@@ -18,7 +18,6 @@ export default function PaginaRegIniSesion() {
                 <Cuerpo />
             </div>
 
-            <div className="flex-shrink-0 h-15 lg:h-18"></div>
             <Footer />
         </div>
     );
