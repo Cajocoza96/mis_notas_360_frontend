@@ -1,11 +1,12 @@
 import React from "react";
-import BotonRegIniSesion from "../../../componentes/boton_reg_ini_sesion/BotonRegIniSesion";
+import BotonRegIniSesion from "./boton_reg_ini_sesion/BotonRegIniSesion";
+import CorreoContrasena from "./correo_contrasena/CorreoContrasena";
 
 import { FaFacebook, FaGoogle } from "react-icons/fa";
 
 export default function Cuerpo() {
     return (
-        <div className="w-[95%] mx-auto flex flex-col justify-between p-2 gap-2 border border-black">
+        <div className="w-[95%] mx-auto flex flex-col justify-between p-2 gap-2">
 
             <p className="w-full text-left text-base md:text-xl 
                             font-bold select-none truncate
@@ -29,41 +30,8 @@ export default function Cuerpo() {
                 o
             </p>
 
-            <>
-                <p className="w-full text-left font-bold text-sm md:text-base 
-                            select-none truncate
-                        text-black dark:text-white">
-                    Correo electrónico
-                </p>
 
-                <div className="border border-gray-500 dark:border-gray-200">
-                    <input
-                        className="w-full text-base md:text-xl p-2
-                                border-0 focus:outline-none
-                                text-black dark:text-white"
-                        type="email" name="" id=""
-                        placeholder="correo@email.com" />
-                </div>
-            </>
-
-            <>
-                <p className="w-full text-left font-bold text-sm md:text-base 
-                            select-none truncate
-                        text-black dark:text-white">
-                    Contraseña
-                </p>
-
-                <div className="border border-gray-500 dark:border-gray-200">
-                    <input
-                        className="w-full text-base md:text-xl p-2
-                                border-0 focus:outline-none
-                                text-black dark:text-white"
-                        type="password" name="" id=""
-                        placeholder="wandu se fue a la guerra" />
-                </div>
-            </>
-
-
+            <CorreoContrasena />
 
         </div>
     );
