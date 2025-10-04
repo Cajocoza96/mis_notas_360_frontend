@@ -9,15 +9,16 @@ export default function PaginaRegIniSesion() {
     return (
         <div className="min-h-screen bg-white dark:bg-gray-800 
                         flex flex-col justify-between">
+            <Cabecera
+                paginaRegIniSesion={true}
+            />
+
+            <Cuerpo />
+
+
             <div className="flex-grow flex flex-col">
-                <Cabecera
-                    paginaRegIniSesion={true}
-                />
-
-                <Cuerpo />
+                <Footer />
             </div>
-
-            <Footer />
         </div>
     );
 }
