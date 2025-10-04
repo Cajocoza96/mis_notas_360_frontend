@@ -23,7 +23,7 @@ export default function CorreoContrasena() {
     const textoBoton = esRegistro ? infoRegIniSesion.registrate.accionBoton : infoRegIniSesion.iniciar.accionBoton;
 
     return (
-        <div className="flex flex-col gap-5">
+        <div className="flex flex-col gap-5 mb-3">
             <div className="flex flex-col gap-3">
                 <p className="w-full text-left font-bold text-sm md:text-base 
                             select-none truncate
