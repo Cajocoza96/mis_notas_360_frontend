@@ -9,6 +9,8 @@ import PaginaBuscar from "../paginas/pagina_buscar/PaginaBuscar";
 import PaginaPapelera from "../paginas/pagina_papelera/PaginaPapelera";
 import PaginaEstado from "../paginas/pagina_estado/PaginaEstado";
 
+import PaginaRegIniSesion from "../paginas/pagina_reg_ini_sesion/PaginaRegIniSesion";
+
 export default function Rutas(){
     return(
         <Routes>
@@ -18,6 +20,9 @@ export default function Rutas(){
             <Route path="/buscar" element={<PaginaBuscar />}></Route>
             <Route path="/papelera" element={<PaginaPapelera />}></Route>
             <Route path="/estados" element={<PaginaEstado />}></Route>
+
+            <Route path="/registrar" element={<PaginaRegIniSesion />}></Route>
+            <Route path="/iniciar-sesion" element={<PaginaRegIniSesion />}></Route>
         </Routes>
     );
 }

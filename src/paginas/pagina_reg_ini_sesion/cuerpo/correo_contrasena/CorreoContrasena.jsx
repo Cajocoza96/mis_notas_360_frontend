@@ -1,8 +1,12 @@
 import React, { useState } from "react";
 
+import { useLocation } from "react-router-dom";
+
 import BotonAccion from "../../../../componentes/botones/BotonAccion";
 
 import { HiEye, HiEyeOff } from "react-icons/hi";
+
+import infoRegIniSesion from "../../../../data/infoRegIniSesion.json";
 
 export default function CorreoContrasena() {
 
@@ -11,6 +15,12 @@ export default function CorreoContrasena() {
     const handleVerContrasena = () => {
         setVerContrasena(!verContrasena);
     }
+
+    const location = useLocation();
+
+    const esRegistro = location.pathname === "/registrar";
+
+    const textoBoton = esRegistro ? infoRegIniSesion.registrate.accionBoton : infoRegIniSesion.iniciar.accionBoton;
 
     return (
         <div className="flex flex-col gap-5">
@@ -59,7 +69,8 @@ export default function CorreoContrasena() {
 
             <BotonAccion 
                 className="bg-black text-white active:bg-gray-800"
-                accion="Iniciar sesión"
+                
+                accion={textoBoton}
             />
 
         </div>
