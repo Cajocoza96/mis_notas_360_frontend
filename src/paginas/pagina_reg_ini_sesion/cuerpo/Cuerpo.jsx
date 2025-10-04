@@ -16,7 +16,7 @@ export default function Cuerpo() {
     const textoAccion = esRegistro ? infoRegIniSesion.registrate.accionCuenta : infoRegIniSesion.iniciar.accionCuenta;
 
     return (
-        <div className="w-[95%] mx-auto flex flex-col p-2 gap-2">
+        <div className="w-[95%] mx-auto flex flex-col justify-between p-2 gap-2">
 
             <p className="w-full text-left text-base md:text-xl 
                             font-bold select-none truncate
