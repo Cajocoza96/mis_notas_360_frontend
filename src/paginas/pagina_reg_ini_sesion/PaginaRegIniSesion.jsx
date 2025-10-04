@@ -7,7 +7,7 @@ import Footer from "./footer/Footer";
 
 export default function PaginaRegIniSesion() {
     return (
-        <div className="min-h-[100svh] bg-white dark:bg-gray-800 
+        <div className="min-h-screen bg-white dark:bg-gray-800 
                         min-w-0 overflow-hidden 
                         grid grid-rows-[1fr_auto]">
             <div>
