@@ -9,8 +9,8 @@ export default function PaginaRegIniSesion() {
     return (
         <div className="min-h-[100svh] bg-white dark:bg-gray-800 
                         min-w-0 overflow-hidden 
-                        flex flex-col justify-between">
-            <div className="flex-1 flex flex-col">
+                        grid grid-rows-[1fr_auto]">
+            <div>
                 <Cabecera
                     paginaRegIniSesion={true}
                 />
