@@ -10,6 +10,18 @@
     -webkit-tap-highlight-color: transparent;
   }
 
+  html {
+    overscroll-behavior: none;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  body {
+    width: 100%;
+    overflow-x: hidden;
+    min-height: 100dvh;
+    position: relative;
+  }
+
   @theme {
     --breakpoint-2xs: 600px;
   }
