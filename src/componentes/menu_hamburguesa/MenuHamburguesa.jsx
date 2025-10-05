@@ -4,6 +4,12 @@ import { useDispatch } from "react-redux";
 
 import { toggleVerMenuHamburguesa } from "../../store/layoutSlice";
 
+import { HiAnnotation } from "react-icons/hi";
+
+import Usuario from "../usuario/Usuario";
+
+import CerrarSesion from "../cerrar_sesion/CerrarSesion";
+
 export default function MenuHamburguesa() {
 
     const dispatch = useDispatch();
@@ -16,11 +22,31 @@ export default function MenuHamburguesa() {
         <>
             <div className="fixed inset-0 z-40 bg-black/30 backdrop-blur-xs"
                 onClick={handleVerMenuHamburguesa}></div>
+
+            <div className="h-dvh w-[80%] lg:w-[40%] p-2
+                        fixed inset-0 z-40
+                        bg-gray-300 dark:bg-gray-800">
+            
+            <div className="h-full overflow-hidden 
+                            flex flex-col justify-between">
+                <div className="p-2 flex flex-row items-center gap-2">
+                    <div className="w-fit">
+                        <HiAnnotation className="text-xl md:text-2xl text-black dark:text-white" />
+                    </div>
+                    <p className="w-full text-left text-base md:text-xl 
+                                    font-bold select-none truncate
+                                    text-black dark:text-white">
+                        MisNotas360
+                    </p>
+                </div>
                 
-            <div className="h-dvh w-[70%] lg:w-[40%]
-                        fixed inset-0 z-40 overflow-hidden
-                        bg-blue-600 dark:bg-gray-800 
-                        flex flex-col ">
+                <div>
+                <Usuario />
+
+                <CerrarSesion />
+                </div>
+            
+                </div>
             </div>
         </>
     );
