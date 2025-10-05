@@ -74,7 +74,7 @@ export default function PaginaCrearEditNota() {
     const verModalEstado = useSelector((state) => state.layout.verModalEstado);
 
     return (
-        <div className="h-[100svh] bg-white dark:bg-gray-800 min-h-0 min-w-0 overflow-hidden
+        <div className="h-dvh bg-white dark:bg-gray-800 min-h-0 min-w-0 overflow-hidden
                         flex flex-col">
             
             {verModalEstado && (
@@ -92,8 +92,6 @@ export default function PaginaCrearEditNota() {
                 handleNotaChange={handleNotaChangeAdapter}
                 handleNotaKeyDown={handleNotaKeyDownAdapter}
             />
-            
-            <div className="flex-shrink-0 h-11 lg:h-14"></div>
 
             <Footer 
                 handleUndoClick={handleUndoClickAdapter}

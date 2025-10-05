@@ -6,7 +6,7 @@ import Footer from "../../componentes/footer/Footer";
 
 export default function PaginaPapelera() {
     return (
-        <div className="h-[100svh] bg-white dark:bg-gray-800 min-h-0 min-w-0 overflow-hidden 
+        <div className="h-dvh bg-white dark:bg-gray-800 min-h-0 min-w-0 overflow-hidden 
                         flex flex-col">
 
             <Cabecera
@@ -21,7 +21,6 @@ export default function PaginaPapelera() {
 
             />
 
-            <div className="flex-shrink-0 h-15 lg:h-18"></div>
             <Footer
                 eliminarTodo={true}
             />

@@ -46,7 +46,7 @@ export default function Cuerpo({ notaNoEliminada, notaBusquedaNotaEliminada,
                     )}
 
                     {verNotaBusqueda && (
-                        Array.from({ length: 4 }, (_, index) => (
+                        Array.from({ length: 10 }, (_, index) => (
                             <NotaVistaPrevia texto="Wandu se fue a la guerra que dolor que dolor que pena" key={index} />
                         ))
                     )}

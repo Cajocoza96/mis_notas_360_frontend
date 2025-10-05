@@ -6,7 +6,7 @@ export default function Footer({ handleUndoClick, handleRedoClick }) {
     const { canUndo, canRedo } = useSelector((state) => state.layout);
 
     return (
-        <div className="fixed bottom-0 p-2 z-10 min-h-0 min-w-0 w-full
+        <div className="p-2 z-10 w-full
                         bg-blue-200 dark:bg-black
                         flex flex-row items-center justify-around">
 

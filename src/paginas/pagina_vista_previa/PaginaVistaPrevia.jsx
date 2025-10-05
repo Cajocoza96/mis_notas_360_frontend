@@ -72,7 +72,7 @@ export default function PaginaVistaPrevia() {
     };
 
     return (
-        <div className="h-[100svh] bg-white dark:bg-gray-800 min-h-0 min-w-0 
+        <div className="h-dvh bg-white dark:bg-gray-800 min-h-0 min-w-0 
                         overflow-hidden relative
                         flex flex-col">
             <Cabecera />

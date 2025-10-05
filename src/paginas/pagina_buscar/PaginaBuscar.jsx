@@ -6,7 +6,7 @@ import Cuerpo from "../../componentes/cuerpo/Cuerpo";
 
 export default function PaginaBuscar() {
     return (
-        <div className="h-[100svh] bg-white dark:bg-gray-800 min-h-0 min-w-0 overflow-hidden 
+        <div className="h-dvh bg-white dark:bg-gray-800 min-h-0 min-w-0 overflow-hidden 
                         flex flex-col">
             <Cabecera
                 paginaBusqueda={true}
