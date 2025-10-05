@@ -19,9 +19,9 @@ export default function PanelPrincipal() {
     const verPaletaColores = useSelector((state) => state.layout.verPaletaColores);
 
     return (
-        <div className="h-[100svh] bg-white dark:bg-gray-800 
-                        min-h-0 min-w-0 overflow-hidden 
-                        flex flex-col">
+        <div className="h-dvh bg-white dark:bg-gray-800 
+                        overflow-hidden 
+                        flex flex-col justify-between">
 
             {verOpcionesCabecera && (
                 <ContOpSubCabecera />
@@ -46,8 +46,6 @@ export default function PanelPrincipal() {
                 verContenidoCuerpo={true}
 
             />
-
-            <div className="flex-shrink-0 h-15 lg:h-18"></div>
             <Footer />
         </div>
     );

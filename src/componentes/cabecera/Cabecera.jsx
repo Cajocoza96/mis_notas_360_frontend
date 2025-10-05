@@ -45,7 +45,7 @@ export default function Cabecera({ paginaPrincipal, paginaBusqueda,
 
 
     return (
-        <div className="flex-shrink-0 z-10 min-h-0 min-w-0 py-1 overflow-hidden">
+        <div className="flex-shrink-0 z-10 py-1 overflow-hidden">
 
             <div className="w-[95%] mx-auto flex flex-row items-center justify-between p-2 gap-2">
 
