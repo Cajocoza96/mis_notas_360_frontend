@@ -2,6 +2,7 @@ import React from "react";
 
 import { Routes, Route } from "react-router-dom";
 
+import PaginaBienvenida from "../paginas/pagina_bienvenida/PaginaBienvenida";
 import PanelPrincipal from "../paginas/pagina_principal/PanelPrincipal";
 import PaginaCrearEditNota from "../paginas/Pagina_crear_edit_nota/PaginaCrearEditNota";
 import PaginaVistaPrevia from "../paginas/pagina_vista_previa/PaginaVistaPrevia";
@@ -14,7 +15,8 @@ import PaginaRegIniSesion from "../paginas/pagina_reg_ini_sesion/PaginaRegIniSes
 export default function Rutas(){
     return(
         <Routes>
-            <Route path="/" element={<PanelPrincipal />}></Route>
+            <Route path="/" element={<PaginaBienvenida />}></Route>
+            <Route path="/panel-principal" element={<PanelPrincipal />}></Route>
             <Route path="/agregar-nota" element={<PaginaCrearEditNota />}></Route>
             <Route path="/vista-previa/nota" element={<PaginaVistaPrevia />}></Route>
             <Route path="/buscar" element={<PaginaBuscar />}></Route>

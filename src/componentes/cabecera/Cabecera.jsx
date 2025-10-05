@@ -67,12 +67,6 @@ export default function Cabecera({ paginaPrincipal, paginaBusqueda,
                     </div>
                 )}
 
-                {paginaRegIniSesion && (
-                    <div className="w-fit">
-                        <HiAnnotation className="text-xl md:text-2xl text-black dark:text-white" />
-                    </div>
-                )}
-
                 {paginaPrincipal && (
                     <div className="active:bg-gray-300 dark:active:bg-gray-600
                                     w-fit rounded-sm cursor-pointer
@@ -111,8 +105,17 @@ export default function Cabecera({ paginaPrincipal, paginaBusqueda,
                 )}
 
                 {paginaRegIniSesion && (
-                    <p className="w-full text-left text-base md:text-xl font-bold select-none truncate
-                    text-black dark:text-white">MisNotas360</p>
+                    <Link to="/" className="w-fit 
+                                    flex flex-row items-center gap-2">
+                        <HiAnnotation className="text-xl md:text-2xl 
+                                                text-black dark:text-white" />
+                        <p className="w-full text-left text-base md:text-xl 
+                                    font-bold select-none truncate
+                                text-black dark:text-white">
+                            MisNotas360
+                        </p>
+                    </Link>
+
                 )}
 
                 {paginaPrincipal && (
