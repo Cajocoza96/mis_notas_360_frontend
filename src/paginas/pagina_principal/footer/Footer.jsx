@@ -1,12 +1,12 @@
 import React from "react";
 
-import { HiOutlineStar } from "react-icons/hi2";
+import { HiOutlineStar, HiViewColumns } from "react-icons/hi2";
 
-import { HiSearch, HiPlus } from "react-icons/hi";
+import { HiSearch, HiPlus, HiMenuAlt3, HiArrowDown } from "react-icons/hi";
 
-import { useDispatch } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 
-import { toggleVerModalCrear, toggleVerPaletaColores } from "../../../store/layoutSlice";
+import { toggleVerModalCrear, toggleOrganizarPorColumna } from "../../../store/layoutSlice";
 
 import { useNavigate } from "react-router-dom";
 
@@ -18,15 +18,17 @@ export default function Footer() {
         dispatch(toggleVerModalCrear())
     }
 
-    const handleVerPaletaColores = () => {
-        dispatch(toggleVerPaletaColores())
-    }
-
     const navigate = useNavigate();
 
     const handleNavegarBuscar = () => navigate("/buscar");
 
     const handleNavegarEstado = () => navigate("/estados");
+
+    const organizarPorColumna = useSelector((state) => state.layout.organizarPorColumna);
+
+    const handleOrganizacion = () => {
+        dispatch(toggleOrganizarPorColumna());
+    }
 
     return (
         <div className="flex-shrink-0 p-2 z-10 w-full select-none">
@@ -69,10 +71,16 @@ export default function Footer() {
                 <div className="w-full h-full p-1 active:bg-gray-300 dark:active:bg-gray-600
                                 rounded-sm cursor-pointer
                                 flex items-center justify-center"
-                    onClick={handleVerPaletaColores}>
-                    <div className="rounded-[50%] p-3 border border-black
-                                    [background:linear-gradient(135deg,#2563eb_50%,transparent_50%)]"></div>
+                    onClick={handleOrganizacion}>
+                    {organizarPorColumna && (
+                        <HiMenuAlt3 className="text-xl md:text-2xl text-blue-600 dark:text-white" />
+                    )}
 
+                    {!organizarPorColumna && (
+                        <HiViewColumns className="text-xl md:text-2xl text-blue-600 dark:text-white" />
+                    )}
+
+                    <HiArrowDown className="text-sm md:text-base text-blue-600 dark:text-white" />
                 </div>
             </div>
 

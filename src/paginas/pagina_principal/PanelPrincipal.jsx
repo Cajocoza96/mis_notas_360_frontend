@@ -8,7 +8,7 @@ import Cuerpo from "../../componentes/cuerpo/Cuerpo"
 import ContOpSubCabecera from "../../componentes/cabecera/opcionesSubCabecera/ContOpSubCabecera";
 import ModalConfirmacion from "../../componentes/modal/ModalConfirmacion";
 
-import PaletaDeColores from "../../componentes/paleta_de_colores/PaletaDeColores";
+import MenuHamburguesa from "../../componentes/menu_hamburguesa/MenuHamburguesa";
 
 export default function PanelPrincipal() {
 
@@ -16,7 +16,7 @@ export default function PanelPrincipal() {
 
     const verModalCrear = useSelector((state) => state.layout.verModalCrear);
 
-    const verPaletaColores = useSelector((state) => state.layout.verPaletaColores);
+    const verMenuHamburguesa = useSelector((state) => state.layout.verMenuHamburguesa);
 
     return (
         <div className="h-dvh bg-white dark:bg-gray-800 
@@ -31,8 +31,8 @@ export default function PanelPrincipal() {
                 <ModalConfirmacion textoPregunta="¿Desea crear una nota?" />
             )}
 
-            {verPaletaColores && (
-                <PaletaDeColores />
+            {verMenuHamburguesa && (
+                <MenuHamburguesa />
             )}
 
             <Cabecera

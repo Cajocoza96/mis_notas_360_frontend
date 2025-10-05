@@ -1,6 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
+    verMenuHamburguesa: false,
+
     organizarPorColumna: true,
     verOpcionesCabecera: false,
     verOpcCabPagVisPrev: false,
@@ -8,7 +10,6 @@ const initialState = {
     verModalCrear: false,
     verModalEstado: false,
     verOrden: false,
-    verPaletaColores: false,
     verFechaCreaModCantText: false,
 
     estadoSeleccionado: null,
@@ -26,6 +27,13 @@ const layoutSlice = createSlice({
     name: 'layout',
     initialState, 
     reducers: {
+        toggleVerMenuHamburguesa: (state) => {
+            state.verMenuHamburguesa = !state.verMenuHamburguesa
+        },
+        setVerMenuHamburguesa: (state, action) => {
+            state.verMenuHamburguesa = action.payload
+        },
+
         toggleOrganizarPorColumna: (state) => {
             state.organizarPorColumna = !state.organizarPorColumna
         },
@@ -75,13 +83,6 @@ const layoutSlice = createSlice({
             state.verOrden = action.payload
         },
 
-        toggleVerPaletaColores: (state) => {
-            state.verPaletaColores = !state.verPaletaColores
-        },
-        setVerPaletaColores: (state, action) => {
-            state.verPaletaColores = action.payload
-        },
-
         toggleVerFechaCreaModCantText: (state) => {
             state.verFechaCreaModCantText = !state.verFechaCreaModCantText
         },
@@ -128,6 +129,8 @@ const layoutSlice = createSlice({
 })
 
 export const { 
+    toggleVerMenuHamburguesa,
+    setVerMenuHamburguesa,
     toggleOrganizarPorColumna, 
     setOrganizarPorColumna,
     toggleVerOpcionesCabecera, 
@@ -142,8 +145,6 @@ export const {
     setVerModalEstado,
     toggleVerOrden,
     setVerOrden,
-    toggleVerPaletaColores,
-    setVerPaletaColores,
     toggleVerFechaCreaModCantText,
     setVerFechaCreaModCantText,
     setEstadoSeleccionado,
