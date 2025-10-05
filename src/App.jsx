@@ -6,9 +6,9 @@ import PaginaRegIniSesion from "./paginas/pagina_reg_ini_sesion/PaginaRegIniSesi
 function App() {
 
   return (
-    <>
+    <div className="bg-white dark:bg-gray-800">
       <Rutas />
-    </>
+    </div>
   )
 }
 
