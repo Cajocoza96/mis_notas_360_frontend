@@ -29,7 +29,7 @@ export default function Footer() {
     const handleNavegarEstado = () => navigate("/estados");
 
     return (
-        <div className="p-2 z-10 w-full">
+        <div className="flex-shrink-0 p-2 z-10 w-full">
 
             <div className="grid grid-cols-5 items-center">
 
