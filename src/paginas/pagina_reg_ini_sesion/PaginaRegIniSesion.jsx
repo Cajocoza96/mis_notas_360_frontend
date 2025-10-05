@@ -7,14 +7,17 @@ import Footer from "./footer/Footer";
 
 export default function PaginaRegIniSesion() {
     return (
-        <div className="min-h-dvh bg-white dark:bg-gray-800 
+        <div className="min-h-[100dvh] bg-white dark:bg-gray-800 
                         overflow-hidden 
-                        grid grid-rows-[auto_1fr_auto]">
-            <Cabecera
-                paginaRegIniSesion={true}
-            />
+                        flex flex-col justify-between">
 
-            <Cuerpo />
+            <div>
+                <Cabecera
+                    paginaRegIniSesion={true}
+                />
+
+                <Cuerpo />
+            </div>
 
 
             <Footer />

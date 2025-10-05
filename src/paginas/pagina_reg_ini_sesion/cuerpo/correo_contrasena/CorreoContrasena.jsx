@@ -36,7 +36,7 @@ export default function CorreoContrasena() {
                         className="w-full text-base md:text-xl
                                 border-0 focus:outline-none
                                 text-black dark:text-white"
-                        type="text" name="" id=""
+                        type="text"
                         placeholder="wanduUsuario123" />
                 </div>
             </div>
@@ -54,7 +54,7 @@ export default function CorreoContrasena() {
                         className="w-[90%] text-base md:text-xl
                                 focus:outline-none
                                 text-black dark:text-white"
-                        type={verContrasena ? "text" : "password"} name="" id=""
+                        type={verContrasena ? "text" : "password"} 
                         placeholder="wandu se fue a la guerra" />
 
                     <div className="text-base md:text-xl
