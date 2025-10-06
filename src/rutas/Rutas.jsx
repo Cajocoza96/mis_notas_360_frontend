@@ -1,5 +1,6 @@
 import React from "react";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, useLocation } from "react-router-dom";
+import { AnimatePresence } from "framer-motion";
 
 import PaginaBienvenida from "../paginas/pagina_bienvenida/PaginaBienvenida";
 import PanelPrincipal from "../paginas/pagina_principal/PanelPrincipal";
@@ -13,18 +14,22 @@ import PaginaRegIniSesion from "../paginas/pagina_reg_ini_sesion/PaginaRegIniSes
 
 export default function Rutas() {
 
-    return (
-        <Routes>
-            <Route path="/" element={<PaginaBienvenida />}></Route>
-            <Route path="/panel-principal" element={<PanelPrincipal />}></Route>
-            <Route path="/agregar-nota" element={<PaginaCrearEditNota />}></Route>
-            <Route path="/vista-previa/nota" element={<PaginaVistaPrevia />}></Route>
-            <Route path="/buscar" element={<PaginaBuscar />}></Route>
-            <Route path="/papelera" element={<PaginaPapelera />}></Route>
-            <Route path="/estados" element={<PaginaEstado />}></Route>
+    const location = useLocation();
 
-            <Route path="/registrar" element={<PaginaRegIniSesion />}></Route>
-            <Route path="/iniciar-sesion" element={<PaginaRegIniSesion />}></Route>
-        </Routes>
+    return (
+        <AnimatePresence mode="wait">
+            <Routes location={location} key={location.pathname}>
+                <Route path="/" element={<PaginaBienvenida />}></Route>
+                <Route path="/panel-principal" element={<PanelPrincipal />}></Route>
+                <Route path="/agregar-nota" element={<PaginaCrearEditNota />}></Route>
+                <Route path="/vista-previa/nota" element={<PaginaVistaPrevia />}></Route>
+                <Route path="/buscar" element={<PaginaBuscar />}></Route>
+                <Route path="/papelera" element={<PaginaPapelera />}></Route>
+                <Route path="/estados" element={<PaginaEstado />}></Route>
+
+                <Route path="/registrar" element={<PaginaRegIniSesion />}></Route>
+                <Route path="/iniciar-sesion" element={<PaginaRegIniSesion />}></Route>
+            </Routes>
+        </AnimatePresence>
     );
 }
