@@ -9,7 +9,7 @@ export default function EstadosVistaPrevia({ tipoEstado, cantidadEstado}) {
                         bg-gray-200 dark:bg-black">
 
             <div className="flex flex-row items-center gap-2">
-                <HiCheckCircle className="text-xl md:text-2xl text-blue-600" />
+                <HiCheckCircle className="text-2xl md:text-3xl text-blue-600" />
                 <p className="text-base md:text-xl px-1 
                         text-black dark:text-white">
                     {tipoEstado}

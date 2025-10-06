@@ -9,7 +9,7 @@ import {
 } from "../../store/layoutSlice";
 
 import {
-    HiDotsVertical, HiChevronLeft, HiX, HiAnnotation, HiMenu
+    HiDotsVertical, HiChevronLeft, HiX, HiOutlineBookOpen, HiMenu
 } from "react-icons/hi";
 
 
@@ -45,24 +45,24 @@ export default function Cabecera({ paginaPrincipal, paginaBusqueda,
 
                 {paginaBusqueda && (
                     <div className="w-fit">
-                        <Link to="/">
-                            <HiChevronLeft className="text-xl md:text-2xl text-black dark:text-white cursor-pointer flex-shrink-0" />
+                        <Link to="/panel-principal">
+                            <HiChevronLeft className="text-2xl md:text-3xl text-black dark:text-white cursor-pointer flex-shrink-0" />
                         </Link>
                     </div>
                 )}
 
                 {paginaPapelera && (
                     <div className="w-fit">
-                        <Link to="/">
-                            <HiX className="text-xl md:text-2xl text-black dark:text-white cursor-pointer flex-shrink-0" />
+                        <Link to="/panel-principal">
+                            <HiX className="text-2xl md:text-3xl text-black dark:text-white cursor-pointer flex-shrink-0" />
                         </Link>
                     </div>
                 )}
 
                 {paginaEstado && (
                     <div className="w-fit">
-                        <Link to="/">
-                            <HiChevronLeft className="text-xl md:text-2xl text-black dark:text-white cursor-pointer flex-shrink-0" />
+                        <Link to="/panel-principal">
+                            <HiChevronLeft className="text-2xl md:text-3xl text-black dark:text-white cursor-pointer flex-shrink-0" />
                         </Link>
                     </div>
                 )}
@@ -72,44 +72,45 @@ export default function Cabecera({ paginaPrincipal, paginaBusqueda,
                                     w-fit rounded-sm cursor-pointer
                                     flex items-center"
                         onClick={handleVerMenuHamburguesa}>
-                        <HiMenu className="text-xl md:text-2xl text-black dark:text-white" />
+                        <HiMenu className="text-2xl md:text-3xl text-black dark:text-white" />
                     </div>
                 )}
 
                 {paginaPrincipal && (
-                    <div className="flex flex-row items-center gap-2">
-                        <div className="w-fit">
-                            <HiAnnotation className="text-xl md:text-2xl text-black dark:text-white" />
+                    <Link to="/"
+                        className="w-fit flex flex-row items-center gap-2">
+                        <div>
+                            <HiOutlineBookOpen className="text-2xl md:text-3xl text-black dark:text-white" />
                         </div>
-                        <p className="w-full text-center text-base md:text-xl 
+                        <p className="w-full text-center text-xl md:text-2xl 
                                     font-bold select-none truncate
                                     text-black dark:text-white">
                             MisNotas360
                         </p>
-                    </div>
+                    </Link>
                 )}
 
                 {paginaBusqueda && (
-                    <p className="w-full text-center text-base md:text-xl select-none truncate
+                    <p className="w-full text-center text-xl md:text-2xl select-none truncate
                     text-blue-600 dark:text-white">Buscar</p>
                 )}
 
                 {paginaPapelera && (
-                    <p className="w-full text-center text-base md:text-xl select-none truncate
+                    <p className="w-full text-center text-xl md:text-2xl select-none truncate
                     text-red-600 dark:text-white">Papelera</p>
                 )}
 
                 {paginaEstado && (
-                    <p className="w-full text-center text-base md:text-xl select-none truncate
+                    <p className="w-full text-center text-xl md:text-2xl select-none truncate
                     text-blue-600 dark:text-white">Estados</p>
                 )}
 
                 {paginaRegIniSesion && (
                     <Link to="/" className="w-fit 
                                     flex flex-row items-center gap-2">
-                        <HiAnnotation className="text-xl md:text-2xl 
+                        <HiOutlineBookOpen className="text-2xl md:text-3xl 
                                                 text-black dark:text-white" />
-                        <p className="w-full text-left text-base md:text-xl 
+                        <p className="w-full text-left text-xl md:text-2xl
                                     font-bold select-none truncate
                                 text-black dark:text-white">
                             MisNotas360

@@ -1,10 +1,12 @@
 import React from "react";
 
+import { Link } from "react-router-dom";
+
 import { useDispatch } from "react-redux";
 
 import { toggleVerMenuHamburguesa } from "../../store/layoutSlice";
 
-import { HiAnnotation } from "react-icons/hi";
+import { HiOutlineBookOpen } from "react-icons/hi";
 
 import Usuario from "../usuario/Usuario";
 
@@ -26,26 +28,27 @@ export default function MenuHamburguesa() {
             <div className="h-dvh w-[80%] lg:w-[40%] p-2
                         fixed inset-0 z-40
                         bg-gray-300 dark:bg-gray-800">
-            
-            <div className="h-full overflow-hidden 
+
+                <div className="h-full overflow-hidden 
                             flex flex-col justify-between">
-                <div className="p-2 flex flex-row items-center gap-2">
-                    <div className="w-fit">
-                        <HiAnnotation className="text-xl md:text-2xl text-black dark:text-white" />
-                    </div>
-                    <p className="w-full text-left text-base md:text-xl 
+                    <Link to="/"
+                        className="w-fit p-2  flex flex-row items-center gap-2">
+                        <div>
+                            <HiOutlineBookOpen className="text-2xl md:text-3xl  text-black dark:text-white" />
+                        </div>
+                        <p className="w-full text-left text-base md:text-xl 
                                     font-bold select-none truncate
                                     text-black dark:text-white">
-                        MisNotas360
-                    </p>
-                </div>
-                
-                <div>
-                <Usuario />
+                            MisNotas360
+                        </p>
+                    </Link>
 
-                <CerrarSesion />
-                </div>
-            
+                    <div>
+                        <Usuario />
+
+                        <CerrarSesion />
+                    </div>
+
                 </div>
             </div>
         </>

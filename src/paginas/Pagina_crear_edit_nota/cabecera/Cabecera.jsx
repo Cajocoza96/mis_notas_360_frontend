@@ -39,8 +39,8 @@ const Cabecera = forwardRef(({ handleTituloChange, handleTituloKeyDown }, titulo
             <div className="w-[95%] mx-auto flex flex-row items-center p-2 justify-between">
 
                 <div className="flex flex-row items-center gap-2 flex-1 mr-4">
-                    <Link to="/">
-                        <HiChevronLeft className="text-xl md:text-2xl text-black dark:text-white cursor-pointer flex-shrink-0" />
+                    <Link to="/panel-principal">
+                        <HiChevronLeft className="text-2xl md:text-3xl text-black dark:text-white cursor-pointer flex-shrink-0" />
                     </Link>
 
                     <div className="relative flex-1">
@@ -77,14 +77,14 @@ const Cabecera = forwardRef(({ handleTituloChange, handleTituloKeyDown }, titulo
 
                     {estadoSeleccionado ? (
                         <>
-                            <HiRefresh className="text-xl md:text-2xl text-blue-600" />
+                            <HiRefresh className="text-2xl md:text-3xl  text-blue-600" />
                             <p className="text-base md:text-xl text-black dark:text-white">
                                 {obtenerTextoEstado()}
                             </p>
                         </>
                     ) : (
                         <>
-                            <HiPlusCircle className="text-xl md:text-2xl text-blue-600" />
+                            <HiPlusCircle className="text-2xl md:text-3xl  text-blue-600" />
                             <p className="text-base md:text-xl text-black dark:text-white">
                                 Agregar estado
                             </p>

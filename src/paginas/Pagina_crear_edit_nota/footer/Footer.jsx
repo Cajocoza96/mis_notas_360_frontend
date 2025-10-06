@@ -15,7 +15,7 @@ export default function Footer({ handleUndoClick, handleRedoClick }) {
             <div className="flex flex-row items-center gap-6">
                 {/* Botón Deshacer */}
                 <HiReply
-                    className={`text-xl md:text-2xl cursor-pointer transition-opacity
+                    className={`text-2xl md:text-3xl cursor-pointer transition-opacity
                                 ${canUndo
                             ? 'text-black dark:text-white hover:opacity-80'
                             : 'text-gray-600 dark:text-gray-500 cursor-not-allowed opacity-50'
@@ -26,7 +26,7 @@ export default function Footer({ handleUndoClick, handleRedoClick }) {
 
                 {/* Botón Rehacer */}
                 <HiReply
-                    className={`transform -scale-x-100 text-xl md:text-2xl cursor-pointer transition-opacity
+                    className={`transform -scale-x-100 text-2xl md:text-3xl cursor-pointer transition-opacity
                                 ${canRedo
                             ? 'text-black dark:text-white hover:opacity-80'
                             : 'text-gray-600 dark:text-gray-500 cursor-not-allowed opacity-50'
@@ -36,7 +36,7 @@ export default function Footer({ handleUndoClick, handleRedoClick }) {
                 />
             </div>
 
-            <HiCheck className="text-xl md:text-2xl text-black dark:text-white cursor-pointer" />
+            <HiCheck className="text-2xl md:text-3xl  text-black dark:text-white cursor-pointer" />
         </div>
     );
 }

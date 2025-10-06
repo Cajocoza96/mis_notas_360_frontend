@@ -86,7 +86,7 @@ export default function ContOpSubCabecera() {
                                     onClick={handleVerOrden}>
                                     <OpcionesCabecera
                                         className="justify-start"
-                                        iconoOpcion={<HiMenuAlt3 className="text-xl md:text-2xl" />}
+                                        iconoOpcion={<HiMenuAlt3 className="text-2xl md:text-3xl" />}
                                         nombreOpcion="Ordenar"
                                     />
                                 </div>
@@ -98,11 +98,11 @@ export default function ContOpSubCabecera() {
                                     <OpcionesCabecera
                                         className="justify-start"
                                         iconoOpcion={theme == "system" && (
-                                            <HiOutlineDesktopComputer className="text-xl md:text-2xl" />) ||
+                                            <HiOutlineDesktopComputer className="text-2xl md:text-3xl" />) ||
                                             theme == "light" && (
-                                                <HiOutlineSun className="text-xl md:text-2xl" />) ||
+                                                <HiOutlineSun className="text-2xl md:text-3xl" />) ||
                                             theme == "dark" && (
-                                                <HiOutlineMoon className="text-xl md:text-2xl" />)
+                                                <HiOutlineMoon className="text-2xl md:text-3xl" />)
                                         }
                                         nombreOpcion={theme == "system" && ("Sistema (predeterminado)") ||
                                             theme == "light" && ("Claro") ||
@@ -117,7 +117,7 @@ export default function ContOpSubCabecera() {
                                     onClick={handleNavegarPapelera}>
                                     <OpcionesCabecera
                                         className="justify-start"
-                                        iconoOpcion={<HiOutlineTrash className="text-xl md:text-2xl" />}
+                                        iconoOpcion={<HiOutlineTrash className="text-2xl md:text-3xl" />}
                                         nombreOpcion="Papelera"
                                     />
                                 </div>
@@ -149,7 +149,7 @@ export default function ContOpSubCabecera() {
                                     onClick={handleVerFechaCreaModCantText}>
                                     <OpcionesCabecera
                                         className="justify-center"
-                                        iconoOpcion={<HiOutlineInformationCircle className="text-xl md:text-2xl" />}
+                                        iconoOpcion={<HiOutlineInformationCircle className="text-2xl md:text-3xl" />}
                                     />
                                 </div>
 
@@ -158,7 +158,7 @@ export default function ContOpSubCabecera() {
                                         bg-white dark:bg-gray-800 cursor-pointer">
                                     <OpcionesCabecera
                                         className="justify-center"
-                                        iconoOpcion={<HiOutlineTrash className="text-xl md:text-2xl" />}
+                                        iconoOpcion={<HiOutlineTrash className="text-2xl md:text-3xl" />}
                                     />
                                 </div>
 

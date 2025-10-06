@@ -24,8 +24,8 @@ export default function Cabecera() {
             <div className="w-[95%] mx-auto flex flex-col gap-2">
 
                 <div className="flex flex-row items-center justify-between p-2">
-                    <Link to="/">
-                        <HiChevronLeft className="text-xl md:text-2xl text-black dark:text-white cursor-pointer flex-shrink-0" />
+                    <Link to="/panel-principal">
+                        <HiChevronLeft className="text-2xl md:text-3xl text-black dark:text-white cursor-pointer flex-shrink-0" />
                     </Link>
 
                     <div className="w-20 flex flex-row items-center justify-between">

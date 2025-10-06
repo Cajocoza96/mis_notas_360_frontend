@@ -25,13 +25,15 @@ export default function CorreoContrasena() {
     return (
         <div className="flex flex-col gap-5">
             <div className="flex flex-col gap-3">
-                <p className="w-full text-left font-bold text-sm md:text-base 
+                <p className="w-full text-left font-bold text-base md:text-xl 
                             select-none truncate
                         text-black dark:text-white">
                     Nombre de usuario
                 </p>
 
-                <div className="border border-gray-500 dark:border-gray-200 p-2">
+                <div className="border border-gray-500 dark:border-gray-600
+                                hover:bg-gray-300 dark:hover:bg-gray-900
+                                active:bg-gray-200 dark:active:bg-gray-700 p-2">
                     <input
                         className="w-full text-base md:text-xl
                                 border-0 focus:outline-none
@@ -42,13 +44,15 @@ export default function CorreoContrasena() {
             </div>
 
             <div className="flex flex-col gap-3">
-                <p className="w-full text-left font-bold text-sm md:text-base 
+                <p className="w-full text-left font-bold text-base md:text-xl
                             select-none truncate
                         text-black dark:text-white">
                     Contraseña
                 </p>
 
-                <div className="border border-gray-500 dark:border-gray-200 p-2
+                <div className="border border-gray-500 dark:border-gray-600
+                                hover:bg-gray-300 dark:hover:bg-gray-900
+                                active:bg-gray-200 dark:active:bg-gray-700 p-2
                                 flex flex-row items-center justify-between">
                     <input
                         className="w-[90%] text-base md:text-xl
@@ -68,7 +72,7 @@ export default function CorreoContrasena() {
             </div>
 
             <BotonAccion 
-                className="bg-black text-white active:bg-gray-800"
+                className="bg-blue-700 text-white hover:bg-blue-900 active:bg-blue-600"
                 
                 accion={textoBoton}
             />

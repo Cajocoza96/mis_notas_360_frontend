@@ -6,7 +6,7 @@ export default function CerrarSesion(){
     return(
         <div className="w-fit text-red-600 p-2 cursor-pointer select-none
                         flex flex-row items-center gap-2">
-            <HiLogout className="text-xl md:text-2xl"/> 
+            <HiLogout className="text-2xl md:text-3xl"/> 
             <p className="text-base md:text-xl">Cerrar sesión</p>
         </div>
     );

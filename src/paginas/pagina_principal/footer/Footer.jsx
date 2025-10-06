@@ -73,14 +73,14 @@ export default function Footer() {
                                 flex items-center justify-center"
                     onClick={handleOrganizacion}>
                     {organizarPorColumna && (
-                        <HiMenuAlt3 className="text-xl md:text-2xl text-blue-600 dark:text-white" />
+                        <HiMenuAlt3 className="text-2xl md:text-3xl text-blue-600 dark:text-white" />
                     )}
 
                     {!organizarPorColumna && (
-                        <HiViewColumns className="text-xl md:text-2xl text-blue-600 dark:text-white" />
+                        <HiViewColumns className="text-2xl md:text-3xl text-blue-600 dark:text-white" />
                     )}
 
-                    <HiArrowDown className="text-sm md:text-base text-blue-600 dark:text-white" />
+                    <HiArrowDown className="text-base md:text-xl text-blue-600 dark:text-white" />
                 </div>
             </div>
 
