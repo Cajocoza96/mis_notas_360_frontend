@@ -1,4 +1,7 @@
 import React, { useRef, useEffect } from "react";
+
+import { motion } from "framer-motion";
+
 import { useDispatch, useSelector } from "react-redux";
 import { useUndoRedo } from "../../hooks/useUndoRedo";
 import { useContentEditable } from "../../hooks/useContentEditable";
@@ -73,30 +76,52 @@ export default function PaginaCrearEditNota() {
 
     const verModalEstado = useSelector((state) => state.layout.verModalEstado);
 
+    const pageVariants = {
+        initial: {
+            x: "100%",
+            opacity: 0
+        },
+        animate: {
+            x: 0,
+            opacity: 1,
+            transition: {
+                type: "spring",
+                stiffness: 130,
+                damping: 20,
+                mass: 0.8,
+                duration: 0.5
+            }
+        }
+    }
+
     return (
-        <div className="h-dvh bg-white dark:bg-gray-800 min-h-0 min-w-0 overflow-hidden
-                        flex flex-col">
-            
+        <motion.div
+            className="h-dvh bg-white dark:bg-gray-800 min-h-0 min-w-0 overflow-hidden
+                        flex flex-col"
+            variants={pageVariants}
+            initial="initial"
+            animate="animate">
+
             {verModalEstado && (
                 <ModalEstado />
             )}
-            
-            <Cabecera 
+
+            <Cabecera
                 ref={tituloRef}
                 handleTituloChange={handleTituloChangeAdapter}
                 handleTituloKeyDown={handleTituloKeyDownAdapter}
             />
 
-            <CuerpoEdicion 
+            <CuerpoEdicion
                 ref={notaRef}
                 handleNotaChange={handleNotaChangeAdapter}
                 handleNotaKeyDown={handleNotaKeyDownAdapter}
             />
 
-            <Footer 
+            <Footer
                 handleUndoClick={handleUndoClickAdapter}
                 handleRedoClick={handleRedoClickAdapter}
             />
-        </div>
+        </motion.div>
     );
 }

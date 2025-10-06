@@ -1,8 +1,8 @@
 import React from "react";
 
-import { useLocation } from "react-router-dom";
-
 import { AnimatePresence, motion } from "framer-motion";
+
+import { useLocation } from "react-router-dom";
 
 import Cabecera from "../../componentes/cabecera/Cabecera";
 import Cuerpo from "./cuerpo/Cuerpo";
@@ -26,7 +26,7 @@ export default function PaginaRegIniSesion() {
             transition: {
                 type: "tween",
                 ease: "easeInOut",
-                duration: 0.4
+                duration: 0.5
             }
         },
         exit: (direction) => ({
@@ -35,7 +35,7 @@ export default function PaginaRegIniSesion() {
             transition: {
                 type: "tween",
                 ease: "easeInOut",
-                duration: 0.4
+                duration: 0.5
             }
         })
     }

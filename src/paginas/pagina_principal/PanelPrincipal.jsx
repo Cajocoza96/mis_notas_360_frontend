@@ -1,5 +1,7 @@
 import React from "react";
 
+import { motion, AnimatePresence } from "framer-motion";
+
 import { useSelector } from "react-redux";
 
 import Cabecera from "../../componentes/cabecera/Cabecera";
@@ -18,22 +20,48 @@ export default function PanelPrincipal() {
 
     const verMenuHamburguesa = useSelector((state) => state.layout.verMenuHamburguesa);
 
+    const pageVariants = {
+        initial: {
+            x: "100%",
+            opacity: 0
+        },
+        animate: {
+            x: 0,
+            opacity: 1,
+            transition: {
+                type: "spring",
+                stiffness: 130,
+                damping: 20,
+                mass: 0.8,
+                duration: 0.5
+            }
+        }
+    }
+
     return (
-        <div className="h-dvh bg-white dark:bg-gray-800 
-                        overflow-hidden 
-                        flex flex-col justify-between">
+        <motion.div
+            className="h-dvh bg-white dark:bg-gray-800 
+                        overflow-hidden
+                        flex flex-col justify-between"
+            variants={pageVariants}
+            initial="initial"
+            animate="animate">
+
 
             {verOpcionesCabecera && (
                 <ContOpSubCabecera />
             )}
 
+
             {verModalCrear && (
                 <ModalConfirmacion textoPregunta="¿Desea crear una nota?" />
             )}
 
-            {verMenuHamburguesa && (
-                <MenuHamburguesa />
-            )}
+            <AnimatePresence>
+                {verMenuHamburguesa && (
+                    <MenuHamburguesa />
+                )}
+            </AnimatePresence>
 
             <Cabecera
                 paginaPrincipal={true}
@@ -47,6 +75,6 @@ export default function PanelPrincipal() {
 
             />
             <Footer />
-        </div>
+        </motion.div>
     );
 }

@@ -1,4 +1,7 @@
 import React, { useRef, useEffect } from "react";
+
+import { motion } from "framer-motion";
+
 import { useDispatch } from "react-redux";
 import { useUndoRedo } from "../../hooks/useUndoRedo";
 import { useContentEditable } from "../../hooks/useContentEditable";
@@ -71,10 +74,33 @@ export default function PaginaVistaPrevia() {
         handleRedoClick(tituloRef, notaRef);
     };
 
+    const pageVariants = {
+        initial: {
+            x: "100%",
+            opacity: 0
+        },
+        animate: {
+            x: 0,
+            opacity: 1,
+            transition: {
+                type: "spring",
+                stiffness: 130,
+                damping: 20,
+                mass: 0.8,
+                duration: 0.5
+            }
+        }
+    }
+
     return (
-        <div className="h-dvh bg-white dark:bg-gray-800 min-h-0 min-w-0 
+        <motion.div
+            className="h-dvh bg-white dark:bg-gray-800 min-h-0 min-w-0 
                         overflow-hidden relative
-                        flex flex-col">
+                        flex flex-col"
+            variants={pageVariants}
+            initial="initial"
+            animate="animate">
+
             <Cabecera />
 
             <CuerpoEdicion
@@ -85,6 +111,6 @@ export default function PaginaVistaPrevia() {
 
             <ContOpSubCabecera />
 
-        </div>
+        </motion.div>
     );
 }

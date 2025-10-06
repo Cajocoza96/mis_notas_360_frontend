@@ -1,5 +1,7 @@
 import React from "react";
 
+import { motion } from "framer-motion";
+
 import { Link } from "react-router-dom";
 
 import { useDispatch } from "react-redux";
@@ -25,9 +27,14 @@ export default function MenuHamburguesa() {
             <div className="fixed inset-0 z-40 bg-black/30 backdrop-blur-xs"
                 onClick={handleVerMenuHamburguesa}></div>
 
-            <div className="h-dvh w-[80%] lg:w-[40%] p-2
-                        fixed inset-0 z-40
-                        bg-gray-300 dark:bg-gray-800">
+            <motion.div
+                className="h-dvh w-[80%] lg:w-[40%] p-2
+                                fixed inset-0 z-40
+                                bg-gray-300 dark:bg-gray-800"
+                initial={{ x: "-100%" }}
+                animate={{ x: 0 }}
+                exit={{ x: "-100%" }}
+                transition={{ duration: 0.4, ease: "easeOut" }}>
 
                 <div className="h-full overflow-hidden 
                             flex flex-col justify-between">
@@ -50,7 +57,7 @@ export default function MenuHamburguesa() {
                     </div>
 
                 </div>
-            </div>
+            </motion.div>
         </>
     );
 }

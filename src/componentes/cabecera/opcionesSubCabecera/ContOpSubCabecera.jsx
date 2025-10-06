@@ -1,5 +1,7 @@
 import React from "react";
 
+import { motion } from "framer-motion";
+
 import { useNavigate } from "react-router-dom";
 
 import { useTheme } from "../../../hooks/useTheme";
@@ -43,11 +45,11 @@ export default function ContOpSubCabecera() {
     }
 
     const handleVerOpcCabPagVisPrev = () => {
+        dispatch(toggleVerOpcCabPagVisPrev())
 
-        requestAnimationFrame(() => {
-            dispatch(toggleVerOpcCabPagVisPrev())
-            dispatch(toggleVerFechaCreaModCantText())
-        })
+        if (verFechaCreaModCantText) {
+            dispatch(toggleVerFechaCreaModCantText());
+        }
     }
 
     const handleVerFechaCreaModCantText = () => {
@@ -76,7 +78,13 @@ export default function ContOpSubCabecera() {
             {verOpcionesCabecera && (
                 <>
                     <div className="fixed inset-0 z-20 bg-black/70" onClick={handleVerOpcionesCabecera}></div>
-                    <div className="fixed bottom-0 z-20 w-full h-auto bg-white">
+
+                    <motion.div
+                        className="fixed bottom-0 z-20 w-full h-auto bg-white"
+                        initial={{ y: "100%" }}
+                        animate={{ y: 0 }}
+                        exit={{ y: "100%" }}
+                        transition={{ duration: 0.4, ease: "easeOut" }}>
 
                         {verOpcionesCabecera && !verModo && !verOrden && (
                             <>
@@ -132,14 +140,20 @@ export default function ContOpSubCabecera() {
                             <VerOrden />
                         )}
 
-                    </div>
+                    </motion.div>
                 </>
             )}
 
             {verOpcCabPagVisPrev && (
                 <>
                     <div className="fixed inset-0 z-20 bg-black/70" onClick={handleVerOpcCabPagVisPrev}></div>
-                    <div className="fixed bottom-0 z-20 w-full h-auto bg-white">
+
+                    <motion.div
+                        className="fixed bottom-0 z-20 w-full h-auto bg-white"
+                        initial={{ y: "100%" }}
+                        animate={{ y: 0 }}
+                        exit={{ y: "100%" }}
+                        transition={{ duration: 0.4, ease: "easeOut" }}>
 
                         {verOpcCabPagVisPrev && !verFechaCreaModCantText && (
                             <>
@@ -169,7 +183,7 @@ export default function ContOpSubCabecera() {
                             <VerFechaCreaModCantText />
                         )}
 
-                    </div>
+                    </motion.div>
 
                 </>
             )}
