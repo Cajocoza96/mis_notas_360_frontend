@@ -1,4 +1,5 @@
-import { useCallback } from "react";
+import React, { useCallback } from "react";
+import { motion } from "framer-motion";
 import Particles from "react-tsparticles";
 import { loadSlim } from "tsparticles-slim";
 import { HiOutlineBookOpen } from "react-icons/hi";
@@ -16,6 +17,8 @@ export default function PaginaBienvenida() {
 
     const handleNavegarRegistrarCuenta = () => navigate("/registrar");
     const handleNavegarInicioSesion = () => navigate("/iniciar-sesion");
+
+    const MiBoton = motion.create(BotonAccion);
 
     return (
         <div className="relative min-h-dvh bg-gradient-to-br from-indigo-900 via-purple-900 to-pink-800 overflow-hidden">
@@ -112,23 +115,41 @@ export default function PaginaBienvenida() {
                     </p>
                 </div>
 
-                <div className="flex flex-col items-center gap-4">
+                <div className="flex flex-col items-center gap-5">
 
-                    <BotonAccion
+                    <MiBoton
                         className="bg-white text-purple-900 
                                     hover:text-red-600 active:text-red-600
                                     hover:bg-gray-300 active:bg-gray-200
                                 rounded-full"
                         accion="Iniciar sesión"
                         onClick={handleNavegarInicioSesion}
+                        whileHover={{
+                            scale: 1.15,
+                            boxShadow: "0px 4px 20px rgba(147, 51, 234, 0.4)"
+                        }}
+                        whileTap={{
+                            scale: 0.96,
+                            boxShadow: "0px 2px 8px rgba(147, 51, 234, 0.3"
+                        }}
+                        transition={{ type: "spring", stiffness: 300, damping: 10 }}
                     />
 
-                    <BotonAccion
+                    <MiBoton
                         className=" bg-green-600 text-white
                                     hover:bg-green-800 active:bg-green-700
                                     rounded-full"
                         accion="Registrarse"
                         onClick={handleNavegarRegistrarCuenta}
+                        whileHover={{
+                            scale: 1.15,
+                            boxShadow: "0px 4px 20px rgba(147, 51, 234, 0.4)"
+                        }}
+                        whileTap={{
+                            scale: 0.96,
+                            boxShadow: "0px 2px 8px rgba(147, 51, 234, 0.3"
+                        }}
+                        transition={{ type: "spring", stiffness: 300, damping: 10 }}
                     />
 
                 </div>

@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 
+import { motion } from "framer-motion";
+
 import { useLocation } from "react-router-dom";
 
 import BotonAccion from "../../../../componentes/botones/BotonAccion";
@@ -22,6 +24,8 @@ export default function CorreoContrasena() {
 
     const textoBoton = esRegistro ? infoRegIniSesion.registrate.accionBoton : infoRegIniSesion.iniciar.accionBoton;
 
+    const MiBoton = motion.create(BotonAccion);
+    
     return (
         <div className="flex flex-col gap-5">
             <div className="flex flex-col gap-3">
@@ -71,10 +75,14 @@ export default function CorreoContrasena() {
                 </div>
             </div>
 
-            <BotonAccion 
+            <MiBoton 
                 className="bg-blue-700 text-white hover:bg-blue-900 active:bg-blue-600"
-                
                 accion={textoBoton}
+                whileTap={{
+                    scale: 0.96,
+                    boxShadow: "0px 2px 8px rgba(147, 51, 234, 0.3"
+                }}
+                transition={{ type: "spring", stiffness: 300, damping: 15 }}
             />
 
         </div>
