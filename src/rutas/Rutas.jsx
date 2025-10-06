@@ -1,5 +1,4 @@
 import React from "react";
-
 import { Routes, Route } from "react-router-dom";
 
 import PaginaBienvenida from "../paginas/pagina_bienvenida/PaginaBienvenida";
@@ -12,8 +11,9 @@ import PaginaEstado from "../paginas/pagina_estado/PaginaEstado";
 
 import PaginaRegIniSesion from "../paginas/pagina_reg_ini_sesion/PaginaRegIniSesion";
 
-export default function Rutas(){
-    return(
+export default function Rutas() {
+
+    return (
         <Routes>
             <Route path="/" element={<PaginaBienvenida />}></Route>
             <Route path="/panel-principal" element={<PanelPrincipal />}></Route>
