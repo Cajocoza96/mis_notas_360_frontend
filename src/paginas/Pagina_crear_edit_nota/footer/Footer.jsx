@@ -1,6 +1,6 @@
 import React from "react";
 import { useSelector } from "react-redux";
-import { HiReply, HiCheck } from "react-icons/hi";
+import { HiReply, HiCheck, HiPlusCircle } from "react-icons/hi";
 
 export default function Footer({ handleUndoClick, handleRedoClick }) {
     const { canUndo, canRedo } = useSelector((state) => state.layout);
@@ -8,11 +8,20 @@ export default function Footer({ handleUndoClick, handleRedoClick }) {
     return (
         <div className="p-2 z-10 w-full
                         bg-blue-200 dark:bg-black
-                        flex flex-row items-center justify-around">
+                        grid grid-cols-3">
 
-            <div></div>
+            <div className="flex flex-col items-center select-none">
 
-            <div className="flex flex-row items-center gap-6">
+                <div className="flex flex-col 
+                                2xs:flex-row items-center gap-2 cursor-pointer">
+                    <HiPlusCircle className="text-2xl md:text-3xl  text-blue-600" />
+                    <p className="text-base md:text-xl text-black dark:text-white">
+                        Agregar tarea
+                    </p>
+                </div>
+            </div>
+
+            <div className="flex flex-row items-center justify-center gap-5">
                 {/* Botón Deshacer */}
                 <HiReply
                     className={`text-2xl md:text-3xl cursor-pointer transition-opacity
@@ -36,7 +45,9 @@ export default function Footer({ handleUndoClick, handleRedoClick }) {
                 />
             </div>
 
-            <HiCheck className="text-2xl md:text-3xl  text-black dark:text-white cursor-pointer" />
+            <div className="flex flex-col items-center justify-center">
+                <HiCheck className="text-2xl md:text-3xl  text-black dark:text-white cursor-pointer" />
+            </div>
         </div>
     );
 }
