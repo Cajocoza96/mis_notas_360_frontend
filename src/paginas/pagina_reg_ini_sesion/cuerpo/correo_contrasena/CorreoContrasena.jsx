@@ -25,7 +25,7 @@ export default function CorreoContrasena() {
     const textoBoton = esRegistro ? infoRegIniSesion.registrate.accionBoton : infoRegIniSesion.iniciar.accionBoton;
 
     const MiBoton = motion.create(BotonAccion);
-    
+
     return (
         <div className="flex flex-col gap-5">
             <div className="flex flex-col gap-3">
@@ -35,12 +35,13 @@ export default function CorreoContrasena() {
                     Nombre de usuario
                 </p>
 
-                <div className="border border-gray-500 dark:border-gray-600
-                                hover:bg-gray-300 dark:hover:bg-gray-900
-                                active:bg-gray-200 dark:active:bg-gray-700 p-2">
+                <div className="border border-gray-300 dark:border-gray-700 rounded-md
+                                focus-within:border-black dark:focus-within:border-white
+                                active:bg-gray-200 dark:active:bg-gray-700 
+                                flex flex-row items-center justify-between">
                     <input
-                        className="w-full text-base md:text-xl
-                                border-0 focus:outline-none
+                        className="w-full text-base md:text-xl p-2
+                                focus:outline-none 
                                 text-black dark:text-white"
                         type="text"
                         placeholder="wanduUsuario123" />
@@ -54,28 +55,29 @@ export default function CorreoContrasena() {
                     Contraseña
                 </p>
 
-                <div className="border border-gray-500 dark:border-gray-600
-                                hover:bg-gray-300 dark:hover:bg-gray-900
-                                active:bg-gray-200 dark:active:bg-gray-700 p-2
+                <div className="border border-gray-300 dark:border-gray-700 rounded-md
+                                focus-within:border-black dark:focus-within:border-white
+                                active:bg-gray-200 dark:active:bg-gray-700
                                 flex flex-row items-center justify-between">
                     <input
-                        className="w-[90%] text-base md:text-xl
-                                focus:outline-none
-                                text-black dark:text-white"
-                        type={verContrasena ? "text" : "password"} 
-                        placeholder="wandu se fue a la guerra" />
+                        className="w-full text-base md:text-xl p-2
+                                    focus:outline-none 
+                                    text-black dark:text-white"
+                        type={verContrasena ? "text" : "password"}
+                        placeholder="wandu se fue a la guerra"
+                    />
 
-                    <div className="text-base md:text-xl
-                                    text-black dark:text-white cursor-pointer"
+                    <div className="text-base md:text-xl mr-2
+                        text-black dark:text-white cursor-pointer"
                         onClick={handleVerContrasena}>
-                        
-                        {verContrasena ? <HiEye/> : <HiEyeOff />}
+
+                        {verContrasena ? <HiEye /> : <HiEyeOff />}
                     </div>
 
                 </div>
             </div>
 
-            <MiBoton 
+            <MiBoton
                 className="bg-blue-700 text-white hover:bg-blue-900 active:bg-blue-600"
                 accion={textoBoton}
                 whileTap={{

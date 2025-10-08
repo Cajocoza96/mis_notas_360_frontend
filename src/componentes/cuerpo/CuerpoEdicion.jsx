@@ -21,15 +21,11 @@ const CuerpoEdicion = forwardRef(({ handleNotaChange, handleNotaKeyDown }, notaR
 
     return (
         <div className="w-[95%] mx-auto overflow-y-auto overflow-x-hidden min-h-0 min-w-0 pb-3 flex-1">
-            
-            {tareas.map((tarea) => (
-                <Tarea key={tarea.id} tarea={tarea}/>
-            ))}
-            
+
             {verModalTarea && (
                 <ModalTarea />
             )}
-            
+
             <div className="relative p-2">
                 <div
                     ref={notaRef}
@@ -55,6 +51,10 @@ const CuerpoEdicion = forwardRef(({ handleNotaChange, handleNotaKeyDown }, notaR
                         Nota
                     </div>
                 )}
+
+                {tareas.map((tarea) => (
+                    <Tarea key={tarea.id} tarea={tarea} />
+                ))}
             </div>
         </div>
     );
