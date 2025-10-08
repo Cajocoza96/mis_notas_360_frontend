@@ -36,7 +36,7 @@ export default function CorreoContrasena() {
                 </p>
 
                 <div className="border border-gray-300 dark:border-gray-700 rounded-md
-                                focus-within:border-black dark:focus-within:border-white
+                                focus-within:border-blue-600
                                 active:bg-gray-200 dark:active:bg-gray-700 
                                 flex flex-row items-center justify-between">
                     <input
@@ -56,7 +56,7 @@ export default function CorreoContrasena() {
                 </p>
 
                 <div className="border border-gray-300 dark:border-gray-700 rounded-md
-                                focus-within:border-black dark:focus-within:border-white
+                                focus-within:border-blue-600 
                                 active:bg-gray-200 dark:active:bg-gray-700
                                 flex flex-row items-center justify-between">
                     <input
