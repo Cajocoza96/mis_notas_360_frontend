@@ -1,9 +1,23 @@
 import React from "react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { HiReply, HiCheck, HiPlusCircle } from "react-icons/hi";
 
+import { toggleVerModalTarea } from "../../../store/layoutSlice";
+
+import { setModoModal, setTareaActual } from "../../../store/tareasSlice";
+
 export default function Footer({ handleUndoClick, handleRedoClick }) {
+
     const { canUndo, canRedo } = useSelector((state) => state.layout);
+
+    const dispatch = useDispatch();
+
+    const handleverModalTarea = () => {
+        
+        dispatch(setModoModal('crear'));
+        dispatch(setTareaActual(null));
+        dispatch(toggleVerModalTarea());
+    }
 
     return (
         <div className="p-2 z-10 w-full
@@ -13,7 +27,8 @@ export default function Footer({ handleUndoClick, handleRedoClick }) {
             <div className="flex flex-col items-center select-none">
 
                 <div className="flex flex-col 
-                                2xs:flex-row items-center gap-2 cursor-pointer">
+                                2xs:flex-row items-center gap-2 cursor-pointer"
+                    onClick={handleverModalTarea}>
                     <HiPlusCircle className="text-2xl md:text-3xl  text-blue-600" />
                     <p className="text-base md:text-xl text-black dark:text-white">
                         Agregar tarea

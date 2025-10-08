@@ -2,9 +2,14 @@ import React, { forwardRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { setIsNotaFocused } from "../../store/layoutSlice";
 
+import Tarea from "../tarea/Tarea";
+import ModalTarea from "../modal/ModalTarea";
+
 const CuerpoEdicion = forwardRef(({ handleNotaChange, handleNotaKeyDown }, notaRef) => {
     const dispatch = useDispatch();
     const { isNotaFocused, nota } = useSelector((state) => state.layout);
+    const { tareas } = useSelector((state) => state.tareas);
+    const verModalTarea = useSelector((state) => state.layout.verModalTarea);
 
     const handleFocus = () => {
         dispatch(setIsNotaFocused(true));
@@ -16,6 +21,15 @@ const CuerpoEdicion = forwardRef(({ handleNotaChange, handleNotaKeyDown }, notaR
 
     return (
         <div className="w-[95%] mx-auto overflow-y-auto overflow-x-hidden min-h-0 min-w-0 pb-3 flex-1">
+            
+            {tareas.map((tarea) => (
+                <Tarea key={tarea.id} tarea={tarea}/>
+            ))}
+            
+            {verModalTarea && (
+                <ModalTarea />
+            )}
+            
             <div className="relative p-2">
                 <div
                     ref={notaRef}

@@ -1,6 +1,9 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
+    verTarea: false,
+    verModalTarea: false,
+
     verMenuHamburguesa: false,
 
     organizarPorColumna: true,
@@ -27,6 +30,20 @@ const layoutSlice = createSlice({
     name: 'layout',
     initialState, 
     reducers: {
+        toggleVerTarea: (state) => {
+            state.verTarea = !state.verTarea
+        },
+        setVerTarea: (state, action) => {
+            state.verTarea = action.payload
+        },
+
+        toggleVerModalTarea: (state) => {
+            state.verModalTarea = !state.verModalTarea
+        },
+        setVerModalTarea: (state, action) => {
+            state.verModalTarea = action.payload
+        },
+
         toggleVerMenuHamburguesa: (state) => {
             state.verMenuHamburguesa = !state.verMenuHamburguesa
         },
@@ -128,7 +145,11 @@ const layoutSlice = createSlice({
     }
 })
 
-export const { 
+export const {
+    toggleVerTarea,
+    setVerTarea,
+    toggleVerModalTarea,
+    setVerModalTarea,
     toggleVerMenuHamburguesa,
     setVerMenuHamburguesa,
     toggleOrganizarPorColumna, 
