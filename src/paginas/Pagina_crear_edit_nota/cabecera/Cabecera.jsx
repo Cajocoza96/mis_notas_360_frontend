@@ -2,18 +2,22 @@ import React, { forwardRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { HiChevronLeft, HiPlusCircle, HiRefresh } from "react-icons/hi";
 import { Link } from "react-router-dom";
-import { setIsTituloFocused, toggleVerModalEstado } from "../../../store/layoutSlice";
+import { setIsTituloFocused, toggleVerModalEstado } from "../../../store/tareasSlice";
 
-const Cabecera = forwardRef(({ handleTituloChange, handleTituloKeyDown }, tituloRef) => {
+const Cabecera = forwardRef(({ handleTituloChange, handleTituloKeyDown, esModoVistaPrevia }, tituloRef) => {
     const dispatch = useDispatch();
-    const { isTituloFocused, titulo, estadoSeleccionado } = useSelector((state) => state.layout);
+    const { isTituloFocused, titulo, estadoSeleccionado } = useSelector((state) => state.tareas);
 
     const handleFocus = () => {
-        dispatch(setIsTituloFocused(true));
+        if (!esModoVistaPrevia) {
+            dispatch(setIsTituloFocused(true));
+        }
     };
 
-    const handleBlur = () => {
-        dispatch(setIsTituloFocused(false));
+    const handleBlur = async () => {
+        if (!esModoVistaPrevia) {
+            dispatch(setIsTituloFocused(false));
+        }
     };
 
     const handleVerModalEstado = () => {
@@ -33,10 +37,13 @@ const Cabecera = forwardRef(({ handleTituloChange, handleTituloKeyDown }, titulo
         }
     }
 
+    // Verificar si el título tiene contenido directamente del ref
+    const tieneTitulo = tituloRef?.current?.textContent?.trim() !== "";
+
     return (
         <div className="flex-shrink-0 z-10 min-h-0 min-w-0 py-1 overflow-hidden">
 
-            <div className="w-[95%] mx-auto flex flex-row items-center p-2 justify-between">
+            <div className="w-[95%] mx-auto flex flex-row items-center py-2 justify-between">
 
                 <div className="flex flex-row items-center gap-2 flex-1 mr-4">
                     <Link to="/panel-principal">
@@ -44,9 +51,15 @@ const Cabecera = forwardRef(({ handleTituloChange, handleTituloKeyDown }, titulo
                     </Link>
 
                     <div className="relative flex-1">
+                        {/*Unicamente en esta ocacion cuando se este en vista-previa/nota/:id 
+                        por medio de la function del filtrado de busqueda debe mostrar resaltado de 
+                        color text-violet-400 el resultado de la busqueda por el filtro de busqueda.
+                        
+                        Esto corresponde a la tabla anotaciones en la columna titulo
+                        */}
                         <div
                             ref={tituloRef}
-                            contentEditable
+                            contentEditable={!esModoVistaPrevia}
                             suppressContentEditableWarning={true}
                             onInput={() => handleTituloChange(tituloRef)}
                             onFocus={handleFocus}
@@ -62,10 +75,11 @@ const Cabecera = forwardRef(({ handleTituloChange, handleTituloKeyDown }, titulo
                                 overflowWrap: 'break-word'
                             }}
                         />
-                        {!titulo && !isTituloFocused && (
+
+                        {!tieneTitulo && !isTituloFocused && (
                             <div className="absolute top-0 left-0 pointer-events-none
                                         text-base md:text-xl text-gray-500 dark:text-gray-400">
-                                Título
+                                {esModoVistaPrevia ? 'Sin título' : 'Colocar título'}
                             </div>
                         )}
                     </div>

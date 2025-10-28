@@ -13,6 +13,8 @@ import {
     toogleVerModo, toggleVerOrden, toggleVerFechaCreaModCantText
 } from "../../../store/layoutSlice";
 
+import { toggleVerModalPapeleraNota } from "../../../store/tareasSlice";
+
 import OpcionesCabecera from "./OpcionesCabecera";
 
 import VerModo from "./verModo/VerModo";
@@ -55,6 +57,14 @@ export default function ContOpSubCabecera() {
     const handleVerFechaCreaModCantText = () => {
         dispatch(toggleVerFechaCreaModCantText())
     }
+
+    const handleVerPapeleraNota = () => {
+        if (verOpcCabPagVisPrev) {
+            dispatch(toggleVerOpcCabPagVisPrev())
+        }
+        dispatch(toggleVerModalPapeleraNota())
+    }
+
 
     const verOpcionesCabecera = useSelector((state) => state.layout.verOpcionesCabecera);
 
@@ -159,11 +169,12 @@ export default function ContOpSubCabecera() {
                             <>
                                 <div className="w-full p-1 border-b border-gray-400
                                         text-black dark:text-white
-                                        bg-white dark:bg-gray-800 cursor-pointer"
-                                    onClick={handleVerFechaCreaModCantText}>
+                                        bg-white dark:bg-gray-800 cursor-pointer">
                                     <OpcionesCabecera
                                         className="justify-center"
-                                        iconoOpcion={<HiOutlineInformationCircle className="text-2xl md:text-3xl" />}
+                                        iconoOpcion={<HiOutlineInformationCircle
+                                            onClick={handleVerFechaCreaModCantText}
+                                            className="text-2xl md:text-3xl" />}
                                     />
                                 </div>
 
@@ -172,7 +183,12 @@ export default function ContOpSubCabecera() {
                                         bg-white dark:bg-gray-800 cursor-pointer">
                                     <OpcionesCabecera
                                         className="justify-center"
-                                        iconoOpcion={<HiOutlineTrash className="text-2xl md:text-3xl" />}
+                                        iconoOpcion={
+
+                                            /*Al dar clic aqui se debe mostrar el modal*/
+                                            <HiOutlineTrash
+                                                onClick={handleVerPapeleraNota}
+                                                className="text-2xl md:text-3xl" />}
                                     />
                                 </div>
 

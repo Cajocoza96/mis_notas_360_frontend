@@ -8,31 +8,39 @@ export const useUndoRedo = (initialState = {}) => {
     
     const timeoutRef = useRef(null);
 
-    // Función para agregar un nuevo estado al historial
-    const addToHistory = useCallback((newState) => {
+    // Función para agregar un nuevo estado al historial (SIN debounce)
+    const addToHistoryImmediate = useCallback((newState) => {
         if (isUndoRedoAction) return;
 
         setHistory(prevHistory => {
             // Eliminar cualquier estado "futuro" si estamos en medio del historial
             const newHistory = prevHistory.slice(0, currentIndex + 1);
             
+            // Verificar si el nuevo estado es diferente al último
+            const lastState = newHistory[newHistory.length - 1];
+            if (lastState && 
+                lastState.titulo === newState.titulo && 
+                lastState.nota === newState.nota) {
+                return prevHistory; // No agregar estados duplicados
+            }
+            
             // Agregar el nuevo estado
             const updatedHistory = [...newHistory, newState];
             
             // Limitar el historial a 100 estados para evitar problemas de memoria
             if (updatedHistory.length > 100) {
-                return updatedHistory.slice(-100);
+                const sliced = updatedHistory.slice(-100);
+                // Ajustar el índice también
+                setCurrentIndex(sliced.length - 1);
+                return sliced;
             }
+            
+            // Actualizar el índice al final del historial
+            setCurrentIndex(updatedHistory.length - 1);
             
             return updatedHistory;
         });
-
-        setCurrentIndex(prevIndex => {
-            const newHistory = history.slice(0, currentIndex + 1);
-            newHistory.push(newState);
-            return Math.min(newHistory.length - 1, 99);
-        });
-    }, [currentIndex, history, isUndoRedoAction]);
+    }, [currentIndex, isUndoRedoAction]);
 
     // Función debounce para agregar al historial después de un retraso
     const debouncedAddToHistory = useCallback((newState) => {
@@ -41,9 +49,9 @@ export const useUndoRedo = (initialState = {}) => {
         }
         
         timeoutRef.current = setTimeout(() => {
-            addToHistory(newState);
-        }, 500); // Esperar 500ms después del último cambio
-    }, [addToHistory]);
+            addToHistoryImmediate(newState);
+        }, 300); // Reducido a 300ms para mejor respuesta
+    }, [addToHistoryImmediate]);
 
     // Función para deshacer
     const undo = useCallback(() => {
@@ -96,6 +104,18 @@ export const useUndoRedo = (initialState = {}) => {
         return null;
     }, [undo, redo]);
 
+    // Nueva función para reiniciar el historial (necesaria para modo edición)
+    const resetHistory = useCallback((newInitialState) => {
+        // Limpiar cualquier timeout pendiente
+        if (timeoutRef.current) {
+            clearTimeout(timeoutRef.current);
+        }
+        
+        setHistory([newInitialState]);
+        setCurrentIndex(0);
+        setIsUndoRedoAction(false);
+    }, []);
+
     // Verificar si se puede deshacer o rehacer
     const canUndo = currentIndex > 0;
     const canRedo = currentIndex < history.length - 1;
@@ -118,8 +138,10 @@ export const useUndoRedo = (initialState = {}) => {
         
         // Funciones
         addToHistory: debouncedAddToHistory,
+        addToHistoryImmediate, // Exportar versión sin debounce para uso específico
         undo,
         redo,
-        handleKeyDown
+        handleKeyDown,
+        resetHistory // Nueva función para reiniciar historial
     };
 };

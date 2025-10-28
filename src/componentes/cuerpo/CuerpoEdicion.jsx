@@ -1,59 +1,78 @@
 import React, { forwardRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { setIsNotaFocused } from "../../store/layoutSlice";
+import { setIsNotaFocused } from "../../store/tareasSlice";
 
 import Tarea from "../tarea/Tarea";
 import ModalTarea from "../modal/ModalTarea";
 
-const CuerpoEdicion = forwardRef(({ handleNotaChange, handleNotaKeyDown }, notaRef) => {
+const CuerpoEdicion = forwardRef(({ handleNotaChange, handleNotaKeyDown, esModoVistaPrevia }, notaRef) => {
     const dispatch = useDispatch();
-    const { isNotaFocused, nota } = useSelector((state) => state.layout);
+    const { isNotaFocused, nota } = useSelector((state) => state.tareas);
     const { tareas } = useSelector((state) => state.tareas);
-    const verModalTarea = useSelector((state) => state.layout.verModalTarea);
+    const verModalTarea = useSelector((state) => state.tareas.verModalTarea);
 
     const handleFocus = () => {
-        dispatch(setIsNotaFocused(true));
+        if (!esModoVistaPrevia) {
+            dispatch(setIsNotaFocused(true));
+        }
     };
 
-    const handleBlur = () => {
-        dispatch(setIsNotaFocused(false));
+    const handleBlur = async () => {
+        if (!esModoVistaPrevia) {
+            dispatch(setIsNotaFocused(false));
+        }
     };
+
+    // Verificar si la nota tiene contenido directamente del ref
+    const tieneNota = notaRef?.current?.textContent?.trim() !== "";
 
     return (
         <div className="w-[95%] mx-auto overflow-y-auto overflow-x-hidden min-h-0 min-w-0 pb-3 flex-1">
 
-            {verModalTarea && (
+            {verModalTarea && !esModoVistaPrevia && (
                 <ModalTarea />
             )}
 
             <div className="relative p-2">
+                {/*Unicamente en esta ocacion cuando se este en vista-previa/nota/:id 
+                por medio de la function del filtrado de busqueda debe mostrar resaltado de 
+                color text-violet-400 el resultado de la busqueda por el filtro de busqueda.
+
+                Esto corresponde a la tabla anotaciones en la columna nota
+                */}
                 <div
                     ref={notaRef}
-                    contentEditable
+                    contentEditable={!esModoVistaPrevia}
                     suppressContentEditableWarning={true}
                     onInput={() => handleNotaChange(notaRef)}
                     onFocus={handleFocus}
                     onBlur={handleBlur}
                     onKeyDown={(e) => handleNotaKeyDown(e, notaRef)}
-                    className="text-base md:text-xl text-black dark:text-white
+                    className={`text-base md:text-xl text-black dark:text-white
                                 outline-none border-none bg-transparent
                                 min-h-[1.5em] w-full
-                                whitespace-pre-wrap"
+                                whitespace-pre-wrap
+                                ${esModoVistaPrevia ? 'cursor-default' : ''}`}
                     style={{
                         wordBreak: 'break-word',
                         overflowWrap: 'break-word',
                         lineHeight: '1.5'
                     }}
                 />
-                {!nota && !isNotaFocused && (
+
+                {!tieneNota && !isNotaFocused && (
                     <div className="absolute top-2 left-2 pointer-events-none
                                     text-base md:text-xl text-gray-500 dark:text-gray-400">
-                        Nota
+                        {esModoVistaPrevia ? 'Sin nota' : 'Colocar nota'}
                     </div>
                 )}
 
                 {tareas.map((tarea) => (
-                    <Tarea key={tarea.id} tarea={tarea} />
+                    <Tarea
+                        key={tarea.id}
+                        tarea={tarea}
+                        esModoVistaPrevia={esModoVistaPrevia}
+                    />
                 ))}
             </div>
         </div>

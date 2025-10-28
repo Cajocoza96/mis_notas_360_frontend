@@ -17,19 +17,20 @@ export const useContentEditable = (initialState, undoRedoHook) => {
     // Función para actualizar el contenido de los elementos contentEditable
     const updateContentEditable = (state, tituloRef, notaRef) => {
         if (tituloRef?.current) {
-            tituloRef.current.textContent = state.titulo;
+            tituloRef.current.textContent = state.titulo || "";
         }
         if (notaRef?.current) {
-            notaRef.current.textContent = state.nota;
+            notaRef.current.textContent = state.nota || "";
         }
-        setTitulo(state.titulo);
-        setNota(state.nota);
+        setTitulo(state.titulo || "");
+        setNota(state.nota || "");
     };
 
     const handleTituloChange = (tituloRef) => {
         if (tituloRef?.current && !isUndoRedoAction) {
             const newTitulo = tituloRef.current.textContent || "";
             setTitulo(newTitulo);
+            // Usar addToHistory del hook, que ya tiene debounce
             addToHistory({ titulo: newTitulo, nota });
         }
     };
@@ -38,6 +39,7 @@ export const useContentEditable = (initialState, undoRedoHook) => {
         if (notaRef?.current && !isUndoRedoAction) {
             const newNota = notaRef.current.textContent || "";
             setNota(newNota);
+            // Usar addToHistory del hook, que ya tiene debounce
             addToHistory({ titulo, nota: newNota });
         }
     };
@@ -53,7 +55,22 @@ export const useContentEditable = (initialState, undoRedoHook) => {
         // Prevenir salto de línea en el título
         if (e.key === 'Enter') {
             e.preventDefault();
-            notaRef?.current?.focus();
+            if (notaRef?.current) {
+                notaRef.current.focus();
+                // Mover el cursor al final de la nota
+                const range = document.createRange();
+                const sel = window.getSelection();
+                const contentLength = notaRef.current.childNodes.length;
+                if (contentLength > 0) {
+                    const lastNode = notaRef.current.childNodes[contentLength - 1];
+                    range.setStartAfter(lastNode);
+                } else {
+                    range.setStart(notaRef.current, 0);
+                }
+                range.collapse(true);
+                sel.removeAllRanges();
+                sel.addRange(range);
+            }
         }
     };
 
@@ -66,9 +83,7 @@ export const useContentEditable = (initialState, undoRedoHook) => {
         }
 
         // Permitir saltos de línea en la nota con Enter
-        if (e.key === 'Enter') {
-            // El comportamiento por defecto ya permite saltos de línea
-        }
+        // El comportamiento por defecto ya permite saltos de línea
     };
 
     // Funciones para los botones

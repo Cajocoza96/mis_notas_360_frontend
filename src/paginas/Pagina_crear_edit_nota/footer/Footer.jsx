@@ -1,22 +1,106 @@
 import React from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { HiReply, HiCheck, HiPlusCircle } from "react-icons/hi";
+import { useNavigate } from "react-router-dom";
 
-import { toggleVerModalTarea } from "../../../store/layoutSlice";
+import {
+    setModoModal, setTareaActual,
+    toggleVerModalTarea, resetNotaState
+} from "../../../store/tareasSlice";
 
-import { setModoModal, setTareaActual } from "../../../store/tareasSlice";
+export default function Footer({ handleUndoClick, handleRedoClick, esModoEdicion, tituloRef, notaRef }) {
+    const API_URL = import.meta.env.VITE_API_URL; 
 
-export default function Footer({ handleUndoClick, handleRedoClick }) {
-
-    const { canUndo, canRedo } = useSelector((state) => state.layout);
+    const { 
+        canUndo, 
+        canRedo, 
+        estadoSeleccionado, 
+        anotacionId,
+        tareas  // Obtenemos las tareas del estado Redux
+    } = useSelector((state) => state.tareas);
 
     const dispatch = useDispatch();
+    const navigate = useNavigate();
+    const token = localStorage.getItem('token');
 
     const handleverModalTarea = () => {
-        
         dispatch(setModoModal('crear'));
         dispatch(setTareaActual(null));
         dispatch(toggleVerModalTarea());
+    }
+
+    const handleGuardarYRedirigir = async () => {
+        try {
+            // IMPORTANTE: Obtener los valores actuales directamente de los refs
+            let tituloActual = '';
+            let notaActual = '';
+
+            if (tituloRef && tituloRef.current) {
+                tituloActual = tituloRef.current.textContent || '';
+            }
+
+            if (notaRef && notaRef.current) {
+                notaActual = notaRef.current.textContent || '';
+            }
+
+            console.log('=== DEBUG GUARDAR ===');
+            console.log('Título del ref:', tituloActual);
+            console.log('Nota del ref:', notaActual);
+            console.log('Estado:', estadoSeleccionado);
+            console.log('Tareas:', tareas);
+            console.log('==================');
+
+            // Preparar el array de tareas con su estado de completado
+            const tareasParaGuardar = tareas.map(tarea => ({
+                texto: tarea.texto,
+                completada: tarea.completada  // true o false
+            }));
+
+            // Determinar si es guardar nuevo o actualizar existente
+            const esActualizacion = esModoEdicion && anotacionId !== null;
+            const url = esActualizacion 
+                ? `${API_URL}/anotaciones/actualizar/${anotacionId}`
+                : `${API_URL}/anotaciones/guardar`;
+            
+            const metodo = esActualizacion ? 'PUT' : 'POST';
+
+            const payload = {
+                titulo: tituloActual,
+                nota: notaActual,
+                estado: estadoSeleccionado,
+                tareas: tareasParaGuardar
+            };
+
+            console.log('Payload a enviar:', payload);
+
+            // Guardar o actualizar la anotación con las tareas
+            const response = await fetch(url, {
+                method: metodo,
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify(payload)
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                console.log(esActualizacion ? 'Actualización exitosa:' : 'Guardado exitoso:', data);
+                
+                // Resetear el estado de la nota y tareas
+                dispatch(resetNotaState());
+                
+                // Redirigir al panel principal
+                navigate('/panel-principal', { state: { recargar: true } });
+            } else {
+                const errorData = await response.json();
+                console.error('Error al guardar la anotación:', errorData);
+                alert('Error al guardar la anotación. Por favor intenta nuevamente.');
+            }
+        } catch (error) {
+            console.error('Error al guardar y redirigir:', error);
+            alert('Error de conexión. Por favor verifica tu conexión a internet.');
+        }
     }
 
     return (
@@ -59,9 +143,13 @@ export default function Footer({ handleUndoClick, handleRedoClick }) {
                     title="Rehacer (Ctrl+Y)"
                 />
             </div>
-
+            
+            {/* Al dar clic aquí se manda la información a la base de datos */}
             <div className="flex flex-col items-center justify-center">
-                <HiCheck className="text-2xl md:text-3xl  text-black dark:text-white cursor-pointer" />
+                <HiCheck 
+                    className="text-2xl md:text-3xl text-black dark:text-white cursor-pointer hover:opacity-80 transition-opacity" 
+                    onClick={handleGuardarYRedirigir} 
+                    title="Guardar y volver al panel principal" />
             </div>
         </div>
     );

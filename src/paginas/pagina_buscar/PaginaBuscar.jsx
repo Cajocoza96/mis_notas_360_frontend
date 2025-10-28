@@ -33,7 +33,7 @@ export default function PaginaBuscar() {
             variants={pageVariants}
             initial="initial"
             animate="animate">
-                
+
             <Cabecera
                 paginaBusqueda={true}
                 paginaPrincipal={false}
@@ -41,6 +41,8 @@ export default function PaginaBuscar() {
             />
 
             <div className="w-[95%] mx-auto mb-3">
+
+                {/*Por medio de este input quiero que funcione el Filtrado de busqueda*/}
                 <input
                     className="w-full text-base md:text-xl 
                                 border-0 focus:outline-none

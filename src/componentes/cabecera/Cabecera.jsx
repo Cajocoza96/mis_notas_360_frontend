@@ -14,7 +14,7 @@ import {
 
 
 export default function Cabecera({ paginaPrincipal, paginaBusqueda,
-    paginaPapelera, paginaEstado, paginaRegIniSesion }) {
+    paginaPapelera, paginaEstado, paginaRegIniSesion, paginaInfoUsuario }) {
 
     const verModo = useSelector((state) => state.layout.verModo);
 
@@ -41,7 +41,7 @@ export default function Cabecera({ paginaPrincipal, paginaBusqueda,
     return (
         <div className="flex-shrink-0 z-10 py-1 overflow-hidden">
 
-            <div className="w-[95%] mx-auto flex flex-row items-center justify-between p-2 gap-2">
+            <div className="w-[95%] mx-auto flex flex-row items-center justify-between py-2 gap-2">
 
                 {paginaBusqueda && (
                     <div className="w-fit">
@@ -60,6 +60,14 @@ export default function Cabecera({ paginaPrincipal, paginaBusqueda,
                 )}
 
                 {paginaEstado && (
+                    <div className="w-fit">
+                        <Link to="/panel-principal">
+                            <HiChevronLeft className="text-2xl md:text-3xl text-black dark:text-white cursor-pointer flex-shrink-0" />
+                        </Link>
+                    </div>
+                )}
+
+                {paginaInfoUsuario && (
                     <div className="w-fit">
                         <Link to="/panel-principal">
                             <HiChevronLeft className="text-2xl md:text-3xl text-black dark:text-white cursor-pointer flex-shrink-0" />
@@ -103,6 +111,11 @@ export default function Cabecera({ paginaPrincipal, paginaBusqueda,
                 {paginaEstado && (
                     <p className="w-full text-center text-xl md:text-2xl select-none truncate
                     text-blue-600 dark:text-white">Estados</p>
+                )}
+
+                {paginaInfoUsuario && (
+                    <p className="w-full text-center text-xl md:text-2xl select-none truncate
+                    text-blue-600 dark:text-white">Información usuario</p>
                 )}
 
                 {paginaRegIniSesion && (

@@ -4,9 +4,7 @@ import { HiX } from "react-icons/hi";
 
 import { useDispatch, useSelector } from "react-redux";
 
-import { toggleVerModalTarea } from "../../store/layoutSlice";
-
-import { agregarTarea, editarTarea, eliminarTarea } from "../../store/tareasSlice";
+import { agregarTarea, editarTarea, eliminarTarea, toggleVerModalTarea } from "../../store/tareasSlice";
 
 export default function ModalTarea() {
 

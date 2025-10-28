@@ -1,49 +1,20 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-    verTarea: false,
-    verModalTarea: false,
-
     verMenuHamburguesa: false,
 
     organizarPorColumna: true,
     verOpcionesCabecera: false,
     verOpcCabPagVisPrev: false,
     verModo: false,
-    verModalCrear: false,
-    verModalEstado: false,
     verOrden: false,
-    verFechaCreaModCantText: false,
-
-    estadoSeleccionado: null,
-    
-    // Estados para CrearEditNota
-    isTituloFocused: false,
-    isNotaFocused: false,
-    titulo: "",
-    nota: "",
-    canUndo: false,
-    canRedo: false
+    verFechaCreaModCantText: false
 }
 
 const layoutSlice = createSlice({
     name: 'layout',
-    initialState, 
+    initialState,
     reducers: {
-        toggleVerTarea: (state) => {
-            state.verTarea = !state.verTarea
-        },
-        setVerTarea: (state, action) => {
-            state.verTarea = action.payload
-        },
-
-        toggleVerModalTarea: (state) => {
-            state.verModalTarea = !state.verModalTarea
-        },
-        setVerModalTarea: (state, action) => {
-            state.verModalTarea = action.payload
-        },
-
         toggleVerMenuHamburguesa: (state) => {
             state.verMenuHamburguesa = !state.verMenuHamburguesa
         },
@@ -79,20 +50,6 @@ const layoutSlice = createSlice({
             state.verModo = action.payload
         },
 
-        toggleVerModalCrear: (state) => {
-            state.verModalCrear = !state.verModalCrear
-        },
-        setVerModalCrear: (state, action) => {
-            state.verModalCrear = action.payload
-        },
-
-        toggleVerModalEstado: (state) => {
-            state.verModalEstado = !state.verModalEstado
-        },
-        setVerModalEstado: (state, action) => {
-            state.verModalEstado = action.payload
-        },
-
         toggleVerOrden: (state) => {
             state.verOrden = !state.verOrden
         },
@@ -105,77 +62,25 @@ const layoutSlice = createSlice({
         },
         setVerFechaCreaModCantText: (state, action) => {
             state.verFechaCreaModCantText = action.payload
-        },
-
-        setEstadoSeleccionado : (state, action) => {
-            state.estadoSeleccionado = action.payload
-        },
-
-
-        // Nuevos reducers para CrearEditNota
-        setIsTituloFocused: (state, action) => {
-            state.isTituloFocused = action.payload
-        },
-        setIsNotaFocused: (state, action) => {
-            state.isNotaFocused = action.payload
-        },
-        setTitulo: (state, action) => {
-            state.titulo = action.payload
-        },
-        setNota: (state, action) => {
-            state.nota = action.payload
-        },
-        setCanUndo: (state, action) => {
-            state.canUndo = action.payload
-        },
-        setCanRedo: (state, action) => {
-            state.canRedo = action.payload
-        },
-
-        // Resetear estado de la nota
-        resetNotaState: (state) => {
-            state.isTituloFocused = false
-            state.isNotaFocused = false
-            state.titulo = ""
-            state.nota = ""
-            state.canUndo = false
-            state.canRedo = false
-            state.estadoSeleccionado = null
         }
     }
 })
 
 export const {
-    toggleVerTarea,
-    setVerTarea,
-    toggleVerModalTarea,
-    setVerModalTarea,
     toggleVerMenuHamburguesa,
     setVerMenuHamburguesa,
-    toggleOrganizarPorColumna, 
+    toggleOrganizarPorColumna,
     setOrganizarPorColumna,
-    toggleVerOpcionesCabecera, 
+    toggleVerOpcionesCabecera,
     setVerOpcionesCabecera,
     toggleVerOpcCabPagVisPrev,
     setVerOpcCabPagVisPrev,
-    toogleVerModo, 
+    toogleVerModo,
     setVerModo,
-    toggleVerModalCrear, 
-    setVerModalCrear,
-    toggleVerModalEstado,
-    setVerModalEstado,
     toggleVerOrden,
     setVerOrden,
     toggleVerFechaCreaModCantText,
-    setVerFechaCreaModCantText,
-    setEstadoSeleccionado,
-    setIsTituloFocused,
-    setIsNotaFocused,
-    setTitulo,
-    setNota,
-    setCanUndo,
-    setCanRedo,
-    resetNotaState
+    setVerFechaCreaModCantText
 } = layoutSlice.actions
 
 export default layoutSlice.reducer

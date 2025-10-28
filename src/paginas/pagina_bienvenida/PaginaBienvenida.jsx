@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import Particles from "react-tsparticles";
 import { loadSlim } from "tsparticles-slim";
@@ -7,6 +7,8 @@ import { HiOutlineBookOpen } from "react-icons/hi";
 import { useNavigate } from "react-router-dom";
 
 import BotonAccion from "../../componentes/botones/BotonAccion";
+
+import { verificarToken } from "../../services/authService";
 
 export default function PaginaBienvenida() {
     const particlesInit = useCallback(async (engine) => {
@@ -17,8 +19,38 @@ export default function PaginaBienvenida() {
 
     const handleNavegarRegistrarCuenta = () => navigate("/registrar");
     const handleNavegarInicioSesion = () => navigate("/iniciar-sesion");
+    const handleNavegarPanelPrincipal = () => navigate("/panel-principal");
 
     const MiBoton = motion.create(BotonAccion);
+
+    const [autenticado, setAutenticado] = useState(null);
+    const [cargando, setCargando] = useState(true);
+
+    useEffect(() => {
+        const verificar = async () => {
+            try {
+                await verificarToken();
+                setAutenticado(true);
+            } catch (error) {
+                setAutenticado(false);
+            } finally {
+                setCargando(false);
+            }
+        };
+
+        verificar();
+    }, []);
+
+    if (cargando) {
+        return (
+            <div className="min-h-screen w-full flex items-center justify-center bg-white dark:bg-gray-800">
+                <div className="text-center">
+                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+                    <p className="text-gray-600 dark:text-gray-300 text-lg">Verificando sesión...</p>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className="relative min-h-dvh bg-gradient-to-br from-indigo-900 via-purple-900 to-pink-800 overflow-hidden">
@@ -115,44 +147,64 @@ export default function PaginaBienvenida() {
                     </p>
                 </div>
 
-                <div className="flex flex-col items-center gap-5">
-
+                {autenticado && (
                     <MiBoton
-                        className="bg-white text-purple-900 
+                        className="bg-orange-400 text-white
+                                    hover:bg-orange-600 active:bg-orange-500
+                        rounded-full"
+                        accion="Explorar notas"
+                        onClick={handleNavegarPanelPrincipal}
+                        whileHover={{
+                            scale: 1.15,
+                            boxShadow: "0px 4px 20px rgba(147, 51, 234, 0.4)"
+                        }}
+                        whileTap={{
+                            scale: 0.96,
+                            boxShadow: "0px 2px 8px rgba(147, 51, 234, 0.3"
+                        }}
+                        transition={{ type: "spring", stiffness: 300, damping: 10 }}
+                    />
+                )}
+
+                {!autenticado && (
+                    <div className="flex flex-col items-center gap-5">
+                        <MiBoton
+                            className="bg-white text-purple-900 
                                     hover:text-red-600 active:text-red-600
                                     hover:bg-gray-300 active:bg-gray-200
                                 rounded-full"
-                        accion="Iniciar sesión"
-                        onClick={handleNavegarInicioSesion}
-                        whileHover={{
-                            scale: 1.15,
-                            boxShadow: "0px 4px 20px rgba(147, 51, 234, 0.4)"
-                        }}
-                        whileTap={{
-                            scale: 0.96,
-                            boxShadow: "0px 2px 8px rgba(147, 51, 234, 0.3"
-                        }}
-                        transition={{ type: "spring", stiffness: 300, damping: 10 }}
-                    />
+                            accion="Iniciar sesión"
+                            onClick={handleNavegarInicioSesion}
+                            whileHover={{
+                                scale: 1.15,
+                                boxShadow: "0px 4px 20px rgba(147, 51, 234, 0.4)"
+                            }}
+                            whileTap={{
+                                scale: 0.96,
+                                boxShadow: "0px 2px 8px rgba(147, 51, 234, 0.3"
+                            }}
+                            transition={{ type: "spring", stiffness: 300, damping: 10 }}
+                        />
 
-                    <MiBoton
-                        className=" bg-green-600 text-white
+                        <MiBoton
+                            className=" bg-green-600 text-white
                                     hover:bg-green-800 active:bg-green-700
                                     rounded-full"
-                        accion="Registrarse"
-                        onClick={handleNavegarRegistrarCuenta}
-                        whileHover={{
-                            scale: 1.15,
-                            boxShadow: "0px 4px 20px rgba(147, 51, 234, 0.4)"
-                        }}
-                        whileTap={{
-                            scale: 0.96,
-                            boxShadow: "0px 2px 8px rgba(147, 51, 234, 0.3"
-                        }}
-                        transition={{ type: "spring", stiffness: 300, damping: 10 }}
-                    />
+                            accion="Registrarse"
+                            onClick={handleNavegarRegistrarCuenta}
+                            whileHover={{
+                                scale: 1.15,
+                                boxShadow: "0px 4px 20px rgba(147, 51, 234, 0.4)"
+                            }}
+                            whileTap={{
+                                scale: 0.96,
+                                boxShadow: "0px 2px 8px rgba(147, 51, 234, 0.3"
+                            }}
+                            transition={{ type: "spring", stiffness: 300, damping: 10 }}
+                        />
 
-                </div>
+                    </div>
+                )}
 
 
             </div>

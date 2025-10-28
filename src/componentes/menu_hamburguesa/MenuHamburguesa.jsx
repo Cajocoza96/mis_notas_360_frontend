@@ -10,9 +10,7 @@ import { toggleVerMenuHamburguesa } from "../../store/layoutSlice";
 
 import { HiOutlineBookOpen } from "react-icons/hi";
 
-import Usuario from "../usuario/Usuario";
-
-import CerrarSesion from "../cerrar_sesion/CerrarSesion";
+import AdminUsuario from "../admin_usuario/AdminUsuario";
 
 export default function MenuHamburguesa() {
 
@@ -23,20 +21,20 @@ export default function MenuHamburguesa() {
     }
 
     return (
-        <>
+        <>  
             <div className="fixed inset-0 z-40 bg-black/30 backdrop-blur-xs"
                 onClick={handleVerMenuHamburguesa}></div>
 
             <motion.div
                 className="h-dvh w-[80%] lg:w-[40%] p-2
                                 fixed inset-0 z-40
-                                bg-gray-300 dark:bg-gray-800"
+                                bg-white dark:bg-gray-800"
                 initial={{ x: "-100%" }}
                 animate={{ x: 0 }}
                 exit={{ x: "-100%" }}
                 transition={{ duration: 0.4, ease: "easeOut" }}>
 
-                <div className="h-full overflow-hidden 
+                <div className="h-full w-full 2xs:w-[80%] lg:w-[85%] overflow-hidden 
                             flex flex-col justify-between">
                     <Link to="/"
                         className="w-fit p-2  flex flex-row items-center gap-2">
@@ -51,9 +49,7 @@ export default function MenuHamburguesa() {
                     </Link>
 
                     <div>
-                        <Usuario />
-
-                        <CerrarSesion />
+                        <AdminUsuario />
                     </div>
 
                 </div>

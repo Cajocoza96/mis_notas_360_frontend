@@ -4,13 +4,13 @@ import { useDispatch, useSelector } from "react-redux";
 
 import { FaRegCircle, FaCircle } from "react-icons/fa";
 
-import { toggleVerModalEstado, setEstadoSeleccionado } from "../../store/layoutSlice";
+import { toggleVerModalEstado, setEstadoSeleccionado } from "../../store/tareasSlice";
 
 export default function ModalEstado() {
 
     const dispatch = useDispatch();
 
-    const estadoSeleccionado = useSelector((state) => state.layout.estadoSeleccionado);
+    const estadoSeleccionado = useSelector((state) => state.tareas.estadoSeleccionado);
 
     const [estadoTemporal, setEstadoTemporal] = useState(estadoSeleccionado);
 
