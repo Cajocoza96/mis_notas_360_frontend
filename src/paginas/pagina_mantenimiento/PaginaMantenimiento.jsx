@@ -26,7 +26,13 @@ export default function PaginaMantenimiento() {
                 <p className="text-center text-base md:text-xl 
                             font-bold select-none
                             text-gray-600 dark:text-gray-400">
-                    Se trabajará en todo lo posible para mejorar su experiencia.
+                    Se trabajará en todo lo posible.
+                </p>
+
+                <p className="text-center text-base md:text-xl 
+                            font-bold select-none
+                            text-gray-600 dark:text-gray-400">
+                    El objetivo es mejorar su experiencia.
                 </p>
 
                 <p className="text-center text-base md:text-xl 
