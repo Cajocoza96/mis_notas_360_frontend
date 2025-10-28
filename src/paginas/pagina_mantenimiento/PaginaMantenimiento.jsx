@@ -8,8 +8,8 @@ export default function PaginaMantenimiento() {
     return (
         <div className="mx-auto w-[90%] min-h-dvh bg-white dark:bg-gray-800 
                         overflow-hidden
-                        flex flex-col lg:flex-row 
-                        items-center justify-center">
+                        flex flex-col 2xs:flex-row 
+                        items-center justify-center gap-3">
 
             <div className="w-[90%] lg:w-[50%] flex items-center justify-center">
                 <Lottie className="w-full object-cover"
