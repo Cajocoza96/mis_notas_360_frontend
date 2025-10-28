@@ -32,7 +32,7 @@ export default function PaginaMantenimiento() {
                 <p className="text-center text-base md:text-xl 
                             font-bold select-none
                             text-gray-600 dark:text-gray-400">
-                    Por favor espera
+                    Por favor espera..
                 </p>
             </div>
 
