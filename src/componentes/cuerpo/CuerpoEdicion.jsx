@@ -6,8 +6,9 @@ import Tarea from "../tarea/Tarea";
 import ModalTarea from "../modal/ModalTarea";
 
 const CuerpoEdicion = forwardRef(({ handleNotaChange, handleNotaKeyDown, esModoVistaPrevia }, notaRef) => {
+
     const dispatch = useDispatch();
-    const { isNotaFocused, nota } = useSelector((state) => state.tareas);
+    const { isNotaFocused } = useSelector((state) => state.tareas);
     const { tareas } = useSelector((state) => state.tareas);
     const verModalTarea = useSelector((state) => state.tareas.verModalTarea);
 
@@ -34,12 +35,6 @@ const CuerpoEdicion = forwardRef(({ handleNotaChange, handleNotaKeyDown, esModoV
             )}
 
             <div className="relative p-2">
-                {/*Unicamente en esta ocacion cuando se este en vista-previa/nota/:id 
-                por medio de la function del filtrado de busqueda debe mostrar resaltado de 
-                color text-violet-400 el resultado de la busqueda por el filtro de busqueda.
-
-                Esto corresponde a la tabla anotaciones en la columna nota
-                */}
                 <div
                     ref={notaRef}
                     contentEditable={!esModoVistaPrevia}

@@ -48,7 +48,6 @@ export default function NotaVistaPrevia({ anotacionId, iconoFavorito, texto, noA
 
             <div className="w-full h-25 text-center overflow-hidden 
                             flex flex-col items-center justify-center">
-                {/*Esto queda igual no es necesario hacer nada */}
                 <p className="text-base md:text-xl line-clamp-3 w-full px-1
                             text-black dark:text-white">
                     {texto}

@@ -1,12 +1,84 @@
-import React from "react";
+import React, { useState, useEffect, useRef } from "react";
 
 import { motion } from "framer-motion";
+
+import { useDispatch, useSelector } from "react-redux";
 
 import Cabecera from "../../componentes/cabecera/Cabecera";
 
 import Cuerpo from "../../componentes/cuerpo/Cuerpo";
 
+import {
+    setTerminoBusqueda, setResultadosBusqueda,
+    setCargandoBusqueda, limpiarBusqueda
+} from "../../store/busquedaSlice";
+
 export default function PaginaBuscar() {
+
+    const API_URL = import.meta.env.VITE_API_URL;
+    const [inputValue, setInputValue] = useState('');
+    const debounceTimer = useRef(null);
+    const dispatch = useDispatch();
+
+    // Limpiar búsqueda al montar/desmontar componente
+    useEffect(() => {
+        return () => {
+            dispatch(limpiarBusqueda());
+        };
+    }, [dispatch]);
+
+    // Función de búsqueda
+    const buscarAnotaciones = async (termino) => {
+        if (!termino || termino.trim() === '') {
+            dispatch(setResultadosBusqueda([]));
+            dispatch(setTerminoBusqueda(''));
+            return;
+        }
+
+        try {
+            dispatch(setCargandoBusqueda(true));
+            const token = localStorage.getItem('token');
+
+            const response = await fetch(
+                `${API_URL}/anotaciones/buscar?q=${encodeURIComponent(termino)}`,
+                {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                }
+            );
+
+            if (response.ok) {
+                const data = await response.json();
+                dispatch(setResultadosBusqueda(data.anotaciones));
+                dispatch(setTerminoBusqueda(termino));
+            } else {
+                console.error('Error al buscar');
+            }
+        } catch (error) {
+            console.error('Error en búsqueda:', error);
+        } finally {
+            dispatch(setCargandoBusqueda(false));
+        }
+    };
+
+
+    // Manejar cambios en el input con debounce
+    const handleInputChange = (e) => {
+        const valor = e.target.value;
+        setInputValue(valor);
+
+        // Limpiar el timer anterior
+        if (debounceTimer.current) {
+            clearTimeout(debounceTimer.current);
+        }
+
+        // Crear nuevo timer para buscar después de 300ms
+        debounceTimer.current = setTimeout(() => {
+            buscarAnotaciones(valor);
+        }, 300);
+    };
 
     const pageVariants = {
         initial: {
@@ -44,10 +116,13 @@ export default function PaginaBuscar() {
 
                 {/*Por medio de este input quiero que funcione el Filtrado de busqueda*/}
                 <input
+                    value={inputValue}
+                    onChange={handleInputChange}
                     className="w-full text-base md:text-xl 
                                 border-0 focus:outline-none
                                 text-black dark:text-white"
-                    placeholder="Notas" />
+                    placeholder="Buscar contenido en anotacion..."
+                />
             </div>
 
             <Cuerpo

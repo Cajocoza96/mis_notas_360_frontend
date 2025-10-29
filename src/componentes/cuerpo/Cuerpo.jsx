@@ -27,6 +27,8 @@ export default function Cuerpo({ notaNoEliminada, notaBusquedaNotaEliminada,
 
     const { anotaciones, cargando } = useSelector((state) => state.anotaciones);
 
+    const { terminoBusqueda, resultadosBusqueda, cargandoBusqueda } = useSelector((state) => state.busqueda);
+
     // Cargar anotaciones creadas al montar el componente
     useEffect(() => {
         if (verContenidoCuerpo) {
@@ -166,31 +168,36 @@ export default function Cuerpo({ notaNoEliminada, notaBusquedaNotaEliminada,
                     )}
 
 
-                    {/*Aqui quiero que se muestre el o los resultados del filtro de busqueda, 
-                    lo que se mostrara a empezar a escribir en el input que esta en el archivo
-                    PaginaBuscar.jsx siempre y cuando haiga resultado, si no hay resultado simplemente
-                    no mostrar nada.
-                    
-                    El resultado del filtro busqueda no se va a mostrar enseguida, solamente va a aparecer
-                    la o las anotaciones de que tienen ese resultado del filtro de busqueda, solo la vista previa.
-                    
-                    Esto ya es posible que se le de clic a la anotacion que aparece y que me direccione  a
-                    la ruta vista-previa/nota/:id. Si se hizo este metodo por medio del filtrado de busqueda y
-                    se le dió clic y estamos en vista-previa/nota/:id En Cabecera.jsx, CuerpoEdicion.jsx y/o Tarea.jsx
-                    debe o deberan aparecer resaltado color text-violet-400 el resultado de la busqueda 
-                    por el filtro de busqueda al estar en vista-previa/nota/:id. Ese resaltado desaparecera a cambiar 
-                    de ruta. 
-                    
-                    Solo van a aparecer las notas que no esten eliminadas.
-                    */}
                     {verNotaBusqueda && (
-                        anotaciones.map((anotacion) => (
-                            <NotaVistaPrevia
-                                key={anotacion.id}
-                                anotacionId={anotacion.id}
-                                texto={obtenerTextoVistaPrevia(anotacion)}
-                            />
-                        ))
+                        <>
+                            {cargandoBusqueda ? (
+                                <div className="col-span-full text-center p-4 select-none
+                            flex flex-col items-center justify-center gap-3">
+                                    <p className="text-base md:text-xl text-black dark:text-white">
+                                        Buscando...
+                                    </p>
+                                </div>
+                            ) : resultadosBusqueda.length === 0 && terminoBusqueda ? (
+                                <div className="col-span-full text-center p-4 select-none
+                                                flex flex-col items-center justify-center gap-3">
+                                    <p className="text-base md:text-xl text-black dark:text-white">
+                                        No se encontraron resultados para "{terminoBusqueda}"
+                                    </p>
+                                    <div>
+                                        <HiOutlineBookOpen className="text-2xl md:text-3xl text-black dark:text-white" />
+                                    </div>
+                                </div>
+                            ) : (
+                                resultadosBusqueda.map((anotacion) => (
+                                    <NotaVistaPrevia
+                                        key={anotacion.id}
+                                        anotacionId={anotacion.id}
+                                        texto={obtenerTextoVistaPrevia(anotacion)}
+                                        {...obtenerEstadoProps(anotacion.estado)}
+                                    />
+                                ))
+                            )}
+                        </>
                     )}
                 </div>
             )}

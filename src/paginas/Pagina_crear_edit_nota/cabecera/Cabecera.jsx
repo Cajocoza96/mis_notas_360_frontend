@@ -4,9 +4,11 @@ import { HiChevronLeft, HiPlusCircle, HiRefresh } from "react-icons/hi";
 import { Link } from "react-router-dom";
 import { setIsTituloFocused, toggleVerModalEstado } from "../../../store/tareasSlice";
 
-const Cabecera = forwardRef(({ handleTituloChange, handleTituloKeyDown, esModoVistaPrevia }, tituloRef) => {
+const Cabecera = forwardRef(({ handleTituloChange, handleTituloKeyDown,
+    esModoVistaPrevia }, tituloRef) => {
+
     const dispatch = useDispatch();
-    const { isTituloFocused, titulo, estadoSeleccionado } = useSelector((state) => state.tareas);
+    const { isTituloFocused, estadoSeleccionado } = useSelector((state) => state.tareas);
 
     const handleFocus = () => {
         if (!esModoVistaPrevia) {
@@ -51,12 +53,6 @@ const Cabecera = forwardRef(({ handleTituloChange, handleTituloKeyDown, esModoVi
                     </Link>
 
                     <div className="relative flex-1">
-                        {/*Unicamente en esta ocacion cuando se este en vista-previa/nota/:id 
-                        por medio de la function del filtrado de busqueda debe mostrar resaltado de 
-                        color text-violet-400 el resultado de la busqueda por el filtro de busqueda.
-                        
-                        Esto corresponde a la tabla anotaciones en la columna titulo
-                        */}
                         <div
                             ref={tituloRef}
                             contentEditable={!esModoVistaPrevia}
