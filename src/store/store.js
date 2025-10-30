@@ -4,6 +4,7 @@ import tareasReducer from "./tareasSlice";
 import accesoReducer from "./accesoSlice";
 import anotacionesReducer from "./anotacionesSlice";
 import busquedaReducer from "./busquedaSlice";
+import preferenciaReducer from "./preferenciaSlice"
 
 export const store = configureStore({
     reducer: {
@@ -11,6 +12,7 @@ export const store = configureStore({
         tareas: tareasReducer,
         acceso: accesoReducer,
         anotaciones: anotacionesReducer,
-        busqueda: busquedaReducer
+        busqueda: busquedaReducer,
+        preferencia: preferenciaReducer
     }
 })

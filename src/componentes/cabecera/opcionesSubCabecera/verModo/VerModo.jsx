@@ -2,7 +2,9 @@ import React from "react";
 
 import { useDispatch } from "react-redux";
 
-import { toggleVerOpcionesCabecera, toogleVerModo } from "../../../../store/layoutSlice";
+import { toggleVerOpcionesCabecera } from "../../../../store/layoutSlice";
+
+import { toggleVerModo } from "../../../../store/preferenciaSlice.js";
 
 import SubOpcionesCabecera from "../SubOpcionesCabecera";
 
@@ -20,7 +22,7 @@ export default function VerModo() {
         setTheme(selectedTheme)
 
         requestAnimationFrame(() => {
-            dispatch(toogleVerModo())
+            dispatch(toggleVerModo())
             dispatch(toggleVerOpcionesCabecera())
         })
 
@@ -31,12 +33,12 @@ export default function VerModo() {
             <div className="w-full p-1 border-b border-gray-400 select-none
                                         text-black dark:text-white
                                         bg-white dark:bg-gray-800 cursor-pointer"
-                onClick={() => handleThemeChange(themeKeys.light)}>
+                onClick={() => handleThemeChange(themeKeys.claro)}>
                 <SubOpcionesCabecera
                     className="justify-center"
                     nombreOpcion="Claro"
 
-                    circulo={theme === "light" && (
+                    circulo={theme === "claro" && (
                         <HiCheckCircle className="text-2xl md:text-3xl text-blue-600" />
                     )}
                 />
@@ -45,12 +47,12 @@ export default function VerModo() {
             <div className="w-full p-1 border-b border-gray-400 select-none
                                         text-black dark:text-white 
                                         bg-white dark:bg-gray-800 cursor-pointer"
-                onClick={() => handleThemeChange(themeKeys.dark)}>
+                onClick={() => handleThemeChange(themeKeys.oscuro)}>
                 <SubOpcionesCabecera
                     className="justify-center"
                     nombreOpcion="Oscuro"
 
-                    circulo={theme === "dark" && (
+                    circulo={theme === "oscuro" && (
                         <HiCheckCircle className="text-2xl md:text-3xl text-blue-600" />
                     )}
                 />
@@ -59,12 +61,12 @@ export default function VerModo() {
             <div className="w-full p-1 border-b border-gray-400 select-none
                                         text-black dark:text-white 
                                         bg-white dark:bg-gray-800 cursor-pointer"
-                onClick={() => handleThemeChange(themeKeys.system)}>
+                onClick={() => handleThemeChange(themeKeys.sistema)}>
                 <SubOpcionesCabecera
                     className="justify-center"
                     nombreOpcion="Sistema (predeterminado)"
 
-                    circulo={theme === "system" && (
+                    circulo={theme === "sistema" && (
                         <HiCheckCircle className="text-2xl md:text-3xl text-blue-600" />
                     )}
                 />

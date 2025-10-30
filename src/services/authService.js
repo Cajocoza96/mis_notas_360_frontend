@@ -1,4 +1,12 @@
+import { store } from "../store/store";
+import { cargarPreferencia } from "../store/preferenciaSlice";
+
 const API_URL = import.meta.env.VITE_API_URL; 
+
+// Función auxiliar para cargar preferencias después del login
+const cargarPreferenciasUsuario = () => {
+    store.dispatch(cargarPreferencia());
+};
 
 // Registrar usuario
 export const registrarUsuario = async (nombreUsuario, contrasena) => {
@@ -20,6 +28,9 @@ export const registrarUsuario = async (nombreUsuario, contrasena) => {
         // Guardar token en localStorage
         localStorage.setItem('token', data.token);
         localStorage.setItem('usuario', JSON.stringify(data.usuario));
+
+        // ✅ Cargar preferencias
+        cargarPreferenciasUsuario();
 
         return data;
     } catch (error) {
@@ -48,6 +59,9 @@ export const iniciarSesion = async (nombreUsuario, contrasena) => {
         localStorage.setItem('token', data.token);
         localStorage.setItem('usuario', JSON.stringify(data.usuario));
 
+        // ✅ Cargar preferencias
+        cargarPreferenciasUsuario();
+
         return data;
     } catch (error) {
         throw error;
@@ -75,6 +89,9 @@ export const autenticarConGoogle = async (googleData) => {
         localStorage.setItem('token', data.token);
         localStorage.setItem('usuario', JSON.stringify(data.usuario));
 
+        // ✅ Cargar preferencias
+        cargarPreferenciasUsuario();
+
         return data;
     } catch (error) {
         throw error;
@@ -101,6 +118,9 @@ export const autenticarConFacebook = async (facebookData) => {
         // Guardar token en localStorage
         localStorage.setItem('token', data.token);
         localStorage.setItem('usuario', JSON.stringify(data.usuario));
+
+        // ✅ Cargar preferencias
+        cargarPreferenciasUsuario();
 
         return data;
     } catch (error) {
@@ -131,15 +151,20 @@ export const verificarToken = async () => {
             if (data.sesionInvalida || data.tokenInvalido) {
                 localStorage.removeItem('token');
                 localStorage.removeItem('usuario');
+                localStorage.removeItem('theme');
                 throw new Error('Tu sesión ha expirado. Por favor, inicia sesión nuevamente.');
             }
             throw new Error(data.error || 'Token inválido');
         }
 
+        // ✅ Cargar preferencias
+        cargarPreferenciasUsuario();
+
         return data;
     } catch (error) {
         localStorage.removeItem('token');
         localStorage.removeItem('usuario');
+        localStorage.removeItem('theme');
         throw error;
     }
 };
@@ -163,6 +188,7 @@ export const cerrarSesion = async () => {
         // Siempre limpiar el localStorage
         localStorage.removeItem('token');
         localStorage.removeItem('usuario');
+        localStorage.removeItem('theme');
     }
 };
 
@@ -191,6 +217,7 @@ export const eliminarCuenta = async () => {
         // Limpiar el localStorage después de eliminar
         localStorage.removeItem('token');
         localStorage.removeItem('usuario');
+        localStorage.removeItem('theme');
 
         return data;
     } catch (error) {

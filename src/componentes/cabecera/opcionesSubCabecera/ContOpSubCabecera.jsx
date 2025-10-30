@@ -9,9 +9,10 @@ import { useTheme } from "../../../hooks/useTheme";
 import { useDispatch, useSelector } from "react-redux";
 
 import {
-    toggleVerOpcionesCabecera, toggleVerOpcCabPagVisPrev,
-    toogleVerModo, toggleVerOrden, toggleVerFechaCreaModCantText
+    toggleVerOpcionesCabecera, toggleVerOpcCabPagVisPrev, toggleVerFechaCreaModCantText
 } from "../../../store/layoutSlice";
+
+import { toggleVerModo, toggleVerOrden } from "../../../store/preferenciaSlice";
 
 import { toggleVerModalPapeleraNota } from "../../../store/tareasSlice";
 
@@ -39,7 +40,7 @@ export default function ContOpSubCabecera() {
     }
 
     const handleVerModo = () => {
-        dispatch(toogleVerModo())
+        dispatch(toggleVerModo())
     }
 
     const handleVerOrden = () => {
@@ -68,9 +69,9 @@ export default function ContOpSubCabecera() {
 
     const verOpcionesCabecera = useSelector((state) => state.layout.verOpcionesCabecera);
 
-    const verModo = useSelector((state) => state.layout.verModo);
+    const verModo = useSelector((state) => state.preferencia.verModo);
 
-    const verOrden = useSelector((state) => state.layout.verOrden);
+    const verOrden = useSelector((state) => state.preferencia.verOrden);
 
     const verOpcCabPagVisPrev = useSelector((state) => state.layout.verOpcCabPagVisPrev);
 
@@ -115,16 +116,16 @@ export default function ContOpSubCabecera() {
                                     onClick={handleVerModo}>
                                     <OpcionesCabecera
                                         className="justify-start"
-                                        iconoOpcion={theme == "system" && (
+                                        iconoOpcion={theme == "sistema" && (
                                             <HiOutlineDesktopComputer className="text-2xl md:text-3xl" />) ||
-                                            theme == "light" && (
+                                            theme == "claro" && (
                                                 <HiOutlineSun className="text-2xl md:text-3xl" />) ||
-                                            theme == "dark" && (
+                                            theme == "oscuro" && (
                                                 <HiOutlineMoon className="text-2xl md:text-3xl" />)
                                         }
-                                        nombreOpcion={theme == "system" && ("Sistema (predeterminado)") ||
-                                            theme == "light" && ("Claro") ||
-                                            theme == "dark" && ("Oscuro")
+                                        nombreOpcion={theme == "sistema" && ("Sistema (predeterminado)") ||
+                                            theme == "claro" && ("Claro") ||
+                                            theme == "oscuro" && ("Oscuro")
                                         }
                                     />
                                 </div>

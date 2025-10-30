@@ -1,18 +1,26 @@
 import React, { useEffect, useState } from "react";
 import { Navigate, useLocation } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 import { verificarToken, obtenerToken } from "../services/authService";
+import { cargarPreferencia } from "../store/preferenciaSlice";
 
 export default function RutaProtegida({ children }) {
+
     const [autenticado, setAutenticado] = useState(null);
     const [cargando, setCargando] = useState(true);
     const location = useLocation();
+    const dispatch = useDispatch();
+
+    // ✅ Obtener el estado de carga de preferencias
+    const { cargandoPreferencia } = useSelector((state) => state.preferencia);
+    const [preferenciasCargadas, setPreferenciasCargadas] = useState(false);
 
     useEffect(() => {
         const verificar = async () => {
             try {
                 // Verificar si existe un token antes de validar
                 const token = obtenerToken();
-                
+
                 if (!token) {
                     setAutenticado(false);
                     setCargando(false);
@@ -21,6 +29,13 @@ export default function RutaProtegida({ children }) {
 
                 await verificarToken();
                 setAutenticado(true);
+
+                // ✅ Cargar preferencias SOLO si aún no se han cargado
+                if (!preferenciasCargadas) {
+                    await dispatch(cargarPreferencia());
+                    setPreferenciasCargadas(true);
+                }
+
             } catch (error) {
                 console.error('Error al verificar token:', error);
                 setAutenticado(false);
@@ -30,7 +45,7 @@ export default function RutaProtegida({ children }) {
         };
 
         verificar();
-    }, [location.pathname]);
+    }, [dispatch]);
 
     if (cargando) {
         return (

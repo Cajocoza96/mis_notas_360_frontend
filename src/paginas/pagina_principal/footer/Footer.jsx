@@ -6,7 +6,8 @@ import { HiSearch, HiPlus, HiMenuAlt3, HiArrowDown } from "react-icons/hi";
 
 import { useSelector, useDispatch } from "react-redux";
 
-import { toggleOrganizarPorColumna } from "../../../store/layoutSlice";
+import { toggleOrganizarPorColumna, 
+        guardarPreferencia } from "../../../store/preferenciaSlice"; 
 
 import { toggleVerModalCrearNota } from "../../../store/tareasSlice";
 
@@ -26,10 +27,15 @@ export default function Footer() {
 
     const handleNavegarEstado = () => navigate("/estados");
 
-    const organizarPorColumna = useSelector((state) => state.layout.organizarPorColumna);
+    const organizarPorColumna = useSelector((state) => state.preferencia.organizarPorColumna);
 
     const handleOrganizacion = () => {
+        // Primero cambia el estado local
         dispatch(toggleOrganizarPorColumna());
+        
+        // Luego guarda en el backend
+        const nuevoValor = !organizarPorColumna;
+        dispatch(guardarPreferencia(nuevoValor));
     }
 
     return (

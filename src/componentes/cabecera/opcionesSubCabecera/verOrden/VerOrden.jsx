@@ -2,7 +2,9 @@ import React from "react";
 
 import { useDispatch } from "react-redux";
 
-import { toggleVerOpcionesCabecera, toggleVerOrden } from "../../../../store/layoutSlice";
+import { toggleVerOpcionesCabecera } from "../../../../store/layoutSlice";
+
+import { toggleVerOrden } from "../../../../store/preferenciaSlice";
 
 import SubOpcionesCabecera from "../SubOpcionesCabecera";
 

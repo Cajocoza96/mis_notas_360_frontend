@@ -23,7 +23,7 @@ export default function Cuerpo({ notaNoEliminada, notaBusquedaNotaEliminada,
 
     const dispatch = useDispatch();
 
-    const organizarPorColumna = useSelector((state) => state.layout.organizarPorColumna);
+    const organizarPorColumna = useSelector((state) => state.preferencia.organizarPorColumna);
 
     const { anotaciones, cargando } = useSelector((state) => state.anotaciones);
 

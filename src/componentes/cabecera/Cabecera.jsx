@@ -5,8 +5,10 @@ import { Link } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 
 import {
-    toggleVerOpcionesCabecera, toogleVerModo, toggleVerOrden, toggleVerMenuHamburguesa
+    toggleVerOpcionesCabecera, toggleVerMenuHamburguesa
 } from "../../store/layoutSlice";
+
+import { toggleVerModo, toggleVerOrden } from "../../store/preferenciaSlice";
 
 import {
     HiDotsVertical, HiChevronLeft, HiX, HiOutlineBookOpen, HiMenu
@@ -16,9 +18,9 @@ import {
 export default function Cabecera({ paginaPrincipal, paginaBusqueda,
     paginaPapelera, paginaEstado, paginaRegIniSesion, paginaInfoUsuario }) {
 
-    const verModo = useSelector((state) => state.layout.verModo);
+    const verModo = useSelector((state) => state.preferencia.verModo);
 
-    const verOrden = useSelector((state) => state.layout.verOrden);
+    const verOrden = useSelector((state) => state.preferencia.verOrden);
 
     const dispatch = useDispatch();
 
@@ -26,7 +28,7 @@ export default function Cabecera({ paginaPrincipal, paginaBusqueda,
         dispatch(toggleVerOpcionesCabecera())
 
         if (verModo) {
-            dispatch(toogleVerModo())
+            dispatch(toggleVerModo())
         } else if (verOrden) {
             dispatch(toggleVerOrden())
         } else {
