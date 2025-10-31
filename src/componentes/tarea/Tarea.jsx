@@ -47,13 +47,6 @@ export default function Tarea({ tarea, esModoVistaPrevia }) {
 
                 </div>
 
-                
-                {/*Unicamente en esta ocacion cuando se este en vista-previa/nota/:id 
-                por medio de la function del filtrado de busqueda debe mostrar resaltado de 
-                color text-violet-400 el resultado de la busqueda por el filtro de busqueda.
-
-                Esto corresponde a la tabla tareas en la columna texto_tarea
-                */}
                 <p className={`text-base md:text-xl text-black dark:text-white
                                 ${tarea.completada ? 'line-through' : ''} 
                                 ${esModoVistaPrevia ? 'cursor-default' : ''}`}>

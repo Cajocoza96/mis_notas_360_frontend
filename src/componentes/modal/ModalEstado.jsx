@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 
 import { useDispatch, useSelector } from "react-redux";
 
@@ -12,7 +12,27 @@ export default function ModalEstado() {
 
     const estadoSeleccionado = useSelector((state) => state.tareas.estadoSeleccionado);
 
+    const tareas = useSelector((state) => state.tareas.tareas);
+
     const [estadoTemporal, setEstadoTemporal] = useState(estadoSeleccionado);
+
+    // Calcular qué opciones deben mostrarse según el estado de las tareas
+    const opcionesDisponibles = useMemo(() => {
+        if (tareas.length === 0) {
+            // Sin tareas: mostrar TODAS las opciones para que el usuario elija
+            return ["noAsignado", "pendiente", "finalizado"];
+        } else {
+            const todasCompletadas = tareas.every(tarea => tarea.completada);
+            
+            if (todasCompletadas) {
+                // Todas completadas: solo mostrar "Finalizado"
+                return ["finalizado"];
+            } else {
+                // Hay tareas sin completar: solo mostrar "Pendiente"
+                return ["pendiente"];
+            }
+        }
+    }, [tareas]);
 
     useEffect(() => {
         setEstadoTemporal(estadoSeleccionado);
@@ -42,54 +62,60 @@ export default function ModalEstado() {
 
                 <div className="flex flex-col gap-2">
 
-                    <div className="flex flex-row items-center gap-4 select-none">
+                    {opcionesDisponibles.includes("noAsignado") && (
+                        <div className="flex flex-row items-center gap-4 select-none">
 
-                        <div onClick={() => handleSeleccionarEstado("noAsignado")}>
-                            {estadoTemporal === "noAsignado"
-                                ?
-                                <FaCircle className="text-base md:text-xl text-black dark:text-white cursor-pointer" />
-                                :
-                                <FaRegCircle className="text-base md:text-xl text-black dark:text-white cursor-pointer" />
-                            }
+                            <div onClick={() => handleSeleccionarEstado("noAsignado")}>
+                                {estadoTemporal === "noAsignado"
+                                    ?
+                                    <FaCircle className="text-base md:text-xl text-black dark:text-white cursor-pointer" />
+                                    :
+                                    <FaRegCircle className="text-base md:text-xl text-black dark:text-white cursor-pointer" />
+                                }
+                            </div>
+
+
+                            <p className="text-base md:text-xl text-black dark:text-white">
+                                No asignado
+                            </p>
                         </div>
+                    )}
 
+                    {opcionesDisponibles.includes("pendiente") && (
+                        <div className="flex flex-row items-center gap-4 select-none">
 
-                        <p className="text-base md:text-xl text-black dark:text-white">
-                            No asignado
-                        </p>
-                    </div>
+                            <div onClick={() => handleSeleccionarEstado("pendiente")}>
+                                {estadoTemporal === "pendiente"
+                                    ?
+                                    <FaCircle className="text-base md:text-xl text-black dark:text-white cursor-pointer" />
+                                    :
+                                    <FaRegCircle className="text-base md:text-xl text-black dark:text-white cursor-pointer" />
+                                }
+                            </div>
 
-                    <div className="flex flex-row items-center gap-4 select-none">
-
-                        <div onClick={() => handleSeleccionarEstado("pendiente")}>
-                            {estadoTemporal === "pendiente"
-                                ?
-                                <FaCircle className="text-base md:text-xl text-black dark:text-white cursor-pointer" />
-                                :
-                                <FaRegCircle className="text-base md:text-xl text-black dark:text-white cursor-pointer" />
-                            }
+                            <p className="text-base md:text-xl text-black dark:text-white">
+                                Pendiente
+                            </p>
                         </div>
+                    )}
 
-                        <p className="text-base md:text-xl text-black dark:text-white">
-                            Pendiente
-                        </p>
-                    </div>
+                    {opcionesDisponibles.includes("finalizado") && (
+                        <div className="flex flex-row items-center gap-4 select-none">
 
-                    <div className="flex flex-row items-center gap-4 select-none">
+                            <div onClick={() => handleSeleccionarEstado("finalizado")}>
+                                {estadoTemporal === "finalizado"
+                                    ?
+                                    <FaCircle className="text-base md:text-xl text-black dark:text-white cursor-pointer" />
+                                    :
+                                    <FaRegCircle className="text-base md:text-xl text-black dark:text-white cursor-pointer" />
+                                }
+                            </div>
 
-                        <div onClick={() => handleSeleccionarEstado("finalizado")}>
-                            {estadoTemporal === "finalizado"
-                                ?
-                                <FaCircle className="text-base md:text-xl text-black dark:text-white cursor-pointer" />
-                                :
-                                <FaRegCircle className="text-base md:text-xl text-black dark:text-white cursor-pointer" />
-                            }
+                            <p className="text-base md:text-xl text-black dark:text-white">
+                                Finalizado
+                            </p>
                         </div>
-
-                        <p className="text-base md:text-xl text-black dark:text-white">
-                            Finalizado
-                        </p>
-                    </div>
+                    )}
 
                 </div>
 

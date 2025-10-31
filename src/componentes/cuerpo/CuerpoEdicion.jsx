@@ -1,6 +1,6 @@
-import React, { forwardRef } from "react";
+import React, { forwardRef, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { setIsNotaFocused } from "../../store/tareasSlice";
+import { setIsNotaFocused, setEstadoAutomatico  } from "../../store/tareasSlice";
 
 import Tarea from "../tarea/Tarea";
 import ModalTarea from "../modal/ModalTarea";
@@ -12,6 +12,11 @@ const CuerpoEdicion = forwardRef(({ handleNotaChange, handleNotaKeyDown, esModoV
     const { tareas } = useSelector((state) => state.tareas);
     const verModalTarea = useSelector((state) => state.tareas.verModalTarea);
 
+    // Efecto para actualizar el estado automáticamente cuando cambien las tareas
+    useEffect(() => {
+        dispatch(setEstadoAutomatico());
+    }, [tareas, dispatch]);
+    
     const handleFocus = () => {
         if (!esModoVistaPrevia) {
             dispatch(setIsNotaFocused(true));

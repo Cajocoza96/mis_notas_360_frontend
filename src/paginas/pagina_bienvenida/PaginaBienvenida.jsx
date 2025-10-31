@@ -1,4 +1,8 @@
 import React, { useCallback, useState, useEffect } from "react";
+
+import { useSelector, useDispatch } from "react-redux";
+import { toggleVerMenuHamburguesa } from "../../store/layoutSlice";
+
 import { motion } from "framer-motion";
 import Particles from "react-tsparticles";
 import { loadSlim } from "tsparticles-slim";
@@ -19,7 +23,17 @@ export default function PaginaBienvenida() {
 
     const handleNavegarRegistrarCuenta = () => navigate("/registrar");
     const handleNavegarInicioSesion = () => navigate("/iniciar-sesion");
-    const handleNavegarPanelPrincipal = () => navigate("/panel-principal");
+
+    const verMenuHamburguesa = useSelector((state) => state.layout.verMenuHamburguesa);
+
+    const dispatch = useDispatch();
+
+    const handleNavegarPanelPrincipal = () => {
+        if(verMenuHamburguesa){
+            dispatch(toggleVerMenuHamburguesa());
+        }
+        navigate("/panel-principal");
+    }           
 
     const MiBoton = motion.create(BotonAccion);
 

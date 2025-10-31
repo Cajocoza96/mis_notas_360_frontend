@@ -1,6 +1,7 @@
 import React, { forwardRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { HiChevronLeft, HiPlusCircle, HiRefresh } from "react-icons/hi";
+import { HiChevronLeft, HiPlusCircle, HiRefresh,
+        HiMinusCircle, HiClock, HiCheckCircle} from "react-icons/hi";
 import { Link } from "react-router-dom";
 import { setIsTituloFocused, toggleVerModalEstado } from "../../../store/tareasSlice";
 
@@ -86,8 +87,18 @@ const Cabecera = forwardRef(({ handleTituloChange, handleTituloKeyDown,
                     onClick={handleVerModalEstado}>
 
                     {estadoSeleccionado ? (
-                        <>
-                            <HiRefresh className="text-2xl md:text-3xl  text-blue-600" />
+                        <>   
+                            <div className="text-2xl md:text-3xl">
+                                {estadoSeleccionado === "noAsignado" ? 
+                                    <HiMinusCircle className="text-blue-600" /> :  
+                                        
+                                estadoSeleccionado === "pendiente" ? 
+                                    <HiClock className="text-yellow-600" /> : 
+                                
+                                estadoSeleccionado === "finalizado" ? 
+                                    <HiCheckCircle className="text-green-600" /> : <HiRefresh className="text-green-600"/>}
+                            </div>
+                            
                             <p className="text-base md:text-xl text-black dark:text-white">
                                 {obtenerTextoEstado()}
                             </p>

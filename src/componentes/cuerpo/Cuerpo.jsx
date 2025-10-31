@@ -14,6 +14,8 @@ import { HiOutlineBookOpen, HiMinusCircle, HiClock, HiCheckCircle } from "react-
 
 import { setAnotaciones, setCargando, setError } from "../../store/anotacionesSlice";
 
+import { setContadores } from "../../store/tareasSlice";
+
 export default function Cuerpo({ notaNoEliminada, notaBusquedaNotaEliminada,
     verContenidoCuerpo, verNotaBusqueda, verNotaEliminada, verTodosEstados }) {
 
@@ -29,6 +31,39 @@ export default function Cuerpo({ notaNoEliminada, notaBusquedaNotaEliminada,
 
     const { terminoBusqueda, resultadosBusqueda, cargandoBusqueda } = useSelector((state) => state.busqueda);
 
+    // Obtener los contadores del estado de Redux
+    const contadores = useSelector(state => state.tareas.contadores);
+
+    // Cargar contadores al montar el componente
+    useEffect(() => {
+        if (verTodosEstados) {
+            cargarContadores();
+        }
+    }, [verTodosEstados]);
+
+    const cargarContadores = async () => {
+        try {
+            const token = localStorage.getItem('token');
+            
+            const respuesta = await fetch(`${API_URL}/anotaciones/contadores`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            if (respuesta.ok) {
+                const datos = await respuesta.json();
+                dispatch(setContadores(datos));
+            } else {
+                console.error('Error al cargar contadores');
+            }
+        } catch (error) {
+            console.error('Error al cargar contadores:', error);
+        }
+    };
+    
     // Cargar anotaciones creadas al montar el componente
     useEffect(() => {
         if (verContenidoCuerpo) {
@@ -250,19 +285,24 @@ export default function Cuerpo({ notaNoEliminada, notaBusquedaNotaEliminada,
                             <EstadosVistaPrevia
                                 iconoEstado={<HiMinusCircle className="text-blue-600" />}
                                 tipoEstado="No asignado"
-                                cantidadEstado="10"
+                                cantidadEstado={contadores.cant_no_asignado}
                             />
 
                             <EstadosVistaPrevia
                                 iconoEstado={<HiClock className="text-yellow-600" />}
                                 tipoEstado="Pendiente"
-                                cantidadEstado="7"
+                                cantidadEstado={contadores.cant_pendiente}
                             />
 
                             <EstadosVistaPrevia
                                 iconoEstado={<HiCheckCircle className="text-green-600" />}
                                 tipoEstado="Finalizado"
-                                cantidadEstado="2"
+                                cantidadEstado={contadores.cant_finalizado}
+                            />
+
+                            <EstadosVistaPrevia
+                                tipoEstado="Todos los estados"
+                                cantidadEstado={contadores.cant_todos_estados}
                             />
                         </>
                     )}

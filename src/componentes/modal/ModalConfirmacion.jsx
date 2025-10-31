@@ -15,7 +15,11 @@ import { toggleVerModalEliminarUsuario, toggleVerModalCerrarSesion } from "../..
 import { useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
 
+import { useContadores } from "../../hooks/useContadores";
+
 export default function ModalConfirmacion({ textoPregunta }) {
+    const { actualizarContadores } = useContadores();
+    
     const API_URL = import.meta.env.VITE_API_URL;
     const [procesando, setProcesando] = useState(false);
     const navigate = useNavigate();
@@ -53,6 +57,8 @@ export default function ModalConfirmacion({ textoPregunta }) {
 
             if (response.ok) {
                 const data = await response.json();
+
+                await actualizarContadores();
                 console.log('Nota movida a papelera:', data);
 
                 // Cerrar el modal
@@ -100,6 +106,8 @@ export default function ModalConfirmacion({ textoPregunta }) {
 
             if (response.ok) {
                 const data = await response.json();
+
+                await actualizarContadores();
                 console.log('Nota restaurada desde la papelera:', data);
 
                 // Cerrar el modal
@@ -149,6 +157,8 @@ export default function ModalConfirmacion({ textoPregunta }) {
 
             if (response.ok) {
                 const data = await response.json();
+                
+                await actualizarContadores();
                 console.log('Nota eliminada definitivamente desde la papelera:', data);
 
                 // Cerrar el modal
@@ -190,6 +200,8 @@ export default function ModalConfirmacion({ textoPregunta }) {
 
             if (response.ok) {
                 const data = await response.json();
+
+                await actualizarContadores();
                 console.log('Han sido eliminada definitivamente todas las notas desde la papelera:', data);
 
                 // Cerrar el modal

@@ -40,7 +40,23 @@ export default function VerOrden() {
                 onClick={handleOrdenarNotas}>
                 <SubOpcionesCabecera
                     className="justify-center"
-                    nombreOpcion="Título"
+                    nombreOpcion="Vista previa nota (Asc)"
+
+                /* 
+                circulo={theme === "dark" && (
+                    <HiCheckCircle className="text-2xl md:text-3xl text-blue-600" />
+                )}
+                */
+                />
+            </div>
+
+            <div className="w-full p-1 border-b border-gray-400 select-none
+                                                    text-black dark:text-white 
+                                                    bg-gray-300 dark:bg-gray-700 cursor-pointer"
+                onClick={handleOrdenarNotas}>
+                <SubOpcionesCabecera
+                    className="justify-center"
+                    nombreOpcion="Vista previa nota (Desc)"
 
                 /* 
                 circulo={theme === "dark" && (

@@ -8,13 +8,16 @@ import {
     toggleVerModalTarea, resetNotaState
 } from "../../../store/tareasSlice";
 
-export default function Footer({ handleUndoClick, handleRedoClick, esModoEdicion, tituloRef, notaRef }) {
-    const API_URL = import.meta.env.VITE_API_URL; 
+import { useContadores } from "../../../hooks/useContadores";
 
-    const { 
-        canUndo, 
-        canRedo, 
-        estadoSeleccionado, 
+export default function Footer({ handleUndoClick, handleRedoClick, esModoEdicion, tituloRef, notaRef }) {
+    const { actualizarContadores } = useContadores();
+    const API_URL = import.meta.env.VITE_API_URL;
+
+    const {
+        canUndo,
+        canRedo,
+        estadoSeleccionado,
         anotacionId,
         tareas  // Obtenemos las tareas del estado Redux
     } = useSelector((state) => state.tareas);
@@ -58,10 +61,10 @@ export default function Footer({ handleUndoClick, handleRedoClick, esModoEdicion
 
             // Determinar si es guardar nuevo o actualizar existente
             const esActualizacion = esModoEdicion && anotacionId !== null;
-            const url = esActualizacion 
+            const url = esActualizacion
                 ? `${API_URL}/anotaciones/actualizar/${anotacionId}`
                 : `${API_URL}/anotaciones/guardar`;
-            
+
             const metodo = esActualizacion ? 'PUT' : 'POST';
 
             const payload = {
@@ -85,13 +88,19 @@ export default function Footer({ handleUndoClick, handleRedoClick, esModoEdicion
 
             if (response.ok) {
                 const data = await response.json();
+
+                await actualizarContadores();
                 console.log(esActualizacion ? 'Actualización exitosa:' : 'Guardado exitoso:', data);
-                
-                // Resetear el estado de la nota y tareas
-                dispatch(resetNotaState());
-                
+
                 // Redirigir al panel principal
                 navigate('/panel-principal', { state: { recargar: true } });
+
+                setTimeout(() => {
+                    /* Resetear el estado de la nota y tareas, con un 
+                    1 segundo para que no se vea el reseteo*/
+                    dispatch(resetNotaState());
+                }, 1000);
+
             } else {
                 const errorData = await response.json();
                 console.error('Error al guardar la anotación:', errorData);
@@ -143,12 +152,12 @@ export default function Footer({ handleUndoClick, handleRedoClick, esModoEdicion
                     title="Rehacer (Ctrl+Y)"
                 />
             </div>
-            
+
             {/* Al dar clic aquí se manda la información a la base de datos */}
             <div className="flex flex-col items-center justify-center">
-                <HiCheck 
-                    className="text-2xl md:text-3xl text-black dark:text-white cursor-pointer hover:opacity-80 transition-opacity" 
-                    onClick={handleGuardarYRedirigir} 
+                <HiCheck
+                    className="text-2xl md:text-3xl text-black dark:text-white cursor-pointer hover:opacity-80 transition-opacity"
+                    onClick={handleGuardarYRedirigir}
                     title="Guardar y volver al panel principal" />
             </div>
         </div>

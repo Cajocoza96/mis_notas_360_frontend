@@ -27,7 +27,15 @@ const initialState = {
     canUndo: false,
     canRedo: false,
 
-    estadoSeleccionado: null
+    estadoSeleccionado: null,
+
+    // Contadores de estados
+    contadores: {
+        cant_no_asignado: 0,
+        cant_pendiente: 0,
+        cant_finalizado: 0,
+        cant_todos_estados: 0
+    }
 }
 
 const tareasSlice = createSlice({
@@ -120,6 +128,11 @@ const tareasSlice = createSlice({
 
         eliminarTarea: (state, action) => {
             state.tareas = state.tareas.filter(t => t.id !== action.payload)
+
+            //Si despues de eliminar no quedan tareas, resetear el estado a null
+            if(state.tareas.length === 0){
+                state.estadoSeleccionado = null
+            }
         },
 
         toggleCompletarTarea: (state, action) => {
@@ -160,6 +173,31 @@ const tareasSlice = createSlice({
 
         setEstadoSeleccionado: (state, action) => {
             state.estadoSeleccionado = action.payload
+        },
+
+        setEstadoAutomatico: (state) => {
+            const { tareas } = state;
+            
+            // Solo actualizar automáticamente si HAY tareas
+            if (tareas.length > 0) {
+                const todasCompletadas = tareas.every(tarea => tarea.completada);
+
+                if (todasCompletadas) {
+                    // Todas las tareas completadas: estado "Finalizado"
+                    state.estadoSeleccionado = "finalizado";
+                } else {
+                    // Hay al menos una tarea sin completar: estado "Pendiente"
+                    state.estadoSeleccionado = "pendiente";
+                }
+            }
+            // Si no hay tareas (length === 0), NO cambiamos el estado
+            // El usuario puede elegir manualmente cualquier estado
+        },
+
+
+        // Nuevo: Actualizar contadores
+        setContadores: (state, action) => {
+            state.contadores = action.payload
         },
 
         // Resetear estado de la nota
@@ -215,7 +253,10 @@ export const {
     setCanUndo,
     setCanRedo,
     resetNotaState,
-    setEstadoSeleccionado
+    setEstadoSeleccionado,
+    setEstadoAutomatico,
+
+    setContadores
 } = tareasSlice.actions
 
 export default tareasSlice.reducer
