@@ -39,7 +39,7 @@ export default function Tarea({ tarea, esModoVistaPrevia }) {
 
                     {tarea.completada ?
                         <HiCheckCircle className={`text-xl md:text-2xl
-                                                text-blue-600 ${esModoVistaPrevia ? 'cursor-default' : 'cursor-pointer'}`} />
+                                                text-violet-800 dark:text-violet-400 ${esModoVistaPrevia ? 'cursor-default' : 'cursor-pointer'}`} />
                         :
                         <FaRegCircle className={`text-base md:text-xl 
                                                 text-black dark:text-white ${esModoVistaPrevia ? 'cursor-default' : 'cursor-pointer'}`} />

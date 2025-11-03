@@ -6,6 +6,8 @@ import { FaRegCircle, FaCircle } from "react-icons/fa";
 
 import { toggleVerModalEstado, setEstadoSeleccionado } from "../../store/tareasSlice";
 
+import { obtenerOpcionesDisponibles } from "../../utils/estadoUtils";
+
 export default function ModalEstado() {
 
     const dispatch = useDispatch();
@@ -16,23 +18,10 @@ export default function ModalEstado() {
 
     const [estadoTemporal, setEstadoTemporal] = useState(estadoSeleccionado);
 
-    // Calcular qué opciones deben mostrarse según el estado de las tareas
     const opcionesDisponibles = useMemo(() => {
-        if (tareas.length === 0) {
-            // Sin tareas: mostrar TODAS las opciones para que el usuario elija
-            return ["noAsignado", "pendiente", "finalizado"];
-        } else {
-            const todasCompletadas = tareas.every(tarea => tarea.completada);
-            
-            if (todasCompletadas) {
-                // Todas completadas: solo mostrar "Finalizado"
-                return ["finalizado"];
-            } else {
-                // Hay tareas sin completar: solo mostrar "Pendiente"
-                return ["pendiente"];
-            }
-        }
+        return obtenerOpcionesDisponibles(tareas);
     }, [tareas]);
+    
 
     useEffect(() => {
         setEstadoTemporal(estadoSeleccionado);
@@ -62,11 +51,11 @@ export default function ModalEstado() {
 
                 <div className="flex flex-col gap-2">
 
-                    {opcionesDisponibles.includes("noAsignado") && (
+                    {opcionesDisponibles.includes("no_asignado") && (
                         <div className="flex flex-row items-center gap-4 select-none">
 
-                            <div onClick={() => handleSeleccionarEstado("noAsignado")}>
-                                {estadoTemporal === "noAsignado"
+                            <div onClick={() => handleSeleccionarEstado("no_asignado")}>
+                                {estadoTemporal === "no_asignado"
                                     ?
                                     <FaCircle className="text-base md:text-xl text-black dark:text-white cursor-pointer" />
                                     :
@@ -129,7 +118,7 @@ export default function ModalEstado() {
 
                     <p
                         className="text-base md:text-xl
-                                        text-blue-800 dark:text-white cursor-pointer"
+                                        text-violet-800 dark:text-white cursor-pointer"
                         onClick={handleAceptar}>
                         Aceptar
                     </p>

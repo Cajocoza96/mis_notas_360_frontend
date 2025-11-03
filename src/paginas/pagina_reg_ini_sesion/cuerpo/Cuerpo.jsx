@@ -110,7 +110,7 @@ export default function Cuerpo({ setMensajeToast }) {
             {/* Botón de Facebook */}
             <div onClick={handleFacebookAuth}>
                 <BotonRegIniSesion
-                    icono={<FaFacebook className="text-base md:text-xl text-blue-600 " />}
+                    icono={<FaFacebook className="text-base md:text-xl text-blue-700 " />}
                     nombreIcono="Facebook"
                 />
             </div>

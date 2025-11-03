@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 
 import { motion } from "framer-motion";
 
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 
 import Cabecera from "../../componentes/cabecera/Cabecera";
 
@@ -13,9 +13,10 @@ import {
     setCargandoBusqueda, limpiarBusqueda
 } from "../../store/busquedaSlice";
 
+import { buscarAnotaciones  as buscarAnotacionesService } from "../../services/anotacionesService";
+
 export default function PaginaBuscar() {
 
-    const API_URL = import.meta.env.VITE_API_URL;
     const [inputValue, setInputValue] = useState('');
     const debounceTimer = useRef(null);
     const dispatch = useDispatch();
@@ -37,32 +38,19 @@ export default function PaginaBuscar() {
 
         try {
             dispatch(setCargandoBusqueda(true));
-            const token = localStorage.getItem('token');
-
-            const response = await fetch(
-                `${API_URL}/anotaciones/buscar?q=${encodeURIComponent(termino)}`,
-                {
-                    method: 'GET',
-                    headers: {
-                        'Authorization': `Bearer ${token}`
-                    }
-                }
-            );
-
-            if (response.ok) {
-                const data = await response.json();
-                dispatch(setResultadosBusqueda(data.anotaciones));
-                dispatch(setTerminoBusqueda(termino));
-            } else {
-                console.error('Error al buscar');
-            }
+            
+            const anotaciones = await buscarAnotacionesService(termino);
+            
+            dispatch(setResultadosBusqueda(anotaciones));
+            dispatch(setTerminoBusqueda(termino));
         } catch (error) {
             console.error('Error en búsqueda:', error);
+            // Opcional: podrías mostrar un mensaje de error al usuario
+            dispatch(setResultadosBusqueda([]));
         } finally {
             dispatch(setCargandoBusqueda(false));
         }
     };
-
 
     // Manejar cambios en el input con debounce
     const handleInputChange = (e) => {
@@ -114,7 +102,6 @@ export default function PaginaBuscar() {
 
             <div className="w-[95%] mx-auto mb-3">
 
-                {/*Por medio de este input quiero que funcione el Filtrado de busqueda*/}
                 <input
                     value={inputValue}
                     onChange={handleInputChange}

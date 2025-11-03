@@ -5,6 +5,8 @@ import { HiChevronLeft, HiPlusCircle, HiRefresh,
 import { Link } from "react-router-dom";
 import { setIsTituloFocused, toggleVerModalEstado } from "../../../store/tareasSlice";
 
+import { obtenerTextoEstado } from "../../../utils/estadoUtils";
+
 const Cabecera = forwardRef(({ handleTituloChange, handleTituloKeyDown,
     esModoVistaPrevia }, tituloRef) => {
 
@@ -25,19 +27,6 @@ const Cabecera = forwardRef(({ handleTituloChange, handleTituloKeyDown,
 
     const handleVerModalEstado = () => {
         dispatch(toggleVerModalEstado())
-    }
-
-    const obtenerTextoEstado = () => {
-        switch (estadoSeleccionado) {
-            case "noAsignado":
-                return "No asignado";
-            case "pendiente":
-                return "Pendiente";
-            case "finalizado":
-                return "Finalizado";
-            default:
-                return "Agregar estado";
-        }
     }
 
     // Verificar si el título tiene contenido directamente del ref
@@ -89,23 +78,23 @@ const Cabecera = forwardRef(({ handleTituloChange, handleTituloKeyDown,
                     {estadoSeleccionado ? (
                         <>   
                             <div className="text-2xl md:text-3xl">
-                                {estadoSeleccionado === "noAsignado" ? 
-                                    <HiMinusCircle className="text-blue-600" /> :  
+                                {estadoSeleccionado === "no_asignado" ? 
+                                    <HiMinusCircle className="text-blue-700" /> :  
                                         
                                 estadoSeleccionado === "pendiente" ? 
-                                    <HiClock className="text-yellow-600" /> : 
+                                    <HiClock className="text-yellow-700" /> : 
                                 
                                 estadoSeleccionado === "finalizado" ? 
-                                    <HiCheckCircle className="text-green-600" /> : <HiRefresh className="text-green-600"/>}
+                                    <HiCheckCircle className="text-green-700" /> : <HiRefresh className="text-green-700"/>}
                             </div>
                             
                             <p className="text-base md:text-xl text-black dark:text-white">
-                                {obtenerTextoEstado()}
+                                {obtenerTextoEstado(estadoSeleccionado)}
                             </p>
                         </>
                     ) : (
                         <>
-                            <HiPlusCircle className="text-2xl md:text-3xl  text-blue-600" />
+                            <HiPlusCircle className="text-2xl md:text-3xl  text-violet-800 dark:text-violet-400 " />
                             <p className="text-base md:text-xl text-black dark:text-white">
                                 Agregar estado
                             </p>

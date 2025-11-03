@@ -12,9 +12,13 @@ import { HiOutlineStar } from "react-icons/hi2";
 
 import { Link, useParams, useNavigate } from "react-router-dom";
 
-export default function Cabecera({ esModoVistaPrevia }) {
-    const API_URL = import.meta.env.VITE_API_URL;
+import { formatearFechaConHora } from "../../../utils/dateUtils";
 
+import { obtenerNombreEstado } from "../../../utils/estadoUtils";
+
+import { obtenerAnotacionPorId } from "../../../services/anotacionesService";
+
+export default function Cabecera({ esModoVistaPrevia }) {
     const { id } = useParams();
 
     const dispatch = useDispatch();
@@ -33,25 +37,13 @@ export default function Cabecera({ esModoVistaPrevia }) {
     const cargarAnotacion = async () => {
         try {
             dispatch(setCargando(true));
-            const token = localStorage.getItem('token');
-
-            const response = await fetch(`${API_URL}/anotaciones/obtener/${id}`, {
-                method: 'GET',
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                }
-            });
-
-            if (response.ok) {
-                const data = await response.json();
-                dispatch(setAnotacionActual(data.anotacion));
-            } else {
-                console.error('Error al cargar la anotación');
-                dispatch(setError('Error al cargar la anotación'));
-            }
+            
+            const anotacion = await obtenerAnotacionPorId(id);
+            
+            dispatch(setAnotacionActual(anotacion));
         } catch (error) {
-            console.error('Error al cargar la anotación:', error);
-            dispatch(setError('Error de conexión'));
+            console.error('Error al cargar la anotación en cabecera:', error);
+            dispatch(setError('Error al cargar la anotación'));
         } finally {
             dispatch(setCargando(false));
         }
@@ -64,26 +56,6 @@ export default function Cabecera({ esModoVistaPrevia }) {
     const handleEditarNota = () => {
         // Navegar a la página de edición con el ID de la anotación
         navigate(`/editar/nota/${id}`);
-    }
-
-    // Función para formatear la fecha en formato dd/mm/yyyy
-    const formatearFecha = (fecha) => {
-        if (!fecha) return '';
-        const date = new Date(fecha);
-        const dia = String(date.getDate()).padStart(2, '0');
-        const mes = String(date.getMonth() + 1).padStart(2, '0');
-        const anio = date.getFullYear();
-        return `${dia}/${mes}/${anio}`;
-    }
-
-    // Función para obtener el nombre del estado
-    const obtenerNombreEstado = (estado) => {
-        const estados = {
-            'no_asignado': 'No asignado',
-            'pendiente': 'Pendiente',
-            'finalizado': 'Finalizado'
-        };
-        return estados[estado] || 'No asignado';
     }
 
     if (cargando) {
@@ -121,7 +93,7 @@ export default function Cabecera({ esModoVistaPrevia }) {
                     </Link>
 
                     <div className="w-20 flex flex-row items-center justify-between">
-                        <HiOutlineStar className="text-2xl md:text-3xl text-blue-600 dark:text-white cursor-pointer" />
+                        <HiOutlineStar className="text-2xl md:text-3xl text-violet-800 dark:text-white cursor-pointer" />
 
                         <HiDotsVertical
                             className="text-2xl md:text-3xl text-black dark:text-white cursor-pointer"
@@ -131,16 +103,23 @@ export default function Cabecera({ esModoVistaPrevia }) {
 
                 <div className="p-1 flex flex-row items-center justify-between">
                     <p className={`text-sm md:text-base 
-                            text-blue-600 dark:text-white
-                            ${esModoVistaPrevia ? 'cursor-default' : ''}`}>
+                            ${esModoVistaPrevia ? 'cursor-default' : ''}
+                            
+                            ${anotacionActual.estado==="no_asignado" ? 'text-blue-900 dark:text-blue-300' : 
+                                anotacionActual.estado==="pendiente" ? 'text-yellow-900 dark:text-yellow-300': 
+                                anotacionActual.estado==="finalizado" ? 'text-green-900 dark:text-green-300': 'text-black dark:text-white'}
+                            `}>
                         Estado ({obtenerNombreEstado(anotacionActual.estado)})
                     </p>
 
-                    <p className={`text-sm md:text-base 
+                    <div className={`text-sm md:text-base 
                             text-black dark:text-white
+                            flex flex-col justify-center items-center
                             ${esModoVistaPrevia ? 'cursor-default' : ''}`}>
-                        {formatearFecha(anotacionActual.fecha_creacion)}
-                    </p>
+                        
+                        <p className="font-semibold">Fecha de creación:</p>
+                        <p>{formatearFechaConHora(anotacionActual.fecha_creacion)}</p>
+                    </div>
                 </div>
 
                 <div className="w-full p-1 flex flex-row items-center justify-between">
@@ -155,7 +134,7 @@ export default function Cabecera({ esModoVistaPrevia }) {
 
                     <HiOutlinePencil
                         onClick={handleEditarNota}
-                        className="text-2xl md:text-3xl cursor-pointer text-blue-600 dark:text-white" />
+                        className="text-2xl md:text-3xl cursor-pointer text-violet-800 dark:text-white" />
                 </div>
 
             </div>

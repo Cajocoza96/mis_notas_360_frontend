@@ -16,10 +16,12 @@ import { setAnotaciones, setCargando, setError } from "../../store/anotacionesSl
 
 import { setContadores } from "../../store/tareasSlice";
 
+import { obtenerEstadoProps } from "../../utils/estadoUtils";
+
+import { obtenerContadores, obtenerAnotaciones, obtenerAnotacionesEliminadas } from "../../services/anotacionesService";
+
 export default function Cuerpo({ notaNoEliminada, notaBusquedaNotaEliminada,
     verContenidoCuerpo, verNotaBusqueda, verNotaEliminada, verTodosEstados }) {
-
-    const API_URL = import.meta.env.VITE_API_URL;
 
     const location = useLocation();
 
@@ -43,24 +45,11 @@ export default function Cuerpo({ notaNoEliminada, notaBusquedaNotaEliminada,
 
     const cargarContadores = async () => {
         try {
-            const token = localStorage.getItem('token');
-            
-            const respuesta = await fetch(`${API_URL}/anotaciones/contadores`, {
-                method: 'GET',
-                headers: {
-                    'Authorization': `Bearer ${token}`,
-                    'Content-Type': 'application/json'
-                }
-            });
-
-            if (respuesta.ok) {
-                const datos = await respuesta.json();
-                dispatch(setContadores(datos));
-            } else {
-                console.error('Error al cargar contadores');
-            }
+            const datos = await obtenerContadores();
+            dispatch(setContadores(datos));
         } catch (error) {
-            console.error('Error al cargar contadores:', error);
+            // El error ya se loguea en el servicio
+            console.error('Error al cargar contadores en el componente:', error);
         }
     };
     
@@ -73,29 +62,15 @@ export default function Cuerpo({ notaNoEliminada, notaBusquedaNotaEliminada,
         }
     }, [verContenidoCuerpo, verNotaEliminada, location.pathname]);
 
+    
     //Cargar anotaciones creadas sin eliminar
     const cargarAnotaciones = async () => {
         try {
             dispatch(setCargando(true));
-            const token = localStorage.getItem('token');
-
-            const response = await fetch(`${API_URL}/anotaciones/obtener`, {
-                method: 'GET',
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                }
-            });
-
-            if (response.ok) {
-                const data = await response.json();
-                dispatch(setAnotaciones(data.anotaciones));
-            } else {
-                console.error('Error al cargar anotaciones');
-                dispatch(setError('Error al cargar las anotaciones'));
-            }
+            const anotacionesData = await obtenerAnotaciones();
+            dispatch(setAnotaciones(anotacionesData));
         } catch (error) {
-            console.error('Error al cargar anotaciones:', error);
-            dispatch(setError('Error de conexión'));
+            dispatch(setError('Error al cargar las anotaciones'));
         } finally {
             dispatch(setCargando(false));
         }
@@ -105,25 +80,10 @@ export default function Cuerpo({ notaNoEliminada, notaBusquedaNotaEliminada,
     const cargarAnotacionesEliminadas = async () => {
         try {
             dispatch(setCargando(true));
-            const token = localStorage.getItem('token');
-
-            const response = await fetch(`${API_URL}/anotaciones/obtener-papelera`, {
-                method: 'GET',
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                }
-            });
-
-            if (response.ok) {
-                const data = await response.json();
-                dispatch(setAnotaciones(data.anotaciones));
-            } else {
-                console.error('Error al cargar anotaciones eliminadas');
-                dispatch(setError('Error al cargar las anotaciones eliminadas'));
-            }
+            const anotacionesData = await obtenerAnotacionesEliminadas();
+            dispatch(setAnotaciones(anotacionesData));
         } catch (error) {
-            console.error('Error al cargar anotaciones eliminadas:', error);
-            dispatch(setError('Error de conexión'));
+            dispatch(setError('Error al cargar las anotaciones eliminadas'));
         } finally {
             dispatch(setCargando(false));
         }
@@ -148,15 +108,6 @@ export default function Cuerpo({ notaNoEliminada, notaBusquedaNotaEliminada,
 
         // 4. Si no hay nada, mostrar texto por defecto
         return '';
-    }
-
-    // Función para mapear el estado de la BD al frontend
-    const obtenerEstadoProps = (estado) => {
-        return {
-            noAsignado: estado === 'no_asignado',
-            pendiente: estado === 'pendiente',
-            finalizado: estado === 'finalizado'
-        };
     }
 
     return (
@@ -268,10 +219,6 @@ export default function Cuerpo({ notaNoEliminada, notaBusquedaNotaEliminada,
                                     <EliminadaNotaVistaPrevia
                                         key={anotacion.id}
                                         anotacionId={anotacion.id}
-
-                                        /*
-                                        fechaCreacion={formatearFecha(anotacion.fecha_creacion)}
-                                        */
                                         texto={obtenerTextoVistaPrevia(anotacion)}
                                         {...obtenerEstadoProps(anotacion.estado)}
                                     />
@@ -283,21 +230,24 @@ export default function Cuerpo({ notaNoEliminada, notaBusquedaNotaEliminada,
                     {verTodosEstados && (
                         <>
                             <EstadosVistaPrevia
-                                iconoEstado={<HiMinusCircle className="text-blue-600" />}
+                                iconoEstado={<HiMinusCircle className="text-blue-700" />}
                                 tipoEstado="No asignado"
                                 cantidadEstado={contadores.cant_no_asignado}
+                                no_asignado={true}
                             />
 
                             <EstadosVistaPrevia
-                                iconoEstado={<HiClock className="text-yellow-600" />}
+                                iconoEstado={<HiClock className="text-yellow-700" />}
                                 tipoEstado="Pendiente"
                                 cantidadEstado={contadores.cant_pendiente}
+                                pendiente={true}
                             />
 
                             <EstadosVistaPrevia
-                                iconoEstado={<HiCheckCircle className="text-green-600" />}
+                                iconoEstado={<HiCheckCircle className="text-green-700" />}
                                 tipoEstado="Finalizado"
                                 cantidadEstado={contadores.cant_finalizado}
+                                finalizado={true}
                             />
 
                             <EstadosVistaPrevia

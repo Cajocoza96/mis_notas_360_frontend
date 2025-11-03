@@ -48,7 +48,7 @@ export default function Footer() {
                                 flex items-center justify-center"
                     onClick={handleNavegarEstado}>
                     <p className="text-base md:text-xl 
-                                text-blue-600 dark:text-white">
+                                text-violet-800 dark:text-white">
                         Estados
                     </p>
                 </div>
@@ -57,14 +57,14 @@ export default function Footer() {
                                 rounded-sm cursor-pointer
                                 flex items-center justify-center"
                     onClick={handleNavegarBuscar}>
-                    <HiSearch className="text-2xl md:text-3xl text-blue-600 dark:text-white" />
+                    <HiSearch className="text-2xl md:text-3xl text-violet-800 dark:text-white" />
                 </div>
 
                 <div className="w-full h-full p-1 active:bg-gray-300 dark:active:bg-gray-600
                                 rounded-sm cursor-pointer
                                 flex items-center justify-center"
                     onClick={handleVerModalCrearNota}>
-                    <div className="bg-blue-600 rounded-[50%] p-2
+                    <div className="bg-violet-800 rounded-[50%] p-2
                                 flex item-center justify-center">
                         <HiPlus className="text-2xl md:text-3xl text-white" />
                     </div>
@@ -73,7 +73,7 @@ export default function Footer() {
                 <div className="w-full h-full p-1 active:bg-gray-300 dark:active:bg-gray-600
                                 rounded-sm cursor-pointer
                                 flex items-center justify-center">
-                    <HiOutlineStar className="text-2xl md:text-3xl text-blue-600 dark:text-white" />
+                    <HiOutlineStar className="text-2xl md:text-3xl text-violet-800 dark:text-white" />
                 </div>
 
                 <div className="w-full h-full p-1 active:bg-gray-300 dark:active:bg-gray-600
@@ -81,14 +81,14 @@ export default function Footer() {
                                 flex items-center justify-center"
                     onClick={handleOrganizacion}>
                     {organizarPorColumna && (
-                        <HiMenuAlt3 className="text-2xl md:text-3xl text-blue-600 dark:text-white" />
+                        <HiMenuAlt3 className="text-2xl md:text-3xl text-violet-800 dark:text-white" />
                     )}
 
                     {!organizarPorColumna && (
-                        <HiViewColumns className="text-2xl md:text-3xl text-blue-600 dark:text-white" />
+                        <HiViewColumns className="text-2xl md:text-3xl text-violet-800 dark:text-white" />
                     )}
 
-                    <HiArrowDown className="text-base md:text-xl text-blue-600 dark:text-white" />
+                    <HiArrowDown className="text-base md:text-xl text-violet-800 dark:text-white" />
                 </div>
             </div>
 

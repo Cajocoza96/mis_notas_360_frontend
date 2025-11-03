@@ -97,7 +97,7 @@ export default function CorreoContrasena({ setMensajeToast }) {
                 </p>
 
                 <div className="border border-gray-300 dark:border-gray-700 rounded-md
-                                focus-within:border-blue-600
+                                focus-within:border-violet-800
                                 active:bg-gray-200 dark:active:bg-gray-700 
                                 flex flex-row items-center justify-between">
                     <input
@@ -121,7 +121,7 @@ export default function CorreoContrasena({ setMensajeToast }) {
                 </p>
 
                 <div className="border border-gray-300 dark:border-gray-700 rounded-md
-                                focus-within:border-blue-600 
+                                focus-within:border-violet-800 
                                 active:bg-gray-200 dark:active:bg-gray-700
                                 flex flex-row items-center justify-between">
                     <input
@@ -149,7 +149,7 @@ export default function CorreoContrasena({ setMensajeToast }) {
             </div>
 
             <MiBoton
-                className={`bg-blue-700 text-white hover:bg-blue-900 active:bg-blue-600 
+                className={`bg-violet-800 text-white hover:bg-violet-800 active:bg-violet-800 
                     ${cargando ? 'opacity-50 cursor-not-allowed' : ''}`}
                 accion={cargando ? <FaSpinner className="animate-spin text-base md:text-xl text-white"/> : textoBoton}
                 onClick={handleSubmit}

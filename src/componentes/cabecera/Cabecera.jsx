@@ -102,7 +102,7 @@ export default function Cabecera({ paginaPrincipal, paginaBusqueda,
 
                 {paginaBusqueda && (
                     <p className="w-full text-center text-xl md:text-2xl select-none truncate
-                    text-blue-600 dark:text-white">Buscar</p>
+                    text-violet-800 dark:text-white">Buscar</p>
                 )}
 
                 {paginaPapelera && (
@@ -112,12 +112,12 @@ export default function Cabecera({ paginaPrincipal, paginaBusqueda,
 
                 {paginaEstado && (
                     <p className="w-full text-center text-xl md:text-2xl select-none truncate
-                    text-blue-600 dark:text-white">Estados</p>
+                    text-violet-800 dark:text-white">Estados</p>
                 )}
 
                 {paginaInfoUsuario && (
                     <p className="w-full text-center text-xl md:text-2xl select-none truncate
-                    text-blue-600 dark:text-white">Información usuario</p>
+                    text-violet-800 dark:text-white">Información usuario</p>
                 )}
 
                 {paginaRegIniSesion && (

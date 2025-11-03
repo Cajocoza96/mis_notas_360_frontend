@@ -5,8 +5,13 @@ import { useDispatch, useSelector } from "react-redux";
 import { toggleVerMenuHamburguesa } from "../../store/layoutSlice";
 
 import {
+    restaurarAnotacion, papeleraAnotacion, eliminarAnotacion,
+    eliminarTodasAnotaciones
+} from "../../store/anotacionesSlice";
+
+import {
     toggleVerModalCrearNota, toggleVerModalPapeleraNota,
-    toggleVerModalRestaurarNota, toggleVerModalEliminarNotaDefinitiva, 
+    toggleVerModalRestaurarNota, toggleVerModalEliminarNotaDefinitiva,
     toggleVerModalEliminarTodasLasNotasDefinitivo
 } from "../../store/tareasSlice";
 
@@ -17,10 +22,12 @@ import { useAuth } from "../../hooks/useAuth";
 
 import { useContadores } from "../../hooks/useContadores";
 
+import { moverAPapelera, restaurarDesdePapelera, 
+        eliminarDefinitivamente, vaciarPapelera  } from "../../services/anotacionesService";
+
 export default function ModalConfirmacion({ textoPregunta }) {
     const { actualizarContadores } = useContadores();
-    
-    const API_URL = import.meta.env.VITE_API_URL;
+
     const [procesando, setProcesando] = useState(false);
     const navigate = useNavigate();
     const dispatch = useDispatch();
@@ -45,35 +52,22 @@ export default function ModalConfirmacion({ textoPregunta }) {
         setProcesando(true);
 
         try {
-            const token = localStorage.getItem('token');
+            const data = await moverAPapelera(id);
 
-            const response = await fetch(`${API_URL}/anotaciones/papelera/${id}`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
-                }
-            });
+            await actualizarContadores();
+            console.log('Nota movida a papelera:', data);
 
-            if (response.ok) {
-                const data = await response.json();
+            // Actualizar Redux: eliminar la anotación de la lista
+            dispatch(papeleraAnotacion(id));
+            
+            // Cerrar el modal
+            dispatch(toggleVerModalPapeleraNota());
 
-                await actualizarContadores();
-                console.log('Nota movida a papelera:', data);
-
-                // Cerrar el modal
-                dispatch(toggleVerModalPapeleraNota());
-
-                // Navegar al panel principal
-                navigate("/panel-principal");
-            } else {
-                const errorData = await response.json();
-                console.error('Error al mover a papelera:', errorData);
-                alert('Error al eliminar la nota. Por favor intenta nuevamente.');
-            }
+            // Navegar al panel principal
+            navigate("/panel-principal");
+        
         } catch (error) {
-            console.error('Error al mover a papelera:', error);
-            alert('Error de conexión. Por favor verifica tu conexión a internet.');
+            alert('Error al eliminar la nota. Por favor intenta nuevamente.');
         } finally {
             setProcesando(false);
         }
@@ -94,44 +88,26 @@ export default function ModalConfirmacion({ textoPregunta }) {
         setProcesando(true);
 
         try {
-            const token = localStorage.getItem('token');
+            const data = await restaurarDesdePapelera(anotacionId);
 
-            const response = await fetch(`${API_URL}/anotaciones/restaurar/${anotacionId}`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
-                }
-            });
+            await actualizarContadores();
+            console.log('Nota restaurada desde la papelera:', data);
 
-            if (response.ok) {
-                const data = await response.json();
+            // Actualizar Redux: eliminar la anotación de la lista de papelera
+            dispatch(restaurarAnotacion(anotacionId));
 
-                await actualizarContadores();
-                console.log('Nota restaurada desde la papelera:', data);
+            // Cerrar el modal
+            dispatch(toggleVerModalRestaurarNota());
 
-                // Cerrar el modal
-                dispatch(toggleVerModalRestaurarNota());
-
-                // Navegar al panel principal
-                window.location.reload();
-                navigate("/papelera");
-
-            } else {
-                const errorData = await response.json();
-                console.error('Error al restaurar nota desde la papelera:', errorData);
-                alert('Error al restaurar nota desde la papelera. Por favor intenta nuevamente.');
-            }
         } catch (error) {
-            console.error('Error al restaurar nota desde la papelera:', error);
-            alert('Error de conexión. Por favor verifica tu conexión a internet.');
+            alert('Error al restaurar nota desde la papelera. Por favor intenta nuevamente.');
         } finally {
             setProcesando(false);
         }
     };
 
     // Función para eliminar la nota definitiva desde la papelera
-    const EliminarNotaDefinitiva = async () => {
+    const eliminarNotaDefinitiva = async () => {
 
         // usar el ID de Redux (Para papelera) o el de params (Para vista previa)
         const anotacionId = anotacionIdRedux || id;
@@ -145,37 +121,19 @@ export default function ModalConfirmacion({ textoPregunta }) {
         setProcesando(true);
 
         try {
-            const token = localStorage.getItem('token');
+            const data = await eliminarDefinitivamente(anotacionId);
 
-            const response = await fetch(`${API_URL}/anotaciones/eliminar-definitivamente/${anotacionId}`, {
-                method: 'DELETE',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
-                }
-            });
+            await actualizarContadores();
+            console.log('Nota eliminada definitivamente desde la papelera:', data);
 
-            if (response.ok) {
-                const data = await response.json();
-                
-                await actualizarContadores();
-                console.log('Nota eliminada definitivamente desde la papelera:', data);
+            // Actualizar Redux: eliminar la anotación de la lista de papelera
+            dispatch(eliminarAnotacion(anotacionId));
 
-                // Cerrar el modal
-                dispatch(toggleVerModalEliminarNotaDefinitiva());
+            // Cerrar el modal
+            dispatch(toggleVerModalEliminarNotaDefinitiva());
 
-                // Navegar al panel principal
-                window.location.reload();
-                navigate("/papelera");
-                
-            } else {
-                const errorData = await response.json();
-                console.error('Error al eliminar la nota definitivamente desde la papelera:', errorData);
-                alert('Error al eliminar la nota definitivamente desde la papelera. Por favor intenta nuevamente.');
-            }
         } catch (error) {
-            console.error('Error al eliminar la nota definitivamente desde la papelera:', error);
-            alert('Error de conexión. Por favor verifica tu conexión a internet.');
+            alert('Error al eliminar la nota definitivamente desde la papelera. Por favor intenta nuevamente.');
         } finally {
             setProcesando(false);
         }
@@ -183,42 +141,24 @@ export default function ModalConfirmacion({ textoPregunta }) {
 
 
     // Función para eliminar todas la nota definitiva desde la papelera
-    const EliminarTodasLasNotasDefinitiva = async () => {
+    const eliminarTodasLasNotasDefinitiva = async () => {
 
         setProcesando(true);
 
         try {
-            const token = localStorage.getItem('token');
+            const data = await vaciarPapelera();
 
-            const response = await fetch(`${API_URL}/anotaciones/obtener-papelera/vaciar`, {
-                method: 'DELETE',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
-                }
-            });
+            await actualizarContadores();
+            console.log('Han sido eliminada definitivamente todas las notas desde la papelera:', data);
 
-            if (response.ok) {
-                const data = await response.json();
+            // Actualizar Redux: limpiar todas las anotaciones
+            dispatch(eliminarTodasAnotaciones());
 
-                await actualizarContadores();
-                console.log('Han sido eliminada definitivamente todas las notas desde la papelera:', data);
+            // Cerrar el modal
+            dispatch(toggleVerModalEliminarTodasLasNotasDefinitivo());
 
-                // Cerrar el modal
-                dispatch(toggleVerModalEliminarTodasLasNotasDefinitivo());
-
-                // Navegar al panel principal
-                window.location.reload();
-                navigate("/papelera");
-                
-            } else {
-                const errorData = await response.json();
-                console.error('Error al eliminar todas las notas definitivamente desde la papelera:', errorData);
-                alert('Error al eliminar todas las notas definitivamente desde la papelera. Por favor intenta nuevamente.');
-            }
         } catch (error) {
-            console.error('Error al eliminar todas las notas definitivamente desde la papelera:', error);
-            alert('Error de conexión. Por favor verifica tu conexión a internet.');
+            alert('Error al eliminar todas las notas definitivamente desde la papelera. Por favor intenta nuevamente.');
         } finally {
             setProcesando(false);
         }
@@ -272,9 +212,9 @@ export default function ModalConfirmacion({ textoPregunta }) {
         } else if (verModalRestaurarNota) {
             restaurarNota();
         } else if (verModalEliminarNotaDefinitiva) {
-            EliminarNotaDefinitiva();
+            eliminarNotaDefinitiva();
         } else if (verModalEliminarTodasLasNotasDefinitivo) {
-            EliminarTodasLasNotasDefinitiva();
+            eliminarTodasLasNotasDefinitiva();
         } else if (verModalEliminarUsuario) {
             setProcesando(true);
             dispatch(toggleVerMenuHamburguesa());
@@ -373,7 +313,7 @@ export default function ModalConfirmacion({ textoPregunta }) {
 
                         <p
                             className={`text-base md:text-xl
-                                        text-blue-800 dark:text-blue-400 
+                                        text-violet-800 dark:text-violet-400 
                                         ${procesando ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer font-semibold'}`}
                             onClick={() => {
                                 if (procesando) return;

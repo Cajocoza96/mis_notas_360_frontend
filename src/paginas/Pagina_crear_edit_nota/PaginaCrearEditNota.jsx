@@ -14,8 +14,11 @@ import Footer from "./footer/Footer";
 
 import ModalEstado from "../../componentes/modal/ModalEstado";
 
+import { mapearEstadoDesdeBD } from "../../utils/estadoUtils";
+
+import { obtenerAnotacionPorId } from "../../services/anotacionesService";
+
 export default function PaginaCrearEditNota() {
-    const API_URL = import.meta.env.VITE_API_URL;
     const { id } = useParams(); // Obtener el ID de la URL si existe
     const location = useLocation();
     const dispatch = useDispatch();
@@ -58,87 +61,64 @@ export default function PaginaCrearEditNota() {
 
     const cargarAnotacionParaEditar = async () => {
         try {
-            const token = localStorage.getItem('token');
+            const anotacion = await obtenerAnotacionPorId(id);
+            
+            // Guardar en Redux
+            dispatch(setAnotacionActual(anotacion));
+            dispatch(setAnotacionId(anotacion.id));
+            
+            // Mapear el estado de la BD al formato del frontend
+            const estadoMapeado = mapearEstadoDesdeBD(anotacion.estado);
+            dispatch(setEstadoSeleccionado(estadoMapeado));
+            
+            // Mapear las tareas
+            const tareasFormateadas = anotacion.tareas.map(t => ({
+                id: t.id,
+                texto: t.texto_tarea,
+                completada: t.tarea_completada === 1
+            }));
+            
+            dispatch(setTareas(tareasFormateadas));
 
-            const response = await fetch(`${API_URL}/anotaciones/obtener/${id}`, {
-                method: 'GET',
-                headers: {
-                    'Authorization': `Bearer ${token}`
+            // Actualizar los refs con el contenido DESPUÉS de un pequeño delay
+            // para asegurar que los componentes estén montados
+            setTimeout(() => {
+                const tituloInicial = anotacion.titulo || "";
+                const notaInicial = anotacion.nota || "";
+                
+                if (tituloRef.current) {
+                    tituloRef.current.textContent = tituloInicial;
                 }
-            });
+                if (notaRef.current) {
+                    notaRef.current.textContent = notaInicial;
+                }
+                
+                // Actualizar Redux DESPUÉS de cargar los refs
+                dispatch(setTitulo(tituloInicial));
+                dispatch(setNota(notaInicial));
 
-            if (response.ok) {
-                const data = await response.json();
-                const anotacion = data.anotacion;
-                
-                // Guardar en Redux
-                dispatch(setAnotacionActual(anotacion));
-                dispatch(setAnotacionId(anotacion.id));
-                
-                // Mapear el estado de la BD al formato del frontend
-                const estadoMapeado = mapearEstadoDesdeBD(anotacion.estado);
-                dispatch(setEstadoSeleccionado(estadoMapeado));
-                
-                // Mapear las tareas
-                const tareasFormateadas = anotacion.tareas.map(t => ({
-                    id: t.id,
-                    texto: t.texto_tarea,
-                    completada: t.tarea_completada === 1
-                }));
-                
-                dispatch(setTareas(tareasFormateadas));
-
-                // Actualizar los refs con el contenido DESPUÉS de un pequeño delay
-                // para asegurar que los componentes estén montados
-                setTimeout(() => {
-                    const tituloInicial = anotacion.titulo || "";
-                    const notaInicial = anotacion.nota || "";
-                    
-                    if (tituloRef.current) {
-                        tituloRef.current.textContent = tituloInicial;
+                // IMPORTANTE: Inicializar el historial de deshacer/rehacer con el contenido inicial
+                // Usamos resetHistory para limpiar cualquier historial anterior
+                // y luego addToHistoryImmediate para agregar el estado inicial sin debounce
+                if (undoRedoHook) {
+                    if (undoRedoHook.resetHistory) {
+                        undoRedoHook.resetHistory({ 
+                            titulo: tituloInicial, 
+                            nota: notaInicial 
+                        });
+                    } else if (undoRedoHook.addToHistoryImmediate) {
+                        // Fallback si resetHistory no está disponible
+                        undoRedoHook.addToHistoryImmediate({ 
+                            titulo: tituloInicial, 
+                            nota: notaInicial 
+                        });
                     }
-                    if (notaRef.current) {
-                        notaRef.current.textContent = notaInicial;
-                    }
-                    
-                    // Actualizar Redux DESPUÉS de cargar los refs
-                    dispatch(setTitulo(tituloInicial));
-                    dispatch(setNota(notaInicial));
-
-                    // IMPORTANTE: Inicializar el historial de deshacer/rehacer con el contenido inicial
-                    // Usamos resetHistory para limpiar cualquier historial anterior
-                    // y luego addToHistoryImmediate para agregar el estado inicial sin debounce
-                    if (undoRedoHook) {
-                        if (undoRedoHook.resetHistory) {
-                            undoRedoHook.resetHistory({ 
-                                titulo: tituloInicial, 
-                                nota: notaInicial 
-                            });
-                        } else if (undoRedoHook.addToHistoryImmediate) {
-                            // Fallback si resetHistory no está disponible
-                            undoRedoHook.addToHistoryImmediate({ 
-                                titulo: tituloInicial, 
-                                nota: notaInicial 
-                            });
-                        }
-                    }
-                }, 100);
-            } else {
-                console.error('Error al cargar la anotación para editar');
-            }
+                }
+            }, 100);
         } catch (error) {
-            console.error('Error al cargar la anotación:', error);
+            console.error('Error al cargar la anotación para editar:', error);
+            // Opcional: Podrías mostrar un mensaje de error al usuario o redirigir
         }
-    }
-
-    // Función para mapear estados de BD a frontend
-    const mapearEstadoDesdeBD = (estadoBD) => {
-        const mapeo = {
-            'no_asignado': 'noAsignado',
-            'pendiente': 'pendiente',
-            'finalizado': 'finalizado'
-        };
-        return mapeo[estadoBD] || 'noAsignado';
     }
 
     // Sincronizar estados con Redux - Simplificado

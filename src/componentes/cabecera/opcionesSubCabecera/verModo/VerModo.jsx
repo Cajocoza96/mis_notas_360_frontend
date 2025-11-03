@@ -39,7 +39,7 @@ export default function VerModo() {
                     nombreOpcion="Claro"
 
                     circulo={theme === "claro" && (
-                        <HiCheckCircle className="text-2xl md:text-3xl text-blue-600" />
+                        <HiCheckCircle className="text-2xl md:text-3xl text-violet-800 dark:text-violet-400" />
                     )}
                 />
             </div>
@@ -53,7 +53,7 @@ export default function VerModo() {
                     nombreOpcion="Oscuro"
 
                     circulo={theme === "oscuro" && (
-                        <HiCheckCircle className="text-2xl md:text-3xl text-blue-600" />
+                        <HiCheckCircle className="text-2xl md:text-3xl text-violet-800 dark:text-violet-400" />
                     )}
                 />
             </div>
@@ -67,7 +67,7 @@ export default function VerModo() {
                     nombreOpcion="Sistema (predeterminado)"
 
                     circulo={theme === "sistema" && (
-                        <HiCheckCircle className="text-2xl md:text-3xl text-blue-600" />
+                        <HiCheckCircle className="text-2xl md:text-3xl text-violet-800 dark:text-violet-400" />
                     )}
                 />
             </div>

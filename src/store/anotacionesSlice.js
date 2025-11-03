@@ -32,8 +32,21 @@ const anotacionesSlice = createSlice({
                 state.anotaciones[index] = action.payload
             }
         },
+
+        papeleraAnotacion: (state, action) => {
+            state.anotaciones = state.anotaciones.filter(a => a.id !== action.payload)
+        },
+
         eliminarAnotacion: (state, action) => {
             state.anotaciones = state.anotaciones.filter(a => a.id !== action.payload)
+        },
+        // Nueva acción para restaurar nota (la elimina de la vista de papelera)
+        restaurarAnotacion: (state, action) => {
+            state.anotaciones = state.anotaciones.filter(a => a.id !== action.payload)
+        },
+        // Nueva acción para eliminar todas las notas (limpiar el array)
+        eliminarTodasAnotaciones: (state) => {
+            state.anotaciones = []
         }
     }
 })
@@ -45,7 +58,10 @@ export const {
     setError,
     agregarAnotacion,
     actualizarAnotacion,
-    eliminarAnotacion
+    papeleraAnotacion,
+    eliminarAnotacion,
+    restaurarAnotacion,
+    eliminarTodasAnotaciones
 } = anotacionesSlice.actions
 
 export default anotacionesSlice.reducer

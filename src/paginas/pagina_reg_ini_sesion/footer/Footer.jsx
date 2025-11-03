@@ -17,7 +17,7 @@ export default function Footer() {
     const rutaDestino = esRegistro ? "/iniciar-sesion" : "/registrar";
 
     return (
-        <div className="w-full p-4 bg-blue-600 dark:bg-black">
+        <div className="w-full p-4 bg-violet-800 dark:bg-black">
             <p className="w-full truncate text-base md:text-xl text-white text-center">
                 {textoPregunta} {""}
                 <Link to={rutaDestino} className="cursor-pointer underline hover:opacity-80">

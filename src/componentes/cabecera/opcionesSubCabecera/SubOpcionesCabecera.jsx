@@ -24,11 +24,11 @@ export default function SubOpcionesCabecera({ circulo, nombreOpcion,
 
             {verOpcCabPagVisPrev && (
                 <>
-                    <p className="text-center text-base md:text-xl px-1 text-blue-600 dark:text-white">
+                    <p className="truncate text-center text-sm md:text-xl px-1 text-violet-800 dark:text-white">
                         {textoFechaCanttexto}
                     </p>
 
-                    <p className="text-center text-base md:text-xl px-1 text-black dark:text-white">
+                    <p className="truncate text-center text-sm md:text-xl px-1 text-black dark:text-white">
                         {fechaCantNumero}
                     </p>
                 </>

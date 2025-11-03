@@ -1,10 +1,13 @@
 import React from "react";
 
-export default function EstadosVistaPrevia({ iconoEstado, tipoEstado, cantidadEstado }) {
+export default function EstadosVistaPrevia({ iconoEstado, tipoEstado, cantidadEstado, 
+                                            no_asignado, pendiente, finalizado }) {
     return (
-        <div className="w-full h-20 p-2 rounded-md select-none cursor-pointer
+        <div className={`w-full h-20 p-2 rounded-md select-none cursor-pointer
                         flex flex-row items-center justify-between gap-1 overflow-hidden
-                        bg-gray-200 dark:bg-black">
+                        ${no_asignado ? 'bg-blue-200 dark:bg-blue-950':
+                            pendiente ? 'bg-yellow-200 dark:bg-yellow-950':
+                            finalizado ? 'bg-green-200 dark:bg-green-950': 'bg-gray-200 dark:bg-black'}`}>
 
             <div className="flex flex-row items-center gap-2">
                 <div className="text-2xl md:text-3xl">

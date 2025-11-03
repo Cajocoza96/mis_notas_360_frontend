@@ -35,8 +35,8 @@ export default function PaginaError() {
                 </p>
 
                 <MiBoton
-                    className="bg-blue-600 text-white
-                                    hover:bg-blue-800 active:bg-blue-700
+                    className="bg-violet-800 text-white
+                                    hover:bg-violet-800 active:bg-violet-800
                         rounded-full"
                     accion="Volver a inicio"
                     onClick={handleNavegarInicio}

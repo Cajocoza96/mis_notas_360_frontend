@@ -10,9 +10,10 @@ import {
 
 import { useContadores } from "../../../hooks/useContadores";
 
+import { crearAnotacion, actualizarAnotacion } from "../../../services/anotacionesService";
+
 export default function Footer({ handleUndoClick, handleRedoClick, esModoEdicion, tituloRef, notaRef }) {
     const { actualizarContadores } = useContadores();
-    const API_URL = import.meta.env.VITE_API_URL;
 
     const {
         canUndo,
@@ -59,14 +60,7 @@ export default function Footer({ handleUndoClick, handleRedoClick, esModoEdicion
                 completada: tarea.completada  // true o false
             }));
 
-            // Determinar si es guardar nuevo o actualizar existente
-            const esActualizacion = esModoEdicion && anotacionId !== null;
-            const url = esActualizacion
-                ? `${API_URL}/anotaciones/actualizar/${anotacionId}`
-                : `${API_URL}/anotaciones/guardar`;
-
-            const metodo = esActualizacion ? 'PUT' : 'POST';
-
+            // Preparar el payload
             const payload = {
                 titulo: tituloActual,
                 nota: notaActual,
@@ -76,45 +70,38 @@ export default function Footer({ handleUndoClick, handleRedoClick, esModoEdicion
 
             console.log('Payload a enviar:', payload);
 
-            // Guardar o actualizar la anotación con las tareas
-            const response = await fetch(url, {
-                method: metodo,
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
-                },
-                body: JSON.stringify(payload)
-            });
+            // Determinar si es guardar nuevo o actualizar existente
+            const esActualizacion = esModoEdicion && anotacionId !== null;
 
-            if (response.ok) {
-                const data = await response.json();
-
-                await actualizarContadores();
-                console.log(esActualizacion ? 'Actualización exitosa:' : 'Guardado exitoso:', data);
-
-                // Redirigir al panel principal
-                navigate('/panel-principal', { state: { recargar: true } });
-
-                setTimeout(() => {
-                    /* Resetear el estado de la nota y tareas, con un 
-                    1 segundo para que no se vea el reseteo*/
-                    dispatch(resetNotaState());
-                }, 1000);
-
+            let data;
+            if (esActualizacion) {
+                data = await actualizarAnotacion(anotacionId, payload);
+                console.log('Actualización exitosa:', data);
             } else {
-                const errorData = await response.json();
-                console.error('Error al guardar la anotación:', errorData);
-                alert('Error al guardar la anotación. Por favor intenta nuevamente.');
+                data = await crearAnotacion(payload);
+                console.log('Guardado exitoso:', data);
             }
+
+            await actualizarContadores();
+
+            // Redirigir al panel principal
+            navigate('/panel-principal', { state: { recargar: true } });
+
+            setTimeout(() => {
+                /* Resetear el estado de la nota y tareas, con un 
+                1 segundo para que no se vea el reseteo*/
+                dispatch(resetNotaState());
+            }, 1000);
+
         } catch (error) {
             console.error('Error al guardar y redirigir:', error);
-            alert('Error de conexión. Por favor verifica tu conexión a internet.');
+            alert('Error al guardar la anotación. Por favor intenta nuevamente.');
         }
     }
 
     return (
         <div className="p-2 z-10 w-full
-                        bg-blue-200 dark:bg-black
+                        bg-violet-300 dark:bg-black
                         grid grid-cols-3">
 
             <div className="flex flex-col items-center select-none">
@@ -122,7 +109,7 @@ export default function Footer({ handleUndoClick, handleRedoClick, esModoEdicion
                 <div className="flex flex-col 
                                 2xs:flex-row items-center gap-2 cursor-pointer"
                     onClick={handleverModalTarea}>
-                    <HiPlusCircle className="text-2xl md:text-3xl  text-blue-600" />
+                    <HiPlusCircle className="text-2xl md:text-3xl  text-violet-800 dark:text-violet-400 " />
                     <p className="text-base md:text-xl text-black dark:text-white">
                         Agregar tarea
                     </p>

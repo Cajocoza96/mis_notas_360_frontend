@@ -59,7 +59,7 @@ export default function PaginaBienvenida() {
         return (
             <div className="min-h-screen w-full flex items-center justify-center bg-white dark:bg-gray-800">
                 <div className="text-center">
-                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-violet-800 mx-auto mb-4"></div>
                     <p className="text-gray-600 dark:text-gray-300 text-lg">Verificando sesión...</p>
                 </div>
             </div>
@@ -201,7 +201,7 @@ export default function PaginaBienvenida() {
                         />
 
                         <MiBoton
-                            className=" bg-green-600 text-white
+                            className=" bg-green-700 text-white
                                     hover:bg-green-800 active:bg-green-700
                                     rounded-full"
                             accion="Registrarse"

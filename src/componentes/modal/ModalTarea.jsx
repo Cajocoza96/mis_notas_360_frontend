@@ -70,11 +70,11 @@ export default function ModalTarea() {
                     </div>
 
                     <p className="text-center text-base md:text-xl select-none 
-                                text-blue-600 dark:text-white">
+                                text-violet-800 dark:text-white">
                         Casilla de tarea
                     </p>
 
-                    <div className="border-b-3 border-green-500 p-2">
+                    <div className="border-b-3 border-violet-500 p-2">
                         <input
                             type="text"
                             value={textoTarea}
@@ -86,7 +86,7 @@ export default function ModalTarea() {
 
                 </div>
 
-                <div className="p-2 w-full bg-blue-600 dark:bg-black
+                <div className="p-2 w-full bg-violet-800 dark:bg-black
                                 flex flex-row items-center justify-around select-none">
 
                     {modoModal === 'editar' && (

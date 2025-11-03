@@ -60,7 +60,7 @@ export default function PaginaPapelera() {
 
             {verModalEliminarTodasLasNotasDefinitivo && (
                 <ModalConfirmacion
-                    textoPregunta="¿Desea eliminar todas las notas definitivamente?"
+                    textoPregunta={`${anotaciones.length === 1 ? '¿Desea eliminar la nota definitivamente' : '¿Desea eliminar todas las notas definitivamente?'}`}
                 />
             )}
 
@@ -78,7 +78,7 @@ export default function PaginaPapelera() {
 
             {anotaciones.length === 0 ? '' :
                 <Footer
-                    eliminarTodo={true}
+                    textoCantElimi={`${anotaciones.length === 0 ? '' : anotaciones.length === 1 ? 'Eliminar nota' : 'Eliminar todas las notas'}`}
                 />
             }
 

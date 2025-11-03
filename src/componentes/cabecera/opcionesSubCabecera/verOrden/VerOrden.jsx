@@ -44,7 +44,7 @@ export default function VerOrden() {
 
                 /* 
                 circulo={theme === "dark" && (
-                    <HiCheckCircle className="text-2xl md:text-3xl text-blue-600" />
+                    <HiCheckCircle className="text-2xl md:text-3xl text-violet-800" />
                 )}
                 */
                 />
@@ -60,7 +60,7 @@ export default function VerOrden() {
 
                 /* 
                 circulo={theme === "dark" && (
-                    <HiCheckCircle className="text-2xl md:text-3xl text-blue-600" />
+                    <HiCheckCircle className="text-2xl md:text-3xl text-violet-800" />
                 )}
                 */
                 />
@@ -76,7 +76,7 @@ export default function VerOrden() {
 
                 /* 
                 circulo={theme === "dark" && (
-                    <HiCheckCircle className="text-2xl md:text-3xl text-blue-600" />
+                    <HiCheckCircle className="text-2xl md:text-3xl text-violet-800" />
                 )}
                 */
                 />
@@ -92,7 +92,7 @@ export default function VerOrden() {
 
                 /* 
                 circulo={theme === "dark" && (
-                    <HiCheckCircle className="text-2xl md:text-3xl text-blue-600" />
+                    <HiCheckCircle className="text-2xl md:text-3xl text-violet-800" />
                 )}
                 */
                 />

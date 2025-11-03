@@ -14,9 +14,9 @@ import ContOpSubCabecera from "../../componentes/cabecera/opcionesSubCabecera/Co
 
 import ModalConfirmacion from "../../componentes/modal/ModalConfirmacion";
 
-export default function PaginaVistaPrevia() {
+import { obtenerAnotacionPorId } from "../../services/anotacionesService";
 
-    const API_URL = import.meta.env.VITE_API_URL;
+export default function PaginaVistaPrevia() {
     const { id } = useParams(); // Obtener el ID de la URL
     const location = useLocation();
 
@@ -39,41 +39,28 @@ export default function PaginaVistaPrevia() {
 
     const cargarAnotacion = async () => {
         try {
-            const token = localStorage.getItem('token');
+            const anotacion = await obtenerAnotacionPorId(id);
+            
+            // Guardar en Redux
+            dispatch(setAnotacionActual(anotacion));
+            dispatch(setNota(anotacion.nota || ""));
+            
+            // Mapear las tareas de la BD al formato del frontend
+            const tareasFormateadas = anotacion.tareas.map(t => ({
+                id: t.id,
+                texto: t.texto_tarea,
+                completada: t.tarea_completada === 1
+            }));
+            
+            dispatch(setTareas(tareasFormateadas));
 
-            const response = await fetch(`${API_URL}/anotaciones/obtener/${id}`, {
-                method: 'GET',
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                }
-            });
-
-            if (response.ok) {
-                const data = await response.json();
-                const anotacion = data.anotacion;
-                
-                // Guardar en Redux
-                dispatch(setAnotacionActual(anotacion));
-                dispatch(setNota(anotacion.nota || ""));
-                
-                // Mapear las tareas de la BD al formato del frontend
-                const tareasFormateadas = anotacion.tareas.map(t => ({
-                    id: t.id,
-                    texto: t.texto_tarea,
-                    completada: t.tarea_completada === 1
-                }));
-                
-                dispatch(setTareas(tareasFormateadas));
-
-                // Actualizar los refs con el contenido
-                if (notaRef.current) {
-                    notaRef.current.textContent = anotacion.nota || "";
-                }
-            } else {
-                console.error('Error al cargar la anotación');
+            // Actualizar los refs con el contenido
+            if (notaRef.current) {
+                notaRef.current.textContent = anotacion.nota || "";
             }
         } catch (error) {
-            console.error('Error al cargar la anotación:', error);
+            console.error('Error al cargar la anotación para vista previa:', error);
+            // Opcional: Podrías mostrar un mensaje de error al usuario o redirigir
         }
     }
 
@@ -119,7 +106,7 @@ export default function PaginaVistaPrevia() {
             animate="animate">
                 
             {verModalPapeleraNota && (
-                <ModalConfirmacion textoPregunta="¿Desea eliminar la nota?" />
+                <ModalConfirmacion textoPregunta="¿Mover nota a la papelera?" />
             )}
 
             <Cabecera 

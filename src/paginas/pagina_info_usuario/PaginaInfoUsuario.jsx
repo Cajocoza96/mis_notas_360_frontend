@@ -82,7 +82,9 @@ export default function PaginaInfoUsuario() {
             animate="animate">
 
             {verModalEliminarUsuario && (
-                <ModalConfirmacion textoPregunta="¿Desea eliminar la cuenta?" />
+                <ModalConfirmacion 
+                className="text-red-800 dark:text-red-400"
+                textoPregunta="¿Desea eliminar la cuenta?" />
             )}
 
             {verModalCerrarSesion && (
