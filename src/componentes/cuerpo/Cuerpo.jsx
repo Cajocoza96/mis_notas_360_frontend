@@ -8,13 +8,15 @@ import EstadosVistaPrevia from "../../paginas/pagina_estado/cuerpo/estados_vista
 
 import { useSelector, useDispatch } from "react-redux";
 
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 import { HiOutlineBookOpen, HiMinusCircle, HiClock, HiCheckCircle } from "react-icons/hi";
 
 import { setAnotaciones, setCargando, setError } from "../../store/anotacionesSlice";
 
 import { setContadores } from "../../store/tareasSlice";
+
+import { guardarVerAnotacEstado } from "../../store/preferenciaSlice";
 
 import { obtenerEstadoProps } from "../../utils/estadoUtils";
 
@@ -25,9 +27,13 @@ export default function Cuerpo({ notaNoEliminada, notaBusquedaNotaEliminada,
 
     const location = useLocation();
 
+    const navigate = useNavigate();
+
     const dispatch = useDispatch();
 
     const organizarPorColumna = useSelector((state) => state.preferencia.organizarPorColumna);
+
+    const verAnotacEstado = useSelector((state) => state.preferencia.verAnotacEstado);
 
     const { anotaciones, cargando } = useSelector((state) => state.anotaciones);
 
@@ -60,9 +66,10 @@ export default function Cuerpo({ notaNoEliminada, notaBusquedaNotaEliminada,
         } else if (verNotaEliminada) {
             cargarAnotacionesEliminadas();
         }
-    }, [verContenidoCuerpo, verNotaEliminada, location.pathname]);
+    }, [verContenidoCuerpo, verNotaEliminada, verAnotacEstado, location.pathname]);
 
     
+    /*Aqui se hace el llamado a services para obtenerAnotaciones es decir para mostrar todas las anotaciones */
     //Cargar anotaciones creadas sin eliminar
     const cargarAnotaciones = async () => {
         try {
@@ -88,6 +95,18 @@ export default function Cuerpo({ notaNoEliminada, notaBusquedaNotaEliminada,
             dispatch(setCargando(false));
         }
     }
+
+    // Manejar clic en los estados
+    const handleEstadoClick = async (nuevoEstado) => {
+        try {
+            await dispatch(guardarVerAnotacEstado(nuevoEstado)).unwrap();
+            // Las anotaciones se recargarán automáticamente gracias al useEffect
+
+            navigate("/panel-principal");
+        } catch (error) {
+            console.error('Error al cambiar filtro de estado:', error);
+        }
+    };
 
     // Función para obtener el texto a mostrar según la prioridad
     const obtenerTextoVistaPrevia = (anotacion) => {
@@ -132,7 +151,13 @@ export default function Cuerpo({ notaNoEliminada, notaBusquedaNotaEliminada,
                                 <div className="col-span-full text-center p-4 select-none
                                                 flex flex-col items-center justify-center gap-3">
                                     <p className="text-base md:text-xl text-black dark:text-white">
-                                        No tienes anotaciones. ¡Crea tu primera nota!
+                                        {verAnotacEstado === 'ver_no_asignado' 
+                                            ? 'No tienes anotaciones sin asignar'
+                                            : verAnotacEstado === 'ver_pendiente'
+                                            ? 'No tienes anotaciones pendientes'
+                                            : verAnotacEstado === 'ver_finalizado'
+                                            ? 'No tienes anotaciones finalizadas'
+                                            : 'No tienes anotaciones. ¡Crea tu primera nota!'}
                                     </p>
 
                                     <div>
@@ -228,19 +253,23 @@ export default function Cuerpo({ notaNoEliminada, notaBusquedaNotaEliminada,
                     )}
 
                     {verTodosEstados && (
-                        <>
+                        <>  
                             <EstadosVistaPrevia
                                 iconoEstado={<HiMinusCircle className="text-blue-700" />}
                                 tipoEstado="No asignado"
                                 cantidadEstado={contadores.cant_no_asignado}
                                 no_asignado={true}
+                                seleccionado={verAnotacEstado === 'ver_no_asignado'}
+                                onClick={() => handleEstadoClick('ver_no_asignado')}
                             />
-
+                            
                             <EstadosVistaPrevia
                                 iconoEstado={<HiClock className="text-yellow-700" />}
                                 tipoEstado="Pendiente"
                                 cantidadEstado={contadores.cant_pendiente}
                                 pendiente={true}
+                                seleccionado={verAnotacEstado === 'ver_pendiente'}
+                                onClick={() => handleEstadoClick('ver_pendiente')}
                             />
 
                             <EstadosVistaPrevia
@@ -248,11 +277,15 @@ export default function Cuerpo({ notaNoEliminada, notaBusquedaNotaEliminada,
                                 tipoEstado="Finalizado"
                                 cantidadEstado={contadores.cant_finalizado}
                                 finalizado={true}
+                                seleccionado={verAnotacEstado === 'ver_finalizado'}
+                                onClick={() => handleEstadoClick('ver_finalizado')}
                             />
 
                             <EstadosVistaPrevia
                                 tipoEstado="Todos los estados"
                                 cantidadEstado={contadores.cant_todos_estados}
+                                seleccionado={verAnotacEstado === 'ver_todos_estados'}
+                                onClick={() => handleEstadoClick('ver_todos_estados')}
                             />
                         </>
                     )}

@@ -22,7 +22,8 @@ export const cargarPreferencia = createAsyncThunk(
             const data = await response.json();
             return {
                 organizarPorColumna: data.organizarPorColumna,
-                tema: data.tema // 'claro', 'oscuro', 'sistema'
+                tema: data.tema, // 'claro', 'oscuro', 'sistema'
+                verAnotacEstado: data.verAnotacEstado || 'ver_todos_estados'
             };
         } catch (error) {
             return rejectWithValue(error.message);
@@ -82,9 +83,36 @@ export const guardarTema = createAsyncThunk(
     }
 );
 
+// Thunk para guardar el filtro de estado de anotaciones
+export const guardarVerAnotacEstado = createAsyncThunk(
+    'preferencia/guardarVerAnotacEstado',
+    async (verAnotacEstado, { rejectWithValue }) => {
+        try {
+            const token = localStorage.getItem('token');
+            const response = await fetch(`${API_URL}/auth/preferencia`, {
+                method: 'PUT',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ verAnotacEstado })
+            });
+
+            if (!response.ok) {
+                throw new Error('Error al guardar vista de estado');
+            }
+
+            return verAnotacEstado;
+        } catch (error) {
+            return rejectWithValue(error.message);
+        }
+    }
+);
+
 const initialState = {
     organizarPorColumna: true,
     tema: 'sistema', // 'claro', 'oscuro', 'sistema'
+    verAnotacEstado: 'ver_todos_estados', // 'ver_no_asignado', 'ver_pendiente', 'ver_finalizado', 'ver_todos_estados'
     verModo: false,
     verOrden: false,
     cargandoPreferencia: false,
@@ -121,6 +149,11 @@ const preferenciaSlice = createSlice({
             state.tema = action.payload
         },
 
+        // Ver Anotación Estado
+        setVerAnotacEstado: (state, action) => {
+            state.verAnotacEstado = action.payload
+        },
+
         // Ver Modo
         toggleVerModo: (state) => {
             state.verModo = !state.verModo
@@ -147,6 +180,7 @@ const preferenciaSlice = createSlice({
             .addCase(cargarPreferencia.fulfilled, (state, action) => {
                 state.organizarPorColumna = action.payload.organizarPorColumna;
                 state.tema = action.payload.tema;
+                state.verAnotacEstado = action.payload.verAnotacEstado;
                 state.cargandoPreferencia = false;
                 
                 // ✅ Aplicar tema inmediatamente al cargar preferencias
@@ -163,6 +197,10 @@ const preferenciaSlice = createSlice({
             // Guardar tema
             .addCase(guardarTema.fulfilled, (state, action) => {
                 state.tema = action.payload;
+            })
+            // Guardar ver anotación estado
+            .addCase(guardarVerAnotacEstado.fulfilled, (state, action) => {
+                state.verAnotacEstado = action.payload;
             });
     }
 })
@@ -171,6 +209,7 @@ export const {
     toggleOrganizarPorColumna,
     setOrganizarPorColumna,
     setTema,
+    setVerAnotacEstado,
     toggleVerModo,
     setVerModo,
     toggleVerOrden,

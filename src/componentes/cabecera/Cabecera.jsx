@@ -11,7 +11,8 @@ import {
 import { toggleVerModo, toggleVerOrden } from "../../store/preferenciaSlice";
 
 import {
-    HiDotsVertical, HiChevronLeft, HiX, HiOutlineBookOpen, HiMenu
+    HiDotsVertical, HiChevronLeft, HiX, HiOutlineBookOpen, HiMenu,
+    HiMinusCircle, HiClock, HiCheckCircle
 } from "react-icons/hi";
 
 
@@ -21,6 +22,8 @@ export default function Cabecera({ paginaPrincipal, paginaBusqueda,
     const verModo = useSelector((state) => state.preferencia.verModo);
 
     const verOrden = useSelector((state) => state.preferencia.verOrden);
+
+    const verAnotacEstado = useSelector((state) => state.preferencia.verAnotacEstado);
 
     const dispatch = useDispatch();
 
@@ -97,6 +100,16 @@ export default function Cabecera({ paginaPrincipal, paginaBusqueda,
                                     text-black dark:text-white">
                             MisNotas360
                         </p>
+                        <div className="text-2xl md:text-3xl">
+                            {verAnotacEstado === 'ver_no_asignado' 
+                            ? <HiMinusCircle className="text-blue-700"/> :
+                            verAnotacEstado === 'ver_pendiente' 
+                            ? <HiClock className="text-yellow-700"/> : 
+                            verAnotacEstado === 'ver_finalizado'
+                            ? <HiCheckCircle className="text-green-700" /> :
+                            verAnotacEstado === 'ver_todos_estados'
+                            ? '' : ''}
+                        </div>
                     </Link>
                 )}
 

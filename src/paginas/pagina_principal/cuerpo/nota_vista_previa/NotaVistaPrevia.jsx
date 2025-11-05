@@ -27,7 +27,9 @@ export default function NotaVistaPrevia({ anotacionId, iconoFavorito, texto, no_
             <div className="w-full flex flex-row items-start justify-between">
 
                 {iconoFavorito && (
-                    <HiOutlineStar className="text-2xl md:text-3xl cursor-pointer
+                    <HiOutlineStar 
+                    onClick={(e)=> e.stopPropagation()}
+                    className="text-2xl md:text-3xl cursor-pointer
                     text-violet-800 dark:text-white" />
                 )}
 
