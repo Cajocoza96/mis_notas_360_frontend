@@ -81,6 +81,30 @@ export const obtenerAnotacionesEliminadas = async () => {
     }
 };
 
+// Actualizar estado de favorito de una anotación
+export const actualizarFavorito = async (anotacionId, favorito) => {
+    try {
+        const token = obtenerToken();
+
+        const response = await fetch(`${API_URL}/anotaciones/favorito/${anotacionId}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({ favorito })
+        });
+
+        manejarErrorRespuesta(response, 'Error al actualizar favorito');
+
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        console.error('Error al actualizar favorito:', error);
+        throw error;
+    }
+};
+
 //Mueve una anotación a la papelera (soft delete)
 export const moverAPapelera = async (id) => {
     try {

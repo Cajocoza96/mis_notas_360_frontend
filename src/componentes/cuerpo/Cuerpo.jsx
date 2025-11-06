@@ -75,6 +75,7 @@ export default function Cuerpo({ notaNoEliminada, notaBusquedaNotaEliminada,
         try {
             dispatch(setCargando(true));
             const anotacionesData = await obtenerAnotaciones();
+
             dispatch(setAnotaciones(anotacionesData));
         } catch (error) {
             dispatch(setError('Error al cargar las anotaciones'));
@@ -171,6 +172,7 @@ export default function Cuerpo({ notaNoEliminada, notaBusquedaNotaEliminada,
                                         key={anotacion.id}
                                         anotacionId={anotacion.id}
                                         texto={obtenerTextoVistaPrevia(anotacion)}
+                                        esFavorito={anotacion.favorito === 1}
                                         {...obtenerEstadoProps(anotacion.estado)}
                                     />
                                 ))

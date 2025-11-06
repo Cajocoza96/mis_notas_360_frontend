@@ -33,6 +33,21 @@ const anotacionesSlice = createSlice({
             }
         },
 
+        actualizarFavoritoLocal: (state, action) => {
+            const { anotacionId, favorito } = action.payload;
+            
+            // Actualizar en la lista de anotaciones
+            const anotacion = state.anotaciones.find(a => a.id === anotacionId);
+            if (anotacion) {
+                anotacion.favorito = favorito;
+            }
+            
+            // Actualizar en anotacionActual si coincide
+            if (state.anotacionActual && state.anotacionActual.id === anotacionId) {
+                state.anotacionActual.favorito = favorito;
+            }
+        },
+
         papeleraAnotacion: (state, action) => {
             state.anotaciones = state.anotaciones.filter(a => a.id !== action.payload)
         },
@@ -58,6 +73,7 @@ export const {
     setError,
     agregarAnotacion,
     actualizarAnotacion,
+    actualizarFavoritoLocal,
     papeleraAnotacion,
     eliminarAnotacion,
     restaurarAnotacion,

@@ -32,8 +32,8 @@ export const cargarPreferencia = createAsyncThunk(
 );
 
 // Thunk para guardar la preferencia
-export const guardarPreferencia = createAsyncThunk(
-    'preferencia/guardarPreferencia',
+export const guardarOrgColumna = createAsyncThunk(
+    'preferencia/guardarOrgColumna',
     async (organizarPorColumna, { rejectWithValue }) => {
         try {
             const token = localStorage.getItem('token');
@@ -191,7 +191,7 @@ const preferenciaSlice = createSlice({
                 state.errorPreferencia = action.payload;
             })
             // Guardar preferencia
-            .addCase(guardarPreferencia.fulfilled, (state, action) => {
+            .addCase(guardarOrgColumna.fulfilled, (state, action) => {
                 state.organizarPorColumna = action.payload;
             })
             // Guardar tema

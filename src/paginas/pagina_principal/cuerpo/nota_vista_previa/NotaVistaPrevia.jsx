@@ -1,36 +1,81 @@
-import React from "react";
+import React, { useState } from "react";
 
 import { HiMinusCircle, HiClock, HiCheckCircle } from "react-icons/hi";
 
-import { HiOutlineStar } from "react-icons/hi2";
+import { HiOutlineStar, HiStar } from "react-icons/hi2";
 
 import { useNavigate } from "react-router-dom";
 
+import { useDispatch } from "react-redux";
+
+import { actualizarFavoritoLocal } from "../../../../store/anotacionesSlice";
+
+import { actualizarFavorito } from "../../../../services/anotacionesService";
+
 export default function NotaVistaPrevia({ anotacionId, iconoFavorito, texto, no_asignado,
-    pendiente, finalizado }) {
+    pendiente, finalizado, esFavorito = false }) {
 
     const navigate = useNavigate();
+
+    const dispatch = useDispatch();
+
+    const [actualizandoFavorito, setActualizandoFavorito] = useState(false);
 
     const handleVerVistaPrevia = () => {
         navigate(`/vista-previa/nota/${anotacionId}`);
     }
+
+    const handleToggleFavorito = async (e) => {
+        e.stopPropagation(); // Evitar que se abra la vista previa
+
+        if (actualizandoFavorito) return; // Evitar múltiples clics
+
+        try {
+            setActualizandoFavorito(true);
+
+            const nuevoEstadoFavorito = esFavorito ? 0 : 1;
+
+            // Actualizar localmente de inmediato (optimistic update)
+            dispatch(actualizarFavoritoLocal({
+                anotacionId,
+                favorito: nuevoEstadoFavorito
+            }));
+
+            // Actualizar en el backend
+            await actualizarFavorito(anotacionId, nuevoEstadoFavorito);
+
+        } catch (error) {
+            console.error('Error al actualizar favorito:', error);
+            // Revertir el cambio local si falla
+            dispatch(actualizarFavoritoLocal({
+                anotacionId,
+                favorito: esFavorito ? 1 : 0
+            }));
+        } finally {
+            setActualizandoFavorito(false);
+        }
+    };
 
     return (
         <div className={`w-full h-35 p-2 rounded-md select-none
                         flex flex-col items-center gap-1 overflow-hidden
                         hover:opacity-80 transition-opacity cursor-pointer
                         ${no_asignado ? 'bg-blue-200 dark:bg-blue-950' :
-                        pendiente ? 'bg-yellow-200 dark:bg-yellow-950' :
-                        finalizado ? 'bg-green-200 dark:bg-green-950' : 'bg-gray-200 dark:bg-black'}`}
+                pendiente ? 'bg-yellow-200 dark:bg-yellow-950' :
+                    finalizado ? 'bg-green-200 dark:bg-green-950' : 'bg-gray-200 dark:bg-black'}`}
             onClick={handleVerVistaPrevia}>
 
             <div className="w-full flex flex-row items-start justify-between">
 
                 {iconoFavorito && (
-                    <HiOutlineStar 
-                    onClick={(e)=> e.stopPropagation()}
-                    className="text-2xl md:text-3xl cursor-pointer
-                    text-violet-800 dark:text-white" />
+                    <div
+                        onClick={handleToggleFavorito}
+                        className={`text-2xl md:text-3xl cursor-pointer
+                            text-violet-800 dark:text-white
+                            transition-transform hover:scale-110
+                            ${actualizandoFavorito ? 'opacity-50 pointer-events-none' : ''}`}>
+                        {esFavorito ? <HiStar /> : <HiOutlineStar />}
+                    </div>
                 )}
 
                 <div className="text-2xl md:text-3xl">

@@ -7,7 +7,7 @@ import { HiSearch, HiPlus, HiMenuAlt3, HiArrowDown } from "react-icons/hi";
 import { useSelector, useDispatch } from "react-redux";
 
 import { toggleOrganizarPorColumna, 
-        guardarPreferencia } from "../../../store/preferenciaSlice"; 
+        guardarOrgColumna } from "../../../store/preferenciaSlice"; 
 
 import { toggleVerModalCrearNota } from "../../../store/tareasSlice";
 
@@ -35,7 +35,7 @@ export default function Footer() {
         
         // Luego guarda en el backend
         const nuevoValor = !organizarPorColumna;
-        dispatch(guardarPreferencia(nuevoValor));
+        dispatch(guardarOrgColumna(nuevoValor));
     }
 
     return (

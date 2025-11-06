@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 
 import { HiChevronLeft, HiOutlinePencil, HiDotsVertical } from "react-icons/hi";
 
@@ -6,9 +6,10 @@ import { useDispatch, useSelector } from "react-redux";
 
 import { toggleVerOpcCabPagVisPrev } from "../../../store/layoutSlice";
 
-import { setAnotacionActual, setCargando, setError } from "../../../store/anotacionesSlice";
+import { setAnotacionActual, setCargando, setError, 
+        actualizarFavoritoLocal } from "../../../store/anotacionesSlice";
 
-import { HiOutlineStar } from "react-icons/hi2";
+import { HiOutlineStar, HiStar } from "react-icons/hi2";
 
 import { Link, useParams, useNavigate } from "react-router-dom";
 
@@ -16,7 +17,7 @@ import { formatearFechaConHora } from "../../../utils/dateUtils";
 
 import { obtenerNombreEstado } from "../../../utils/estadoUtils";
 
-import { obtenerAnotacionPorId } from "../../../services/anotacionesService";
+import { obtenerAnotacionPorId, actualizarFavorito } from "../../../services/anotacionesService";
 
 export default function Cabecera({ esModoVistaPrevia }) {
     const { id } = useParams();
@@ -26,6 +27,8 @@ export default function Cabecera({ esModoVistaPrevia }) {
     const navigate = useNavigate();
 
     const { anotacionActual, cargando } = useSelector((state) => state.anotaciones);
+
+    const [actualizandoFavorito, setActualizandoFavorito] = useState(false);
 
     // Cargar la anotación cuando se monta el componente
     useEffect(() => {
@@ -37,9 +40,9 @@ export default function Cabecera({ esModoVistaPrevia }) {
     const cargarAnotacion = async () => {
         try {
             dispatch(setCargando(true));
-            
+
             const anotacion = await obtenerAnotacionPorId(id);
-            
+
             dispatch(setAnotacionActual(anotacion));
         } catch (error) {
             console.error('Error al cargar la anotación en cabecera:', error);
@@ -57,6 +60,38 @@ export default function Cabecera({ esModoVistaPrevia }) {
         // Navegar a la página de edición con el ID de la anotación
         navigate(`/editar/nota/${id}`);
     }
+
+    const handleToggleFavorito = async () => {
+        if (actualizandoFavorito || !anotacionActual) return;
+
+        const estadoFavoritoActual = anotacionActual.favorito;
+
+        try {
+            setActualizandoFavorito(true);
+            
+            const nuevoEstadoFavorito = estadoFavoritoActual=== 1 ? 0 : 1;
+            
+            // Actualizar localmente de inmediato (optimistic update)
+            dispatch(actualizarFavoritoLocal({ 
+                anotacionId: parseInt(id),
+                favorito: nuevoEstadoFavorito 
+            }));
+            
+            // Actualizar en el backend
+            await actualizarFavorito(id, nuevoEstadoFavorito);
+
+            
+        } catch (error) {
+            console.error('Error al actualizar favorito:', error);
+            // Revertir el cambio local si falla
+            dispatch(actualizarFavoritoLocal({ 
+                anotacionId: parseInt(id),
+                favorito: estadoFavoritoActual 
+            }));
+        } finally {
+            setActualizandoFavorito(false);
+        }
+    };
 
     if (cargando) {
         return (
@@ -93,7 +128,14 @@ export default function Cabecera({ esModoVistaPrevia }) {
                     </Link>
 
                     <div className="w-20 flex flex-row items-center justify-between">
-                        <HiOutlineStar className="text-2xl md:text-3xl text-violet-800 dark:text-white cursor-pointer" />
+
+                        <div
+                            onClick={handleToggleFavorito}
+                            className={`text-2xl md:text-3xl text-violet-800 dark:text-white cursor-pointer
+                                        transition-transform hover:scale-110
+                                        ${actualizandoFavorito ? 'opacity-50 pointer-events-none' : ''}`}>
+                            {anotacionActual.favorito === 1 ? <HiStar /> : <HiOutlineStar />}
+                        </div>
 
                         <HiDotsVertical
                             className="text-2xl md:text-3xl text-black dark:text-white cursor-pointer"
@@ -105,9 +147,9 @@ export default function Cabecera({ esModoVistaPrevia }) {
                     <p className={`text-sm md:text-base 
                             ${esModoVistaPrevia ? 'cursor-default' : ''}
                             
-                            ${anotacionActual.estado==="no_asignado" ? 'text-blue-900 dark:text-blue-300' : 
-                                anotacionActual.estado==="pendiente" ? 'text-yellow-900 dark:text-yellow-300': 
-                                anotacionActual.estado==="finalizado" ? 'text-green-900 dark:text-green-300': 'text-black dark:text-white'}
+                            ${anotacionActual.estado === "no_asignado" ? 'text-blue-900 dark:text-blue-300' :
+                            anotacionActual.estado === "pendiente" ? 'text-yellow-900 dark:text-yellow-300' :
+                                anotacionActual.estado === "finalizado" ? 'text-green-900 dark:text-green-300' : 'text-black dark:text-white'}
                             `}>
                         Estado ({obtenerNombreEstado(anotacionActual.estado)})
                     </p>
@@ -116,7 +158,7 @@ export default function Cabecera({ esModoVistaPrevia }) {
                             text-black dark:text-white
                             flex flex-col justify-center items-center
                             ${esModoVistaPrevia ? 'cursor-default' : ''}`}>
-                        
+
                         <p className="font-semibold">Fecha de creación:</p>
                         <p>{formatearFechaConHora(anotacionActual.fecha_creacion)}</p>
                     </div>
@@ -125,10 +167,10 @@ export default function Cabecera({ esModoVistaPrevia }) {
                 <div className="w-full p-1 flex flex-row items-center justify-between">
                     <p className={`text-base md:text-xl 
                             text-black dark:text-white 
-                            ${!anotacionActual.titulo ? 'text-gray-500 dark:text-gray-400': ''}
+                            ${!anotacionActual.titulo ? 'text-gray-500 dark:text-gray-400' : ''}
                             ${esModoVistaPrevia ? 'cursor-default' : ''}`}>
-                        {anotacionActual.titulo && anotacionActual.titulo.trim() !== '' 
-                            ? anotacionActual.titulo 
+                        {anotacionActual.titulo && anotacionActual.titulo.trim() !== ''
+                            ? anotacionActual.titulo
                             : 'Sin título'}
                     </p>
 
