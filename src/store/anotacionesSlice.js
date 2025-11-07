@@ -1,4 +1,18 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { obtenerAnotaciones } from "../services/anotacionesService";
+
+// ✅ Thunk para cargar anotaciones
+export const cargarAnotaciones = createAsyncThunk(
+    'anotaciones/cargarAnotaciones',
+    async (_, { rejectWithValue }) => {
+        try {
+            const anotacionesData = await obtenerAnotaciones();
+            return anotacionesData;
+        } catch (error) {
+            return rejectWithValue(error.message || 'Error al cargar las anotaciones');
+        }
+    }
+);
 
 const initialState = {
     anotaciones: [],
@@ -33,6 +47,7 @@ const anotacionesSlice = createSlice({
             }
         },
 
+        // ✅ Actualizar favorito local (sin filtrado)
         actualizarFavoritoLocal: (state, action) => {
             const { anotacionId, favorito } = action.payload;
             
@@ -63,6 +78,23 @@ const anotacionesSlice = createSlice({
         eliminarTodasAnotaciones: (state) => {
             state.anotaciones = []
         }
+    },
+    extraReducers: (builder) => {
+        builder
+            // ✅ Cargar anotaciones
+            .addCase(cargarAnotaciones.pending, (state) => {
+                state.cargando = true;
+                state.error = null;
+            })
+            .addCase(cargarAnotaciones.fulfilled, (state, action) => {
+                state.anotaciones = action.payload;
+                state.cargando = false;
+                state.error = null;
+            })
+            .addCase(cargarAnotaciones.rejected, (state, action) => {
+                state.cargando = false;
+                state.error = action.payload || 'Error al cargar las anotaciones';
+            });
     }
 })
 

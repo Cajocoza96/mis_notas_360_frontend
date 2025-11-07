@@ -49,18 +49,23 @@ export default function PaginaPapelera() {
             {verModalRestaurarNota && (
                 <ModalConfirmacion
                     textoPregunta="¿Desea restaurar la nota?"
+                    restaurarTexto={true}
                 />
             )}
 
             {verModalEliminarNotaDefinitiva && (
                 <ModalConfirmacion
                     textoPregunta="¿Desea eliminar definitivamente la nota?"
+                    eliminarPregunta={true}
+                    eliminarAceptar={true}
                 />
             )}
 
             {verModalEliminarTodasLasNotasDefinitivo && (
                 <ModalConfirmacion
                     textoPregunta={`${anotaciones.length === 1 ? '¿Desea eliminar la nota definitivamente' : '¿Desea eliminar todas las notas definitivamente?'}`}
+                    eliminarPregunta={true}
+                    eliminarAceptar={true}
                 />
             )}
 

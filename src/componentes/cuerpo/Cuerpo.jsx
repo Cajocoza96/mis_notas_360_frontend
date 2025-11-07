@@ -12,7 +12,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 
 import { HiOutlineBookOpen, HiMinusCircle, HiClock, HiCheckCircle } from "react-icons/hi";
 
-import { setAnotaciones, setCargando, setError } from "../../store/anotacionesSlice";
+import { cargarAnotaciones, setAnotaciones, setCargando, setError } from "../../store/anotacionesSlice";
 
 import { setContadores } from "../../store/tareasSlice";
 
@@ -32,7 +32,7 @@ export default function Cuerpo({ notaNoEliminada, notaBusquedaNotaEliminada,
     const dispatch = useDispatch();
 
     const organizarPorColumna = useSelector((state) => state.preferencia.organizarPorColumna);
-
+    const verSoloFavoritos = useSelector((state) => state.preferencia.verSoloFavoritos);
     const verAnotacEstado = useSelector((state) => state.preferencia.verAnotacEstado);
 
     const { anotaciones, cargando } = useSelector((state) => state.anotaciones);
@@ -58,31 +58,15 @@ export default function Cuerpo({ notaNoEliminada, notaBusquedaNotaEliminada,
             console.error('Error al cargar contadores en el componente:', error);
         }
     };
-    
-    // Cargar anotaciones creadas al montar el componente
+
+    // ✅ Cargar anotaciones usando el thunk cuando cambien los filtros
     useEffect(() => {
         if (verContenidoCuerpo) {
-            cargarAnotaciones();
+            dispatch(cargarAnotaciones());
         } else if (verNotaEliminada) {
             cargarAnotacionesEliminadas();
         }
-    }, [verContenidoCuerpo, verNotaEliminada, verAnotacEstado, location.pathname]);
-
-    
-    /*Aqui se hace el llamado a services para obtenerAnotaciones es decir para mostrar todas las anotaciones */
-    //Cargar anotaciones creadas sin eliminar
-    const cargarAnotaciones = async () => {
-        try {
-            dispatch(setCargando(true));
-            const anotacionesData = await obtenerAnotaciones();
-
-            dispatch(setAnotaciones(anotacionesData));
-        } catch (error) {
-            dispatch(setError('Error al cargar las anotaciones'));
-        } finally {
-            dispatch(setCargando(false));
-        }
-    }
+    }, [verContenidoCuerpo, verNotaEliminada, verSoloFavoritos, verAnotacEstado, location.pathname, dispatch]);
 
     //Cargar anotaciones eliminadas
     const cargarAnotacionesEliminadas = async () => {
@@ -152,21 +136,26 @@ export default function Cuerpo({ notaNoEliminada, notaBusquedaNotaEliminada,
                                 <div className="col-span-full text-center p-4 select-none
                                                 flex flex-col items-center justify-center gap-3">
                                     <p className="text-base md:text-xl text-black dark:text-white">
-                                        {verAnotacEstado === 'ver_no_asignado' 
-                                            ? 'No tienes anotaciones sin asignar'
-                                            : verAnotacEstado === 'ver_pendiente'
-                                            ? 'No tienes anotaciones pendientes'
-                                            : verAnotacEstado === 'ver_finalizado'
-                                            ? 'No tienes anotaciones finalizadas'
-                                            : 'No tienes anotaciones. ¡Crea tu primera nota!'}
+                                        {verAnotacEstado === 'ver_no_asignado' && verSoloFavoritos
+                                            ? 'No tienes anotaciones favoritas sin asignar'
+                                            : verAnotacEstado === 'ver_no_asignado' ? 'No tienes anotaciones sin asignar'
+                                                : verAnotacEstado === 'ver_pendiente' && verSoloFavoritos
+                                                    ? 'No tienes anotaciones favoritas pendientes'
+                                                    : verAnotacEstado === 'ver_pendiente' ? 'No tienes anotaciones pendientes'
+                                                        : verAnotacEstado === 'ver_finalizado' && verSoloFavoritos
+                                                            ? 'No tienes anotaciones favoritas finalizadas'
+                                                            : verAnotacEstado === 'ver_finalizado' ? 'No tienes anotaciones finalizadas'
+                                                                : verSoloFavoritos ? 'No tienes anotaciones favoritas.'
+                                                                    : 'No tienes anotaciones. ¡Crea tu primera nota!'}
                                     </p>
 
                                     <div>
-                                        <HiOutlineBookOpen className="text-2xl md:text-3xl text-black dark:text-white" />
+                                        <HiOutlineBookOpen className="text-6xl md:text-7xl text-black dark:text-white" />
                                     </div>
                                 </div>
                             ) : (
                                 anotaciones.map((anotacion) => (
+
                                     <NotaVistaPrevia
                                         iconoFavorito={true}
                                         key={anotacion.id}
@@ -197,7 +186,7 @@ export default function Cuerpo({ notaNoEliminada, notaBusquedaNotaEliminada,
                                         No se encontraron resultados para "{terminoBusqueda}"
                                     </p>
                                     <div>
-                                        <HiOutlineBookOpen className="text-2xl md:text-3xl text-black dark:text-white" />
+                                        <HiOutlineBookOpen className="text-6xl md:text-7xl text-black dark:text-white" />
                                     </div>
                                 </div>
                             ) : (
@@ -238,7 +227,7 @@ export default function Cuerpo({ notaNoEliminada, notaBusquedaNotaEliminada,
                                     </p>
 
                                     <div>
-                                        <HiOutlineBookOpen className="text-2xl md:text-3xl text-black dark:text-white" />
+                                        <HiOutlineBookOpen className="text-6xl md:text-7xl text-black dark:text-white" />
                                     </div>
                                 </div>
                             ) : (
@@ -255,7 +244,7 @@ export default function Cuerpo({ notaNoEliminada, notaBusquedaNotaEliminada,
                     )}
 
                     {verTodosEstados && (
-                        <>  
+                        <>
                             <EstadosVistaPrevia
                                 iconoEstado={<HiMinusCircle className="text-blue-700" />}
                                 tipoEstado="No asignado"
@@ -264,7 +253,7 @@ export default function Cuerpo({ notaNoEliminada, notaBusquedaNotaEliminada,
                                 seleccionado={verAnotacEstado === 'ver_no_asignado'}
                                 onClick={() => handleEstadoClick('ver_no_asignado')}
                             />
-                            
+
                             <EstadosVistaPrevia
                                 iconoEstado={<HiClock className="text-yellow-700" />}
                                 tipoEstado="Pendiente"

@@ -17,7 +17,7 @@ import {
 
 import { toggleVerModalEliminarUsuario, toggleVerModalCerrarSesion } from "../../store/accesoSlice";
 
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useLocation } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
 
 import { useContadores } from "../../hooks/useContadores";
@@ -25,7 +25,9 @@ import { useContadores } from "../../hooks/useContadores";
 import { moverAPapelera, restaurarDesdePapelera, 
         eliminarDefinitivamente, vaciarPapelera  } from "../../services/anotacionesService";
 
-export default function ModalConfirmacion({ textoPregunta }) {
+export default function ModalConfirmacion({ textoPregunta, restaurarTexto, eliminarPregunta, eliminarAceptar }) {
+    const location = useLocation();
+    
     const { actualizarContadores } = useContadores();
 
     const [procesando, setProcesando] = useState(false);
@@ -33,6 +35,9 @@ export default function ModalConfirmacion({ textoPregunta }) {
     const dispatch = useDispatch();
     const { id } = useParams();
     const { cerrarSesion, eliminarCuenta } = useAuth();
+
+    // Determinar si estamos en modo vista previa para ir a panel principal
+    const esModoVistaPrevia = location.pathname.includes('/vista-previa/nota/');
 
     //Obtener la ID de la anotacion desde Redux
     const anotacionIdRedux = useSelector((state) => state.tareas.anotacionId);
@@ -124,13 +129,18 @@ export default function ModalConfirmacion({ textoPregunta }) {
             const data = await eliminarDefinitivamente(anotacionId);
 
             await actualizarContadores();
-            console.log('Nota eliminada definitivamente desde la papelera:', data);
+
+            console.log(`Nota eliminada definitivamente desde la ${esModoVistaPrevia ? 'vista previa' : 'papelera'}`, data);
 
             // Actualizar Redux: eliminar la anotación de la lista de papelera
             dispatch(eliminarAnotacion(anotacionId));
 
             // Cerrar el modal
             dispatch(toggleVerModalEliminarNotaDefinitiva());
+
+            if(esModoVistaPrevia){
+                navigate("/panel-principal")
+            }
 
         } catch (error) {
             alert('Error al eliminar la nota definitivamente desde la papelera. Por favor intenta nuevamente.');
@@ -270,8 +280,9 @@ export default function ModalConfirmacion({ textoPregunta }) {
 
                 <div className="mx-auto w-full flex flex-col gap-4 2xl:gap-5">
                     <div className="flex flex-col gap-2">
-                        <p className="text-base md:text-xl
-                            text-black dark:text-white">
+                        <p className={`text-base md:text-xl
+                                    ${restaurarTexto ? 'text-blue-600 dark:text-blue-500' : 
+                                        eliminarPregunta ? 'text-red-600 dark:text-red-500' : 'text-black dark:text-white'}`}>
                             {textoPregunta}
                         </p>
 
@@ -313,7 +324,8 @@ export default function ModalConfirmacion({ textoPregunta }) {
 
                         <p
                             className={`text-base md:text-xl
-                                        text-violet-800 dark:text-violet-400 
+                                        ${restaurarTexto ? 'text-blue-600 dark:text-blue-500' : 
+                                            eliminarAceptar ? 'text-red-600 dark:text-red-500' : 'text-violet-800 dark:text-violet-400'} 
                                         ${procesando ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer font-semibold'}`}
                             onClick={() => {
                                 if (procesando) return;

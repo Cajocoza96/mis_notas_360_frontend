@@ -1,14 +1,16 @@
 import React from "react";
 
-import { HiOutlineStar, HiViewColumns } from "react-icons/hi2";
+import { HiOutlineStar, HiStar, HiViewColumns } from "react-icons/hi2";
 
 import { HiSearch, HiPlus, HiMenuAlt3, HiArrowDown } from "react-icons/hi";
 
 import { useSelector, useDispatch } from "react-redux";
 
-import { toggleOrganizarPorColumna, 
-        guardarOrgColumna } from "../../../store/preferenciaSlice"; 
+import { toggleOrganizarPorColumna, toggleVerSoloFavoritos,
+        guardarOrgColumna, guardarVerSoloFavoritos } from "../../../store/preferenciaSlice"; 
 
+import { cargarAnotaciones } from "../../../store/anotacionesSlice";
+        
 import { toggleVerModalCrearNota } from "../../../store/tareasSlice";
 
 import { useNavigate } from "react-router-dom";
@@ -28,6 +30,7 @@ export default function Footer() {
     const handleNavegarEstado = () => navigate("/estados");
 
     const organizarPorColumna = useSelector((state) => state.preferencia.organizarPorColumna);
+    const verSoloFavoritos = useSelector((state) => state.preferencia.verSoloFavoritos);
 
     const handleOrganizacion = () => {
         // Primero cambia el estado local
@@ -36,6 +39,26 @@ export default function Footer() {
         // Luego guarda en el backend
         const nuevoValor = !organizarPorColumna;
         dispatch(guardarOrgColumna(nuevoValor));
+    }
+
+    // ✅ Toggle de favoritos con recarga
+    const handleToggleFavoritos = async () => {
+        const nuevoValor = !verSoloFavoritos;
+        
+        // Actualizar el estado local primero (para UI responsiva)
+        dispatch(toggleVerSoloFavoritos());
+        
+        try {
+            // Guardar en el backend y esperar
+            await dispatch(guardarVerSoloFavoritos(nuevoValor)).unwrap();
+            
+            // Recargar anotaciones después de que se guardó
+            await dispatch(cargarAnotaciones()).unwrap();
+        } catch (error) {
+            console.error('Error al cambiar filtro de favoritos:', error);
+            // Revertir el cambio local si falla
+            dispatch(toggleVerSoloFavoritos());
+        }
     }
 
     return (
@@ -70,10 +93,14 @@ export default function Footer() {
                     </div>
                 </div>
 
-                <div className="w-full h-full p-1 active:bg-gray-300 dark:active:bg-gray-600
+                
+                <div 
+                    onClick={handleToggleFavoritos}
+                    className="w-full h-full p-1 active:bg-gray-300 dark:active:bg-gray-600
+                                text-2xl md:text-3xl text-violet-800 dark:text-white
                                 rounded-sm cursor-pointer
                                 flex items-center justify-center">
-                    <HiOutlineStar className="text-2xl md:text-3xl text-violet-800 dark:text-white" />
+                    {verSoloFavoritos ? <HiStar /> : <HiOutlineStar />}
                 </div>
 
                 <div className="w-full h-full p-1 active:bg-gray-300 dark:active:bg-gray-600

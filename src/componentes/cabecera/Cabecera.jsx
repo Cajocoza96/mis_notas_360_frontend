@@ -12,7 +12,7 @@ import { toggleVerModo, toggleVerOrden } from "../../store/preferenciaSlice";
 
 import {
     HiDotsVertical, HiChevronLeft, HiX, HiOutlineBookOpen, HiMenu,
-    HiMinusCircle, HiClock, HiCheckCircle
+    HiMinusCircle, HiClock, HiCheckCircle, HiStar
 } from "react-icons/hi";
 
 
@@ -24,6 +24,8 @@ export default function Cabecera({ paginaPrincipal, paginaBusqueda,
     const verOrden = useSelector((state) => state.preferencia.verOrden);
 
     const verAnotacEstado = useSelector((state) => state.preferencia.verAnotacEstado);
+
+    const verSoloFavoritos = useSelector((state) => state.preferencia.verSoloFavoritos);
 
     const dispatch = useDispatch();
 
@@ -100,15 +102,23 @@ export default function Cabecera({ paginaPrincipal, paginaBusqueda,
                                     text-black dark:text-white">
                             MisNotas360
                         </p>
+
+                        {verSoloFavoritos && (
+                            <div className="">
+                                <HiStar className="text-2xl md:text-3xl 
+                                                    text-violet-700 dark:text-white" />
+                            </div>
+                        )}
+
                         <div className="text-2xl md:text-3xl">
-                            {verAnotacEstado === 'ver_no_asignado' 
-                            ? <HiMinusCircle className="text-blue-700"/> :
-                            verAnotacEstado === 'ver_pendiente' 
-                            ? <HiClock className="text-yellow-700"/> : 
-                            verAnotacEstado === 'ver_finalizado'
-                            ? <HiCheckCircle className="text-green-700" /> :
-                            verAnotacEstado === 'ver_todos_estados'
-                            ? '' : ''}
+                            {verAnotacEstado === 'ver_no_asignado'
+                                ? <HiMinusCircle className="text-blue-700" /> :
+                                verAnotacEstado === 'ver_pendiente'
+                                    ? <HiClock className="text-yellow-700" /> :
+                                    verAnotacEstado === 'ver_finalizado'
+                                        ? <HiCheckCircle className="text-green-700" /> :
+                                        verAnotacEstado === 'ver_todos_estados'
+                                            ? '' : ''}
                         </div>
                     </Link>
                 )}

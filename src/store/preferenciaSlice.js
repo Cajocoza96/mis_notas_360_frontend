@@ -23,6 +23,7 @@ export const cargarPreferencia = createAsyncThunk(
             return {
                 organizarPorColumna: data.organizarPorColumna,
                 tema: data.tema, // 'claro', 'oscuro', 'sistema'
+                verSoloFavoritos: data.verSoloFavoritos || false,
                 verAnotacEstado: data.verAnotacEstado || 'ver_todos_estados'
             };
         } catch (error) {
@@ -83,6 +84,32 @@ export const guardarTema = createAsyncThunk(
     }
 );
 
+// Thunk para guardar verSoloFavoritos
+export const guardarVerSoloFavoritos = createAsyncThunk(
+    'preferencia/guardarVerSoloFavoritos',
+    async (verSoloFavoritos, { rejectWithValue }) => {
+        try {
+            const token = localStorage.getItem('token');
+            const response = await fetch(`${API_URL}/auth/preferencia`, {
+                method: 'PUT',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ verSoloFavoritos })
+            });
+
+            if (!response.ok) {
+                throw new Error('Error al guardar filtro de favoritos');
+            }
+
+            return verSoloFavoritos;
+        } catch (error) {
+            return rejectWithValue(error.message);
+        }
+    }
+);
+
 // Thunk para guardar el filtro de estado de anotaciones
 export const guardarVerAnotacEstado = createAsyncThunk(
     'preferencia/guardarVerAnotacEstado',
@@ -112,6 +139,7 @@ export const guardarVerAnotacEstado = createAsyncThunk(
 const initialState = {
     organizarPorColumna: true,
     tema: 'sistema', // 'claro', 'oscuro', 'sistema'
+    verSoloFavoritos: false,
     verAnotacEstado: 'ver_todos_estados', // 'ver_no_asignado', 'ver_pendiente', 'ver_finalizado', 'ver_todos_estados'
     verModo: false,
     verOrden: false,
@@ -149,6 +177,14 @@ const preferenciaSlice = createSlice({
             state.tema = action.payload
         },
 
+        // Ver Solo Favoritos
+        toggleVerSoloFavoritos: (state) => {
+            state.verSoloFavoritos = !state.verSoloFavoritos
+        },
+        setVerSoloFavoritos: (state, action) => {
+            state.verSoloFavoritos = action.payload
+        },
+
         // Ver Anotación Estado
         setVerAnotacEstado: (state, action) => {
             state.verAnotacEstado = action.payload
@@ -180,6 +216,7 @@ const preferenciaSlice = createSlice({
             .addCase(cargarPreferencia.fulfilled, (state, action) => {
                 state.organizarPorColumna = action.payload.organizarPorColumna;
                 state.tema = action.payload.tema;
+                state.verSoloFavoritos = action.payload.verSoloFavoritos;
                 state.verAnotacEstado = action.payload.verAnotacEstado;
                 state.cargandoPreferencia = false;
                 
@@ -198,6 +235,10 @@ const preferenciaSlice = createSlice({
             .addCase(guardarTema.fulfilled, (state, action) => {
                 state.tema = action.payload;
             })
+            // Guardar ver solo favoritos
+            .addCase(guardarVerSoloFavoritos.fulfilled, (state, action) => {
+                state.verSoloFavoritos = action.payload;
+            })
             // Guardar ver anotación estado
             .addCase(guardarVerAnotacEstado.fulfilled, (state, action) => {
                 state.verAnotacEstado = action.payload;
@@ -209,6 +250,8 @@ export const {
     toggleOrganizarPorColumna,
     setOrganizarPorColumna,
     setTema,
+    toggleVerSoloFavoritos, 
+    setVerSoloFavoritos,
     setVerAnotacEstado,
     toggleVerModo,
     setVerModo,

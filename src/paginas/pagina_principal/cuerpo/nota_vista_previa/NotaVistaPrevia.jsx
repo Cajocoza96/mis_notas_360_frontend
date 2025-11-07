@@ -6,9 +6,9 @@ import { HiOutlineStar, HiStar } from "react-icons/hi2";
 
 import { useNavigate } from "react-router-dom";
 
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
-import { actualizarFavoritoLocal } from "../../../../store/anotacionesSlice";
+import { actualizarFavoritoLocal, cargarAnotaciones  } from "../../../../store/anotacionesSlice";
 
 import { actualizarFavorito } from "../../../../services/anotacionesService";
 
@@ -18,6 +18,9 @@ export default function NotaVistaPrevia({ anotacionId, iconoFavorito, texto, no_
     const navigate = useNavigate();
 
     const dispatch = useDispatch();
+
+    // ✅ Obtener el estado de verSoloFavoritos
+    const verSoloFavoritos = useSelector((state) => state.preferencia.verSoloFavoritos);
 
     const [actualizandoFavorito, setActualizandoFavorito] = useState(false);
 
@@ -44,6 +47,11 @@ export default function NotaVistaPrevia({ anotacionId, iconoFavorito, texto, no_
             // Actualizar en el backend
             await actualizarFavorito(anotacionId, nuevoEstadoFavorito);
 
+            // ✅ Si estamos viendo solo favoritos, recargar para actualizar la vista
+            if (verSoloFavoritos) {
+                dispatch(cargarAnotaciones());
+            }
+
         } catch (error) {
             console.error('Error al actualizar favorito:', error);
             // Revertir el cambio local si falla
@@ -51,6 +59,11 @@ export default function NotaVistaPrevia({ anotacionId, iconoFavorito, texto, no_
                 anotacionId,
                 favorito: esFavorito ? 1 : 0
             }));
+
+            // ✅ Si estamos viendo solo favoritos, recargar para mantener consistencia
+            if (verSoloFavoritos) {
+                dispatch(cargarAnotaciones());
+            }
         } finally {
             setActualizandoFavorito(false);
         }

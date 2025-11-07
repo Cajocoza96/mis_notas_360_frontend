@@ -27,6 +27,8 @@ export default function PaginaVistaPrevia() {
 
     const verModalPapeleraNota = useSelector((state) => state.tareas.verModalPapeleraNota);
 
+    const verModalEliminarNotaDefinitiva = useSelector((state) => state.tareas.verModalEliminarNotaDefinitiva);
+
     // Determinar si estamos en modo vista previa (solo lectura)
     const esModoVistaPrevia = location.pathname.includes('/vista-previa/nota/');
 
@@ -106,7 +108,16 @@ export default function PaginaVistaPrevia() {
             animate="animate">
                 
             {verModalPapeleraNota && (
-                <ModalConfirmacion textoPregunta="¿Mover nota a la papelera?" />
+                <ModalConfirmacion 
+                    textoPregunta="¿Mover nota a la papelera?" 
+                    eliminarAceptar={true}/>
+            )}
+
+            {verModalEliminarNotaDefinitiva && (
+                <ModalConfirmacion 
+                textoPregunta="¿Desea eliminar definitivamente la nota?" 
+                eliminarPregunta={true}
+                eliminarAceptar={true}/>
             )}
 
             <Cabecera 

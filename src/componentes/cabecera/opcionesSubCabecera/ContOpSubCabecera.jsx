@@ -14,7 +14,7 @@ import {
 
 import { toggleVerModo, toggleVerOrden } from "../../../store/preferenciaSlice";
 
-import { toggleVerModalPapeleraNota } from "../../../store/tareasSlice";
+import { toggleVerModalPapeleraNota, toggleVerModalEliminarNotaDefinitiva } from "../../../store/tareasSlice";
 
 import OpcionesCabecera from "./OpcionesCabecera";
 
@@ -28,6 +28,8 @@ import {
     HiOutlineDesktopComputer, HiOutlineMoon, HiOutlineSun,
     HiMenuAlt3, HiOutlineTrash, HiOutlineInformationCircle
 } from "react-icons/hi";
+
+import { MdDeleteForever } from "react-icons/md";
 
 export default function ContOpSubCabecera() {
 
@@ -64,6 +66,13 @@ export default function ContOpSubCabecera() {
             dispatch(toggleVerOpcCabPagVisPrev())
         }
         dispatch(toggleVerModalPapeleraNota())
+    }
+
+    const handleVerEliminarNotaDefinitiva = () => {
+        if (verOpcCabPagVisPrev) {
+            dispatch(toggleVerOpcCabPagVisPrev())
+        }
+        dispatch(toggleVerModalEliminarNotaDefinitiva())
     }
 
 
@@ -190,6 +199,19 @@ export default function ContOpSubCabecera() {
                                             <HiOutlineTrash
                                                 onClick={handleVerPapeleraNota}
                                                 className="text-2xl md:text-3xl" />}
+                                    />
+                                </div>
+
+                                <div className="w-full p-1 border-b border-gray-400
+                                        text-red-700 dark:text-white
+                                        bg-white dark:bg-gray-800 cursor-pointer">
+                                    <OpcionesCabecera
+                                        className="justify-center"
+                                        iconoOpcion={
+
+                                            <MdDeleteForever
+                                                onClick={handleVerEliminarNotaDefinitiva}
+                                                className="text-3xl md:text-4xl" />}
                                     />
                                 </div>
 
