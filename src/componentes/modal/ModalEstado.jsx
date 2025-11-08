@@ -52,14 +52,17 @@ export default function ModalEstado() {
                 <div className="flex flex-col gap-2">
 
                     {opcionesDisponibles.includes("no_asignado") && (
-                        <div className="flex flex-row items-center gap-4 select-none">
+                        <div
+                            onClick={() => handleSeleccionarEstado("no_asignado")} 
+                            className="w-fit cursor-pointer
+                                        flex flex-row items-center gap-4 select-none">
 
-                            <div onClick={() => handleSeleccionarEstado("no_asignado")}>
+                            <div>
                                 {estadoTemporal === "no_asignado"
                                     ?
-                                    <FaCircle className="text-base md:text-xl text-black dark:text-white cursor-pointer" />
+                                    <FaCircle className="text-base md:text-xl text-black dark:text-white" />
                                     :
-                                    <FaRegCircle className="text-base md:text-xl text-black dark:text-white cursor-pointer" />
+                                    <FaRegCircle className="text-base md:text-xl text-black dark:text-white" />
                                 }
                             </div>
 
@@ -71,14 +74,17 @@ export default function ModalEstado() {
                     )}
 
                     {opcionesDisponibles.includes("pendiente") && (
-                        <div className="flex flex-row items-center gap-4 select-none">
+                        <div 
+                            onClick={() => handleSeleccionarEstado("pendiente")}
+                            className="w-fit cursor-pointer
+                                        flex flex-row items-center gap-4 select-none">
 
-                            <div onClick={() => handleSeleccionarEstado("pendiente")}>
+                            <div>
                                 {estadoTemporal === "pendiente"
                                     ?
-                                    <FaCircle className="text-base md:text-xl text-black dark:text-white cursor-pointer" />
+                                    <FaCircle className="text-base md:text-xl text-black dark:text-white" />
                                     :
-                                    <FaRegCircle className="text-base md:text-xl text-black dark:text-white cursor-pointer" />
+                                    <FaRegCircle className="text-base md:text-xl text-black dark:text-white" />
                                 }
                             </div>
 
@@ -89,14 +95,16 @@ export default function ModalEstado() {
                     )}
 
                     {opcionesDisponibles.includes("finalizado") && (
-                        <div className="flex flex-row items-center gap-4 select-none">
-
-                            <div onClick={() => handleSeleccionarEstado("finalizado")}>
+                        <div 
+                            onClick={() => handleSeleccionarEstado("finalizado")}
+                            className="w-fit cursor-pointer
+                                        flex flex-row items-center gap-4 select-none">
+                            <div>
                                 {estadoTemporal === "finalizado"
                                     ?
-                                    <FaCircle className="text-base md:text-xl text-black dark:text-white cursor-pointer" />
+                                    <FaCircle className="text-base md:text-xl text-black dark:text-white" />
                                     :
-                                    <FaRegCircle className="text-base md:text-xl text-black dark:text-white cursor-pointer" />
+                                    <FaRegCircle className="text-base md:text-xl text-black dark:text-white" />
                                 }
                             </div>
 

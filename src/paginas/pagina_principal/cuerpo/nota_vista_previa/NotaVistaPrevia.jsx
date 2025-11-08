@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-import { HiMinusCircle, HiClock, HiCheckCircle } from "react-icons/hi";
+import { HiMinusCircle, HiClock, HiCheckCircle, HiDotsVertical } from "react-icons/hi";
 
 import { HiOutlineStar, HiStar } from "react-icons/hi2";
 
@@ -9,6 +9,8 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 
 import { actualizarFavoritoLocal, cargarAnotaciones  } from "../../../../store/anotacionesSlice";
+
+import { toggleVerAdminAnotacion } from "../../../../store/anotacionesSlice";
 
 import { actualizarFavorito } from "../../../../services/anotacionesService";
 
@@ -23,6 +25,10 @@ export default function NotaVistaPrevia({ anotacionId, iconoFavorito, texto, no_
     const verSoloFavoritos = useSelector((state) => state.preferencia.verSoloFavoritos);
 
     const [actualizandoFavorito, setActualizandoFavorito] = useState(false);
+
+    const handleVerAdminAnotacion = () => {
+        dispatch(toggleVerAdminAnotacion());
+    }
 
     const handleVerVistaPrevia = () => {
         navigate(`/vista-previa/nota/${anotacionId}`);
@@ -48,20 +54,21 @@ export default function NotaVistaPrevia({ anotacionId, iconoFavorito, texto, no_
             await actualizarFavorito(anotacionId, nuevoEstadoFavorito);
 
             // ✅ Si estamos viendo solo favoritos, recargar para actualizar la vista
-            if (verSoloFavoritos) {
+            if (verSoloFavoritos || !verSoloFavoritos) {
                 dispatch(cargarAnotaciones());
             }
 
         } catch (error) {
             console.error('Error al actualizar favorito:', error);
             // Revertir el cambio local si falla
+
             dispatch(actualizarFavoritoLocal({
                 anotacionId,
                 favorito: esFavorito ? 1 : 0
             }));
 
             // ✅ Si estamos viendo solo favoritos, recargar para mantener consistencia
-            if (verSoloFavoritos) {
+            if (verSoloFavoritos ) {
                 dispatch(cargarAnotaciones());
             }
         } finally {
@@ -70,9 +77,14 @@ export default function NotaVistaPrevia({ anotacionId, iconoFavorito, texto, no_
     };
 
     return (
-        <div className={`w-full h-35 p-2 rounded-md select-none
+        /*
+        <div className="w-[98%] bg-gray-200/90 p-2 mt-2 rounded-md select-none
+                        flex flex-col items-center justify-center">
+        */
+
+        <div className={`w-[98%] h-35 mt-2 p-2 rounded-md select-none
                         flex flex-col items-center gap-1 overflow-hidden
-                        hover:opacity-80 transition-opacity cursor-pointer
+                        hover:opacity-80 transition-opacity
                         ${no_asignado ? 'bg-blue-200 dark:bg-blue-950' :
                 pendiente ? 'bg-yellow-200 dark:bg-yellow-950' :
                     finalizado ? 'bg-green-200 dark:bg-green-950' : 'bg-gray-200 dark:bg-black'}`}
@@ -106,6 +118,15 @@ export default function NotaVistaPrevia({ anotacionId, iconoFavorito, texto, no_
                     )}
 
                 </div>
+                
+                <div 
+                    onClick={(e) => {
+                        e.stopPropagation()
+                        handleVerAdminAnotacion()
+                    }}
+                    className="text-2xl md:text-3xl text-black dark:text-white cursor-pointer">
+                    <HiDotsVertical />
+                </div>
             </div>
 
             <div className="w-full h-25 text-center overflow-hidden 
@@ -115,7 +136,10 @@ export default function NotaVistaPrevia({ anotacionId, iconoFavorito, texto, no_
                     {texto}
                 </p>
             </div>
-
         </div>
+
+        /*
+        </div>
+        */
     );
 }

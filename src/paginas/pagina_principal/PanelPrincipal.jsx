@@ -17,6 +17,8 @@ export default function PanelPrincipal() {
     const verOpcionesCabecera = useSelector((state) => state.layout.verOpcionesCabecera);
 
     const verModalCrearNota = useSelector((state) => state.tareas.verModalCrearNota);
+    const verModalPapeleraNota = useSelector((state) => state.tareas.verModalPapeleraNota);
+    const verModalEliminarNotaDefinitiva = useSelector((state) => state.tareas.verModalEliminarNotaDefinitiva);
 
     const verMenuHamburguesa = useSelector((state) => state.layout.verMenuHamburguesa);
 
@@ -56,7 +58,20 @@ export default function PanelPrincipal() {
             {verModalCrearNota && (
                 <ModalConfirmacion textoPregunta="¿Desea crear una nota?" />
             )}
-            
+
+            {verModalPapeleraNota && (
+                <ModalConfirmacion
+                    textoPregunta="¿Mover nota a la papelera?"
+                    eliminarAceptar={true} />
+            )}
+
+            {verModalEliminarNotaDefinitiva && (
+                <ModalConfirmacion
+                    textoPregunta="¿Desea eliminar definitivamente la nota?"
+                    eliminarPregunta={true}
+                    eliminarAceptar={true} />
+            )}
+
             <AnimatePresence>
                 {verMenuHamburguesa && (
                     <MenuHamburguesa />
@@ -72,7 +87,7 @@ export default function PanelPrincipal() {
                 notaNoEliminada={true}
                 verContenidoCuerpo={true}
             />
-            
+
             <Footer />
         </motion.div>
     );

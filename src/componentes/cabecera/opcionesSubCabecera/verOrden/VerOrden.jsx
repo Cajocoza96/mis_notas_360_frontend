@@ -1,10 +1,12 @@
 import React from "react";
 
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 import { toggleVerOpcionesCabecera } from "../../../../store/layoutSlice";
 
-import { toggleVerOrden } from "../../../../store/preferenciaSlice";
+import { toggleVerOrden, guardarOrdenAnotaciones } from "../../../../store/preferenciaSlice";
+
+import { cargarAnotaciones } from "../../../../store/anotacionesSlice";
 
 import SubOpcionesCabecera from "../SubOpcionesCabecera";
 
@@ -14,14 +16,22 @@ export default function VerOrden() {
 
     const dispatch = useDispatch();
 
-    const handleOrdenarNotas = () => {
+    const ordenAnotaciones = useSelector((state) => state.preferencia.ordenAnotaciones);
 
+    const handleCambiarOrden = async (nuevoOrden) => {
+        if (ordenAnotaciones !== nuevoOrden) {
+            // Guardar en BD y Redux
+            await dispatch(guardarOrdenAnotaciones(nuevoOrden));
+            // Recargar las anotaciones con el nuevo orden
+            await dispatch(cargarAnotaciones());
+        }
+
+        // Cerrar menú
         requestAnimationFrame(() => {
-            dispatch(toggleVerOrden())
-            dispatch(toggleVerOpcionesCabecera())
-        })
-
-    }
+            dispatch(toggleVerOrden());
+            dispatch(toggleVerOpcionesCabecera());
+        });
+    };
 
     return (
         <>
@@ -37,64 +47,52 @@ export default function VerOrden() {
             <div className="w-full p-1 border-b border-gray-400 select-none
                                                     text-black dark:text-white 
                                                     bg-gray-300 dark:bg-gray-700 cursor-pointer"
-                onClick={handleOrdenarNotas}>
+                onClick={() => handleCambiarOrden('vis_prev_nota_acs')}>
                 <SubOpcionesCabecera
                     className="justify-center"
                     nombreOpcion="Vista previa nota (Asc)"
-
-                /* 
-                circulo={theme === "dark" && (
-                    <HiCheckCircle className="text-2xl md:text-3xl text-violet-800" />
-                )}
-                */
+                    circulo={ordenAnotaciones === 'vis_prev_nota_acs' && (
+                        <HiCheckCircle className="text-2xl md:text-3xl text-violet-800 dark:text-violet-500" />
+                    )}
                 />
             </div>
 
             <div className="w-full p-1 border-b border-gray-400 select-none
                                                     text-black dark:text-white 
                                                     bg-gray-300 dark:bg-gray-700 cursor-pointer"
-                onClick={handleOrdenarNotas}>
+                onClick={() => handleCambiarOrden('vis_prev_nota_desc')}>
                 <SubOpcionesCabecera
                     className="justify-center"
                     nombreOpcion="Vista previa nota (Desc)"
-
-                /* 
-                circulo={theme === "dark" && (
-                    <HiCheckCircle className="text-2xl md:text-3xl text-violet-800" />
-                )}
-                */
+                    circulo={ordenAnotaciones === 'vis_prev_nota_desc' && (
+                        <HiCheckCircle className="text-2xl md:text-3xl text-violet-800 dark:text-violet-500" />
+                    )}
                 />
             </div>
 
             <div className="w-full p-1 border-b border-gray-400 select-none
                                                     text-black dark:text-white 
                                                     bg-gray-300 dark:bg-gray-700 cursor-pointer"
-                onClick={handleOrdenarNotas}>
+                onClick={() => handleCambiarOrden('fecha_creacion')}>
                 <SubOpcionesCabecera
                     className="justify-center"
                     nombreOpcion="Fecha de creación"
-
-                /* 
-                circulo={theme === "dark" && (
-                    <HiCheckCircle className="text-2xl md:text-3xl text-violet-800" />
-                )}
-                */
+                    circulo={ordenAnotaciones === 'fecha_creacion' && (
+                        <HiCheckCircle className="text-2xl md:text-3xl text-violet-800 dark:text-violet-500" />
+                    )}
                 />
             </div>
 
             <div className="w-full p-1 border-b border-gray-400 select-none
                                                     text-black dark:text-white 
                                                     bg-gray-300 dark:bg-gray-700 cursor-pointer"
-                onClick={handleOrdenarNotas}>
+                onClick={() => handleCambiarOrden('fecha_modificacion')}>
                 <SubOpcionesCabecera
                     className="justify-center"
                     nombreOpcion="Fecha de modificación"
-
-                /* 
-                circulo={theme === "dark" && (
-                    <HiCheckCircle className="text-2xl md:text-3xl text-violet-800" />
-                )}
-                */
+                    circulo={ordenAnotaciones === 'fecha_modificacion' && (
+                        <HiCheckCircle className="text-2xl md:text-3xl text-violet-800 dark:text-violet-500" />
+                    )}
                 />
             </div>
 

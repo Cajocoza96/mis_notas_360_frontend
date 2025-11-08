@@ -26,7 +26,7 @@ import VerFechaCreaModCantText from "./ver_fecha_crea_mod_cant_text/VerFechaCrea
 
 import {
     HiOutlineDesktopComputer, HiOutlineMoon, HiOutlineSun,
-    HiMenuAlt3, HiOutlineTrash, HiOutlineInformationCircle
+    HiMenuAlt3, HiOutlineTrash, HiOutlineInformationCircle, HiSelector
 } from "react-icons/hi";
 
 import { MdDeleteForever } from "react-icons/md";
@@ -43,6 +43,10 @@ export default function ContOpSubCabecera() {
 
     const handleVerModo = () => {
         dispatch(toggleVerModo())
+    }
+
+    const handleSeleccionarTodo = () => {
+        dispatch(toggleVerOpcionesCabecera())
     }
 
     const handleVerOrden = () => {
@@ -108,6 +112,17 @@ export default function ContOpSubCabecera() {
 
                         {verOpcionesCabecera && !verModo && !verOrden && (
                             <>
+                                <div className="w-full p-1 border-b border-gray-400
+                                        text-black dark:text-white 
+                                        bg-white dark:bg-gray-800 cursor-pointer"
+                                    onClick={handleSeleccionarTodo}>
+                                    <OpcionesCabecera
+                                        className="justify-start"
+                                        iconoOpcion={<HiSelector className="text-2xl md:text-3xl" />}
+                                        nombreOpcion="Seleccionar todo"
+                                    />
+                                </div>
+
                                 <div className="w-full p-1 border-b border-gray-400
                                         text-black dark:text-white 
                                         bg-white dark:bg-gray-800 cursor-pointer"
@@ -203,7 +218,7 @@ export default function ContOpSubCabecera() {
                                 </div>
 
                                 <div className="w-full p-1 border-b border-gray-400
-                                        text-red-700 dark:text-white
+                                        text-red-700 dark:text-red-500
                                         bg-white dark:bg-gray-800 cursor-pointer">
                                     <OpcionesCabecera
                                         className="justify-center"

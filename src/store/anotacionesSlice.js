@@ -18,13 +18,24 @@ const initialState = {
     anotaciones: [],
     anotacionActual: null,
     cargando: false,
-    error: null
+    error: null,
+
+    //Administrar anotacion
+    verAdminAnotacion : false
 }
 
 const anotacionesSlice = createSlice({
     name: 'anotaciones',
     initialState,
     reducers: {
+        // Para ver Administrar anotacion
+        toggleVerAdminAnotacion: (state) => {
+            state.verAdminAnotacion = !state.verAdminAnotacion
+        },
+        setVerAdminAnotacion: (state, action) => {
+            state.verAdminAnotacion = action.payload
+        },
+
         setAnotaciones: (state, action) => {
             state.anotaciones = action.payload
         },
@@ -99,6 +110,9 @@ const anotacionesSlice = createSlice({
 })
 
 export const {
+    toggleVerAdminAnotacion,
+    setVerAdminAnotacion,
+    
     setAnotaciones,
     setAnotacionActual,
     setCargando,

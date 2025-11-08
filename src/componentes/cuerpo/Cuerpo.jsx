@@ -20,7 +20,9 @@ import { guardarVerAnotacEstado } from "../../store/preferenciaSlice";
 
 import { obtenerEstadoProps } from "../../utils/estadoUtils";
 
-import { obtenerContadores, obtenerAnotaciones, obtenerAnotacionesEliminadas } from "../../services/anotacionesService";
+import { obtenerContadores, obtenerAnotacionesEliminadas } from "../../services/anotacionesService";
+
+import AdminAnotacion from "../admin_anotacion/AdminAnotacion";
 
 export default function Cuerpo({ notaNoEliminada, notaBusquedaNotaEliminada,
     verContenidoCuerpo, verNotaBusqueda, verNotaEliminada, verTodosEstados }) {
@@ -34,6 +36,9 @@ export default function Cuerpo({ notaNoEliminada, notaBusquedaNotaEliminada,
     const organizarPorColumna = useSelector((state) => state.preferencia.organizarPorColumna);
     const verSoloFavoritos = useSelector((state) => state.preferencia.verSoloFavoritos);
     const verAnotacEstado = useSelector((state) => state.preferencia.verAnotacEstado);
+    const ordenAnotaciones = useSelector((state) => state.preferencia.ordenAnotaciones);
+
+    const verAdminAnotacion = useSelector((state) => state.anotaciones.verAdminAnotacion);
 
     const { anotaciones, cargando } = useSelector((state) => state.anotaciones);
 
@@ -66,7 +71,7 @@ export default function Cuerpo({ notaNoEliminada, notaBusquedaNotaEliminada,
         } else if (verNotaEliminada) {
             cargarAnotacionesEliminadas();
         }
-    }, [verContenidoCuerpo, verNotaEliminada, verSoloFavoritos, verAnotacEstado, location.pathname, dispatch]);
+    }, [verContenidoCuerpo, verNotaEliminada, verSoloFavoritos, verAnotacEstado, ordenAnotaciones, location.pathname, dispatch]);
 
     //Cargar anotaciones eliminadas
     const cargarAnotacionesEliminadas = async () => {
@@ -122,7 +127,11 @@ export default function Cuerpo({ notaNoEliminada, notaBusquedaNotaEliminada,
                                 grid
                 ${anotaciones.length === 0 ? '' : 'auto-rows-[11rem]'}
                 ${organizarPorColumna ? 'grid-cols-2 2xs:grid-cols-3 lg:grid-cols-5' : 'grid-cols-1'} gap-5 lg:gap-3`}>
-
+                
+                {verAdminAnotacion && (
+                    <AdminAnotacion />
+                )}
+                
                     {verContenidoCuerpo && (
                         <>
                             {cargando ? (
@@ -155,7 +164,8 @@ export default function Cuerpo({ notaNoEliminada, notaBusquedaNotaEliminada,
                                 </div>
                             ) : (
                                 anotaciones.map((anotacion) => (
-
+                                    /*Estas son las anotaciones que se debe ordenar por las
+                                    maneras que te dije */
                                     <NotaVistaPrevia
                                         iconoFavorito={true}
                                         key={anotacion.id}
