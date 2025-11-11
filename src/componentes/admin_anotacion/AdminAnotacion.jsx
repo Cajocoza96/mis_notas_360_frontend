@@ -2,7 +2,7 @@ import React from "react";
 
 import { useDispatch, useSelector } from "react-redux";
 
-import { toggleVerModalPapeleraNota, toggleVerModalEliminarNotaDefinitiva } from "../../store/tareasSlice";
+import { toggleVerModalPapeleraNota, toggleVerModalEliminarNotaDefinitiva, setAnotacionId } from "../../store/tareasSlice";
 
 import { toggleVerAdminAnotacion } from "../../store/anotacionesSlice";
 
@@ -12,6 +12,8 @@ export default function AdminAnotacion() {
 
     const verAdminAnotacion = useSelector((state) => state.anotaciones.verAdminAnotacion);
 
+    const anotacionId = useSelector((state) => state.tareas.anotacionId);
+
     const handleVerAdminAnotacion = () => {
         dispatch(toggleVerAdminAnotacion());
     }
@@ -20,15 +22,19 @@ export default function AdminAnotacion() {
         if (verAdminAnotacion) {
             dispatch(toggleVerAdminAnotacion())
         }
+
+        dispatch(setAnotacionId(anotacionId))
         dispatch(toggleVerModalPapeleraNota())
     }
 
     const handleVerEliminarNotaDefinitiva = () => {
-            if (verAdminAnotacion) {
-                dispatch(toggleVerAdminAnotacion())
-            }
-            dispatch(toggleVerModalEliminarNotaDefinitiva())
+        if (verAdminAnotacion) {
+            dispatch(toggleVerAdminAnotacion())
         }
+
+        dispatch(setAnotacionId(anotacionId))
+        dispatch(toggleVerModalEliminarNotaDefinitiva())
+    }
 
     return (
         <>
@@ -43,9 +49,12 @@ export default function AdminAnotacion() {
 
                 <div className="text-base md:text-xl text-white
                             flex flex-col gap-4">
+                    
+                    {/*
                     <p className="cursor-pointer whitespace-nowrap">
                         Seleccionar
                     </p>
+                    */}
 
                     <p
                         onClick={handleVerPapeleraNota}
@@ -53,7 +62,7 @@ export default function AdminAnotacion() {
                         Mover a papelera
                     </p>
 
-                    <p 
+                    <p
                         onClick={handleVerEliminarNotaDefinitiva}
                         className="cursor-pointer whitespace-nowrap">
                         Eliminar definitivamente

@@ -33,7 +33,7 @@ const CuerpoEdicion = forwardRef(({ handleNotaChange, handleNotaKeyDown, esModoV
     const tieneNota = notaRef?.current?.textContent?.trim() !== "";
 
     return (
-        <div className="w-[95%] mx-auto overflow-y-auto overflow-x-hidden min-h-0 min-w-0 pb-3 flex-1">
+        <div className="w-[95%] mx-auto overflow-y-auto overflow-x-hidden min-h-0 min-w-0 flex-1">
 
             {verModalTarea && !esModoVistaPrevia && (
                 <ModalTarea />
@@ -50,7 +50,7 @@ const CuerpoEdicion = forwardRef(({ handleNotaChange, handleNotaKeyDown, esModoV
                     onKeyDown={(e) => handleNotaKeyDown(e, notaRef)}
                     className={`text-base md:text-xl text-black dark:text-white
                                 outline-none border-none bg-transparent
-                                min-h-[1.5em] w-full
+                                min-h-[1.5em] w-full overflow-hidden
                                 whitespace-pre-wrap
                                 ${esModoVistaPrevia ? 'cursor-default' : ''}`}
                     style={{

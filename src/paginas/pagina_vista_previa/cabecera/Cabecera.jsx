@@ -47,6 +47,8 @@ export default function Cabecera({ esModoVistaPrevia }) {
         } catch (error) {
             console.error('Error al cargar la anotación en cabecera:', error);
             dispatch(setError('Error al cargar la anotación'));
+            // Redirigir a página de error
+            navigate('/error', { replace: true });
         } finally {
             dispatch(setCargando(false));
         }
@@ -127,7 +129,11 @@ export default function Cabecera({ esModoVistaPrevia }) {
                         <HiChevronLeft className="text-2xl md:text-3xl text-black dark:text-white cursor-pointer flex-shrink-0" />
                     </Link>
 
-                    <div className="w-20 flex flex-row items-center justify-between">
+                    <div className="w-30 flex flex-row items-center justify-between">
+                    <HiOutlinePencil
+                        onClick={handleEditarNota}
+                        className="text-2xl md:text-3xl cursor-pointer text-violet-800 dark:text-white" />
+
 
                         <div
                             onClick={handleToggleFavorito}
@@ -165,7 +171,7 @@ export default function Cabecera({ esModoVistaPrevia }) {
                 </div>
 
                 <div className="w-full p-1 flex flex-row items-center justify-between">
-                    <p className={`text-base md:text-xl 
+                    <p className={`text-base md:text-xl truncate
                             text-black dark:text-white 
                             ${!anotacionActual.titulo ? 'text-gray-500 dark:text-gray-400' : ''}
                             ${esModoVistaPrevia ? 'cursor-default' : ''}`}>
@@ -173,10 +179,6 @@ export default function Cabecera({ esModoVistaPrevia }) {
                             ? anotacionActual.titulo
                             : 'Sin título'}
                     </p>
-
-                    <HiOutlinePencil
-                        onClick={handleEditarNota}
-                        className="text-2xl md:text-3xl cursor-pointer text-violet-800 dark:text-white" />
                 </div>
 
             </div>

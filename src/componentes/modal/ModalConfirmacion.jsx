@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 import { useDispatch, useSelector } from "react-redux";
 
@@ -6,7 +6,7 @@ import { toggleVerMenuHamburguesa } from "../../store/layoutSlice";
 
 import {
     restaurarAnotacion, papeleraAnotacion, eliminarAnotacion,
-    eliminarTodasAnotaciones
+    eliminarTodasAnotaciones, mostrarNotificacion, ocultarNotificacion
 } from "../../store/anotacionesSlice";
 
 import {
@@ -22,12 +22,14 @@ import { useAuth } from "../../hooks/useAuth";
 
 import { useContadores } from "../../hooks/useContadores";
 
-import { moverAPapelera, restaurarDesdePapelera, 
-        eliminarDefinitivamente, vaciarPapelera  } from "../../services/anotacionesService";
+import {
+    moverAPapelera, restaurarDesdePapelera,
+    eliminarDefinitivamente, vaciarPapelera
+} from "../../services/anotacionesService";
 
 export default function ModalConfirmacion({ textoPregunta, restaurarTexto, eliminarPregunta, eliminarAceptar }) {
     const location = useLocation();
-    
+
     const { actualizarContadores } = useContadores();
 
     const [procesando, setProcesando] = useState(false);
@@ -39,8 +41,19 @@ export default function ModalConfirmacion({ textoPregunta, restaurarTexto, elimi
     // Determinar si estamos en modo vista previa para ir a panel principal
     const esModoVistaPrevia = location.pathname.includes('/vista-previa/nota/');
 
+    const esPanelPrincipal = location.pathname.includes('/panel-principal');
+
     //Obtener la ID de la anotacion desde Redux
     const anotacionIdRedux = useSelector((state) => state.tareas.anotacionId);
+
+    /*
+    // Limpiar el estado del modal exito error
+    useEffect(() => {
+        setTimeout(() => {
+            dispatch(ocultarNotificacion());
+        }, 3000);
+    }, [dispatch]);
+    */
 
     const crearNota = () => {
         dispatch(toggleVerModalCrearNota());
@@ -49,30 +62,58 @@ export default function ModalConfirmacion({ textoPregunta, restaurarTexto, elimi
 
     // Función para enviar la nota a la papelera
     const papeleraNota = async () => {
-        if (!id) {
+
+        // usar el ID de Redux (Para papelera) o el de params (Para vista previa)
+        const anotacionId = anotacionIdRedux || id;
+
+        if (!anotacionId) {
             console.error('No se encontró el ID de la anotación');
+            alert('Error: No se pudo identificar la anotación');
             return;
         }
 
         setProcesando(true);
 
         try {
-            const data = await moverAPapelera(id);
+            const data = await moverAPapelera(anotacionId);
 
             await actualizarContadores();
             console.log('Nota movida a papelera:', data);
 
             // Actualizar Redux: eliminar la anotación de la lista
-            dispatch(papeleraAnotacion(id));
-            
+            dispatch(papeleraAnotacion(anotacionId));
+
             // Cerrar el modal
             dispatch(toggleVerModalPapeleraNota());
 
-            // Navegar al panel principal
-            navigate("/panel-principal");
-        
+            // ✅ Mostrar notificación de éxito para enviar a papelera
+            dispatch(mostrarNotificacion({
+                mensaje: '¡Nota enviada a papelera!',
+                esError: false
+            }));
+
+            // Ocultar el modal automaticamente despues de 3 segundos
+            setTimeout(() => {
+                dispatch(ocultarNotificacion());
+            }, 2000);
+
+
+            if (!esPanelPrincipal) {
+                setTimeout(() => {
+                    // Navegar al panel principal
+                    navigate("/panel-principal");
+                }, 2000);
+            }
+
+
         } catch (error) {
-            alert('Error al eliminar la nota. Por favor intenta nuevamente.');
+
+            // ✅ Mostrar notificación de error
+            dispatch(mostrarNotificacion({
+                mensaje: '¡Error al enviar la nota a la papelera!',
+                esError: true
+            }));
+
         } finally {
             setProcesando(false);
         }
@@ -98,14 +139,31 @@ export default function ModalConfirmacion({ textoPregunta, restaurarTexto, elimi
             await actualizarContadores();
             console.log('Nota restaurada desde la papelera:', data);
 
+            // Ocultar el modal automaticamente despues de 3 segundos
+            setTimeout(() => {
+                dispatch(ocultarNotificacion());
+            }, 2000);
+
             // Actualizar Redux: eliminar la anotación de la lista de papelera
             dispatch(restaurarAnotacion(anotacionId));
 
             // Cerrar el modal
             dispatch(toggleVerModalRestaurarNota());
 
+            // ✅ Mostrar notificación de éxito para restaurar
+            dispatch(mostrarNotificacion({
+                mensaje: '¡Nota restaurada!',
+                esError: false
+            }));
+
         } catch (error) {
-            alert('Error al restaurar nota desde la papelera. Por favor intenta nuevamente.');
+
+            // ✅ Mostrar notificación de error
+            dispatch(mostrarNotificacion({
+                mensaje: '¡Error al restaurar la nota!',
+                esError: true
+            }));
+
         } finally {
             setProcesando(false);
         }
@@ -138,12 +196,32 @@ export default function ModalConfirmacion({ textoPregunta, restaurarTexto, elimi
             // Cerrar el modal
             dispatch(toggleVerModalEliminarNotaDefinitiva());
 
-            if(esModoVistaPrevia){
-                navigate("/panel-principal")
+            // ✅ Mostrar notificación de éxito para enviar a papelera
+            dispatch(mostrarNotificacion({
+                mensaje: '¡Nota eliminada definitivamente!',
+                esError: false
+            }));
+
+            // Ocultar el modal automaticamente despues de 3 segundos
+            setTimeout(() => {
+                dispatch(ocultarNotificacion());
+            }, 2000);
+
+            if (esModoVistaPrevia) {
+                setTimeout(() => {
+                    // Navegar al panel principal
+                    navigate("/panel-principal");
+                }, 2000);
             }
 
         } catch (error) {
-            alert('Error al eliminar la nota definitivamente desde la papelera. Por favor intenta nuevamente.');
+
+            // ✅ Mostrar notificación de error
+            dispatch(mostrarNotificacion({
+                mensaje: '¡Error al eliminar la nota definitivamente!',
+                esError: true
+            }));
+
         } finally {
             setProcesando(false);
         }
@@ -161,14 +239,30 @@ export default function ModalConfirmacion({ textoPregunta, restaurarTexto, elimi
             await actualizarContadores();
             console.log('Han sido eliminada definitivamente todas las notas desde la papelera:', data);
 
+            // Ocultar el modal automaticamente despues de 3 segundos
+            setTimeout(() => {
+                dispatch(ocultarNotificacion());
+            }, 2000);
+
             // Actualizar Redux: limpiar todas las anotaciones
             dispatch(eliminarTodasAnotaciones());
 
             // Cerrar el modal
             dispatch(toggleVerModalEliminarTodasLasNotasDefinitivo());
 
+            // ✅ Mostrar notificación de éxito para eliminar todas definitivamente
+            dispatch(mostrarNotificacion({
+                mensaje: '¡Todas las notas fueron eliminadas definitivamente!',
+                esError: false
+            }));
+
+
         } catch (error) {
-            alert('Error al eliminar todas las notas definitivamente desde la papelera. Por favor intenta nuevamente.');
+            // ✅ Mostrar notificación de error
+            dispatch(mostrarNotificacion({
+                mensaje: '¡Error al eliminar todas las notas definitivamente!',
+                esError: true
+            }));
         } finally {
             setProcesando(false);
         }
@@ -281,8 +375,8 @@ export default function ModalConfirmacion({ textoPregunta, restaurarTexto, elimi
                 <div className="mx-auto w-full flex flex-col gap-4 2xl:gap-5">
                     <div className="flex flex-col gap-2">
                         <p className={`text-base md:text-xl
-                                    ${restaurarTexto ? 'text-blue-600 dark:text-blue-500' : 
-                                        eliminarPregunta ? 'text-red-600 dark:text-red-500' : 'text-black dark:text-white'}`}>
+                                    ${restaurarTexto ? 'text-blue-600 dark:text-blue-500' :
+                                eliminarPregunta ? 'text-red-600 dark:text-red-500' : 'text-black dark:text-white'}`}>
                             {textoPregunta}
                         </p>
 
@@ -324,8 +418,8 @@ export default function ModalConfirmacion({ textoPregunta, restaurarTexto, elimi
 
                         <p
                             className={`text-base md:text-xl
-                                        ${restaurarTexto ? 'text-blue-600 dark:text-blue-500' : 
-                                            eliminarAceptar ? 'text-red-600 dark:text-red-500' : 'text-violet-800 dark:text-violet-400'} 
+                                        ${restaurarTexto ? 'text-blue-600 dark:text-blue-500' :
+                                    eliminarAceptar ? 'text-red-600 dark:text-red-500' : 'text-violet-800 dark:text-violet-400'} 
                                         ${procesando ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer font-semibold'}`}
                             onClick={() => {
                                 if (procesando) return;

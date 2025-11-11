@@ -4,7 +4,8 @@ export default function ContIconoInfoUsua({ titulo, texto, iconoInfoUsua,
     onClick, className = "", ...props }) {
     return (
         <div className="w-[95%] mx-auto">
-            <div className={`p-2 flex flex-row items-center gap-2 select-none 
+            <div className={`p-2 select-none
+                            flex flex-col 2xs:flex-row items-center justify-start gap-2 
                             ${className}`} {...props}
                 onClick={onClick}>
 
@@ -13,11 +14,11 @@ export default function ContIconoInfoUsua({ titulo, texto, iconoInfoUsua,
                 </div>
 
                 <div className="flex flex-col">
-                    <p className="text-base md:text-xl">
+                    <p className="text-base md:text-xl text-center 2xs:text-left">
                         {titulo}
                     </p>
 
-                    <p className="text-sm md:text-base">
+                    <p className="text-sm md:text-base text-center 2xs:text-left">
                         {texto}
                     </p>
                 </div>

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -12,8 +12,9 @@ import ModalConfirmacion from "../../componentes/modal/ModalConfirmacion";
 
 import MenuHamburguesa from "../../componentes/menu_hamburguesa/MenuHamburguesa";
 
-export default function PanelPrincipal() {
+import ModalExitoError from "../../componentes/modal/ModalExitoError";
 
+export default function PanelPrincipal() {
     const verOpcionesCabecera = useSelector((state) => state.layout.verOpcionesCabecera);
 
     const verModalCrearNota = useSelector((state) => state.tareas.verModalCrearNota);
@@ -40,6 +41,7 @@ export default function PanelPrincipal() {
         }
     }
 
+
     return (
         <motion.div
             className="h-dvh bg-white dark:bg-gray-800 
@@ -49,6 +51,7 @@ export default function PanelPrincipal() {
             initial="initial"
             animate="animate">
 
+            <ModalExitoError />
 
             {verOpcionesCabecera && (
                 <ContOpSubCabecera />

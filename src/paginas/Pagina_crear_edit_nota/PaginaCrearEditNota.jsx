@@ -14,6 +14,8 @@ import Footer from "./footer/Footer";
 
 import ModalEstado from "../../componentes/modal/ModalEstado";
 
+import ModalExitoError from "../../componentes/modal/ModalExitoError";
+
 import { mapearEstadoDesdeBD } from "../../utils/estadoUtils";
 
 import { obtenerAnotacionPorId } from "../../services/anotacionesService";
@@ -47,10 +49,16 @@ export default function PaginaCrearEditNota() {
 
     // Limpiar el historial cuando entramos en modo edición
     useEffect(() => {
+        
+        /*
+        //limpiar el historial cuando entramos 
+        dispatch(ocultarNotificacion());
+        */
+
         if (esModoEdicion && undoRedoHook.resetHistory) {
             undoRedoHook.resetHistory({ titulo: "", nota: "" });
         }
-    }, [esModoEdicion]);
+    }, [esModoEdicion, dispatch]);
 
     // Cargar la anotación si estamos en modo edición
     useEffect(() => {
@@ -143,6 +151,10 @@ export default function PaginaCrearEditNota() {
     // Limpiar el estado cuando el componente se desmonta
     useEffect(() => {
         return () => {
+
+            /*
+            dispatch(ocultarNotificacion());
+            */
             dispatch(resetNotaState());
         };
     }, [dispatch]);
@@ -203,6 +215,8 @@ export default function PaginaCrearEditNota() {
             {verModalEstado && (
                 <ModalEstado />
             )}
+
+            <ModalExitoError />
 
             <Cabecera
                 ref={tituloRef}

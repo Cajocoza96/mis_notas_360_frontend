@@ -2,8 +2,10 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
     verToast: false,
+    mensajeToast: '',
     verModalEliminarUsuario: false,
-    verModalCerrarSesion: false
+    verModalCerrarSesion: false,
+    verModalRestablecerContrasena: false,
 }
 
 const accesoSlice = createSlice({
@@ -15,6 +17,9 @@ const accesoSlice = createSlice({
         },
         setVerToast: (state, action) => {
             state.verToast = action.payload
+        },
+        setMensajeToast: (state, action) => {
+            state.mensajeToast = action.payload
         },
 
         toggleVerModalEliminarUsuario: (state) => {
@@ -29,6 +34,18 @@ const accesoSlice = createSlice({
         },
         setVerModalCerrarSesion: (state, action) => {
             state.verModalCerrarSesion = action.payload
+        },
+
+        toggleVerModalRestablecerContrasena: (state) => {
+            state.verModalRestablecerContrasena = !state.verModalRestablecerContrasena
+        },
+        setVerModalRestablecerContrasena: (state, action) => {
+            state.verModalRestablecerContrasena = action.payload
+        },
+
+        //Para resetear todo
+        resetAllAccesoState: (state) => {
+            return initialState;
         }
     }
 })
@@ -36,10 +53,15 @@ const accesoSlice = createSlice({
 export const {
     toggleVerToast,
     setVerToast,
+    setMensajeToast,
     toggleVerModalEliminarUsuario,
     setVerModalEliminarUsuario,
     toggleVerModalCerrarSesion,
-    setVerModalCerrarSesion
+    setVerModalCerrarSesion,
+    toggleVerModalRestablecerContrasena,
+    setVerModalRestablecerContrasena,
+
+    resetAllAccesoState
 } = accesoSlice.actions
 
 export default accesoSlice.reducer

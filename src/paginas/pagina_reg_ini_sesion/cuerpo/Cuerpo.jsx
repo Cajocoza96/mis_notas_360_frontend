@@ -1,7 +1,7 @@
 import React from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { setVerToast } from "../../../store/accesoSlice";
+import { setVerToast, setMensajeToast, toggleVerModalRestablecerContrasena } from "../../../store/accesoSlice";
 import BotonRegIniSesion from "./boton_reg_ini_sesion/BotonRegIniSesion";
 import CorreoContrasena from "./correo_contrasena/CorreoContrasena";
 import { FaFacebook, FaGoogle } from "react-icons/fa";
@@ -11,7 +11,7 @@ import { GoogleLogin } from "@react-oauth/google";
 import { jwtDecode } from "jwt-decode";
 import { toggleVerMenuHamburguesa } from "../../../store/layoutSlice";
 
-export default function Cuerpo({ setMensajeToast }) {
+export default function Cuerpo() {
     const location = useLocation();
     const navigate = useNavigate();
     const dispatch = useDispatch();
@@ -22,13 +22,18 @@ export default function Cuerpo({ setMensajeToast }) {
     const textoAccion = esRegistro ? infoRegIniSesion.registrate.accionCuenta : infoRegIniSesion.iniciar.accionCuenta;
 
     const mostrarToast = (mensaje) => {
-        setMensajeToast(mensaje);
+        dispatch(setMensajeToast(mensaje));
         dispatch(setVerToast(true));
 
         setTimeout(() => {
             dispatch(setVerToast(false));
         }, 3000);
     };
+
+    const handleRestablecerContrasena = () => {
+        dispatch(setVerToast(false));
+        dispatch(toggleVerModalRestablecerContrasena())
+    }
 
     // Función para manejar autenticación con Google
     const handleGoogleSuccess = async (credentialResponse) => {
@@ -106,17 +111,19 @@ export default function Cuerpo({ setMensajeToast }) {
                         text-black dark:text-white">
                 {textoAccion}
             </p>
+            
 
-            {/* Botón de Facebook */}
+            {/* Botón de Facebook 
             <div onClick={handleFacebookAuth}>
                 <BotonRegIniSesion
                     icono={<FaFacebook className="text-base md:text-xl text-blue-700 " />}
                     nombreIcono="Facebook"
                 />
             </div>
+            */}
 
             {/* Botón de Google - Versión oculta con estilo personalizado */}
-            <div className="relative">
+            <div className="relative cursor-pointer">
                 <div className="absolute inset-0 opacity-0 z-10">
                     <GoogleLogin
                         onSuccess={handleGoogleSuccess}
@@ -141,7 +148,23 @@ export default function Cuerpo({ setMensajeToast }) {
                 o
             </p>
 
-            <CorreoContrasena setMensajeToast={setMensajeToast} />
+            <CorreoContrasena 
+                textoContrasena="Contraseña"
+                noRestablecer={true}
+                />
+
+            {!esRegistro && (
+
+                <div 
+                    onClick={handleRestablecerContrasena}
+                    className="w-fit">
+                    <p className="mt-1 text-left text-base md:text-xl 
+                                select-none cursor-pointer
+                            text-black dark:text-white">
+                        ¿Olvidó su contraseña?
+                    </p>
+                </div>
+            )}
 
         </div>
     );

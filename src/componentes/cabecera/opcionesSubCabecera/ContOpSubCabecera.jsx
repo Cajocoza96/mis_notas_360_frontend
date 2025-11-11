@@ -111,7 +111,8 @@ export default function ContOpSubCabecera() {
                         transition={{ duration: 0.4, ease: "easeOut" }}>
 
                         {verOpcionesCabecera && !verModo && !verOrden && (
-                            <>
+                            <>  
+                                {/*
                                 <div className="w-full p-1 border-b border-gray-400
                                         text-black dark:text-white 
                                         bg-white dark:bg-gray-800 cursor-pointer"
@@ -122,6 +123,7 @@ export default function ContOpSubCabecera() {
                                         nombreOpcion="Seleccionar todo"
                                     />
                                 </div>
+                                */}
 
                                 <div className="w-full p-1 border-b border-gray-400
                                         text-black dark:text-white 

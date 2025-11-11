@@ -157,6 +157,9 @@ export const verificarToken = async () => {
             throw new Error(data.error || 'Token inválido');
         }
 
+        // Actualizar usuario en localStorage con los datos más recientes
+        localStorage.setItem('usuario', JSON.stringify(data.usuario));
+
         // ✅ Cargar preferencias
         cargarPreferenciasUsuario();
 
@@ -218,6 +221,29 @@ export const eliminarCuenta = async () => {
         localStorage.removeItem('token');
         localStorage.removeItem('usuario');
         localStorage.removeItem('theme');
+
+        return data;
+    } catch (error) {
+        throw error;
+    }
+};
+
+// Restablecer contraseña
+export const restablecerContrasena = async (nombreUsuario, nuevaContrasena) => {
+    try {
+        const response = await fetch(`${API_URL}/auth/restablecer-contrasena`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ nombreUsuario, nuevaContrasena }),
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.error || 'Error al restablecer contraseña');
+        }
 
         return data;
     } catch (error) {

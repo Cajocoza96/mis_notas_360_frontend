@@ -10,6 +10,8 @@ import Cabecera from "../../componentes/cabecera/Cabecera";
 import Cuerpo from "../../componentes/cuerpo/Cuerpo";
 import Footer from "../../componentes/footer/Footer";
 
+import ModalExitoError from "../../componentes/modal/ModalExitoError";
+
 export default function PaginaPapelera() {
 
     const verModalRestaurarNota = useSelector((state) => state.tareas.verModalRestaurarNota);
@@ -45,6 +47,8 @@ export default function PaginaPapelera() {
             variants={pageVariants}
             initial="initial"
             animate="animate">
+
+            <ModalExitoError />
 
             {verModalRestaurarNota && (
                 <ModalConfirmacion

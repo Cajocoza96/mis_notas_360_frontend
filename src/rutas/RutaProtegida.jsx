@@ -4,6 +4,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { verificarToken, obtenerToken } from "../services/authService";
 import { cargarPreferencia } from "../store/preferenciaSlice";
 
+import CargandoNoHayNada from "../componentes/cargando_no_hay_nada/CargandoNoHayNada";
+
 export default function RutaProtegida({ children }) {
 
     const [autenticado, setAutenticado] = useState(null);
@@ -11,8 +13,6 @@ export default function RutaProtegida({ children }) {
     const location = useLocation();
     const dispatch = useDispatch();
 
-    // ✅ Obtener el estado de carga de preferencias
-    const { cargandoPreferencia } = useSelector((state) => state.preferencia);
     const [preferenciasCargadas, setPreferenciasCargadas] = useState(false);
 
     useEffect(() => {
@@ -49,12 +49,9 @@ export default function RutaProtegida({ children }) {
 
     if (cargando) {
         return (
-            <div className="min-h-screen w-full flex items-center justify-center bg-white dark:bg-gray-800">
-                <div className="text-center">
-                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-violet-800 mx-auto mb-4"></div>
-                    <p className="text-gray-600 dark:text-gray-300 text-lg">Verificando sesión...</p>
-                </div>
-            </div>
+            <CargandoNoHayNada
+                pantallaCompletaCarga={true}
+            />
         );
     }
 

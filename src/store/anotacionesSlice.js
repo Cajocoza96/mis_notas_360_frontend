@@ -21,7 +21,12 @@ const initialState = {
     error: null,
 
     //Administrar anotacion
-    verAdminAnotacion : false
+    verAdminAnotacion: false,
+
+    // ✅ Estado para el modal de éxito/error
+    mostrarModalNotificacion: false,
+    mensajeNotificacion: '',
+    esErrorNotificacion: false,
 }
 
 const anotacionesSlice = createSlice({
@@ -34,6 +39,18 @@ const anotacionesSlice = createSlice({
         },
         setVerAdminAnotacion: (state, action) => {
             state.verAdminAnotacion = action.payload
+        },
+
+        // ✅ Acciones para el modal de notificación
+        mostrarNotificacion: (state, action) => {
+            state.mostrarModalNotificacion = true;
+            state.mensajeNotificacion = action.payload.mensaje;
+            state.esErrorNotificacion = action.payload.esError || false;
+        },
+        ocultarNotificacion: (state) => {
+            state.mostrarModalNotificacion = false;
+            state.mensajeNotificacion = '';
+            state.esErrorNotificacion = false;
         },
 
         setAnotaciones: (state, action) => {
@@ -61,13 +78,13 @@ const anotacionesSlice = createSlice({
         // ✅ Actualizar favorito local (sin filtrado)
         actualizarFavoritoLocal: (state, action) => {
             const { anotacionId, favorito } = action.payload;
-            
+
             // Actualizar en la lista de anotaciones
             const anotacion = state.anotaciones.find(a => a.id === anotacionId);
             if (anotacion) {
                 anotacion.favorito = favorito;
             }
-            
+
             // Actualizar en anotacionActual si coincide
             if (state.anotacionActual && state.anotacionActual.id === anotacionId) {
                 state.anotacionActual.favorito = favorito;
@@ -88,6 +105,11 @@ const anotacionesSlice = createSlice({
         // Nueva acción para eliminar todas las notas (limpiar el array)
         eliminarTodasAnotaciones: (state) => {
             state.anotaciones = []
+        },
+
+        //Para resetear todo
+        resetAllANotacionesState: (state) => {
+            return initialState;
         }
     },
     extraReducers: (builder) => {
@@ -112,7 +134,11 @@ const anotacionesSlice = createSlice({
 export const {
     toggleVerAdminAnotacion,
     setVerAdminAnotacion,
-    
+
+    // ✅ Exportar las nuevas acciones
+    mostrarNotificacion,
+    ocultarNotificacion,
+
     setAnotaciones,
     setAnotacionActual,
     setCargando,
@@ -123,7 +149,9 @@ export const {
     papeleraAnotacion,
     eliminarAnotacion,
     restaurarAnotacion,
-    eliminarTodasAnotaciones
+    eliminarTodasAnotaciones,
+
+    resetAllANotacionesState
 } = anotacionesSlice.actions
 
 export default anotacionesSlice.reducer

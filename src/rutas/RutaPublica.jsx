@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import { Navigate, useLocation } from "react-router-dom";
 import { verificarToken, obtenerToken } from "../services/authService";
 
+import CargandoNoHayNada from "../componentes/cargando_no_hay_nada/CargandoNoHayNada";
+
 export default function RutaPublica({ children }) {
     const [autenticado, setAutenticado] = useState(null);
     const [cargando, setCargando] = useState(true);
@@ -12,7 +14,7 @@ export default function RutaPublica({ children }) {
             try {
                 // Verificar si existe un token antes de validar
                 const token = obtenerToken();
-                
+
                 if (!token) {
                     setAutenticado(false);
                     setCargando(false);
@@ -34,12 +36,9 @@ export default function RutaPublica({ children }) {
 
     if (cargando) {
         return (
-            <div className="min-h-screen w-full flex items-center justify-center bg-white dark:bg-gray-800">
-                <div className="text-center">
-                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-violet-800 mx-auto mb-4"></div>
-                    <p className="text-gray-600 dark:text-gray-300 text-lg">Verificando sesión...</p>
-                </div>
-            </div>
+            <CargandoNoHayNada
+                pantallaCompletaCarga={true}
+            />
         );
     }
 

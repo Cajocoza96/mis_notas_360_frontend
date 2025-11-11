@@ -1,17 +1,16 @@
 import React, { forwardRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { HiChevronLeft, HiPlusCircle, HiRefresh,
-        HiMinusCircle, HiClock, HiCheckCircle} from "react-icons/hi";
+import { HiChevronLeft } from "react-icons/hi";
 import { Link } from "react-router-dom";
-import { setIsTituloFocused, toggleVerModalEstado } from "../../../store/tareasSlice";
+import { setIsTituloFocused } from "../../../store/tareasSlice";
 
-import { obtenerTextoEstado } from "../../../utils/estadoUtils";
+import AgregarEstado from "../../../componentes/agregar_estado/AgregarEstado";
 
 const Cabecera = forwardRef(({ handleTituloChange, handleTituloKeyDown,
     esModoVistaPrevia }, tituloRef) => {
 
     const dispatch = useDispatch();
-    const { isTituloFocused, estadoSeleccionado } = useSelector((state) => state.tareas);
+    const { isTituloFocused } = useSelector((state) => state.tareas);
 
     const handleFocus = () => {
         if (!esModoVistaPrevia) {
@@ -25,24 +24,26 @@ const Cabecera = forwardRef(({ handleTituloChange, handleTituloKeyDown,
         }
     };
 
-    const handleVerModalEstado = () => {
-        dispatch(toggleVerModalEstado())
-    }
-
     // Verificar si el título tiene contenido directamente del ref
     const tieneTitulo = tituloRef?.current?.textContent?.trim() !== "";
 
     return (
         <div className="flex-shrink-0 z-10 min-h-0 min-w-0 py-1 overflow-hidden">
 
-            <div className="w-[95%] mx-auto flex flex-row items-center py-2 justify-between">
+            <div className="w-full flex flex-col gap-2 items-center py-2 ">
 
-                <div className="flex flex-row items-center gap-2 flex-1 mr-4">
-                    <Link to="/panel-principal">
+
+                <div className="w-[95%] flex flex-row justify-between">
+                    <Link
+                        to="/panel-principal">
                         <HiChevronLeft className="text-2xl md:text-3xl text-black dark:text-white cursor-pointer flex-shrink-0" />
                     </Link>
 
-                    <div className="relative flex-1">
+                    <AgregarEstado />
+                </div>
+
+                <div className="w-[95%] mx-auto overflow-y-auto overflow-x-hidden h-11 lg:h-14 min-w-0">
+                    <div className="relative p-2">
                         <div
                             ref={tituloRef}
                             contentEditable={!esModoVistaPrevia}
@@ -52,55 +53,23 @@ const Cabecera = forwardRef(({ handleTituloChange, handleTituloKeyDown,
                             onBlur={handleBlur}
                             onKeyDown={(e) => handleTituloKeyDown(e, tituloRef)}
                             className="text-base md:text-xl text-black dark:text-white
-                                    outline-none border-none bg-transparent
-                                    min-h-[1.5em] max-w-full overflow-hidden
-                                    whitespace-nowrap text-ellipsis
-                                    focus:whitespace-normal focus:text-ellipsis-none"
+                                        outline-none border-none bg-transparent
+                                        min-h-[1.5em] w-full overflow-hidden
+                                        whitespace-pre-wrap"
                             style={{
                                 wordBreak: 'break-word',
-                                overflowWrap: 'break-word'
+                                overflowWrap: 'break-word',
+                                lineHeight: '1.5'
                             }}
                         />
 
                         {!tieneTitulo && !isTituloFocused && (
-                            <div className="absolute top-0 left-0 pointer-events-none
-                                        text-base md:text-xl text-gray-500 dark:text-gray-400">
+                            <div className="absolute top-2 left-2 pointer-events-none
+                                    text-base md:text-xl text-gray-500 dark:text-gray-400">
                                 {esModoVistaPrevia ? 'Sin título' : 'Colocar título'}
                             </div>
                         )}
                     </div>
-                </div>
-
-                <div className="select-none cursor-pointer 
-                                flex flex-row items-center gap-1 flex-shrink-0"
-                    onClick={handleVerModalEstado}>
-
-                    {estadoSeleccionado ? (
-                        <>   
-                            <div className="text-2xl md:text-3xl">
-                                {estadoSeleccionado === "no_asignado" ? 
-                                    <HiMinusCircle className="text-blue-700" /> :  
-                                        
-                                estadoSeleccionado === "pendiente" ? 
-                                    <HiClock className="text-yellow-700" /> : 
-                                
-                                estadoSeleccionado === "finalizado" ? 
-                                    <HiCheckCircle className="text-green-700" /> : <HiRefresh className="text-green-700"/>}
-                            </div>
-                            
-                            <p className="text-base md:text-xl text-black dark:text-white">
-                                {obtenerTextoEstado(estadoSeleccionado)}
-                            </p>
-                        </>
-                    ) : (
-                        <>
-                            <HiPlusCircle className="text-2xl md:text-3xl  text-violet-800 dark:text-violet-400 " />
-                            <p className="text-base md:text-xl text-black dark:text-white">
-                                Agregar estado
-                            </p>
-                        </>
-                    )}
-
                 </div>
 
             </div>

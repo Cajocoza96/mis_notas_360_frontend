@@ -1,6 +1,14 @@
-import React from "react";
+import React, { useEffect } from "react";
+
+import { useDispatch } from "react-redux";
+
+//Para resetear los estados redux cuando se regrese o adelante en la pagina
+import { resetAllLayoutState } from "../store/layoutSlice";
+import { resetAllTareasState } from "../store/tareasSlice";
+import { resetAllANotacionesState } from "../store/anotacionesSlice";
+import { resetAllAccesoState } from "../store/accesoSlice";
+
 import { Routes, Route, useLocation } from "react-router-dom";
-import { AnimatePresence } from "framer-motion";
 
 import PaginaBienvenida from "../paginas/pagina_bienvenida/PaginaBienvenida";
 import PanelPrincipal from "../paginas/pagina_principal/PanelPrincipal";
@@ -22,105 +30,117 @@ export default function Rutas() {
 
     const location = useLocation();
 
+    const dispatch = useDispatch();
+
+    useEffect(() => {
+        //Resetear todos los estados cuando cambia la ruta
+        dispatch(resetAllLayoutState());
+        dispatch(resetAllTareasState());
+        dispatch(resetAllANotacionesState());
+        dispatch(resetAllAccesoState());
+
+    }, [location.pathname, dispatch]);
+
     return (
-        <AnimatePresence mode="wait">
-            <Routes location={location} key={location.pathname}>
+        <Routes location={location} key={location.pathname}>
 
-                <Route path="*" element={<PaginaError />}></Route>
-
-                <Route path="/" element={<PaginaBienvenida />}></Route>
+            <Route path="/" element={<PaginaBienvenida />}></Route>
 
 
-                <Route path="/panel-principal"
-                    element={
-                        <RutaProtegida>
-                            <PanelPrincipal />
-                        </RutaProtegida>
-                    }>
+            <Route path="/panel-principal"
+                element={
+                    <RutaProtegida>
+                        <PanelPrincipal />
+                    </RutaProtegida>
+                }>
 
-                </Route>
+            </Route>
 
-                {/* Ruta para agregar nueva nota */}
-                <Route path="/agregar-nota"
-                    element={
-                        <RutaProtegida>
-                            <PaginaCrearEditNota />
-                        </RutaProtegida>
-                    }>
-                </Route>
+            {/* Ruta para agregar nueva nota */}
+            <Route path="/agregar-nota"
+                element={
+                    <RutaProtegida>
+                        <PaginaCrearEditNota />
+                    </RutaProtegida>
+                }>
+            </Route>
 
-                {/* Ruta para vista previa (solo lectura) */}
-                <Route path="/vista-previa/nota/:id"
-                    element={
-                        <RutaProtegida>
-                            <PaginaVistaPrevia />
-                        </RutaProtegida>
-                    }>
-                </Route>
+            {/* Ruta para vista previa (solo lectura) */}
+            <Route path="/vista-previa/nota/:id"
+                element={
+                    <RutaProtegida>
+                        <PaginaVistaPrevia />
+                    </RutaProtegida>
+                }>
+            </Route>
 
-                {/* Ruta para editar nota existente */}
-                <Route path="/editar/nota/:id"
-                    element={
-                        <RutaProtegida>
-                            <PaginaCrearEditNota />
-                        </RutaProtegida>
-                    }>
-                </Route>
+            {/* Ruta para editar nota existente */}
+            <Route path="/editar/nota/:id"
+                element={
+                    <RutaProtegida>
+                        <PaginaCrearEditNota />
+                    </RutaProtegida>
+                }>
+            </Route>
 
 
-                <Route path="/buscar"
-                    element={
-                        <RutaProtegida>
-                            <PaginaBuscar />
-                        </RutaProtegida>
-                    }>
-                </Route>
+            <Route path="/buscar"
+                element={
+                    <RutaProtegida>
+                        <PaginaBuscar />
+                    </RutaProtegida>
+                }>
+            </Route>
 
-                <Route path="/papelera"
-                    element={
-                        <RutaProtegida>
-                            <PaginaPapelera />
-                        </RutaProtegida>
-                    }>
-                </Route>
+            <Route path="/papelera"
+                element={
+                    <RutaProtegida>
+                        <PaginaPapelera />
+                    </RutaProtegida>
+                }>
+            </Route>
 
-                <Route path="/estados"
-                    element={
-                        <RutaProtegida>
-                            <PaginaEstado />
-                        </RutaProtegida>
-                    }>
-                </Route>
+            <Route path="/estados"
+                element={
+                    <RutaProtegida>
+                        <PaginaEstado />
+                    </RutaProtegida>
+                }>
+            </Route>
 
-                <Route path="/informacion-usuario"
-                    element={
-                        <RutaProtegida>
-                            <PaginaInfoUsuario />
-                        </RutaProtegida>
-                    }>
-                </Route>
+            <Route path="/informacion-usuario"
+                element={
+                    <RutaProtegida>
+                        <PaginaInfoUsuario />
+                    </RutaProtegida>
+                }>
+            </Route>
 
 
 
-                <Route path="/registrar"
-                    element={
-                        <RutaPublica>
-                            <PaginaRegIniSesion />
-                        </RutaPublica>
-                    }>
-                </Route>
+            <Route path="/registrar"
+                element={
+                    <RutaPublica>
+                        <PaginaRegIniSesion />
+                    </RutaPublica>
+                }>
+            </Route>
 
 
-                <Route path="/iniciar-sesion"
-                    element={
-                        <RutaPublica>
-                            <PaginaRegIniSesion />
-                        </RutaPublica>
-                    }>
-                </Route>
+            <Route path="/iniciar-sesion"
+                element={
+                    <RutaPublica>
+                        <PaginaRegIniSesion />
+                    </RutaPublica>
+                }>
+            </Route>
 
+            {/* Ruta explícita para errores */}
+            <Route path="/error" element={<PaginaError />}></Route>
 
-            </Routes>
-        </AnimatePresence>
+            {/* Catch-all para rutas no encontradas (debe estar al final) */}
+            <Route path="*" element={<PaginaError />}></Route>
+
+        </Routes>
     );
 }

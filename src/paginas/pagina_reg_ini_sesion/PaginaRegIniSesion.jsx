@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useSelector } from "react-redux";
 import { useLocation } from "react-router-dom";
@@ -6,9 +6,9 @@ import Toast from "../../componentes/toast/Toast";
 import Cabecera from "../../componentes/cabecera/Cabecera";
 import Cuerpo from "./cuerpo/Cuerpo";
 import Footer from "./footer/Footer";
+import ModalRestablecerContrasena from "../../componentes/modal/ModalRestablecerContrasena";
 
 export default function PaginaRegIniSesion() {
-    const [mensajeToast, setMensajeToast] = useState("");
     const location = useLocation();
     const esRegistro = location.pathname === "/registrar";
 
@@ -38,6 +38,7 @@ export default function PaginaRegIniSesion() {
     };
 
     const verToast = useSelector((state) => state.acceso.verToast);
+    const verModalRestablecerContrasena = useSelector((state) => state.acceso.verModalRestablecerContrasena);
 
     return (
         <div className="min-h-dvh w-full bg-white dark:bg-gray-800 
@@ -45,7 +46,11 @@ export default function PaginaRegIniSesion() {
                         flex flex-col justify-between">
             
             {verToast && (
-                <Toast mensaje={mensajeToast} />
+                <Toast />
+            )}
+
+            {verModalRestablecerContrasena && (
+                <ModalRestablecerContrasena />
             )}
             
             <AnimatePresence mode="wait" custom={esRegistro ? 1 : -1}>
@@ -61,7 +66,7 @@ export default function PaginaRegIniSesion() {
                     <Cabecera
                         paginaRegIniSesion={true}
                     />
-                    <Cuerpo setMensajeToast={setMensajeToast} />
+                    <Cuerpo />
 
                 </motion.div>
             </AnimatePresence>

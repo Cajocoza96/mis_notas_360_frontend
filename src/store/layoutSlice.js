@@ -40,6 +40,11 @@ const layoutSlice = createSlice({
         },
         setVerFechaCreaModCantText: (state, action) => {
             state.verFechaCreaModCantText = action.payload
+        },
+
+        //Para resetear todo
+        resetAllLayoutState: (state) => {
+            return initialState;
         }
     }
 })
@@ -52,7 +57,9 @@ export const {
     toggleVerOpcCabPagVisPrev,
     setVerOpcCabPagVisPrev,
     toggleVerFechaCreaModCantText,
-    setVerFechaCreaModCantText
+    setVerFechaCreaModCantText,
+
+    resetAllLayoutState
 } = layoutSlice.actions
 
 export default layoutSlice.reducer

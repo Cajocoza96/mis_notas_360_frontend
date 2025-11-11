@@ -14,6 +14,8 @@ import BotonAccion from "../../componentes/botones/BotonAccion";
 
 import { verificarToken } from "../../services/authService";
 
+import CargandoNoHayNada from "../../componentes/cargando_no_hay_nada/CargandoNoHayNada";
+
 export default function PaginaBienvenida() {
     const particlesInit = useCallback(async (engine) => {
         await loadSlim(engine);
@@ -29,11 +31,11 @@ export default function PaginaBienvenida() {
     const dispatch = useDispatch();
 
     const handleNavegarPanelPrincipal = () => {
-        if(verMenuHamburguesa){
+        if (verMenuHamburguesa) {
             dispatch(toggleVerMenuHamburguesa());
         }
         navigate("/panel-principal");
-    }           
+    }
 
     const MiBoton = motion.create(BotonAccion);
 
@@ -57,12 +59,9 @@ export default function PaginaBienvenida() {
 
     if (cargando) {
         return (
-            <div className="min-h-screen w-full flex items-center justify-center bg-white dark:bg-gray-800">
-                <div className="text-center">
-                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-violet-800 mx-auto mb-4"></div>
-                    <p className="text-gray-600 dark:text-gray-300 text-lg">Verificando sesión...</p>
-                </div>
-            </div>
+            <CargandoNoHayNada
+                pantallaCompletaCarga={true}
+            />
         );
     }
 

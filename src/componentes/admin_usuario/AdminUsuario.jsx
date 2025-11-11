@@ -1,9 +1,10 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { toggleVerMenuHamburguesa } from "../../store/layoutSlice";
 import { useAuth } from "../../hooks/useAuth";
 import { HiOutlineUser, HiChevronDown } from "react-icons/hi";
+import CargandoNoHayNada from "../cargando_no_hay_nada/CargandoNoHayNada";
 
 export default function AdminUsuario() {
     const dispatch = useDispatch();
@@ -14,6 +15,36 @@ export default function AdminUsuario() {
 
     const navigate = useNavigate();
 
+    // Generar color de fondo aleatorio basado en el nombre
+    const avatarBg = useMemo(() => {
+        if (!usuario?.nombreCuenta) return 'bg-blue-500';
+
+        const colores = [
+            'bg-green-500',
+            'bg-blue-500',
+            'bg-red-500',
+            'bg-yellow-500',
+            'bg-orange-500',
+            'bg-violet-500',
+            'bg-green-600',
+            'bg-blue-600',
+            'bg-red-600',
+            'bg-yellow-600',
+            'bg-orange-600',
+            'bg-violet-600'
+        ];
+
+        // Usar la suma de los códigos de caracteres para generar un índice
+        const sum = usuario.nombreCuenta.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+        return colores[sum % colores.length];
+    }, [usuario?.nombreCuenta]);
+
+    // Obtener primera letra del nombre
+    const primeraLetra = useMemo(() => {
+        if (!usuario?.nombreCuenta) return '';
+        return usuario.nombreCuenta.charAt(0).toUpperCase();
+    }, [usuario?.nombreCuenta]);
+
     const handleInfoUsuario = () => {
         if (verMenuHamburguesa) {
             dispatch(toggleVerMenuHamburguesa());
@@ -23,32 +54,60 @@ export default function AdminUsuario() {
 
     if (cargando) {
         return (
-            <div className="flex flex-col justify-center p-2">
-                <div className="text-black dark:text-white p-2 select-none flex flex-row items-center gap-2">
-                    <HiOutlineUser className="text-2xl md:text-3xl" />
-                    <p className="truncate text-base md:text-xl">Cargando...</p>
-                </div>
+            <div className="p-2 select-none 
+                        flex flex-row items-center justify-start gap-2">
+            <CargandoNoHayNada
+                iconoDeCarga={true}
+            />
+
             </div>
+            
         );
     }
 
+    // Determinar si es cuenta local
+    const esCuentaLocal = !usuario?.imagenPerfil;
+
     return (
-        <div className="text-black dark:text-white p-2 select-none cursor-pointer
+        <div
+            className="text-black dark:text-white p-2 select-none cursor-pointer
                         hover:bg-gray-300 active:bg-gray-300
                         dark:hover:bg-gray-700 dark:active:bg-gray-700 
-
                         flex flex-row items-center justify-start gap-2"
-            onClick={handleInfoUsuario}>
-
-            {usuario?.imagenPerfil ? (
+            onClick={handleInfoUsuario}
+        >
+            {/* Avatar */}
+            {esCuentaLocal ? (
+                // Cuenta local: icono de usuario
+                <div className="w-7 h-7 lg:w-9 lg:h-9 flex items-center justify-center">
+                    <HiOutlineUser className="text-2xl md:text-3xl" />
+                </div>
+            ) : usuario?.imagenPerfil ? (
+                // Cuenta OAuth con imagen
                 <img
-                    src={usuario?.imagenPerfil || 'No disponible'}
-                    alt={usuario?.nombreCuenta || usuario?.nombreUsuario || 'Usuario'}
-                    className="w-12 h-12 rounded-full object-cover" />
-            ) : (
-                <HiOutlineUser className="text-2xl md:text-3xl" />
+                    src={usuario.imagenPerfil}
+                    alt={usuario.nombreCuenta || usuario.nombreUsuario || 'Usuario'}
+                    className="w-7 h-7 lg:w-9 lg:h-9 rounded-full object-cover"
+                    onError={(e) => {
+                        // Si la imagen falla al cargar, mostrar letra
+                        e.target.style.display = 'none';
+                        e.target.nextSibling.style.display = 'flex';
+                    }}
+                />
+            ) : null}
+
+            {/* Fallback: Primera letra con color aleatorio (oculto por defecto) */}
+            {!esCuentaLocal && (
+                <div
+                    className={`w-7 h-7 lg:w-9 lg:h-9 rounded-full ${avatarBg} text-white 
+                                flex items-center justify-center font-bold text-xl
+                                ${usuario?.imagenPerfil ? 'hidden' : 'flex'}`}
+                >
+                    {primeraLetra}
+                </div>
             )}
 
+            {/* Nombre del usuario */}
             <p className="truncate text-left text-base md:text-xl">
                 {usuario?.nombreCuenta || usuario?.nombreUsuario || 'Usuario'}
             </p>

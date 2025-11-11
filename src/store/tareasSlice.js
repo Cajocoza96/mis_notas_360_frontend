@@ -130,7 +130,7 @@ const tareasSlice = createSlice({
             state.tareas = state.tareas.filter(t => t.id !== action.payload)
 
             //Si despues de eliminar no quedan tareas, resetear el estado a null
-            if(state.tareas.length === 0){
+            if (state.tareas.length === 0) {
                 state.estadoSeleccionado = null
             }
         },
@@ -177,7 +177,7 @@ const tareasSlice = createSlice({
 
         setEstadoAutomatico: (state) => {
             const { tareas } = state;
-            
+
             // Solo actualizar automáticamente si HAY tareas
             if (tareas.length > 0) {
                 const todasCompletadas = tareas.every(tarea => tarea.completada);
@@ -214,6 +214,11 @@ const tareasSlice = createSlice({
             state.tareas = []
             state.tareaActual = null
             state.modoModal = 'crear'
+        },
+
+        //Para resetear todo
+        resetAllTareasState: (state) => {
+            return initialState;
         }
     }
 })
@@ -256,7 +261,9 @@ export const {
     setEstadoSeleccionado,
     setEstadoAutomatico,
 
-    setContadores
+    setContadores,
+
+    resetAllTareasState
 } = tareasSlice.actions
 
 export default tareasSlice.reducer

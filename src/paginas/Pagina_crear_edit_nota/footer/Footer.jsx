@@ -10,6 +10,8 @@ import {
 
 import { useContadores } from "../../../hooks/useContadores";
 
+import { mostrarNotificacion, ocultarNotificacion } from "../../../store/anotacionesSlice";
+
 import { crearAnotacion, actualizarAnotacion } from "../../../services/anotacionesService";
 
 export default function Footer({ handleUndoClick, handleRedoClick, esModoEdicion, tituloRef, notaRef }) {
@@ -77,25 +79,54 @@ export default function Footer({ handleUndoClick, handleRedoClick, esModoEdicion
             if (esActualizacion) {
                 data = await actualizarAnotacion(anotacionId, payload);
                 console.log('Actualización exitosa:', data);
+
+                // ✅ Mostrar notificación de éxito para actualización
+                dispatch(mostrarNotificacion({
+                    mensaje: '¡Nota actualizada!',
+                    esError: false
+                }));
+
             } else {
                 data = await crearAnotacion(payload);
                 console.log('Guardado exitoso:', data);
+
+                // ✅ Mostrar notificación de éxito para creación
+                dispatch(mostrarNotificacion({
+                    mensaje: '¡Nota guardada!',
+                    esError: false
+                }));
             }
 
             await actualizarContadores();
 
-            // Redirigir al panel principal
-            navigate('/panel-principal', { state: { recargar: true } });
-
+            // Ocultar el modal automaticamente despues de 3 segundos
             setTimeout(() => {
-                /* Resetear el estado de la nota y tareas, con un 
-                1 segundo para que no se vea el reseteo*/
-                dispatch(resetNotaState());
-            }, 1000);
+                dispatch(ocultarNotificacion());
+            }, 2000);
+
+            // ✅ Redirigir después de un pequeño delay para que se vea el modal
+            setTimeout(() => {
+                navigate('/panel-principal', { state: { recargar: true } });
+
+                // Resetear el estado después de navegar
+                setTimeout(() => {
+                    dispatch(resetNotaState());
+                }, 500);
+            }, 2000); // Esperar 3 segundos antes de redirigir
 
         } catch (error) {
             console.error('Error al guardar y redirigir:', error);
-            alert('Error al guardar la anotación. Por favor intenta nuevamente.');
+
+            // ✅ Mostrar notificación de error
+            dispatch(mostrarNotificacion({
+                mensaje: '¡Error al guardar la nota!',
+                esError: true
+            }));
+
+            // Ocultar el modal automaticamente despues de 3 segundos
+            setTimeout(() => {
+                dispatch(ocultarNotificacion());
+            }, 2000);
         }
     }
 

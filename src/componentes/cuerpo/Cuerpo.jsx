@@ -24,6 +24,8 @@ import { obtenerContadores, obtenerAnotacionesEliminadas } from "../../services/
 
 import AdminAnotacion from "../admin_anotacion/AdminAnotacion";
 
+import CargandoNoHayNada from "../cargando_no_hay_nada/CargandoNoHayNada";
+
 export default function Cuerpo({ notaNoEliminada, notaBusquedaNotaEliminada,
     verContenidoCuerpo, verNotaBusqueda, verNotaEliminada, verTodosEstados }) {
 
@@ -127,45 +129,20 @@ export default function Cuerpo({ notaNoEliminada, notaBusquedaNotaEliminada,
                                 grid
                 ${anotaciones.length === 0 ? '' : 'auto-rows-[11rem]'}
                 ${organizarPorColumna ? 'grid-cols-2 2xs:grid-cols-3 lg:grid-cols-5' : 'grid-cols-1'} gap-5 lg:gap-3`}>
-                
-                {verAdminAnotacion && (
-                    <AdminAnotacion />
-                )}
-                
+
+                    {verAdminAnotacion && (
+                        <AdminAnotacion />
+                    )}
+
                     {verContenidoCuerpo && (
                         <>
                             {cargando ? (
-                                <div className="col-span-full text-center p-4 select-none
-                                                flex flex-col items-center justify-center gap-3">
-                                    <p className="text-base md:text-xl text-black dark:text-white">
-                                        Cargando anotaciones...
-                                    </p>
-                                </div>
-                            ) : anotaciones.length === 0 ? (
-                                <div className="col-span-full text-center p-4 select-none
-                                                flex flex-col items-center justify-center gap-3">
-                                    <p className="text-base md:text-xl text-black dark:text-white">
-                                        {verAnotacEstado === 'ver_no_asignado' && verSoloFavoritos
-                                            ? 'No tienes anotaciones favoritas sin asignar'
-                                            : verAnotacEstado === 'ver_no_asignado' ? 'No tienes anotaciones sin asignar'
-                                                : verAnotacEstado === 'ver_pendiente' && verSoloFavoritos
-                                                    ? 'No tienes anotaciones favoritas pendientes'
-                                                    : verAnotacEstado === 'ver_pendiente' ? 'No tienes anotaciones pendientes'
-                                                        : verAnotacEstado === 'ver_finalizado' && verSoloFavoritos
-                                                            ? 'No tienes anotaciones favoritas finalizadas'
-                                                            : verAnotacEstado === 'ver_finalizado' ? 'No tienes anotaciones finalizadas'
-                                                                : verSoloFavoritos ? 'No tienes anotaciones favoritas.'
-                                                                    : 'No tienes anotaciones. ¡Crea tu primera nota!'}
-                                    </p>
+                                <CargandoNoHayNada CargandoAnotaciones={true} />
 
-                                    <div>
-                                        <HiOutlineBookOpen className="text-6xl md:text-7xl text-black dark:text-white" />
-                                    </div>
-                                </div>
+                            ) : anotaciones.length === 0 ? (
+                                <CargandoNoHayNada sinEstadoFavoritoNada={true} />
                             ) : (
                                 anotaciones.map((anotacion) => (
-                                    /*Estas son las anotaciones que se debe ordenar por las
-                                    maneras que te dije */
                                     <NotaVistaPrevia
                                         iconoFavorito={true}
                                         key={anotacion.id}
@@ -178,7 +155,6 @@ export default function Cuerpo({ notaNoEliminada, notaBusquedaNotaEliminada,
                             )}
                         </>
                     )}
-
 
                     {verNotaBusqueda && (
                         <>
@@ -215,31 +191,21 @@ export default function Cuerpo({ notaNoEliminada, notaBusquedaNotaEliminada,
             )}
 
             {notaBusquedaNotaEliminada && (
-                <div className={`w-[95%] h-full mx-auto overflow-y-auto
+                <div className={`w-[95%] h-full mx-auto overflow-y-auto 
                                 overflow-x-hidden min-h-0 min-w-0 pb-3
-                                grid grid-cols-1 gap-5 lg:gap-3 
-                                ${anotaciones.length === 0 ? '' : 'auto-rows-[7rem]'}`}>
+                                grid 
+                                ${anotaciones.length === 0 ? '' : 'auto-rows-[11rem]'}`}>
 
                     {verNotaEliminada && (
                         <>
                             {cargando ? (
-                                <div className="col-span-full text-center p-4 select-none
-                                                flex flex-col items-center justify-center gap-3">
-                                    <p className="text-base md:text-xl text-black dark:text-white">
-                                        Cargando anotaciones eliminadas...
-                                    </p>
-                                </div>
+                                <CargandoNoHayNada
+                                    CargandoAnotaciones={true}
+                                />
                             ) : anotaciones.length === 0 ? (
-                                <div className="col-span-full text-center p-4 select-none
-                                                flex flex-col items-center justify-center gap-3">
-                                    <p className="text-base md:text-xl text-black dark:text-white">
-                                        No tienes anotaciones eliminadas.
-                                    </p>
-
-                                    <div>
-                                        <HiOutlineBookOpen className="text-6xl md:text-7xl text-black dark:text-white" />
-                                    </div>
-                                </div>
+                                <CargandoNoHayNada 
+                                noHayEliminadas={true}
+                                />
                             ) : (
                                 anotaciones.map((anotacion) => (
                                     <EliminadaNotaVistaPrevia

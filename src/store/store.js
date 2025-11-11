@@ -1,5 +1,5 @@
 import { configureStore } from "@reduxjs/toolkit";
-import layoutReducer from "./layoutSlice";
+import layoutReducer, { resetAllLayoutState } from "./layoutSlice";
 import tareasReducer from "./tareasSlice";
 import accesoReducer from "./accesoSlice";
 import anotacionesReducer from "./anotacionesSlice";

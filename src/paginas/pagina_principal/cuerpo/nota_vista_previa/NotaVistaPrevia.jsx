@@ -14,6 +14,8 @@ import { toggleVerAdminAnotacion } from "../../../../store/anotacionesSlice";
 
 import { actualizarFavorito } from "../../../../services/anotacionesService";
 
+import { setAnotacionId } from "../../../../store/tareasSlice";
+
 export default function NotaVistaPrevia({ anotacionId, iconoFavorito, texto, no_asignado,
     pendiente, finalizado, esFavorito = false }) {
 
@@ -27,6 +29,7 @@ export default function NotaVistaPrevia({ anotacionId, iconoFavorito, texto, no_
     const [actualizandoFavorito, setActualizandoFavorito] = useState(false);
 
     const handleVerAdminAnotacion = () => {
+        dispatch(setAnotacionId(anotacionId));
         dispatch(toggleVerAdminAnotacion());
     }
 
@@ -82,12 +85,12 @@ export default function NotaVistaPrevia({ anotacionId, iconoFavorito, texto, no_
                         flex flex-col items-center justify-center">
         */
 
-        <div className={`w-[98%] h-35 mt-2 p-2 rounded-md select-none
+        <div className={`w-[98%] h-auto mt-2 p-2 rounded-md select-none
                         flex flex-col items-center gap-1 overflow-hidden
                         hover:opacity-80 transition-opacity
                         ${no_asignado ? 'bg-blue-200 dark:bg-blue-950' :
-                pendiente ? 'bg-yellow-200 dark:bg-yellow-950' :
-                    finalizado ? 'bg-green-200 dark:bg-green-950' : 'bg-gray-200 dark:bg-black'}`}
+                        pendiente ? 'bg-yellow-200 dark:bg-yellow-950' :
+                        finalizado ? 'bg-green-200 dark:bg-green-950' : 'bg-gray-200 dark:bg-black'}`}
             onClick={handleVerVistaPrevia}>
 
             <div className="w-full flex flex-row items-start justify-between">
