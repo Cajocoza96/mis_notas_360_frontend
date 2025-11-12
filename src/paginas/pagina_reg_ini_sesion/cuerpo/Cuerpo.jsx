@@ -122,7 +122,8 @@ export default function Cuerpo() {
             </div>
             */}
 
-            {/* Botón de Google - Versión oculta con estilo personalizado */}
+            
+            {/* Botón de Google - Versión oculta con estilo personalizado 
             <div className="relative cursor-pointer">
                 <div className="absolute inset-0 opacity-0 z-10">
                     <GoogleLogin
@@ -141,6 +142,7 @@ export default function Cuerpo() {
                     />
                 </div>
             </div>
+            */}
 
             <p className="w-full text-center text-base md:text-xl 
                             select-none truncate
