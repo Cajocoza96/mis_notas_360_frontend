@@ -1,27 +1,34 @@
 import React, { useState } from "react";
 
-import { HiMinusCircle, HiClock, HiCheckCircle, HiDotsVertical } from "react-icons/hi";
+import {
+    HiMinusCircle, HiClock, HiCheckCircle,
+    HiDotsVertical, HiOutlineRefresh, HiXCircle,
+} from "react-icons/hi";
 
 import { HiOutlineStar, HiStar } from "react-icons/hi2";
 
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 import { useDispatch, useSelector } from "react-redux";
 
-import { actualizarFavoritoLocal, cargarAnotaciones  } from "../../../../store/anotacionesSlice";
+import { actualizarFavoritoLocal, cargarAnotaciones } from "../../../../store/anotacionesSlice";
 
 import { toggleVerAdminAnotacion } from "../../../../store/anotacionesSlice";
 
 import { actualizarFavorito } from "../../../../services/anotacionesService";
 
-import { setAnotacionId } from "../../../../store/tareasSlice";
+import { setAnotacionId, toggleVerModalRestaurarNota, toggleVerModalEliminarNotaDefinitiva } from "../../../../store/tareasSlice";
 
 export default function NotaVistaPrevia({ anotacionId, iconoFavorito, texto, no_asignado,
-    pendiente, finalizado, esFavorito = false }) {
+    pendiente, finalizado, esFavorito = false, iconoAdministrar, iconoRestaurarEliminarDefinitivo }) {
 
     const navigate = useNavigate();
 
     const dispatch = useDispatch();
+
+    const location = useLocation();
+
+    const esVistaPapelera = location.pathname.includes('/papelera');
 
     // ✅ Obtener el estado de verSoloFavoritos
     const verSoloFavoritos = useSelector((state) => state.preferencia.verSoloFavoritos);
@@ -33,8 +40,13 @@ export default function NotaVistaPrevia({ anotacionId, iconoFavorito, texto, no_
         dispatch(toggleVerAdminAnotacion());
     }
 
-    const handleVerVistaPrevia = () => {
-        navigate(`/vista-previa/nota/${anotacionId}`);
+    const handleVerVistaPrevia = (e) => {
+        if(esVistaPapelera){
+            e.stopPropagation();
+            
+        }else{
+            navigate(`/vista-previa/nota/${anotacionId}`);
+        }
     }
 
     const handleToggleFavorito = async (e) => {
@@ -71,7 +83,7 @@ export default function NotaVistaPrevia({ anotacionId, iconoFavorito, texto, no_
             }));
 
             // ✅ Si estamos viendo solo favoritos, recargar para mantener consistencia
-            if (verSoloFavoritos ) {
+            if (verSoloFavoritos) {
                 dispatch(cargarAnotaciones());
             }
         } finally {
@@ -79,18 +91,33 @@ export default function NotaVistaPrevia({ anotacionId, iconoFavorito, texto, no_
         }
     };
 
+    const handleVerModalRestaurarNota = () => {
+        //Guardar el ID de la anotacion en Redux antes de abrir el modal
+        dispatch(setAnotacionId(anotacionId));
+
+        dispatch(toggleVerModalRestaurarNota());
+    }
+
+    const handleVerModalEliminarNotaDefinitiva = () => {
+        //Guardar el ID de la anotacion en Redux antes de abrir el modal
+        dispatch(setAnotacionId(anotacionId));
+
+        dispatch(toggleVerModalEliminarNotaDefinitiva());
+    }
+
+
     return (
         /*
         <div className="w-[98%] bg-gray-200/90 p-2 mt-2 rounded-md select-none
                         flex flex-col items-center justify-center">
         */
 
-        <div className={`w-[98%] h-auto mt-2 p-2 rounded-md select-none
+        <div className={`w-[98%] h-35 mt-2 p-2 rounded-md select-none
                         flex flex-col items-center gap-1 overflow-hidden
                         hover:opacity-80 transition-opacity
                         ${no_asignado ? 'bg-blue-200 dark:bg-blue-950' :
-                        pendiente ? 'bg-yellow-200 dark:bg-yellow-950' :
-                        finalizado ? 'bg-green-200 dark:bg-green-950' : 'bg-gray-200 dark:bg-black'}`}
+                pendiente ? 'bg-yellow-200 dark:bg-yellow-950' :
+                    finalizado ? 'bg-green-200 dark:bg-green-950' : 'bg-gray-200 dark:bg-black'}`}
             onClick={handleVerVistaPrevia}>
 
             <div className="w-full flex flex-row items-start justify-between">
@@ -121,15 +148,32 @@ export default function NotaVistaPrevia({ anotacionId, iconoFavorito, texto, no_
                     )}
 
                 </div>
-                
-                <div 
-                    onClick={(e) => {
-                        e.stopPropagation()
-                        handleVerAdminAnotacion()
-                    }}
-                    className="text-2xl md:text-3xl text-black dark:text-white cursor-pointer">
-                    <HiDotsVertical />
-                </div>
+
+                {iconoAdministrar && (
+                    <div
+                        onClick={(e) => {
+                            e.stopPropagation()
+                            handleVerAdminAnotacion()
+                        }}
+                        className="text-2xl md:text-3xl text-black dark:text-white cursor-pointer">
+                        <HiDotsVertical />
+                    </div>
+                )}
+
+                {iconoRestaurarEliminarDefinitivo && (
+                    <div className="flex flex-row items-center gap-6">
+                        <HiOutlineRefresh
+                            onClick={handleVerModalRestaurarNota}
+                            title="Restaurar nota"
+                            className="text-2xl md:text-3xl cursor-pointer
+                                        text-black dark:text-white"/>
+                        <HiXCircle
+                            onClick={handleVerModalEliminarNotaDefinitiva}
+                            title="Eliminar nota"
+                            className="text-2xl md:text-3xl cursor-pointer
+                                text-red-600"/>
+                    </div>
+                )}
             </div>
 
             <div className="w-full h-25 text-center overflow-hidden 

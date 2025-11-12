@@ -40,7 +40,6 @@ export default function PaginaEstado() {
             />
 
             <Cuerpo
-                notaBusquedaNotaEliminada={true}
                 verTodosEstados={true}
             />
 

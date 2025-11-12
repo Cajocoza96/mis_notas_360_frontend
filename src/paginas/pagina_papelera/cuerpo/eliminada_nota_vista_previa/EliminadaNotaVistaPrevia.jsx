@@ -1,5 +1,6 @@
 import React from "react";
 
+/*
 import { useDispatch } from "react-redux";
 
 import {
@@ -7,7 +8,9 @@ import {
     toggleVerModalEliminarNotaDefinitiva, setAnotacionId
 } from "../../../../store/tareasSlice";
 
-import { HiOutlineRefresh, HiXCircle, HiMinusCircle, HiClock, HiCheckCircle } from "react-icons/hi";
+
+import {  HiMinusCircle, HiClock, HiCheckCircle } from "react-icons/hi";
+*/
 
 export default function EliminadaNotaVistaPrevia({ anotacionId, texto,
     no_asignado, pendiente, finalizado }) {

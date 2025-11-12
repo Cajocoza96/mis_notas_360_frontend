@@ -79,8 +79,7 @@ export default function PaginaPapelera() {
             />
 
             <Cuerpo
-                notaNoEliminada={false}
-                notaBusquedaNotaEliminada={true}
+                notaNoEliminada={true}
                 verNotaEliminada={true}
 
             />

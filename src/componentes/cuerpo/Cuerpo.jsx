@@ -26,7 +26,7 @@ import AdminAnotacion from "../admin_anotacion/AdminAnotacion";
 
 import CargandoNoHayNada from "../cargando_no_hay_nada/CargandoNoHayNada";
 
-export default function Cuerpo({ notaNoEliminada, notaBusquedaNotaEliminada,
+export default function Cuerpo({ notaNoEliminada,
     verContenidoCuerpo, verNotaBusqueda, verNotaEliminada, verTodosEstados }) {
 
     const location = useLocation();
@@ -145,6 +145,7 @@ export default function Cuerpo({ notaNoEliminada, notaBusquedaNotaEliminada,
                                 anotaciones.map((anotacion) => (
                                     <NotaVistaPrevia
                                         iconoFavorito={true}
+                                        iconoAdministrar={true}
                                         key={anotacion.id}
                                         anotacionId={anotacion.id}
                                         texto={obtenerTextoVistaPrevia(anotacion)}
@@ -187,14 +188,6 @@ export default function Cuerpo({ notaNoEliminada, notaBusquedaNotaEliminada,
                             )}
                         </>
                     )}
-                </div>
-            )}
-
-            {notaBusquedaNotaEliminada && (
-                <div className={`w-[95%] h-full mx-auto overflow-y-auto 
-                                overflow-x-hidden min-h-0 min-w-0 pb-3
-                                grid 
-                                ${anotaciones.length === 0 ? '' : 'auto-rows-[11rem]'}`}>
 
                     {verNotaEliminada && (
                         <>
@@ -203,14 +196,15 @@ export default function Cuerpo({ notaNoEliminada, notaBusquedaNotaEliminada,
                                     CargandoAnotaciones={true}
                                 />
                             ) : anotaciones.length === 0 ? (
-                                <CargandoNoHayNada 
-                                noHayEliminadas={true}
+                                <CargandoNoHayNada
+                                    noHayEliminadas={true}
                                 />
                             ) : (
                                 anotaciones.map((anotacion) => (
-                                    <EliminadaNotaVistaPrevia
+                                    <NotaVistaPrevia
                                         key={anotacion.id}
                                         anotacionId={anotacion.id}
+                                        iconoRestaurarEliminarDefinitivo={true}
                                         texto={obtenerTextoVistaPrevia(anotacion)}
                                         {...obtenerEstadoProps(anotacion.estado)}
                                     />
@@ -218,44 +212,48 @@ export default function Cuerpo({ notaNoEliminada, notaBusquedaNotaEliminada,
                             )}
                         </>
                     )}
+                </div>
+            )}
 
-                    {verTodosEstados && (
-                        <>
-                            <EstadosVistaPrevia
-                                iconoEstado={<HiMinusCircle className="text-blue-700" />}
-                                tipoEstado="No asignado"
-                                cantidadEstado={contadores.cant_no_asignado}
-                                no_asignado={true}
-                                seleccionado={verAnotacEstado === 'ver_no_asignado'}
-                                onClick={() => handleEstadoClick('ver_no_asignado')}
-                            />
+            {verTodosEstados && (
+                <div className={`w-[95%] h-full mx-auto overflow-y-auto 
+                                overflow-x-hidden min-h-0 min-w-0 pb-3
+                                grid 
+                                ${anotaciones.length === 0 ? '' : 'auto-rows-[11rem]'}`}>
 
-                            <EstadosVistaPrevia
-                                iconoEstado={<HiClock className="text-yellow-700" />}
-                                tipoEstado="Pendiente"
-                                cantidadEstado={contadores.cant_pendiente}
-                                pendiente={true}
-                                seleccionado={verAnotacEstado === 'ver_pendiente'}
-                                onClick={() => handleEstadoClick('ver_pendiente')}
-                            />
+                    <EstadosVistaPrevia
+                        iconoEstado={<HiMinusCircle className="text-blue-700" />}
+                        tipoEstado="No asignado"
+                        cantidadEstado={contadores.cant_no_asignado}
+                        no_asignado={true}
+                        seleccionado={verAnotacEstado === 'ver_no_asignado'}
+                        onClick={() => handleEstadoClick('ver_no_asignado')}
+                    />
 
-                            <EstadosVistaPrevia
-                                iconoEstado={<HiCheckCircle className="text-green-700" />}
-                                tipoEstado="Finalizado"
-                                cantidadEstado={contadores.cant_finalizado}
-                                finalizado={true}
-                                seleccionado={verAnotacEstado === 'ver_finalizado'}
-                                onClick={() => handleEstadoClick('ver_finalizado')}
-                            />
+                    <EstadosVistaPrevia
+                        iconoEstado={<HiClock className="text-yellow-700" />}
+                        tipoEstado="Pendiente"
+                        cantidadEstado={contadores.cant_pendiente}
+                        pendiente={true}
+                        seleccionado={verAnotacEstado === 'ver_pendiente'}
+                        onClick={() => handleEstadoClick('ver_pendiente')}
+                    />
 
-                            <EstadosVistaPrevia
-                                tipoEstado="Todos los estados"
-                                cantidadEstado={contadores.cant_todos_estados}
-                                seleccionado={verAnotacEstado === 'ver_todos_estados'}
-                                onClick={() => handleEstadoClick('ver_todos_estados')}
-                            />
-                        </>
-                    )}
+                    <EstadosVistaPrevia
+                        iconoEstado={<HiCheckCircle className="text-green-700" />}
+                        tipoEstado="Finalizado"
+                        cantidadEstado={contadores.cant_finalizado}
+                        finalizado={true}
+                        seleccionado={verAnotacEstado === 'ver_finalizado'}
+                        onClick={() => handleEstadoClick('ver_finalizado')}
+                    />
+
+                    <EstadosVistaPrevia
+                        tipoEstado="Todos los estados"
+                        cantidadEstado={contadores.cant_todos_estados}
+                        seleccionado={verAnotacEstado === 'ver_todos_estados'}
+                        onClick={() => handleEstadoClick('ver_todos_estados')}
+                    />
 
                 </div>
             )}
