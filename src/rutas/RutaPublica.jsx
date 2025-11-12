@@ -1,50 +1,53 @@
 import React, { useEffect, useState } from "react";
 import { Navigate, useLocation } from "react-router-dom";
+import { useDispatch } from "react-redux";
 import { verificarToken, obtenerToken } from "../services/authService";
-
-import CargandoNoHayNada from "../componentes/cargando_no_hay_nada/CargandoNoHayNada";
+import { iniciarVerificacionToken, finalizarVerificacionToken } from "../store/loadingSlice";
 
 export default function RutaPublica({ children }) {
     const [autenticado, setAutenticado] = useState(null);
-    const [cargando, setCargando] = useState(true);
     const location = useLocation();
+    const dispatch = useDispatch();
 
     useEffect(() => {
         const verificar = async () => {
             try {
-                // Verificar si existe un token antes de validar
                 const token = obtenerToken();
 
                 if (!token) {
                     setAutenticado(false);
-                    setCargando(false);
                     return;
                 }
 
+                // ✅ Activar overlay ANTES de verificar
+                dispatch(iniciarVerificacionToken('Verificando sesión...'));
+
                 await verificarToken();
                 setAutenticado(true);
+
             } catch (error) {
                 console.error('Error al verificar token:', error);
                 setAutenticado(false);
             } finally {
-                setCargando(false);
+                // ✅ Desactivar overlay después de verificar
+                dispatch(finalizarVerificacionToken());
             }
         };
 
         verificar();
-    }, [location.pathname]);
+    }, [dispatch, location.pathname]);
 
-    if (cargando) {
-        return (
-            <CargandoNoHayNada
-                pantallaCompletaCarga={true}
-            />
-        );
+    // ✅ Mientras verifica, NO renderiza nada
+    // El overlay global se muestra sobre la ruta anterior
+    if (autenticado === null) {
+        return null;
     }
 
-    if (autenticado) {
+    // Si está autenticado, redirige a la página principal
+    if (autenticado === true) {
         return <Navigate to="/" replace state={{ from: location }} />;
     }
 
+    // Si NO está autenticado, muestra la página pública (login, registro, etc.)
     return children;
 }

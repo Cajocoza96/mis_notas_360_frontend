@@ -4,6 +4,7 @@ import { createRoot } from 'react-dom/client';
 import { Provider } from 'react-redux';
 import { store } from './store/store.js';
 import { GoogleOAuthProvider } from '@react-oauth/google';
+import GlobalLoadingOverlay from './componentes/cargando_no_hay_nada/GlobalLoadingOverlay.jsx';
 
 import './index.css';
 import App from './App.jsx';
@@ -20,11 +21,13 @@ createRoot(document.getElementById('root')).render(
       <PaginaMantenimiento />
     ) : (
       <BrowserRouter>
+        <GlobalLoadingOverlay>
         <Provider store={store}>
           <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
             <App />
           </GoogleOAuthProvider>
         </Provider>
+        </GlobalLoadingOverlay>
       </BrowserRouter>
     )}
   </StrictMode>,

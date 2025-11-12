@@ -1,36 +1,33 @@
 import React, { useEffect, useState } from "react";
 import { Navigate, useLocation } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { verificarToken, obtenerToken } from "../services/authService";
 import { cargarPreferencia } from "../store/preferenciaSlice";
-
-import CargandoNoHayNada from "../componentes/cargando_no_hay_nada/CargandoNoHayNada";
+import { iniciarVerificacionToken, finalizarVerificacionToken } from "../store/loadingSlice";
 
 export default function RutaProtegida({ children }) {
-
     const [autenticado, setAutenticado] = useState(null);
-    const [cargando, setCargando] = useState(true);
     const location = useLocation();
     const dispatch = useDispatch();
-
     const [preferenciasCargadas, setPreferenciasCargadas] = useState(false);
 
     useEffect(() => {
         const verificar = async () => {
             try {
-                // Verificar si existe un token antes de validar
                 const token = obtenerToken();
 
                 if (!token) {
                     setAutenticado(false);
-                    setCargando(false);
                     return;
                 }
+
+                // ✅ Activar overlay ANTES de verificar
+                dispatch(iniciarVerificacionToken('Verificando sesión...'));
 
                 await verificarToken();
                 setAutenticado(true);
 
-                // ✅ Cargar preferencias SOLO si aún no se han cargado
+                // Cargar preferencias SOLO si aún no se han cargado
                 if (!preferenciasCargadas) {
                     await dispatch(cargarPreferencia());
                     setPreferenciasCargadas(true);
@@ -40,23 +37,24 @@ export default function RutaProtegida({ children }) {
                 console.error('Error al verificar token:', error);
                 setAutenticado(false);
             } finally {
-                setCargando(false);
+                // ✅ Desactivar overlay después de verificar
+                dispatch(finalizarVerificacionToken());
             }
         };
 
         verificar();
     }, [dispatch]);
 
-    if (cargando) {
-        return (
-            <CargandoNoHayNada
-                pantallaCompletaCarga={true}
-            />
-        );
+    // ✅ Ya NO mostramos pantalla de carga aquí
+    // El overlay global lo maneja
+
+    if (autenticado === false) {
+        return <Navigate to="/iniciar-sesion" replace state={{ from: location }} />;
     }
 
-    if (!autenticado) {
-        return <Navigate to="/iniciar-sesion" replace state={{ from: location }} />;
+    if (autenticado === null) {
+        // Mientras verifica, NO renderiza nada (el overlay se muestra sobre la ruta anterior)
+        return null;
     }
 
     return children;

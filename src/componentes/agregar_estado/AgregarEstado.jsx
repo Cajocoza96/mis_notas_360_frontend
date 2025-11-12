@@ -2,7 +2,7 @@ import React from "react";
 
 import { useDispatch, useSelector } from "react-redux";
 
-import { HiPlusCircle, HiRefresh, HiMinusCircle, HiClock, HiCheckCircle } from "react-icons/hi";
+import { HiPlusCircle, HiMinusCircle, HiClock, HiCheckCircle } from "react-icons/hi";
 
 import { toggleVerModalEstado } from "../../store/tareasSlice";
 
@@ -32,7 +32,7 @@ export default function AgregarEstado() {
                                 <HiClock className="text-yellow-700" /> :
 
                                 estadoSeleccionado === "finalizado" ?
-                                    <HiCheckCircle className="text-green-700" /> : <HiRefresh className="text-green-700" />}
+                                    <HiCheckCircle className="text-green-700" /> : ''}
                     </div>
 
                     <p className="text-base md:text-xl text-black dark:text-white">

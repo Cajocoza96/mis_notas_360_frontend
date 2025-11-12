@@ -5,6 +5,7 @@ import accesoReducer from "./accesoSlice";
 import anotacionesReducer from "./anotacionesSlice";
 import busquedaReducer from "./busquedaSlice";
 import preferenciaReducer from "./preferenciaSlice"
+import loadingReducer from "./loadingSlice";
 
 export const store = configureStore({
     reducer: {
@@ -13,6 +14,7 @@ export const store = configureStore({
         acceso: accesoReducer,
         anotaciones: anotacionesReducer,
         busqueda: busquedaReducer,
-        preferencia: preferenciaReducer
+        preferencia: preferenciaReducer,
+        loading: loadingReducer
     }
 })
