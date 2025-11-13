@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -43,55 +43,57 @@ export default function PanelPrincipal() {
 
 
     return (
-        <motion.div
-            className="h-dvh bg-white dark:bg-gray-800 
+        <AnimatePresence mode="wait">
+            <motion.div
+                className="h-dvh bg-white dark:bg-gray-800 
                         overflow-hidden
                         flex flex-col justify-between"
-            variants={pageVariants}
-            initial="initial"
-            animate="animate">
+                variants={pageVariants}
+                initial="initial"
+                animate="animate">
 
-            <ModalExitoError />
+                <ModalExitoError />
 
-            {verOpcionesCabecera && (
-                <ContOpSubCabecera />
-            )}
-
-
-            {verModalCrearNota && (
-                <ModalConfirmacion textoPregunta="¿Desea crear una nota?" />
-            )}
-
-            {verModalPapeleraNota && (
-                <ModalConfirmacion
-                    textoPregunta="¿Mover nota a la papelera?"
-                    eliminarAceptar={true} />
-            )}
-
-            {verModalEliminarNotaDefinitiva && (
-                <ModalConfirmacion
-                    textoPregunta="¿Desea eliminar definitivamente la nota?"
-                    eliminarPregunta={true}
-                    eliminarAceptar={true} />
-            )}
-
-            <AnimatePresence>
-                {verMenuHamburguesa && (
-                    <MenuHamburguesa />
+                {verOpcionesCabecera && (
+                    <ContOpSubCabecera />
                 )}
-            </AnimatePresence>
 
-            <Cabecera
-                paginaPrincipal={true}
-                paginaBusqueda={false}
-                paginaPapelera={false} />
 
-            <Cuerpo
-                notaNoEliminada={true}
-                verContenidoCuerpo={true}
-            />
+                {verModalCrearNota && (
+                    <ModalConfirmacion textoPregunta="¿Desea crear una nota?" />
+                )}
 
-            <Footer />
-        </motion.div>
+                {verModalPapeleraNota && (
+                    <ModalConfirmacion
+                        textoPregunta="¿Mover nota a la papelera?"
+                        eliminarAceptar={true} />
+                )}
+
+                {verModalEliminarNotaDefinitiva && (
+                    <ModalConfirmacion
+                        textoPregunta="¿Desea eliminar definitivamente la nota?"
+                        eliminarPregunta={true}
+                        eliminarAceptar={true} />
+                )}
+
+                <AnimatePresence>
+                    {verMenuHamburguesa && (
+                        <MenuHamburguesa />
+                    )}
+                </AnimatePresence>
+
+                <Cabecera
+                    paginaPrincipal={true}
+                    paginaBusqueda={false}
+                    paginaPapelera={false} />
+
+                <Cuerpo
+                    notaNoEliminada={true}
+                    verContenidoCuerpo={true}
+                />
+
+                <Footer />
+            </motion.div>
+        </AnimatePresence>
     );
 }

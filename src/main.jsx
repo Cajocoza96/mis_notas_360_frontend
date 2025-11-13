@@ -20,15 +20,14 @@ createRoot(document.getElementById('root')).render(
     {estaEnMantenimiento ? (
       <PaginaMantenimiento />
     ) : (
-      <BrowserRouter>
-        <GlobalLoadingOverlay>
-        <Provider store={store}>
+      <Provider store={store}>
+        <BrowserRouter>
           <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
+            <GlobalLoadingOverlay />
             <App />
           </GoogleOAuthProvider>
-        </Provider>
-        </GlobalLoadingOverlay>
-      </BrowserRouter>
+        </BrowserRouter>
+      </Provider>
     )}
   </StrictMode>,
 )

@@ -1,6 +1,6 @@
 import React, { useRef, useEffect, useState } from "react";
 
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 
 import { useDispatch, useSelector } from "react-redux";
 import { useParams, useLocation, useNavigate } from "react-router-dom";
@@ -17,8 +17,6 @@ import ModalConfirmacion from "../../componentes/modal/ModalConfirmacion";
 import { obtenerAnotacionPorId } from "../../services/anotacionesService";
 
 import ModalExitoError from "../../componentes/modal/ModalExitoError";
-
-import CargandoNoHayNada from "../../componentes/cargando_no_hay_nada/CargandoNoHayNada";
 
 export default function PaginaVistaPrevia() {
     const { id } = useParams(); // Obtener el ID de la URL
@@ -111,16 +109,16 @@ export default function PaginaVistaPrevia() {
         }
     }
 
+    /*
     // Pantalla de carga mientras se obtiene la anotación
     if (cargandoInicial) {
         return (
-            <CargandoNoHayNada
-                pantallaCompletaCarga={true}
-            />
         );
     }
+    */
 
     return (
+        <AnimatePresence mode="wait">
         <motion.div
             className="h-dvh bg-white dark:bg-gray-800 min-h-0 min-w-0 
                         overflow-hidden relative
@@ -156,5 +154,6 @@ export default function PaginaVistaPrevia() {
             <ContOpSubCabecera />
 
         </motion.div>
+        </AnimatePresence>
     );
 }

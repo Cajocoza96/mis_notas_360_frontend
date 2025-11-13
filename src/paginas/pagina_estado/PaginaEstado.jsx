@@ -1,6 +1,6 @@
 import React from "react";
 
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 
 import Cabecera from "../../componentes/cabecera/Cabecera";
 
@@ -27,22 +27,24 @@ export default function PaginaEstado() {
     }
 
     return (
-        <motion.div
-            className="h-dvh bg-white dark:bg-gray-800 
+        <AnimatePresence mode="wait">
+            <motion.div
+                className="h-dvh bg-white dark:bg-gray-800 
                         min-h-0 min-w-0 overflow-hidden 
                         flex flex-col"
-            variants={pageVariants}
-            initial="initial"
-            animate="animate">
+                variants={pageVariants}
+                initial="initial"
+                animate="animate">
 
-            <Cabecera
-                paginaEstado={true}
-            />
+                <Cabecera
+                    paginaEstado={true}
+                />
 
-            <Cuerpo
-                verTodosEstados={true}
-            />
+                <Cuerpo
+                    verTodosEstados={true}
+                />
 
-        </motion.div>
+            </motion.div>
+        </AnimatePresence>
     );
 }

@@ -19,7 +19,7 @@ export default function RutaPublica({ children }) {
                     return;
                 }
 
-                // ✅ Activar overlay ANTES de verificar
+                // ✅ Activar overlay global ANTES de verificar
                 dispatch(iniciarVerificacionToken('Verificando sesión...'));
 
                 await verificarToken();
@@ -37,7 +37,7 @@ export default function RutaPublica({ children }) {
         verificar();
     }, [dispatch, location.pathname]);
 
-    // ✅ Mientras verifica, NO renderiza nada
+    // Mientras verifica, NO renderiza nada
     // El overlay global se muestra sobre la ruta anterior
     if (autenticado === null) {
         return null;
@@ -45,9 +45,9 @@ export default function RutaPublica({ children }) {
 
     // Si está autenticado, redirige a la página principal
     if (autenticado === true) {
-        return <Navigate to="/" replace state={{ from: location }} />;
+        return <Navigate to="/panel-principal" replace state={{ from: location }} />;
     }
 
-    // Si NO está autenticado, muestra la página pública (login, registro, etc.)
+    // Si NO está autenticado, muestra la página pública
     return children;
 }

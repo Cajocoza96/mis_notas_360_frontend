@@ -1,6 +1,6 @@
 import React from "react";
 
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 
 import { useDispatch, useSelector } from "react-redux";
 import { useAuth } from "../../hooks/useAuth";
@@ -17,8 +17,6 @@ import { toggleVerModalEliminarUsuario, toggleVerModalCerrarSesion } from "../..
 import { toggleVerMenuHamburguesa } from "../../store/layoutSlice";
 
 import ContIconoInfoUsua from "../../componentes/admin_usuario/cont_icono_info_usua/ContIconoInfoUsua";
-
-import CargandoNoHayNada from "../../componentes/cargando_no_hay_nada/CargandoNoHayNada";
 
 export default function PaginaInfoUsuario() {
     const dispatch = useDispatch();
@@ -63,15 +61,15 @@ export default function PaginaInfoUsuario() {
         }
     }
 
+    /*
     if (cargando) {
         return (
-            <CargandoNoHayNada
-                pantallaCompletaCarga={true}
-            />
         );
     }
+    */
 
     return (
+        <AnimatePresence mode="wait">
         <motion.div
             className="min-h-dvh bg-white dark:bg-gray-800 
                             overflow-hidden
@@ -161,5 +159,6 @@ export default function PaginaInfoUsuario() {
             </div>
 
         </motion.div>
+        </AnimatePresence>
     );
 }

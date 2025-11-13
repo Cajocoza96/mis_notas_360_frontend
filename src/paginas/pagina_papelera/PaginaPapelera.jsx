@@ -4,7 +4,7 @@ import { useSelector } from "react-redux";
 
 import ModalConfirmacion from "../../componentes/modal/ModalConfirmacion";
 
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 
 import Cabecera from "../../componentes/cabecera/Cabecera";
 import Cuerpo from "../../componentes/cuerpo/Cuerpo";
@@ -41,55 +41,57 @@ export default function PaginaPapelera() {
     }
 
     return (
-        <motion.div
-            className="h-dvh bg-white dark:bg-gray-800 min-h-0 min-w-0 overflow-hidden 
+        <AnimatePresence mode="wait">
+            <motion.div
+                className="h-dvh bg-white dark:bg-gray-800 min-h-0 min-w-0 overflow-hidden 
                         flex flex-col"
-            variants={pageVariants}
-            initial="initial"
-            animate="animate">
+                variants={pageVariants}
+                initial="initial"
+                animate="animate">
 
-            <ModalExitoError />
+                <ModalExitoError />
 
-            {verModalRestaurarNota && (
-                <ModalConfirmacion
-                    textoPregunta="¿Desea restaurar la nota?"
-                    restaurarTexto={true}
+                {verModalRestaurarNota && (
+                    <ModalConfirmacion
+                        textoPregunta="¿Desea restaurar la nota?"
+                        restaurarTexto={true}
+                    />
+                )}
+
+                {verModalEliminarNotaDefinitiva && (
+                    <ModalConfirmacion
+                        textoPregunta="¿Desea eliminar definitivamente la nota?"
+                        eliminarPregunta={true}
+                        eliminarAceptar={true}
+                    />
+                )}
+
+                {verModalEliminarTodasLasNotasDefinitivo && (
+                    <ModalConfirmacion
+                        textoPregunta={`${anotaciones.length === 1 ? '¿Desea eliminar la nota definitivamente' : '¿Desea eliminar todas las notas definitivamente?'}`}
+                        eliminarPregunta={true}
+                        eliminarAceptar={true}
+                    />
+                )}
+
+                <Cabecera
+                    paginaPapelera={true}
+                    papelera={true}
                 />
-            )}
 
-            {verModalEliminarNotaDefinitiva && (
-                <ModalConfirmacion
-                    textoPregunta="¿Desea eliminar definitivamente la nota?"
-                    eliminarPregunta={true}
-                    eliminarAceptar={true}
+                <Cuerpo
+                    notaNoEliminada={true}
+                    verNotaEliminada={true}
+
                 />
-            )}
 
-            {verModalEliminarTodasLasNotasDefinitivo && (
-                <ModalConfirmacion
-                    textoPregunta={`${anotaciones.length === 1 ? '¿Desea eliminar la nota definitivamente' : '¿Desea eliminar todas las notas definitivamente?'}`}
-                    eliminarPregunta={true}
-                    eliminarAceptar={true}
-                />
-            )}
+                {anotaciones.length === 0 ? '' :
+                    <Footer
+                        textoCantElimi={`${anotaciones.length === 0 ? '' : anotaciones.length === 1 ? 'Eliminar nota' : 'Eliminar todas las notas'}`}
+                    />
+                }
 
-            <Cabecera
-                paginaPapelera={true}
-                papelera={true}
-            />
-
-            <Cuerpo
-                notaNoEliminada={true}
-                verNotaEliminada={true}
-
-            />
-
-            {anotaciones.length === 0 ? '' :
-                <Footer
-                    textoCantElimi={`${anotaciones.length === 0 ? '' : anotaciones.length === 1 ? 'Eliminar nota' : 'Eliminar todas las notas'}`}
-                />
-            }
-
-        </motion.div>
+            </motion.div>
+        </AnimatePresence>
     );
 }

@@ -57,13 +57,13 @@ export default function PaginaBienvenida() {
         verificar();
     }, []);
 
+    /*
+
     if (cargando) {
         return (
-            <CargandoNoHayNada
-                pantallaCompletaCarga={true}
-            />
         );
     }
+    */
 
     return (
         <div className="relative min-h-dvh bg-gradient-to-br from-indigo-900 via-purple-900 to-pink-800 overflow-hidden">

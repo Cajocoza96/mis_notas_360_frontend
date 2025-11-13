@@ -21,7 +21,7 @@ export default function RutaProtegida({ children }) {
                     return;
                 }
 
-                // ✅ Activar overlay ANTES de verificar
+                // ✅ Activar overlay global ANTES de verificar
                 dispatch(iniciarVerificacionToken('Verificando sesión...'));
 
                 await verificarToken();
@@ -45,16 +45,14 @@ export default function RutaProtegida({ children }) {
         verificar();
     }, [dispatch]);
 
-    // ✅ Ya NO mostramos pantalla de carga aquí
-    // El overlay global lo maneja
+    // Mientras verifica, NO renderiza nada
+    // El overlay global se muestra sobre la ruta anterior
+    if (autenticado === null) {
+        return null;
+    }
 
     if (autenticado === false) {
         return <Navigate to="/iniciar-sesion" replace state={{ from: location }} />;
-    }
-
-    if (autenticado === null) {
-        // Mientras verifica, NO renderiza nada (el overlay se muestra sobre la ruta anterior)
-        return null;
     }
 
     return children;
