@@ -224,6 +224,7 @@ export default function PaginaCrearEditNota() {
     }
 
     return (
+        <AnimatePresence mode="wait">
         <motion.div
             className="h-dvh bg-white dark:bg-gray-800 min-h-0 min-w-0 overflow-hidden
                         flex flex-col"
@@ -258,5 +259,6 @@ export default function PaginaCrearEditNota() {
                 notaRef={notaRef}
             />
         </motion.div>
+        </AnimatePresence>
     );
 }
