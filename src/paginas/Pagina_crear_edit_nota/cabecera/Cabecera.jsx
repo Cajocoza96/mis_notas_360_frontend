@@ -1,4 +1,4 @@
-import React, { forwardRef } from "react";
+import React, { forwardRef, useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { HiChevronLeft } from "react-icons/hi";
 import { Link } from "react-router-dom";
@@ -11,6 +11,27 @@ const Cabecera = forwardRef(({ handleTituloChange, handleTituloKeyDown,
 
     const dispatch = useDispatch();
     const { isTituloFocused } = useSelector((state) => state.tareas);
+    
+    // ✅ Estado local para controlar si tiene contenido (más reactivo)
+    const [tieneTitulo, setTieneTitulo] = useState(false);
+
+    // ✅ Efecto para verificar si el ref tiene contenido al montar y cuando cambia
+    useEffect(() => {
+        const verificarContenido = () => {
+            if (tituloRef?.current) {
+                const contenido = tituloRef.current.textContent?.trim() || "";
+                setTieneTitulo(contenido !== "");
+            }
+        };
+
+        // Verificar inmediatamente
+        verificarContenido();
+
+        // Verificar periódicamente (para capturar cambios en el ref)
+        const interval = setInterval(verificarContenido, 100);
+
+        return () => clearInterval(interval);
+    }, [tituloRef]);
 
     const handleFocus = () => {
         if (!esModoVistaPrevia) {
@@ -21,17 +42,27 @@ const Cabecera = forwardRef(({ handleTituloChange, handleTituloKeyDown,
     const handleBlur = async () => {
         if (!esModoVistaPrevia) {
             dispatch(setIsTituloFocused(false));
+            // Verificar contenido al perder el foco
+            if (tituloRef?.current) {
+                const contenido = tituloRef.current.textContent?.trim() || "";
+                setTieneTitulo(contenido !== "");
+            }
         }
     };
 
-    // Verificar si el título tiene contenido directamente del ref
-    const tieneTitulo = tituloRef?.current?.textContent?.trim() !== "";
+    const handleInputLocal = () => {
+        handleTituloChange(tituloRef);
+        // Actualizar inmediatamente el estado de tieneTitulo
+        if (tituloRef?.current) {
+            const contenido = tituloRef.current.textContent?.trim() || "";
+            setTieneTitulo(contenido !== "");
+        }
+    };
 
     return (
         <div className="flex-shrink-0 z-10 min-h-0 min-w-0 py-1 overflow-hidden">
 
             <div className="w-full flex flex-col gap-2 items-center py-2 ">
-
 
                 <div className="w-[95%] flex flex-row justify-between">
                     <Link
@@ -48,7 +79,7 @@ const Cabecera = forwardRef(({ handleTituloChange, handleTituloKeyDown,
                             ref={tituloRef}
                             contentEditable={!esModoVistaPrevia}
                             suppressContentEditableWarning={true}
-                            onInput={() => handleTituloChange(tituloRef)}
+                            onInput={handleInputLocal}
                             onFocus={handleFocus}
                             onBlur={handleBlur}
                             onKeyDown={(e) => handleTituloKeyDown(e, tituloRef)}
