@@ -26,7 +26,7 @@ export default function PaginaCrearEditNota() {
     const dispatch = useDispatch();
     const tituloRef = useRef(null);
     const notaRef = useRef(null);
-    
+
     // ✅ Estado local para controlar si los datos ya están listos
     const [datosListos, setDatosListos] = useState(false);
 
@@ -78,9 +78,9 @@ export default function PaginaCrearEditNota() {
     const cargarAnotacionParaEditar = async () => {
         try {
             console.log('🔄 Iniciando carga de anotación...');
-            
+
             const anotacion = await obtenerAnotacionPorId(id);
-            
+
             console.log('✅ Anotación obtenida:', anotacion);
 
             // Guardar en Redux
@@ -132,7 +132,7 @@ export default function PaginaCrearEditNota() {
                 }
 
                 console.log('✅ Datos cargados completamente');
-                
+
                 // ✅ Marcar que los datos están listos y desactivar overlay
                 setDatosListos(true);
                 dispatch(setCargando(false));
@@ -224,41 +224,39 @@ export default function PaginaCrearEditNota() {
     }
 
     return (
-        <AnimatePresence mode="wait">
-            <motion.div
-                className="h-dvh bg-white dark:bg-gray-800 min-h-0 min-w-0 overflow-hidden
+        <motion.div
+            className="h-dvh bg-white dark:bg-gray-800 min-h-0 min-w-0 overflow-hidden
                         flex flex-col"
-                variants={pageVariants}
-                initial="initial"
-                animate="animate">
+            variants={pageVariants}
+            initial="initial"
+            animate="animate">
 
-                {verModalEstado && (
-                    <ModalEstado />
-                )}
+            {verModalEstado && (
+                <ModalEstado />
+            )}
 
-                <ModalExitoError />
+            <ModalExitoError />
 
-                <Cabecera
-                    ref={tituloRef}
-                    handleTituloChange={handleTituloChangeAdapter}
-                    handleTituloKeyDown={handleTituloKeyDownAdapter}
-                />
+            <Cabecera
+                ref={tituloRef}
+                handleTituloChange={handleTituloChangeAdapter}
+                handleTituloKeyDown={handleTituloKeyDownAdapter}
+            />
 
-                <CuerpoEdicion
-                    ref={notaRef}
-                    handleNotaChange={handleNotaChangeAdapter}
-                    handleNotaKeyDown={handleNotaKeyDownAdapter}
-                    esModoVistaPrevia={false}
-                />
+            <CuerpoEdicion
+                ref={notaRef}
+                handleNotaChange={handleNotaChangeAdapter}
+                handleNotaKeyDown={handleNotaKeyDownAdapter}
+                esModoVistaPrevia={false}
+            />
 
-                <Footer
-                    handleUndoClick={handleUndoClickAdapter}
-                    handleRedoClick={handleRedoClickAdapter}
-                    esModoEdicion={esModoEdicion}
-                    tituloRef={tituloRef}
-                    notaRef={notaRef}
-                />
-            </motion.div>
-        </AnimatePresence>
+            <Footer
+                handleUndoClick={handleUndoClickAdapter}
+                handleRedoClick={handleRedoClickAdapter}
+                esModoEdicion={esModoEdicion}
+                tituloRef={tituloRef}
+                notaRef={notaRef}
+            />
+        </motion.div>
     );
 }
