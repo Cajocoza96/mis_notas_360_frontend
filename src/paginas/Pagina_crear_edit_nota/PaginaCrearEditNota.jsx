@@ -27,8 +27,8 @@ export default function PaginaCrearEditNota() {
     const tituloRef = useRef(null);
     const notaRef = useRef(null);
 
-    // ✅ Estado local para controlar si los datos ya están listos
-    const [datosListos, setDatosListos] = useState(false);
+    // ✅ Estado local para los datos cargados
+    const [anotacionCargada, setAnotacionCargada] = useState(null);
 
     // Determinar si estamos en modo edición
     const esModoEdicion = location.pathname.includes('/editar/nota/');
@@ -50,103 +50,93 @@ export default function PaginaCrearEditNota() {
         handleRedoClick
     } = useContentEditable({ titulo: "", nota: "" }, undoRedoHook);
 
-    // ✅ Activar carga INMEDIATAMENTE al montar el componente en modo edición
+    // ✅ Cargar la anotación SOLO UNA VEZ al montar
     useEffect(() => {
-        if (id && esModoEdicion) {
-            dispatch(setCargando(true));
-            setDatosListos(false);
-        } else {
-            // Si no es modo edición, los datos ya están "listos"
-            setDatosListos(true);
+        const cargarDatos = async () => {
+            if (id && esModoEdicion) {
+                dispatch(setCargando(true));
+                
+                try {
+                    console.log('🔄 Iniciando carga de anotación...');
+                    const anotacion = await obtenerAnotacionPorId(id);
+                    console.log('✅ Anotación obtenida:', anotacion);
+
+                    // Guardar en Redux
+                    dispatch(setAnotacionActual(anotacion));
+                    dispatch(setAnotacionId(anotacion.id));
+
+                    // Mapear el estado
+                    const estadoMapeado = mapearEstadoDesdeBD(anotacion.estado);
+                    dispatch(setEstadoSeleccionado(estadoMapeado));
+
+                    // Mapear las tareas
+                    const tareasFormateadas = anotacion.tareas.map(t => ({
+                        id: t.id,
+                        texto: t.texto_tarea,
+                        completada: t.tarea_completada === 1
+                    }));
+                    dispatch(setTareas(tareasFormateadas));
+
+                    // ✅ Guardar la anotación en estado local para usarla en el efecto de los refs
+                    setAnotacionCargada(anotacion);
+
+                } catch (error) {
+                    console.error('❌ Error al cargar la anotación:', error);
+                    dispatch(setCargando(false));
+                }
+            }
+        };
+
+        cargarDatos();
+
+        // Cleanup
+        return () => {
+            dispatch(resetNotaState());
+            dispatch(setCargando(false));
+        };
+    }, [id, esModoEdicion]); // Solo depende de id y esModoEdicion
+
+    // ✅ Efecto SEPARADO para actualizar los refs cuando la anotación esté lista Y los refs estén montados
+    useEffect(() => {
+        if (anotacionCargada && tituloRef.current && notaRef.current) {
+            console.log('🎯 Actualizando refs con datos...');
+            
+            const tituloInicial = anotacionCargada.titulo || "";
+            const notaInicial = anotacionCargada.nota || "";
+
+            // Actualizar los refs
+            tituloRef.current.textContent = tituloInicial;
+            notaRef.current.textContent = notaInicial;
+
+            // Actualizar Redux
+            dispatch(setTitulo(tituloInicial));
+            dispatch(setNota(notaInicial));
+
+            // Inicializar historial
+            if (undoRedoHook?.resetHistory) {
+                undoRedoHook.resetHistory({
+                    titulo: tituloInicial,
+                    nota: notaInicial
+                });
+            }
+
+            console.log('✅ Refs actualizados correctamente');
+            
+            // ✅ Desactivar overlay DESPUÉS de actualizar refs
+            setTimeout(() => {
+                dispatch(setCargando(false));
+            }, 100);
         }
-    }, [id, esModoEdicion, dispatch]);
+    }, [anotacionCargada, dispatch]); // Se ejecuta cuando cambia anotacionCargada
 
     // Limpiar el historial cuando entramos en modo edición
     useEffect(() => {
-        if (esModoEdicion && undoRedoHook.resetHistory) {
+        if (esModoEdicion && undoRedoHook?.resetHistory) {
             undoRedoHook.resetHistory({ titulo: "", nota: "" });
         }
     }, [esModoEdicion]);
 
-    // Cargar la anotación si estamos en modo edición
-    useEffect(() => {
-        if (id && esModoEdicion) {
-            cargarAnotacionParaEditar();
-        }
-    }, [id, esModoEdicion]);
-
-    const cargarAnotacionParaEditar = async () => {
-        try {
-            console.log('🔄 Iniciando carga de anotación...');
-
-            const anotacion = await obtenerAnotacionPorId(id);
-
-            console.log('✅ Anotación obtenida:', anotacion);
-
-            // Guardar en Redux
-            dispatch(setAnotacionActual(anotacion));
-            dispatch(setAnotacionId(anotacion.id));
-
-            // Mapear el estado de la BD al formato del frontend
-            const estadoMapeado = mapearEstadoDesdeBD(anotacion.estado);
-            dispatch(setEstadoSeleccionado(estadoMapeado));
-
-            // Mapear las tareas
-            const tareasFormateadas = anotacion.tareas.map(t => ({
-                id: t.id,
-                texto: t.texto_tarea,
-                completada: t.tarea_completada === 1
-            }));
-
-            dispatch(setTareas(tareasFormateadas));
-
-            // Actualizar los refs con el contenido DESPUÉS de un pequeño delay
-            setTimeout(() => {
-                const tituloInicial = anotacion.titulo || "";
-                const notaInicial = anotacion.nota || "";
-
-                if (tituloRef.current) {
-                    tituloRef.current.textContent = tituloInicial;
-                }
-                if (notaRef.current) {
-                    notaRef.current.textContent = notaInicial;
-                }
-
-                // Actualizar Redux DESPUÉS de cargar los refs
-                dispatch(setTitulo(tituloInicial));
-                dispatch(setNota(notaInicial));
-
-                // Inicializar el historial de deshacer/rehacer
-                if (undoRedoHook) {
-                    if (undoRedoHook.resetHistory) {
-                        undoRedoHook.resetHistory({
-                            titulo: tituloInicial,
-                            nota: notaInicial
-                        });
-                    } else if (undoRedoHook.addToHistoryImmediate) {
-                        undoRedoHook.addToHistoryImmediate({
-                            titulo: tituloInicial,
-                            nota: notaInicial
-                        });
-                    }
-                }
-
-                console.log('✅ Datos cargados completamente');
-
-                // ✅ Marcar que los datos están listos y desactivar overlay
-                setDatosListos(true);
-                dispatch(setCargando(false));
-            }, 150);
-
-        } catch (error) {
-            console.error('❌ Error al cargar la anotación:', error);
-            // ✅ Desactivar el overlay incluso si hay error
-            setDatosListos(true);
-            dispatch(setCargando(false));
-        }
-    }
-
-    // Sincronizar estados con Redux - Simplificado
+    // Sincronizar estados con Redux
     useEffect(() => {
         dispatch(setCanUndo(canUndo));
         dispatch(setCanRedo(canRedo));
@@ -164,14 +154,6 @@ export default function PaginaCrearEditNota() {
             dispatch(setNota(nota));
         }
     }, [nota, dispatch]);
-
-    // Limpiar el estado cuando el componente se desmonta
-    useEffect(() => {
-        return () => {
-            dispatch(resetNotaState());
-            dispatch(setCargando(false));
-        };
-    }, [dispatch]);
 
     // Funciones adaptadas para trabajar con las referencias locales
     const handleTituloChangeAdapter = (ref) => {
@@ -218,47 +200,42 @@ export default function PaginaCrearEditNota() {
         }
     }
 
-    // ✅ NO renderizar los componentes hasta que los datos estén listos en modo edición
-    if (esModoEdicion && !datosListos) {
-        return null; // El overlay se mostrará mientras esto es null
-    }
-
     return (
         <AnimatePresence mode="wait">
-        <motion.div
-            className="h-dvh bg-white dark:bg-gray-800 min-h-0 min-w-0 overflow-hidden
+            <motion.div
+                className="h-dvh bg-white dark:bg-gray-800 min-h-0 min-w-0 overflow-hidden
                         flex flex-col"
-            variants={pageVariants}
-            initial="initial"
-            animate="animate">
+                variants={pageVariants}
+                initial="initial"
+                animate="animate">
 
-            {verModalEstado && (
-                <ModalEstado />
-            )}
+                {verModalEstado && (
+                    <ModalEstado />
+                )}
 
-            <ModalExitoError />
+                <ModalExitoError />
 
-            <Cabecera
-                ref={tituloRef}
-                handleTituloChange={handleTituloChangeAdapter}
-                handleTituloKeyDown={handleTituloKeyDownAdapter}
-            />
+                <Cabecera
+                    ref={tituloRef}
+                    handleTituloChange={handleTituloChangeAdapter}
+                    handleTituloKeyDown={handleTituloKeyDownAdapter}
+                />
 
-            <CuerpoEdicion
-                ref={notaRef}
-                handleNotaChange={handleNotaChangeAdapter}
-                handleNotaKeyDown={handleNotaKeyDownAdapter}
-                esModoVistaPrevia={false}
-            />
+                <CuerpoEdicion
+                    ref={notaRef}
+                    handleNotaChange={handleNotaChangeAdapter}
+                    handleNotaKeyDown={handleNotaKeyDownAdapter}
+                    esModoVistaPrevia={false}
+                />
 
-            <Footer
-                handleUndoClick={handleUndoClickAdapter}
-                handleRedoClick={handleRedoClickAdapter}
-                esModoEdicion={esModoEdicion}
-                tituloRef={tituloRef}
-                notaRef={notaRef}
-            />
-        </motion.div>
+                <Footer
+                    handleUndoClick={handleUndoClickAdapter}
+                    handleRedoClick={handleRedoClickAdapter}
+                    esModoEdicion={esModoEdicion}
+                    tituloRef={tituloRef}
+                    notaRef={notaRef}
+                />
+            </motion.div>
         </AnimatePresence>
     );
 }
