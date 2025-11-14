@@ -69,14 +69,14 @@ export const iniciarSesion = async (nombreUsuario, contrasena) => {
 };
 
 // Autenticación con Google
-export const autenticarConGoogle = async (googleData) => {
+export const autenticarConGoogle = async (credential) => {
     try {
         const response = await fetch(`${API_URL}/auth/google`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify(googleData),
+            body: JSON.stringify({ credential }), // Enviar el token completo
         });
 
         const data = await response.json();

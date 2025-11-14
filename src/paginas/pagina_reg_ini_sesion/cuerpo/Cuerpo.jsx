@@ -38,24 +38,15 @@ export default function Cuerpo() {
     // Función para manejar autenticación con Google
     const handleGoogleSuccess = async (credentialResponse) => {
         try {
-            // Decodificar el token JWT de Google
-            const decoded = jwtDecode(credentialResponse.credential);
-
-            const googleData = {
-                googleId: decoded.sub, // ID único de Google
-                email: decoded.email,
-                nombreCuenta: decoded.name,
-                imagenPerfil: decoded.picture
-            };
-
-            // Autenticar con tu backend
-            await autenticarConGoogle(googleData);
-
+            // Ya NO decodificamos en el frontend
+            // Enviamos el token completo al backend para que lo verifique
+            await autenticarConGoogle(credentialResponse.credential);
+    
             if (verMenuHamburguesa) {
                 dispatch(toggleVerMenuHamburguesa());
             }
             navigate("/panel-principal");
-
+    
         } catch (error) {
             mostrarToast(error.message || "Error al autenticar con Google");
         }
