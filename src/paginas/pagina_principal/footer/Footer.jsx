@@ -9,7 +9,8 @@ import { useSelector, useDispatch } from "react-redux";
 import { toggleOrganizarPorColumna, toggleVerSoloFavoritos,
         guardarOrgColumna, guardarVerSoloFavoritos } from "../../../store/preferenciaSlice"; 
 
-import { cargarAnotaciones } from "../../../store/anotacionesSlice";
+// ✅ YA NO necesitas importar cargarAnotaciones aquí
+// import { cargarAnotaciones } from "../../../store/anotacionesSlice";
         
 import { toggleVerModalCrearNota } from "../../../store/tareasSlice";
 
@@ -41,23 +42,18 @@ export default function Footer() {
         dispatch(guardarOrgColumna(nuevoValor));
     }
 
-    // ✅ Toggle de favoritos con recarga
+    // ✅ Simplificado: solo actualizar preferencia, Cuerpo.jsx se encarga de recargar
     const handleToggleFavoritos = async () => {
         const nuevoValor = !verSoloFavoritos;
         
-        // Actualizar el estado local primero (para UI responsiva)
-        dispatch(toggleVerSoloFavoritos());
-        
         try {
-            // Guardar en el backend y esperar
+            // Guardar en el backend primero
             await dispatch(guardarVerSoloFavoritos(nuevoValor)).unwrap();
             
-            // Recargar anotaciones después de que se guardó
-            await dispatch(cargarAnotaciones()).unwrap();
+            // ✅ El useEffect de Cuerpo.jsx detectará el cambio y recargará automáticamente
+            // NO necesitas llamar a cargarAnotaciones() aquí
         } catch (error) {
             console.error('Error al cambiar filtro de favoritos:', error);
-            // Revertir el cambio local si falla
-            dispatch(toggleVerSoloFavoritos());
         }
     }
 

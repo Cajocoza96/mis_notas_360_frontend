@@ -1,10 +1,12 @@
 import { store } from "../store/store";
 import { cargarPreferencia } from "../store/preferenciaSlice";
+import { establecerSesion } from "../store/authSlice"; // ✅ Nuevo
 
-const API_URL = import.meta.env.VITE_API_URL; 
+const API_URL = import.meta.env.VITE_API_URL;
 
-// Función auxiliar para cargar preferencias después del login
-const cargarPreferenciasUsuario = () => {
+// Función auxiliar para establecer sesión después del login
+const establecerSesionUsuario = (token, usuario) => {
+    store.dispatch(establecerSesion({ token, usuario }));
     store.dispatch(cargarPreferencia());
 };
 
@@ -25,12 +27,8 @@ export const registrarUsuario = async (nombreUsuario, contrasena) => {
             throw new Error(data.error || 'Error al registrar usuario');
         }
 
-        // Guardar token en localStorage
-        localStorage.setItem('token', data.token);
-        localStorage.setItem('usuario', JSON.stringify(data.usuario));
-
-        // ✅ Cargar preferencias
-        cargarPreferenciasUsuario();
+        // ✅ Establecer sesión y cargar preferencias
+        establecerSesionUsuario(data.token, data.usuario);
 
         return data;
     } catch (error) {
@@ -55,12 +53,8 @@ export const iniciarSesion = async (nombreUsuario, contrasena) => {
             throw new Error(data.error || 'Error al iniciar sesión');
         }
 
-        // Guardar token en localStorage
-        localStorage.setItem('token', data.token);
-        localStorage.setItem('usuario', JSON.stringify(data.usuario));
-
-        // ✅ Cargar preferencias
-        cargarPreferenciasUsuario();
+        // ✅ Establecer sesión y cargar preferencias
+        establecerSesionUsuario(data.token, data.usuario);
 
         return data;
     } catch (error) {
@@ -76,7 +70,7 @@ export const autenticarConGoogle = async (credential) => {
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ credential }), // Enviar el token completo
+            body: JSON.stringify({ credential }),
         });
 
         const data = await response.json();
@@ -85,12 +79,8 @@ export const autenticarConGoogle = async (credential) => {
             throw new Error(data.error || 'Error al autenticar con Google');
         }
 
-        // Guardar token en localStorage
-        localStorage.setItem('token', data.token);
-        localStorage.setItem('usuario', JSON.stringify(data.usuario));
-
-        // ✅ Cargar preferencias
-        cargarPreferenciasUsuario();
+        // ✅ Establecer sesión y cargar preferencias
+        establecerSesionUsuario(data.token, data.usuario);
 
         return data;
     } catch (error) {
@@ -115,12 +105,8 @@ export const autenticarConFacebook = async (facebookData) => {
             throw new Error(data.error || 'Error al autenticar con Facebook');
         }
 
-        // Guardar token en localStorage
-        localStorage.setItem('token', data.token);
-        localStorage.setItem('usuario', JSON.stringify(data.usuario));
-
-        // ✅ Cargar preferencias
-        cargarPreferenciasUsuario();
+        // ✅ Establecer sesión y cargar preferencias
+        establecerSesionUsuario(data.token, data.usuario);
 
         return data;
     } catch (error) {
@@ -128,7 +114,7 @@ export const autenticarConFacebook = async (facebookData) => {
     }
 };
 
-// Verificar token
+// Verificar token (ahora solo se usa internamente)
 export const verificarToken = async () => {
     try {
         const token = localStorage.getItem('token');
@@ -147,7 +133,6 @@ export const verificarToken = async () => {
         const data = await response.json();
 
         if (!response.ok) {
-            // Si la sesión fue invalidada
             if (data.sesionInvalida || data.tokenInvalido) {
                 localStorage.removeItem('token');
                 localStorage.removeItem('usuario');
@@ -157,12 +142,7 @@ export const verificarToken = async () => {
             throw new Error(data.error || 'Token inválido');
         }
 
-        // Actualizar usuario en localStorage con los datos más recientes
         localStorage.setItem('usuario', JSON.stringify(data.usuario));
-
-        // ✅ Cargar preferencias
-        cargarPreferenciasUsuario();
-
         return data;
     } catch (error) {
         localStorage.removeItem('token');
@@ -217,7 +197,6 @@ export const eliminarCuenta = async () => {
             throw new Error(data.error || 'Error al eliminar cuenta');
         }
 
-        // Limpiar el localStorage después de eliminar
         localStorage.removeItem('token');
         localStorage.removeItem('usuario');
         localStorage.removeItem('theme');

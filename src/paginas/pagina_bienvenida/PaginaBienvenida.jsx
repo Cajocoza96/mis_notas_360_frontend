@@ -1,20 +1,12 @@
-import React, { useCallback, useState, useEffect } from "react";
-
+import React, { useCallback } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { toggleVerMenuHamburguesa } from "../../store/layoutSlice";
-
 import { motion } from "framer-motion";
 import Particles from "react-tsparticles";
 import { loadSlim } from "tsparticles-slim";
 import { HiOutlineBookOpen } from "react-icons/hi";
-
 import { useNavigate } from "react-router-dom";
-
 import BotonAccion from "../../componentes/botones/BotonAccion";
-
-import { verificarToken } from "../../services/authService";
-
-import CargandoNoHayNada from "../../componentes/cargando_no_hay_nada/CargandoNoHayNada";
 
 export default function PaginaBienvenida() {
     const particlesInit = useCallback(async (engine) => {
@@ -26,6 +18,8 @@ export default function PaginaBienvenida() {
     const handleNavegarRegistrarCuenta = () => navigate("/registrar");
     const handleNavegarInicioSesion = () => navigate("/iniciar-sesion");
 
+    // ✅ Obtener estado de autenticación desde Redux
+    const { autenticado } = useSelector((state) => state.auth);
     const verMenuHamburguesa = useSelector((state) => state.layout.verMenuHamburguesa);
 
     const dispatch = useDispatch();
@@ -38,32 +32,6 @@ export default function PaginaBienvenida() {
     }
 
     const MiBoton = motion.create(BotonAccion);
-
-    const [autenticado, setAutenticado] = useState(null);
-    const [cargando, setCargando] = useState(true);
-
-    useEffect(() => {
-        const verificar = async () => {
-            try {
-                await verificarToken();
-                setAutenticado(true);
-            } catch (error) {
-                setAutenticado(false);
-            } finally {
-                setCargando(false);
-            }
-        };
-
-        verificar();
-    }, []);
-
-    /*
-
-    if (cargando) {
-        return (
-        );
-    }
-    */
 
     return (
         <div className="relative min-h-dvh bg-gradient-to-br from-indigo-900 via-purple-900 to-pink-800 overflow-hidden">

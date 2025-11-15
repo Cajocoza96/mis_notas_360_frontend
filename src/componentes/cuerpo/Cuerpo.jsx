@@ -1,8 +1,6 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 
 import NotaVistaPrevia from "../../paginas/pagina_principal/cuerpo/nota_vista_previa/NotaVistaPrevia";
-
-import EliminadaNotaVistaPrevia from "../../paginas/pagina_papelera/cuerpo/eliminada_nota_vista_previa/EliminadaNotaVistaPrevia";
 
 import EstadosVistaPrevia from "../../paginas/pagina_estado/cuerpo/estados_vista_previa/EstadosVistaPrevia";
 
@@ -12,7 +10,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 
 import { HiOutlineBookOpen, HiMinusCircle, HiClock, HiCheckCircle } from "react-icons/hi";
 
-import { cargarAnotaciones, setAnotaciones, setCargando, setError } from "../../store/anotacionesSlice";
+import { cargarAnotaciones, setAnotaciones, setCargando, setError, setMostrandoResultados } from "../../store/anotacionesSlice";
 
 import { setContadores } from "../../store/tareasSlice";
 
@@ -42,12 +40,16 @@ export default function Cuerpo({ notaNoEliminada,
 
     const verAdminAnotacion = useSelector((state) => state.anotaciones.verAdminAnotacion);
 
-    const { anotaciones, cargando } = useSelector((state) => state.anotaciones);
+    // ✅ Obtener también mostrandoResultados
+    const { anotaciones, cargando, mostrandoResultados } = useSelector((state) => state.anotaciones);
 
     const { terminoBusqueda, resultadosBusqueda, cargandoBusqueda } = useSelector((state) => state.busqueda);
 
     // Obtener los contadores del estado de Redux
     const contadores = useSelector(state => state.tareas.contadores);
+
+    // ✅ useRef para controlar el timeout
+    const timeoutRef = useRef(null);
 
     // Cargar contadores al montar el componente
     useEffect(() => {
@@ -74,6 +76,28 @@ export default function Cuerpo({ notaNoEliminada,
             cargarAnotacionesEliminadas();
         }
     }, [verContenidoCuerpo, verNotaEliminada, verSoloFavoritos, verAnotacEstado, ordenAnotaciones, location.pathname, dispatch]);
+
+    // ✅ Controlar cuándo mostrar resultados con delay
+    useEffect(() => {
+        // Limpiar timeout anterior si existe
+        if (timeoutRef.current) {
+            clearTimeout(timeoutRef.current);
+        }
+
+        if (!cargando && verContenidoCuerpo) {
+            // Esperar 200ms después de que termine de cargar antes de mostrar resultados
+            timeoutRef.current = setTimeout(() => {
+                dispatch(setMostrandoResultados(true));
+            }, 200);
+        }
+
+        // Cleanup
+        return () => {
+            if (timeoutRef.current) {
+                clearTimeout(timeoutRef.current);
+            }
+        };
+    }, [cargando, verContenidoCuerpo, dispatch]);
 
     //Cargar anotaciones eliminadas
     const cargarAnotacionesEliminadas = async () => {
@@ -127,8 +151,8 @@ export default function Cuerpo({ notaNoEliminada,
                 <div className={`w-[95%] h-full mx-auto overflow-y-auto 
                                 overflow-x-hidden min-h-0 min-w-0 pb-3
                                 grid
-                ${anotaciones.length === 0 ? '' : 'auto-rows-[11rem]'}
-                ${organizarPorColumna ? 'grid-cols-2 2xs:grid-cols-3 lg:grid-cols-5' : 'grid-cols-1'} gap-5 lg:gap-3`}>
+                ${organizarPorColumna ? 'grid-cols-2 2xs:grid-cols-3 lg:grid-cols-5' : 'grid-cols-1'} gap-5 lg:gap-3
+                ${anotaciones.length === 0 || cargando || !mostrandoResultados ? 'auto-rows-auto' : 'auto-rows-[11rem]'}`}>
 
                     {verAdminAnotacion && (
                         <AdminAnotacion />
@@ -136,7 +160,8 @@ export default function Cuerpo({ notaNoEliminada,
 
                     {verContenidoCuerpo && (
                         <>
-                            {cargando ? (
+                            {/* ✅ Mostrar spinner mientras carga O mientras no se deben mostrar resultados */}
+                            {cargando || !mostrandoResultados ? (
                                 <CargandoNoHayNada CargandoAnotaciones={true} />
 
                             ) : anotaciones.length === 0 ? (
@@ -259,5 +284,5 @@ export default function Cuerpo({ notaNoEliminada,
             )}
 
         </>
-    );
+    )
 }

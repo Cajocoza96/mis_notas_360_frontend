@@ -1,16 +1,34 @@
-import React from "react";
-
+import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
-
 import { FaSpinner } from "react-icons/fa";
-
 import { HiOutlineBookOpen } from "react-icons/hi";
 
-export default function CargandoNoHayNada({ pantallaCompletaCarga, iconoDeCarga,
-    CargandoAnotaciones, sinEstadoFavoritoNada, noHayEliminadas }) {
-
+export default function CargandoNoHayNada({
+    pantallaCompletaCarga,
+    iconoDeCarga,
+    CargandoAnotaciones,
+    sinEstadoFavoritoNada,
+    noHayEliminadas
+}) {
     const verSoloFavoritos = useSelector((state) => state.preferencia.verSoloFavoritos);
     const verAnotacEstado = useSelector((state) => state.preferencia.verAnotacEstado);
+    const cargando = useSelector((state) => state.anotaciones.cargando);
+
+    // ✅ Estado para controlar el delay del mensaje
+    const [mostrarMensaje, setMostrarMensaje] = useState(false);
+
+    useEffect(() => {
+        if (sinEstadoFavoritoNada && !cargando) {
+            // Esperar 400ms antes de mostrar el mensaje "No hay nada"
+            const timer = setTimeout(() => {
+                setMostrarMensaje(true);
+            }, 300);
+
+            return () => clearTimeout(timer);
+        } else {
+            setMostrarMensaje(false);
+        }
+    }, [sinEstadoFavoritoNada, cargando]);
 
     return (
         <>
@@ -32,9 +50,10 @@ export default function CargandoNoHayNada({ pantallaCompletaCarga, iconoDeCarga,
                 </div>
             )}
 
-            {sinEstadoFavoritoNada && (
+            {/* ✅ Solo mostrar después del delay y si no está cargando */}
+            {sinEstadoFavoritoNada && mostrarMensaje && !cargando && (
                 <div className="col-span-full text-center p-4 select-none
-                                                                flex flex-col items-center justify-center gap-3">
+                                flex flex-col items-center justify-center gap-3">
                     <p className="text-base md:text-xl text-black dark:text-white">
                         {verAnotacEstado === 'ver_no_asignado' && verSoloFavoritos
                             ? 'No tienes anotaciones favoritas sin asignar'
@@ -57,7 +76,7 @@ export default function CargandoNoHayNada({ pantallaCompletaCarga, iconoDeCarga,
 
             {noHayEliminadas && (
                 <div className="col-span-full text-center p-4 select-none
-                                                                flex flex-col items-center justify-center gap-3">
+                                flex flex-col items-center justify-center gap-3">
                     <p className="text-base md:text-xl text-black dark:text-white">
                         No tienes anotaciones eliminadas.
                     </p>

@@ -18,6 +18,7 @@ const initialState = {
     anotaciones: [],
     anotacionActual: null,
     cargando: false,
+    mostrandoResultados: false,
     error: null,
 
     //Administrar anotacion
@@ -61,6 +62,9 @@ const anotacionesSlice = createSlice({
         },
         setCargando: (state, action) => {
             state.cargando = action.payload
+        },
+        setMostrandoResultados: (state, action) => {
+            state.mostrandoResultados = action.payload
         },
         setError: (state, action) => {
             state.error = action.payload
@@ -117,6 +121,7 @@ const anotacionesSlice = createSlice({
             // ✅ Cargar anotaciones
             .addCase(cargarAnotaciones.pending, (state) => {
                 state.cargando = true;
+                state.mostrandoResultados = false,
                 state.error = null;
             })
             .addCase(cargarAnotaciones.fulfilled, (state, action) => {
@@ -126,6 +131,7 @@ const anotacionesSlice = createSlice({
             })
             .addCase(cargarAnotaciones.rejected, (state, action) => {
                 state.cargando = false;
+                state.mostrandoResultados = true;
                 state.error = action.payload || 'Error al cargar las anotaciones';
             });
     }
@@ -142,6 +148,7 @@ export const {
     setAnotaciones,
     setAnotacionActual,
     setCargando,
+    setMostrandoResultados,
     setError,
     agregarAnotacion,
     actualizarAnotacion,
