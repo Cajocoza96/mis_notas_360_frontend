@@ -21,6 +21,10 @@ const initialState = {
     mostrandoResultados: false,
     error: null,
 
+    // ✅ Nuevos estados para controlar la carga completa
+    cargandoCabecera: false,
+    cargandoCuerpo: false,
+
     //Administrar anotacion
     verAdminAnotacion: false,
 
@@ -40,6 +44,14 @@ const anotacionesSlice = createSlice({
         },
         setVerAdminAnotacion: (state, action) => {
             state.verAdminAnotacion = action.payload
+        },
+
+        // ✅ Nuevas acciones para controlar la carga por componente
+        setCargandoCabecera: (state, action) => {
+            state.cargandoCabecera = action.payload;
+        },
+        setCargandoCuerpo: (state, action) => {
+            state.cargandoCuerpo = action.payload;
         },
 
         // ✅ Acciones para el modal de notificación
@@ -144,6 +156,9 @@ export const {
     // ✅ Exportar las nuevas acciones
     mostrarNotificacion,
     ocultarNotificacion,
+
+    setCargandoCabecera,
+    setCargandoCuerpo,
 
     setAnotaciones,
     setAnotacionActual,

@@ -1,4 +1,5 @@
 import React, { StrictMode } from 'react';
+import "react-loading-skeleton/dist/skeleton.css";
 import { BrowserRouter } from 'react-router-dom';
 import { createRoot } from 'react-dom/client';
 import { Provider } from 'react-redux';

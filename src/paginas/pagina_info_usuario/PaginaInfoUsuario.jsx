@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -17,6 +17,8 @@ import { toggleVerModalEliminarUsuario, toggleVerModalCerrarSesion } from "../..
 import { toggleVerMenuHamburguesa } from "../../store/layoutSlice";
 
 import ContIconoInfoUsua from "../../componentes/admin_usuario/cont_icono_info_usua/ContIconoInfoUsua";
+
+import CargandoNoHayNada from "../../componentes/cargando_no_hay_nada/CargandoNoHayNada";
 
 export default function PaginaInfoUsuario() {
     const dispatch = useDispatch();
@@ -42,7 +44,6 @@ export default function PaginaInfoUsuario() {
         dispatch(toggleVerModalCerrarSesion());
     };
 
-
     const pageVariants = {
         initial: {
             x: "100%",
@@ -61,12 +62,12 @@ export default function PaginaInfoUsuario() {
         }
     }
 
-    /*
+    
     if (cargando) {
         return (
+            <CargandoNoHayNada pantallaCompletaCarga={true}/>
         );
     }
-    */
 
     return (
         <AnimatePresence mode="wait">

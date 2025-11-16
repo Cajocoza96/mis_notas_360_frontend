@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 
 import NotaVistaPrevia from "../../paginas/pagina_principal/cuerpo/nota_vista_previa/NotaVistaPrevia";
 
@@ -53,17 +53,23 @@ export default function Cuerpo({ notaNoEliminada,
 
     // Cargar contadores al montar el componente
     useEffect(() => {
-        if (verTodosEstados) {
+        if (verTodosEstados && !cargando) {
             cargarContadores();
         }
     }, [verTodosEstados]);
 
+    const [cargCantEstado, setCargCantEstado] = useState(false);
+
     const cargarContadores = async () => {
         try {
+            /*dispatch(setCargando(true));*/
+            setCargCantEstado(true);
             const datos = await obtenerContadores();
             dispatch(setContadores(datos));
+            setCargCantEstado(false);
         } catch (error) {
             // El error ya se loguea en el servicio
+            setCargCantEstado(false);
             console.error('Error al cargar contadores en el componente:', error);
         }
     };
@@ -243,13 +249,12 @@ export default function Cuerpo({ notaNoEliminada,
             {verTodosEstados && (
                 <div className={`w-[95%] h-full mx-auto overflow-y-auto 
                                 overflow-x-hidden min-h-0 min-w-0 pb-3
-                                grid 
-                                ${anotaciones.length === 0 ? '' : 'auto-rows-[11rem]'}`}>
+                                flex flex-col justify-start gap-5`}>
 
                     <EstadosVistaPrevia
                         iconoEstado={<HiMinusCircle className="text-blue-700" />}
                         tipoEstado="No asignado"
-                        cantidadEstado={contadores.cant_no_asignado}
+                        cantidadEstado={cargCantEstado ? <CargandoNoHayNada iconoDeCarga={true}/> : contadores.cant_no_asignado}
                         no_asignado={true}
                         seleccionado={verAnotacEstado === 'ver_no_asignado'}
                         onClick={() => handleEstadoClick('ver_no_asignado')}
@@ -258,7 +263,7 @@ export default function Cuerpo({ notaNoEliminada,
                     <EstadosVistaPrevia
                         iconoEstado={<HiClock className="text-yellow-700" />}
                         tipoEstado="Pendiente"
-                        cantidadEstado={contadores.cant_pendiente}
+                        cantidadEstado={cargCantEstado ? <CargandoNoHayNada iconoDeCarga={true}/> : contadores.cant_pendiente}
                         pendiente={true}
                         seleccionado={verAnotacEstado === 'ver_pendiente'}
                         onClick={() => handleEstadoClick('ver_pendiente')}
@@ -267,7 +272,7 @@ export default function Cuerpo({ notaNoEliminada,
                     <EstadosVistaPrevia
                         iconoEstado={<HiCheckCircle className="text-green-700" />}
                         tipoEstado="Finalizado"
-                        cantidadEstado={contadores.cant_finalizado}
+                        cantidadEstado={cargCantEstado ? <CargandoNoHayNada iconoDeCarga={true}/> : contadores.cant_finalizado}
                         finalizado={true}
                         seleccionado={verAnotacEstado === 'ver_finalizado'}
                         onClick={() => handleEstadoClick('ver_finalizado')}
@@ -275,7 +280,7 @@ export default function Cuerpo({ notaNoEliminada,
 
                     <EstadosVistaPrevia
                         tipoEstado="Todos los estados"
-                        cantidadEstado={contadores.cant_todos_estados}
+                        cantidadEstado={cargCantEstado ? <CargandoNoHayNada iconoDeCarga={true}/> : contadores.cant_todos_estados}
                         seleccionado={verAnotacEstado === 'ver_todos_estados'}
                         onClick={() => handleEstadoClick('ver_todos_estados')}
                     />

@@ -18,8 +18,10 @@ import { obtenerAnotacionPorId } from "../../services/anotacionesService";
 
 import ModalExitoError from "../../componentes/modal/ModalExitoError";
 
+import SkeletonCrearEditPrevia from "../../componentes/cargando_no_hay_nada/SkeletonCrearEditPrevia";
+
 export default function PaginaVistaPrevia() {
-    const { id } = useParams(); // Obtener el ID de la URL
+    const { id } = useParams();
 
     const location = useLocation();
     const navigate = useNavigate();
@@ -27,7 +29,8 @@ export default function PaginaVistaPrevia() {
     const dispatch = useDispatch();
     const notaRef = useRef(null);
 
-    const [cargandoInicial, setCargandoInicial] = useState(true);
+    // ✅ Estado local simple para controlar la carga
+    const [cargando, setCargando] = useState(true);
 
     const nota = useSelector((state) => state.tareas.nota);
 
@@ -47,10 +50,11 @@ export default function PaginaVistaPrevia() {
 
     const cargarAnotacion = async () => {
         try {
-            setCargandoInicial(true);
+            setCargando(true);
+
             const anotacion = await obtenerAnotacionPorId(id);
 
-            // Guardar en Redux
+            // ✅ Primero: Actualizar Redux con toda la información
             dispatch(setAnotacionActual(anotacion));
             dispatch(setNota(anotacion.nota || ""));
 
@@ -63,17 +67,16 @@ export default function PaginaVistaPrevia() {
 
             dispatch(setTareas(tareasFormateadas));
 
-            // Actualizar los refs con el contenido
-            if (notaRef.current) {
-                notaRef.current.textContent = anotacion.nota || "";
-            }
+            // ✅ Esperar un momento para que React procese los cambios
+            await new Promise(resolve => setTimeout(resolve, 0));
+
+            // ✅ Terminar carga - el ref se llenará automáticamente en CuerpoEdicion
+            setCargando(false);
         } catch (error) {
             console.error('Error al cargar la anotación para vista previa:', error);
-            // Opcional: Podrías mostrar un mensaje de error al usuario o redirigir
+            setCargando(false);
             // Redirigir a la página de error
             navigate('/error', { replace: true });
-        } finally {
-            setCargandoInicial(false);
         }
     }
 
@@ -109,14 +112,6 @@ export default function PaginaVistaPrevia() {
         }
     }
 
-    /*
-    // Pantalla de carga mientras se obtiene la anotación
-    if (cargandoInicial) {
-        return (
-        );
-    }
-    */
-
     return (
         <AnimatePresence mode="wait">
         <motion.div
@@ -142,16 +137,23 @@ export default function PaginaVistaPrevia() {
                     eliminarAceptar={true} />
             )}
 
-            <Cabecera
-                esModoVistaPrevia={esModoVistaPrevia}
-            />
+            {/* ✅ Mostrar skeleton que replica la estructura exacta */}
+            {cargando ? (
+                <SkeletonCrearEditPrevia />
+            ) : (
+                <>
+                    <Cabecera
+                        esModoVistaPrevia={esModoVistaPrevia}
+                    />
 
-            <CuerpoEdicion
-                ref={notaRef}
-                esModoVistaPrevia={esModoVistaPrevia}
-            />
+                    <CuerpoEdicion
+                        ref={notaRef}
+                        esModoVistaPrevia={esModoVistaPrevia}
+                    />
 
-            <ContOpSubCabecera />
+                    <ContOpSubCabecera />
+                </>
+            )}
 
         </motion.div>
         </AnimatePresence>

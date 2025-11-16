@@ -7,7 +7,7 @@ import { useParams, useLocation } from "react-router-dom";
 import { useUndoRedo } from "../../hooks/useUndoRedo";
 import { useContentEditable } from "../../hooks/useContentEditable";
 import { resetNotaState, setCanUndo, setCanRedo, setTitulo, setNota, setTareas, setAnotacionId, setEstadoSeleccionado } from "../../store/tareasSlice";
-import { setAnotacionActual, setCargando } from "../../store/anotacionesSlice";
+import { setAnotacionActual } from "../../store/anotacionesSlice";
 import Cabecera from "./cabecera/Cabecera";
 import CuerpoEdicion from "../../componentes/cuerpo/CuerpoEdicion";
 import Footer from "./footer/Footer";
@@ -20,6 +20,8 @@ import { mapearEstadoDesdeBD } from "../../utils/estadoUtils";
 
 import { obtenerAnotacionPorId } from "../../services/anotacionesService";
 
+import SkeletonCrearEditPrevia from "../../componentes/cargando_no_hay_nada/SkeletonCrearEditPrevia";
+
 export default function PaginaCrearEditNota() {
     const { id } = useParams();
     const location = useLocation();
@@ -29,6 +31,11 @@ export default function PaginaCrearEditNota() {
 
     // ✅ Estado local para los datos cargados
     const [anotacionCargada, setAnotacionCargada] = useState(null);
+
+    // ✅ Estado local simple para controlar la carga
+    const [cargando, setCargando] = useState(true);
+
+    const verModalEstado = useSelector((state) => state.tareas.verModalEstado);
 
     // Determinar si estamos en modo edición
     const esModoEdicion = location.pathname.includes('/editar/nota/');
@@ -54,9 +61,8 @@ export default function PaginaCrearEditNota() {
     useEffect(() => {
         const cargarDatos = async () => {
             if (id && esModoEdicion) {
-                dispatch(setCargando(true));
-                
                 try {
+                    setCargando(true);
                     console.log('🔄 Iniciando carga de anotación...');
                     const anotacion = await obtenerAnotacionPorId(id);
                     console.log('✅ Anotación obtenida:', anotacion);
@@ -80,9 +86,10 @@ export default function PaginaCrearEditNota() {
                     // ✅ Guardar la anotación en estado local para usarla en el efecto de los refs
                     setAnotacionCargada(anotacion);
 
+                    setCargando(false);
                 } catch (error) {
                     console.error('❌ Error al cargar la anotación:', error);
-                    dispatch(setCargando(false));
+                    setCargando(false);
                 }
             }
         };
@@ -92,7 +99,7 @@ export default function PaginaCrearEditNota() {
         // Cleanup
         return () => {
             dispatch(resetNotaState());
-            dispatch(setCargando(false));
+            setCargando(false);
         };
     }, [id, esModoEdicion]); // Solo depende de id y esModoEdicion
 
@@ -124,7 +131,7 @@ export default function PaginaCrearEditNota() {
             
             // ✅ Desactivar overlay DESPUÉS de actualizar refs
             setTimeout(() => {
-                dispatch(setCargando(false));
+                setCargando(false);
             }, 100);
         }
     }, [anotacionCargada, dispatch]); // Se ejecuta cuando cambia anotacionCargada
@@ -180,8 +187,6 @@ export default function PaginaCrearEditNota() {
         handleRedoClick(tituloRef, notaRef);
     };
 
-    const verModalEstado = useSelector((state) => state.tareas.verModalEstado);
-
     const pageVariants = {
         initial: {
             x: "100%",
@@ -209,32 +214,39 @@ export default function PaginaCrearEditNota() {
                 initial="initial"
                 animate="animate">
 
-                {verModalEstado && (
-                    <ModalEstado />
-                )}
-
                 <ModalExitoError />
 
-                <Cabecera
-                    ref={tituloRef}
-                    handleTituloChange={handleTituloChangeAdapter}
-                    handleTituloKeyDown={handleTituloKeyDownAdapter}
-                />
-
-                <CuerpoEdicion
-                    ref={notaRef}
-                    handleNotaChange={handleNotaChangeAdapter}
-                    handleNotaKeyDown={handleNotaKeyDownAdapter}
-                    esModoVistaPrevia={false}
-                />
-
-                <Footer
-                    handleUndoClick={handleUndoClickAdapter}
-                    handleRedoClick={handleRedoClickAdapter}
-                    esModoEdicion={esModoEdicion}
-                    tituloRef={tituloRef}
-                    notaRef={notaRef}
-                />
+                {cargando ? (
+                    <SkeletonCrearEditPrevia />
+                ) : (
+                    <>
+                    {verModalEstado && (
+                        <ModalEstado />
+                    )}
+    
+                    <Cabecera
+                        ref={tituloRef}
+                        handleTituloChange={handleTituloChangeAdapter}
+                        handleTituloKeyDown={handleTituloKeyDownAdapter}
+                    />
+    
+                    <CuerpoEdicion
+                        ref={notaRef}
+                        handleNotaChange={handleNotaChangeAdapter}
+                        handleNotaKeyDown={handleNotaKeyDownAdapter}
+                        esModoVistaPrevia={false}
+                    />
+    
+                    <Footer
+                        handleUndoClick={handleUndoClickAdapter}
+                        handleRedoClick={handleRedoClickAdapter}
+                        esModoEdicion={esModoEdicion}
+                        tituloRef={tituloRef}
+                        notaRef={notaRef}
+                    />
+                    </>
+                )}
+                
             </motion.div>
         </AnimatePresence>
     );

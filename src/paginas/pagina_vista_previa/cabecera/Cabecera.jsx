@@ -6,8 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 
 import { toggleVerOpcCabPagVisPrev } from "../../../store/layoutSlice";
 
-import { setAnotacionActual, setCargando, setError, 
-        actualizarFavoritoLocal } from "../../../store/anotacionesSlice";
+import { setAnotacionActual, setError, actualizarFavoritoLocal } from "../../../store/anotacionesSlice";
 
 import { HiOutlineStar, HiStar } from "react-icons/hi2";
 
@@ -26,20 +25,23 @@ export default function Cabecera({ esModoVistaPrevia }) {
 
     const navigate = useNavigate();
 
-    const { anotacionActual, cargando } = useSelector((state) => state.anotaciones);
+    // ✅ Obtener anotación actual
+    const { anotacionActual } = useSelector((state) => state.anotaciones);
 
     const [actualizandoFavorito, setActualizandoFavorito] = useState(false);
+    const [cargandoLocal, setCargandoLocal] = useState(false);
 
-    // Cargar la anotación cuando se monta el componente
+    // Cargar la anotación cuando se monta el componente (solo si NO es modo vista previa)
+    // En modo vista previa, la carga se maneja desde PaginaVistaPrevia.jsx
     useEffect(() => {
-        if (id) {
+        if (id && !esModoVistaPrevia) {
             cargarAnotacion();
         }
-    }, [id]);
+    }, [id, esModoVistaPrevia]);
 
     const cargarAnotacion = async () => {
         try {
-            dispatch(setCargando(true));
+            setCargandoLocal(true);
 
             const anotacion = await obtenerAnotacionPorId(id);
 
@@ -50,7 +52,7 @@ export default function Cabecera({ esModoVistaPrevia }) {
             // Redirigir a página de error
             navigate('/error', { replace: true });
         } finally {
-            dispatch(setCargando(false));
+            setCargandoLocal(false);
         }
     }
 
@@ -71,7 +73,7 @@ export default function Cabecera({ esModoVistaPrevia }) {
         try {
             setActualizandoFavorito(true);
             
-            const nuevoEstadoFavorito = estadoFavoritoActual=== 1 ? 0 : 1;
+            const nuevoEstadoFavorito = estadoFavoritoActual === 1 ? 0 : 1;
             
             // Actualizar localmente de inmediato (optimistic update)
             dispatch(actualizarFavoritoLocal({ 
@@ -95,18 +97,12 @@ export default function Cabecera({ esModoVistaPrevia }) {
         }
     };
 
-    if (cargando) {
-        return (
-            <div className="flex-shrink-0 z-10 min-h-0 min-w-0 py-1 overflow-hidden">
-                <div className="w-[95%] mx-auto flex items-center justify-center p-4">
-                    <p className="text-base md:text-xl text-black dark:text-white">
-                        Cargando...
-                    </p>
-                </div>
-            </div>
-        );
+    // ✅ No mostrar nada mientras está cargando localmente
+    if (cargandoLocal) {
+        return null;
     }
 
+    // ✅ Solo mostrar "Anotación no encontrada" si NO está cargando Y no hay anotación
     if (!anotacionActual) {
         return (
             <div className="flex-shrink-0 z-10 min-h-0 min-w-0 py-1 overflow-hidden">

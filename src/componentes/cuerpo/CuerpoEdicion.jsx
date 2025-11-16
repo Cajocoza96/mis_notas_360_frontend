@@ -1,4 +1,4 @@
-import React, { forwardRef, useEffect, useState } from "react";
+import React, { forwardRef, useEffect, useCallback } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { setIsNotaFocused, setEstadoAutomatico  } from "../../store/tareasSlice";
 
@@ -8,35 +8,33 @@ import ModalTarea from "../modal/ModalTarea";
 const CuerpoEdicion = forwardRef(({ handleNotaChange, handleNotaKeyDown, esModoVistaPrevia }, notaRef) => {
 
     const dispatch = useDispatch();
-    const { isNotaFocused } = useSelector((state) => state.tareas);
-    const { tareas } = useSelector((state) => state.tareas);
+    const { isNotaFocused, nota, tareas } = useSelector((state) => state.tareas);
     const verModalTarea = useSelector((state) => state.tareas.verModalTarea);
 
-    // ✅ Estado local para controlar si tiene contenido (más reactivo)
-    const [tieneNota, setTieneNota] = useState(false);
+    // ✅ Determinar si tiene nota directamente desde Redux
+    const tieneNota = nota && nota.trim() !== "";
 
     // Efecto para actualizar el estado automáticamente cuando cambien las tareas
     useEffect(() => {
         dispatch(setEstadoAutomatico());
     }, [tareas, dispatch]);
 
-    // ✅ Efecto para verificar si el ref tiene contenido al montar y cuando cambia
-    useEffect(() => {
-        const verificarContenido = () => {
-            if (notaRef?.current) {
-                const contenido = notaRef.current.textContent?.trim() || "";
-                setTieneNota(contenido !== "");
+    // ✅ Callback ref para inicializar el contenido inmediatamente cuando el ref se crea
+    const setRefWithContent = useCallback((element) => {
+        if (element) {
+            // Asignar el ref
+            if (typeof notaRef === 'function') {
+                notaRef(element);
+            } else if (notaRef) {
+                notaRef.current = element;
             }
-        };
-
-        // Verificar inmediatamente
-        verificarContenido();
-
-        // Verificar periódicamente (para capturar cambios en el ref)
-        const interval = setInterval(verificarContenido, 100);
-
-        return () => clearInterval(interval);
-    }, [notaRef]);
+            
+            // ✅ Establecer contenido inmediatamente si estamos en modo vista previa
+            if (esModoVistaPrevia && nota && element.textContent !== nota) {
+                element.textContent = nota;
+            }
+        }
+    }, [notaRef, esModoVistaPrevia, nota]);
     
     const handleFocus = () => {
         if (!esModoVistaPrevia) {
@@ -47,21 +45,11 @@ const CuerpoEdicion = forwardRef(({ handleNotaChange, handleNotaKeyDown, esModoV
     const handleBlur = async () => {
         if (!esModoVistaPrevia) {
             dispatch(setIsNotaFocused(false));
-            // Verificar contenido al perder el foco
-            if (notaRef?.current) {
-                const contenido = notaRef.current.textContent?.trim() || "";
-                setTieneNota(contenido !== "");
-            }
         }
     };
 
     const handleInputLocal = () => {
         handleNotaChange(notaRef);
-        // Actualizar inmediatamente el estado de tieneNota
-        if (notaRef?.current) {
-            const contenido = notaRef.current.textContent?.trim() || "";
-            setTieneNota(contenido !== "");
-        }
     };
 
     return (
@@ -73,7 +61,7 @@ const CuerpoEdicion = forwardRef(({ handleNotaChange, handleNotaKeyDown, esModoV
 
             <div className="relative p-2">
                 <div
-                    ref={notaRef}
+                    ref={setRefWithContent}
                     contentEditable={!esModoVistaPrevia}
                     suppressContentEditableWarning={true}
                     onInput={handleInputLocal}
