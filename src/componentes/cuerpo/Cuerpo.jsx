@@ -91,10 +91,10 @@ export default function Cuerpo({ notaNoEliminada,
         }
 
         if (!cargCantEstado && verContenidoCuerpo) {
-            // Esperar 200ms después de que termine de cargar antes de mostrar resultados
+            // Esperar 600ms después de que termine de cargar antes de mostrar resultados
             timeoutRef.current = setTimeout(() => {
                 setMostrandoResultados(true);
-            }, 200);
+            }, 600);
         }
 
         // Cleanup
