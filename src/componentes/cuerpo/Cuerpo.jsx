@@ -222,7 +222,7 @@ export default function Cuerpo({ notaNoEliminada,
 
                     {verNotaEliminada && (
                         <>
-                            {cargando ? (
+                            {cargCantEstado ? (
                                 <CargandoNoHayNada
                                     CargandoAnotaciones={true}
                                 />
