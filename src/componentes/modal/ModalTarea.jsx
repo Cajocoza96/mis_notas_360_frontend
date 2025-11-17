@@ -1,10 +1,12 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 
 import { HiX } from "react-icons/hi";
 
 import { useDispatch, useSelector } from "react-redux";
 
 import { agregarTarea, editarTarea, eliminarTarea, toggleVerModalTarea } from "../../store/tareasSlice";
+
+import useIsMobile from "../../hooks/useIsMobile";
 
 export default function ModalTarea() {
 
@@ -13,6 +15,10 @@ export default function ModalTarea() {
     const { modoModal, tareaActual } = useSelector((state) => state.tareas);
 
     const [textoTarea, setTextoTarea] = useState("");
+    const inputRef = useRef(null);
+    const hasInteractedRef = useRef(false);
+    const initialSetupDoneRef = useRef(false);
+    const isMobile = useIsMobile();
 
     useEffect(() => {
         if (modoModal === 'editar' && tareaActual) {
@@ -20,11 +26,44 @@ export default function ModalTarea() {
         } else {
             setTextoTarea("");
         }
+        hasInteractedRef.current = false;
+        initialSetupDoneRef.current = false;
     }, [modoModal, tareaActual]);
+
+    useEffect(() => {
+        if (inputRef.current && textoTarea && !initialSetupDoneRef.current) {
+            const length = textoTarea.length;
+            inputRef.current.setSelectionRange(length, length);
+            inputRef.current.focus();
+            initialSetupDoneRef.current = true;
+        }
+    }, [textoTarea]);
+
+    // Solo registrar el listener de orientación en móviles
+    useEffect(() => {
+        if (!isMobile) return; // Si no es móvil, no hacer nada
+
+        const handleOrientationChange = () => {
+            if (inputRef.current && textoTarea && !hasInteractedRef.current) {
+                setTimeout(() => {
+                    const length = textoTarea.length;
+                    inputRef.current.setSelectionRange(length, length);
+                }, 100);
+            }
+        };
+
+        window.addEventListener('orientationchange', handleOrientationChange);
+
+        return () => {
+            window.removeEventListener('orientationchange', handleOrientationChange);
+        };
+    }, [textoTarea, isMobile]);
 
     const handleverModalTarea = () => {
         dispatch(toggleVerModalTarea());
         setTextoTarea("");
+        hasInteractedRef.current = false;
+        initialSetupDoneRef.current = false;
     }
 
     const handleAgregar = () => {
@@ -47,6 +86,11 @@ export default function ModalTarea() {
 
     const handleInputChange = (e) => {
         setTextoTarea(e.target.value);
+        hasInteractedRef.current = true;
+    }
+
+    const handleInputInteraction = () => {
+        hasInteractedRef.current = true;
     }
 
     return (
@@ -76,9 +120,12 @@ export default function ModalTarea() {
 
                     <div className="border-b-3 border-violet-500 p-2">
                         <input
+                            ref={inputRef}
                             type="text"
                             value={textoTarea}
                             onChange={handleInputChange}
+                            onClick={handleInputInteraction}
+                            onKeyDown={handleInputInteraction}
                             className="w-full text-base md:text-xl
                                 border-0 focus:outline-none
                                 text-black dark:text-white"/>

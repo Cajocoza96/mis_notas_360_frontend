@@ -62,7 +62,7 @@ export default function PaginaVistaPrevia() {
             const tareasFormateadas = anotacion.tareas.map(t => ({
                 id: t.id,
                 texto: t.texto_tarea,
-                completada: t.tarea_completada === 1
+                completada: t.tarea_completada === true || t.tarea_completada === 1
             }));
 
             dispatch(setTareas(tareasFormateadas));
