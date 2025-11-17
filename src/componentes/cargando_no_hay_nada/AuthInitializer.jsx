@@ -22,7 +22,8 @@ export default function AuthInitializer({ children }) {
     // Mostrar pantalla de carga mientras inicializa
     if (inicializando) {
         return (
-            <div className="fixed inset-0 bg-black bg-opacity-50 text-white text-center
+            <div className="fixed inset-0 bg-opacity-50 text-center
+                            bg-white text-black dark:bg-gray-800 dark:text-white
                             flex flex-col items-center justify-center gap-2 
                             z-[9999] select-none">
                 <FaSpinner className="animate-spin text-2xl md:text-3xl" />
