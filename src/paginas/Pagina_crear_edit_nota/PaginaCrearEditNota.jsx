@@ -60,37 +60,50 @@ export default function PaginaCrearEditNota() {
     // ✅ Cargar la anotación SOLO UNA VEZ al montar
     useEffect(() => {
         const cargarDatos = async () => {
-            if (id && esModoEdicion) {
-                try {
-                    setCargando(true);
-                    console.log('🔄 Iniciando carga de anotación...');
-                    const anotacion = await obtenerAnotacionPorId(id);
-                    console.log('✅ Anotación obtenida:', anotacion);
+            // ✅ Si NO estamos en modo edición, desactivar carga inmediatamente
+            if (!esModoEdicion) {
+                setCargando(false);
+                return;
+            }
 
-                    // Guardar en Redux
-                    dispatch(setAnotacionActual(anotacion));
-                    dispatch(setAnotacionId(anotacion.id));
+            // ✅ Si estamos en modo edición pero no hay ID, error
+            if (!id) {
+                console.error('❌ Modo edición sin ID');
+                setCargando(false);
+                return;
+            }
 
-                    // Mapear el estado
-                    const estadoMapeado = mapearEstadoDesdeBD(anotacion.estado);
-                    dispatch(setEstadoSeleccionado(estadoMapeado));
+            // ✅ Cargar datos en modo edición
+            try {
+                setCargando(true);
+                console.log('🔄 Iniciando carga de anotación...');
+                const anotacion = await obtenerAnotacionPorId(id);
+                console.log('✅ Anotación obtenida:', anotacion);
 
-                    // Mapear las tareas
-                    const tareasFormateadas = anotacion.tareas.map(t => ({
-                        id: t.id,
-                        texto: t.texto_tarea,
-                        completada: t.tarea_completada === 1
-                    }));
-                    dispatch(setTareas(tareasFormateadas));
+                // Guardar en Redux
+                dispatch(setAnotacionActual(anotacion));
+                dispatch(setAnotacionId(anotacion.id));
 
-                    // ✅ Guardar la anotación en estado local para usarla en el efecto de los refs
-                    setAnotacionCargada(anotacion);
+                // Mapear el estado
+                const estadoMapeado = mapearEstadoDesdeBD(anotacion.estado);
+                dispatch(setEstadoSeleccionado(estadoMapeado));
 
-                    setCargando(false);
-                } catch (error) {
-                    console.error('❌ Error al cargar la anotación:', error);
-                    setCargando(false);
-                }
+                // Mapear las tareas
+                const tareasFormateadas = anotacion.tareas.map(t => ({
+                    id: t.id,
+                    texto: t.texto_tarea,
+                    completada: t.tarea_completada === true || t.tarea_completada === 1
+                }));
+                dispatch(setTareas(tareasFormateadas));
+
+                // ✅ Guardar la anotación en estado local
+                setAnotacionCargada(anotacion);
+
+            } catch (error) {
+                console.error('❌ Error al cargar la anotación:', error);
+            } finally {
+                // ✅ IMPORTANTE: Siempre desactivar carga al finalizar
+                setCargando(false);
             }
         };
 
@@ -99,15 +112,14 @@ export default function PaginaCrearEditNota() {
         // Cleanup
         return () => {
             dispatch(resetNotaState());
-            setCargando(false);
         };
-    }, [id, esModoEdicion]); // Solo depende de id y esModoEdicion
+    }, [id, esModoEdicion, dispatch]);
 
     // ✅ Efecto SEPARADO para actualizar los refs cuando la anotación esté lista Y los refs estén montados
     useEffect(() => {
         if (anotacionCargada && tituloRef.current && notaRef.current) {
             console.log('🎯 Actualizando refs con datos...');
-            
+
             const tituloInicial = anotacionCargada.titulo || "";
             const notaInicial = anotacionCargada.nota || "";
 
@@ -128,7 +140,7 @@ export default function PaginaCrearEditNota() {
             }
 
             console.log('✅ Refs actualizados correctamente');
-            
+
             // ✅ Desactivar overlay DESPUÉS de actualizar refs
             setTimeout(() => {
                 setCargando(false);
@@ -220,33 +232,33 @@ export default function PaginaCrearEditNota() {
                     <SkeletonCrearEditPrevia />
                 ) : (
                     <>
-                    {verModalEstado && (
-                        <ModalEstado />
-                    )}
-    
-                    <Cabecera
-                        ref={tituloRef}
-                        handleTituloChange={handleTituloChangeAdapter}
-                        handleTituloKeyDown={handleTituloKeyDownAdapter}
-                    />
-    
-                    <CuerpoEdicion
-                        ref={notaRef}
-                        handleNotaChange={handleNotaChangeAdapter}
-                        handleNotaKeyDown={handleNotaKeyDownAdapter}
-                        esModoVistaPrevia={false}
-                    />
-    
-                    <Footer
-                        handleUndoClick={handleUndoClickAdapter}
-                        handleRedoClick={handleRedoClickAdapter}
-                        esModoEdicion={esModoEdicion}
-                        tituloRef={tituloRef}
-                        notaRef={notaRef}
-                    />
+                        {verModalEstado && (
+                            <ModalEstado />
+                        )}
+
+                        <Cabecera
+                            ref={tituloRef}
+                            handleTituloChange={handleTituloChangeAdapter}
+                            handleTituloKeyDown={handleTituloKeyDownAdapter}
+                        />
+
+                        <CuerpoEdicion
+                            ref={notaRef}
+                            handleNotaChange={handleNotaChangeAdapter}
+                            handleNotaKeyDown={handleNotaKeyDownAdapter}
+                            esModoVistaPrevia={false}
+                        />
+
+                        <Footer
+                            handleUndoClick={handleUndoClickAdapter}
+                            handleRedoClick={handleRedoClickAdapter}
+                            esModoEdicion={esModoEdicion}
+                            tituloRef={tituloRef}
+                            notaRef={notaRef}
+                        />
                     </>
                 )}
-                
+
             </motion.div>
         </AnimatePresence>
     );
