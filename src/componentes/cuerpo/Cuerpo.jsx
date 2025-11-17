@@ -108,13 +108,14 @@ export default function Cuerpo({ notaNoEliminada,
     //Cargar anotaciones eliminadas
     const cargarAnotacionesEliminadas = async () => {
         try {
-            dispatch(setCargando(true));
+            setCargCantEstado(true);
             const anotacionesData = await obtenerAnotacionesEliminadas();
             dispatch(setAnotaciones(anotacionesData));
+            setCargCantEstado(false);
         } catch (error) {
             dispatch(setError('Error al cargar las anotaciones eliminadas'));
         } finally {
-            dispatch(setCargando(false));
+            setCargCantEstado(false);
         }
     }
 
