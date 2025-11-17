@@ -10,7 +10,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 
 import { HiOutlineBookOpen, HiMinusCircle, HiClock, HiCheckCircle } from "react-icons/hi";
 
-import { cargarAnotaciones, setAnotaciones, setCargando, setError, setMostrandoResultados } from "../../store/anotacionesSlice";
+import { cargarAnotaciones, setAnotaciones, setError } from "../../store/anotacionesSlice";
 
 import { setContadores } from "../../store/tareasSlice";
 
@@ -40,8 +40,7 @@ export default function Cuerpo({ notaNoEliminada,
 
     const verAdminAnotacion = useSelector((state) => state.anotaciones.verAdminAnotacion);
 
-    // ✅ Obtener también mostrandoResultados
-    const { anotaciones, cargando, mostrandoResultados } = useSelector((state) => state.anotaciones);
+    const { anotaciones } = useSelector((state) => state.anotaciones);
 
     const { terminoBusqueda, resultadosBusqueda, cargandoBusqueda } = useSelector((state) => state.busqueda);
 
@@ -53,16 +52,17 @@ export default function Cuerpo({ notaNoEliminada,
 
     // Cargar contadores al montar el componente
     useEffect(() => {
-        if (verTodosEstados && !cargando) {
+        if (verTodosEstados && !cargCantEstado) {
             cargarContadores();
         }
     }, [verTodosEstados]);
 
     const [cargCantEstado, setCargCantEstado] = useState(false);
 
+    const [mostrandoResultados, setMostrandoResultados] = useState(false);
+
     const cargarContadores = async () => {
         try {
-            /*dispatch(setCargando(true));*/
             setCargCantEstado(true);
             const datos = await obtenerContadores();
             dispatch(setContadores(datos));
@@ -90,10 +90,10 @@ export default function Cuerpo({ notaNoEliminada,
             clearTimeout(timeoutRef.current);
         }
 
-        if (!cargando && verContenidoCuerpo) {
+        if (!cargCantEstado && verContenidoCuerpo) {
             // Esperar 200ms después de que termine de cargar antes de mostrar resultados
             timeoutRef.current = setTimeout(() => {
-                dispatch(setMostrandoResultados(true));
+                setMostrandoResultados(true);
             }, 200);
         }
 
@@ -103,7 +103,7 @@ export default function Cuerpo({ notaNoEliminada,
                 clearTimeout(timeoutRef.current);
             }
         };
-    }, [cargando, verContenidoCuerpo, dispatch]);
+    }, [cargCantEstado, verContenidoCuerpo, dispatch]);
 
     //Cargar anotaciones eliminadas
     const cargarAnotacionesEliminadas = async () => {
@@ -159,7 +159,7 @@ export default function Cuerpo({ notaNoEliminada,
                                 overflow-x-hidden min-h-0 min-w-0 pb-3
                                 grid
                 ${organizarPorColumna ? 'grid-cols-2 2xs:grid-cols-3 lg:grid-cols-5' : 'grid-cols-1'} gap-5 lg:gap-3
-                ${anotaciones.length === 0 || cargando || !mostrandoResultados ? 'auto-rows-auto' : 'auto-rows-[11rem]'}`}>
+                ${anotaciones.length === 0 || cargCantEstado || !mostrandoResultados ? 'auto-rows-auto' : 'auto-rows-[11rem]'}`}>
 
                     {verAdminAnotacion && (
                         <AdminAnotacion />
@@ -168,7 +168,7 @@ export default function Cuerpo({ notaNoEliminada,
                     {verContenidoCuerpo && (
                         <>
                             {/* ✅ Mostrar spinner mientras carga O mientras no se deben mostrar resultados */}
-                            {cargando || !mostrandoResultados ? (
+                            {cargCantEstado || !mostrandoResultados ? (
                                 <CargandoNoHayNada CargandoAnotaciones={true} />
 
                             ) : anotaciones.length === 0 ? (
