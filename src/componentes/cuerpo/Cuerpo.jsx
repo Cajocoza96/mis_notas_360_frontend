@@ -180,7 +180,7 @@ export default function Cuerpo({ notaNoEliminada,
                                         key={anotacion.id}
                                         anotacionId={anotacion.id}
                                         texto={obtenerTextoVistaPrevia(anotacion)}
-                                        esFavorito={anotacion.favorito === 1}
+                                        esFavorito={Boolean(anotacion.favorito)}
                                         {...obtenerEstadoProps(anotacion.estado)}
                                     />
                                 ))

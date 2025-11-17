@@ -50,42 +50,33 @@ export default function NotaVistaPrevia({ anotacionId, iconoFavorito, texto, no_
     }
 
     const handleToggleFavorito = async (e) => {
-        e.stopPropagation(); // Evitar que se abra la vista previa
-
-        if (actualizandoFavorito) return; // Evitar múltiples clics
-
+        e.stopPropagation();
+    
+        if (actualizandoFavorito) return;
+    
         try {
             setActualizandoFavorito(true);
-
-            const nuevoEstadoFavorito = esFavorito ? 0 : 1;
-
-            // Actualizar localmente de inmediato (optimistic update)
+    
+            const nuevoEstadoFavorito = !esFavorito;  // ✅ Cambiar a boolean
+    
+            // Actualizar en el backend PRIMERO
+            await actualizarFavorito(anotacionId, nuevoEstadoFavorito);
+    
+            // Luego actualizar localmente
             dispatch(actualizarFavoritoLocal({
                 anotacionId,
                 favorito: nuevoEstadoFavorito
             }));
-
-            // Actualizar en el backend
-            await actualizarFavorito(anotacionId, nuevoEstadoFavorito);
-
-            // ✅ Si estamos viendo solo favoritos, recargar para actualizar la vista
+    
+            // Solo recargar si estamos filtrando por favoritos
             if (verSoloFavoritos || !verSoloFavoritos) {
                 dispatch(cargarAnotaciones());
             }
-
+    
         } catch (error) {
             console.error('Error al actualizar favorito:', error);
-            // Revertir el cambio local si falla
-
-            dispatch(actualizarFavoritoLocal({
-                anotacionId,
-                favorito: esFavorito ? 1 : 0
-            }));
-
-            // ✅ Si estamos viendo solo favoritos, recargar para mantener consistencia
-            if (verSoloFavoritos) {
-                dispatch(cargarAnotaciones());
-            }
+            dispatch(cargarAnotaciones());
+            
         } finally {
             setActualizandoFavorito(false);
         }

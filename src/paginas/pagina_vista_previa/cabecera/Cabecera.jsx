@@ -73,16 +73,16 @@ export default function Cabecera({ esModoVistaPrevia }) {
         try {
             setActualizandoFavorito(true);
             
-            const nuevoEstadoFavorito = estadoFavoritoActual === 1 ? 0 : 1;
+            const nuevoEstadoFavorito = !estadoFavoritoActual;
+
+            // Actualizar en el backend
+            await actualizarFavorito(id, nuevoEstadoFavorito);
             
             // Actualizar localmente de inmediato (optimistic update)
             dispatch(actualizarFavoritoLocal({ 
                 anotacionId: parseInt(id),
                 favorito: nuevoEstadoFavorito 
             }));
-            
-            // Actualizar en el backend
-            await actualizarFavorito(id, nuevoEstadoFavorito);
 
             
         } catch (error) {
@@ -136,7 +136,7 @@ export default function Cabecera({ esModoVistaPrevia }) {
                             className={`text-2xl md:text-3xl text-violet-800 dark:text-white cursor-pointer
                                         transition-transform hover:scale-110
                                         ${actualizandoFavorito ? 'opacity-50 pointer-events-none' : ''}`}>
-                            {anotacionActual.favorito === 1 ? <HiStar /> : <HiOutlineStar />}
+                            {anotacionActual.favorito ? <HiStar /> : <HiOutlineStar />}
                         </div>
 
                         <HiDotsVertical
