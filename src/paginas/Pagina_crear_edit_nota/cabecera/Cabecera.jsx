@@ -19,7 +19,7 @@ const Cabecera = forwardRef(({ handleTituloChange, handleTituloKeyDown,
     useEffect(() => {
         const verificarContenido = () => {
             if (tituloRef?.current) {
-                const contenido = tituloRef.current.textContent?.trim() || "";
+                const contenido = tituloRef.current.innerText?.trim() || "";
                 setTieneTitulo(contenido !== "");
             }
         };
@@ -44,7 +44,7 @@ const Cabecera = forwardRef(({ handleTituloChange, handleTituloKeyDown,
             dispatch(setIsTituloFocused(false));
             // Verificar contenido al perder el foco
             if (tituloRef?.current) {
-                const contenido = tituloRef.current.textContent?.trim() || "";
+                const contenido = tituloRef.current.innerText?.trim() || "";
                 setTieneTitulo(contenido !== "");
             }
         }
@@ -54,7 +54,7 @@ const Cabecera = forwardRef(({ handleTituloChange, handleTituloKeyDown,
         handleTituloChange(tituloRef);
         // Actualizar inmediatamente el estado de tieneTitulo
         if (tituloRef?.current) {
-            const contenido = tituloRef.current.textContent?.trim() || "";
+            const contenido = tituloRef.current.innerText?.trim() || "";
             setTieneTitulo(contenido !== "");
         }
     };
@@ -90,7 +90,8 @@ const Cabecera = forwardRef(({ handleTituloChange, handleTituloKeyDown,
                             style={{
                                 wordBreak: 'break-word',
                                 overflowWrap: 'break-word',
-                                lineHeight: '1.5'
+                                lineHeight: '1.5',
+                                whiteSpace: 'pre-wrap'
                             }}
                         />
 

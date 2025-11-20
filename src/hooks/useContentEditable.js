@@ -14,13 +14,13 @@ export const useContentEditable = (initialState, undoRedoHook) => {
         handleKeyDown: handleUndoRedoKeys
     } = undoRedoHook;
 
-    // Función para actualizar el contenido de los elementos contentEditable
+    // ✅ CAMBIO: Usar innerText para preservar saltos de línea
     const updateContentEditable = (state, tituloRef, notaRef) => {
         if (tituloRef?.current) {
-            tituloRef.current.textContent = state.titulo || "";
+            tituloRef.current.innerText = state.titulo || "";
         }
         if (notaRef?.current) {
-            notaRef.current.textContent = state.nota || "";
+            notaRef.current.innerText = state.nota || "";
         }
         setTitulo(state.titulo || "");
         setNota(state.nota || "");
@@ -28,36 +28,33 @@ export const useContentEditable = (initialState, undoRedoHook) => {
 
     const handleTituloChange = (tituloRef) => {
         if (tituloRef?.current && !isUndoRedoAction) {
-            const newTitulo = tituloRef.current.textContent || "";
+            // ✅ CAMBIO: Usar innerText
+            const newTitulo = tituloRef.current.innerText || "";
             setTitulo(newTitulo);
-            // Usar addToHistory del hook, que ya tiene debounce
             addToHistory({ titulo: newTitulo, nota });
         }
     };
 
     const handleNotaChange = (notaRef) => {
         if (notaRef?.current && !isUndoRedoAction) {
-            const newNota = notaRef.current.textContent || "";
+            // ✅ CAMBIO: Usar innerText
+            const newNota = notaRef.current.innerText || "";
             setNota(newNota);
-            // Usar addToHistory del hook, que ya tiene debounce
             addToHistory({ titulo, nota: newNota });
         }
     };
 
     const handleTituloKeyDown = (e, tituloRef, notaRef) => {
-        // Manejar atajos de deshacer/rehacer
         const undoRedoResult = handleUndoRedoKeys(e);
         if (undoRedoResult) {
             updateContentEditable(undoRedoResult, tituloRef, notaRef);
             return;
         }
 
-        // Prevenir salto de línea en el título
         if (e.key === 'Enter') {
             e.preventDefault();
             if (notaRef?.current) {
                 notaRef.current.focus();
-                // Mover el cursor al final de la nota
                 const range = document.createRange();
                 const sel = window.getSelection();
                 const contentLength = notaRef.current.childNodes.length;
@@ -75,18 +72,13 @@ export const useContentEditable = (initialState, undoRedoHook) => {
     };
 
     const handleNotaKeyDown = (e, tituloRef, notaRef) => {
-        // Manejar atajos de deshacer/rehacer
         const undoRedoResult = handleUndoRedoKeys(e);
         if (undoRedoResult) {
             updateContentEditable(undoRedoResult, tituloRef, notaRef);
             return;
         }
-
-        // Permitir saltos de línea en la nota con Enter
-        // El comportamiento por defecto ya permite saltos de línea
     };
 
-    // Funciones para los botones
     const handleUndoClick = (tituloRef, notaRef) => {
         const prevState = undo();
         if (prevState) {

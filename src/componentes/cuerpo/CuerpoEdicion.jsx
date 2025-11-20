@@ -30,8 +30,8 @@ const CuerpoEdicion = forwardRef(({ handleNotaChange, handleNotaKeyDown, esModoV
             }
             
             // ✅ Establecer contenido inmediatamente si estamos en modo vista previa
-            if (esModoVistaPrevia && nota && element.textContent !== nota) {
-                element.textContent = nota;
+            if (esModoVistaPrevia && nota && element.innerText !== nota) {
+                element.innerText = nota;
             }
         }
     }, [notaRef, esModoVistaPrevia, nota]);
@@ -76,7 +76,8 @@ const CuerpoEdicion = forwardRef(({ handleNotaChange, handleNotaKeyDown, esModoV
                     style={{
                         wordBreak: 'break-word',
                         overflowWrap: 'break-word',
-                        lineHeight: '1.5'
+                        lineHeight: '1.5',
+                        whiteSpace: 'pre-wrap'
                     }}
                 />
 

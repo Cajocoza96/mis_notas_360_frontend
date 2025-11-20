@@ -42,11 +42,11 @@ export default function Footer({ handleUndoClick, handleRedoClick, esModoEdicion
             let notaActual = '';
 
             if (tituloRef && tituloRef.current) {
-                tituloActual = tituloRef.current.textContent || '';
+                tituloActual = tituloRef.current.innerText || '';
             }
 
             if (notaRef && notaRef.current) {
-                notaActual = notaRef.current.textContent || '';
+                notaActual = notaRef.current.innerText || '';
             }
 
             console.log('=== DEBUG GUARDAR ===');

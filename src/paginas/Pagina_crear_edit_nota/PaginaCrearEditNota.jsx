@@ -119,34 +119,31 @@ export default function PaginaCrearEditNota() {
     useEffect(() => {
         if (anotacionCargada && tituloRef.current && notaRef.current) {
             console.log('🎯 Actualizando refs con datos...');
-
+    
             const tituloInicial = anotacionCargada.titulo || "";
             const notaInicial = anotacionCargada.nota || "";
-
-            // Actualizar los refs
-            tituloRef.current.textContent = tituloInicial;
-            notaRef.current.textContent = notaInicial;
-
-            // Actualizar Redux
+    
+            // ✅ CAMBIO: Usar innerText
+            tituloRef.current.innerText = tituloInicial;
+            notaRef.current.innerText = notaInicial;
+    
             dispatch(setTitulo(tituloInicial));
             dispatch(setNota(notaInicial));
-
-            // Inicializar historial
+    
             if (undoRedoHook?.resetHistory) {
                 undoRedoHook.resetHistory({
                     titulo: tituloInicial,
                     nota: notaInicial
                 });
             }
-
+    
             console.log('✅ Refs actualizados correctamente');
-
-            // ✅ Desactivar overlay DESPUÉS de actualizar refs
+    
             setTimeout(() => {
                 setCargando(false);
             }, 100);
         }
-    }, [anotacionCargada, dispatch]); // Se ejecuta cuando cambia anotacionCargada
+    }, [anotacionCargada, dispatch]);
 
     // Limpiar el historial cuando entramos en modo edición
     useEffect(() => {
