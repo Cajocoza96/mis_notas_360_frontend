@@ -8,6 +8,11 @@ export const useUndoRedo = (initialState = {}) => {
     
     const timeoutRef = useRef(null);
 
+    // ✅ NUEVO: Función para obtener el estado actual del historial
+    const getCurrentState = useCallback(() => {
+        return history[currentIndex];
+    }, [history, currentIndex]);
+
     // Función para agregar un nuevo estado al historial (SIN debounce)
     const addToHistoryImmediate = useCallback((newState) => {
         if (isUndoRedoAction) return;
@@ -50,7 +55,7 @@ export const useUndoRedo = (initialState = {}) => {
         
         timeoutRef.current = setTimeout(() => {
             addToHistoryImmediate(newState);
-        }, 300); // Reducido a 300ms para mejor respuesta
+        }, 300);
     }, [addToHistoryImmediate]);
 
     // Función para deshacer
@@ -111,6 +116,8 @@ export const useUndoRedo = (initialState = {}) => {
             clearTimeout(timeoutRef.current);
         }
         
+        console.log('🔄 Reiniciando historial con:', newInitialState);
+        
         setHistory([newInitialState]);
         setCurrentIndex(0);
         setIsUndoRedoAction(false);
@@ -138,10 +145,11 @@ export const useUndoRedo = (initialState = {}) => {
         
         // Funciones
         addToHistory: debouncedAddToHistory,
-        addToHistoryImmediate, // Exportar versión sin debounce para uso específico
+        addToHistoryImmediate,
         undo,
         redo,
         handleKeyDown,
-        resetHistory // Nueva función para reiniciar historial
+        resetHistory,
+        getCurrentState // ✅ NUEVO
     };
 };

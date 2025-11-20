@@ -118,30 +118,32 @@ export default function PaginaCrearEditNota() {
     // ✅ Efecto SEPARADO para actualizar los refs cuando la anotación esté lista Y los refs estén montados
     useEffect(() => {
         if (anotacionCargada && tituloRef.current && notaRef.current) {
-            console.log('🎯 Actualizando refs con datos...');
-    
+            console.log('🎯 Actualizando refs con datos de anotación...');
+
             const tituloInicial = anotacionCargada.titulo || "";
             const notaInicial = anotacionCargada.nota || "";
-    
-            // ✅ CAMBIO: Usar innerText
+
+            // Actualizar los DOM elements PRIMERO
             tituloRef.current.innerText = tituloInicial;
             notaRef.current.innerText = notaInicial;
-    
+
+            console.log('📋 Valores iniciales:', { titulo: tituloInicial, nota: notaInicial });
+
+            // Actualizar Redux
             dispatch(setTitulo(tituloInicial));
             dispatch(setNota(notaInicial));
-    
-            if (undoRedoHook?.resetHistory) {
-                undoRedoHook.resetHistory({
-                    titulo: tituloInicial,
-                    nota: notaInicial
-                });
-            }
-    
-            console.log('✅ Refs actualizados correctamente');
-    
+
+            // ✅ CRÍTICO: Esperar un tick antes de resetear el historial
+            // para asegurar que los elementos DOM estén actualizados
             setTimeout(() => {
-                setCargando(false);
-            }, 100);
+                if (undoRedoHook?.resetHistory) {
+                    undoRedoHook.resetHistory({
+                        titulo: tituloInicial,
+                        nota: notaInicial
+                    });
+                    console.log('✅ Historial reiniciado con valores iniciales');
+                }
+            }, 0);
         }
     }, [anotacionCargada, dispatch]);
 
