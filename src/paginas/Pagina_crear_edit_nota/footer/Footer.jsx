@@ -49,9 +49,25 @@ export default function Footer({ handleUndoClick, handleRedoClick, esModoEdicion
                 notaActual = notaRef.current.innerText || '';
             }
 
+            // ✅ LIMPIEZA: Remover placeholders si se colaron
+            const placeholdersTitulo = ['Sin título', 'Colocar título'];
+            const placeholdersNota = ['Sin nota', 'Colocar nota'];
+
+            if (placeholdersTitulo.includes(tituloActual.trim())) {
+                tituloActual = '';
+            }
+
+            if (placeholdersNota.includes(notaActual.trim())) {
+                notaActual = '';
+            }
+
+            // ✅ Trim para remover espacios en blanco innecesarios
+            tituloActual = tituloActual.trim();
+            notaActual = notaActual.trim();
+
             console.log('=== DEBUG GUARDAR ===');
-            console.log('Título del ref:', tituloActual);
-            console.log('Nota del ref:', notaActual);
+            console.log('Título limpio:', tituloActual);
+            console.log('Nota limpia:', notaActual);
             console.log('Estado:', estadoSeleccionado);
             console.log('Tareas:', tareas);
             console.log('==================');

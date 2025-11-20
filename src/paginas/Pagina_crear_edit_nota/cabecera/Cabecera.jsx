@@ -10,28 +10,16 @@ const Cabecera = forwardRef(({ handleTituloChange, handleTituloKeyDown,
     esModoVistaPrevia }, tituloRef) => {
 
     const dispatch = useDispatch();
-    const { isTituloFocused } = useSelector((state) => state.tareas);
+    const { isTituloFocused, titulo } = useSelector((state) => state.tareas);
     
-    // ✅ Estado local para controlar si tiene contenido (más reactivo)
+    // ✅ Usar el estado de Redux en lugar de verificar el ref
     const [tieneTitulo, setTieneTitulo] = useState(false);
 
-    // ✅ Efecto para verificar si el ref tiene contenido al montar y cuando cambia
+    // ✅ Sincronizar con el estado de Redux (más confiable que verificar el ref)
     useEffect(() => {
-        const verificarContenido = () => {
-            if (tituloRef?.current) {
-                const contenido = tituloRef.current.innerText?.trim() || "";
-                setTieneTitulo(contenido !== "");
-            }
-        };
-
-        // Verificar inmediatamente
-        verificarContenido();
-
-        // Verificar periódicamente (para capturar cambios en el ref)
-        const interval = setInterval(verificarContenido, 100);
-
-        return () => clearInterval(interval);
-    }, [tituloRef]);
+        const contenido = titulo?.trim() || "";
+        setTieneTitulo(contenido !== "");
+    }, [titulo]);
 
     const handleFocus = () => {
         if (!esModoVistaPrevia) {
@@ -42,21 +30,11 @@ const Cabecera = forwardRef(({ handleTituloChange, handleTituloKeyDown,
     const handleBlur = async () => {
         if (!esModoVistaPrevia) {
             dispatch(setIsTituloFocused(false));
-            // Verificar contenido al perder el foco
-            if (tituloRef?.current) {
-                const contenido = tituloRef.current.innerText?.trim() || "";
-                setTieneTitulo(contenido !== "");
-            }
         }
     };
 
     const handleInputLocal = () => {
         handleTituloChange(tituloRef);
-        // Actualizar inmediatamente el estado de tieneTitulo
-        if (tituloRef?.current) {
-            const contenido = tituloRef.current.innerText?.trim() || "";
-            setTieneTitulo(contenido !== "");
-        }
     };
 
     // ✅ Manejador para forzar texto plano al pegar
