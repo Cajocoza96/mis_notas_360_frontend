@@ -59,6 +59,32 @@ const Cabecera = forwardRef(({ handleTituloChange, handleTituloKeyDown,
         }
     };
 
+    // ✅ Manejador para forzar texto plano al pegar
+    const handlePaste = (e) => {
+        if (esModoVistaPrevia) return;
+        
+        e.preventDefault();
+        
+        // Obtener solo texto plano del portapapeles
+        const text = (e.clipboardData || window.clipboardData).getData('text/plain');
+        
+        // Remover saltos de línea para el título (convertir a espacios)
+        const textoLimpio = text.replace(/\r?\n|\r/g, ' ');
+        
+        // Insertar el texto sin formato en la posición del cursor
+        const selection = window.getSelection();
+        if (!selection.rangeCount) return;
+        
+        selection.deleteFromDocument();
+        selection.getRangeAt(0).insertNode(document.createTextNode(textoLimpio));
+        
+        // Colapsar la selección al final del texto insertado
+        selection.collapseToEnd();
+        
+        // Trigger del onChange para actualizar el estado
+        handleInputLocal();
+    };
+
     return (
         <div className="flex-shrink-0 z-10 min-h-0 min-w-0 py-1 overflow-hidden">
 
@@ -83,6 +109,7 @@ const Cabecera = forwardRef(({ handleTituloChange, handleTituloKeyDown,
                             onFocus={handleFocus}
                             onBlur={handleBlur}
                             onKeyDown={(e) => handleTituloKeyDown(e, tituloRef)}
+                            onPaste={handlePaste}
                             className="text-base md:text-xl text-black dark:text-white
                                         outline-none border-none bg-transparent
                                         min-h-[1.5em] w-full overflow-hidden

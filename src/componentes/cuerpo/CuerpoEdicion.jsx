@@ -52,6 +52,33 @@ const CuerpoEdicion = forwardRef(({ handleNotaChange, handleNotaKeyDown, esModoV
         handleNotaChange(notaRef);
     };
 
+    // ✅ Manejador para forzar texto plano al pegar
+    const handlePaste = (e) => {
+        if (esModoVistaPrevia) return;
+        
+        e.preventDefault();
+        
+        // Obtener solo texto plano del portapapeles
+        const text = (e.clipboardData || window.clipboardData).getData('text/plain');
+        
+        // Mantener saltos de línea en la nota
+        // Solo normalizamos los diferentes tipos de saltos de línea
+        const textoLimpio = text.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
+        
+        // Insertar el texto sin formato en la posición del cursor
+        const selection = window.getSelection();
+        if (!selection.rangeCount) return;
+        
+        selection.deleteFromDocument();
+        selection.getRangeAt(0).insertNode(document.createTextNode(textoLimpio));
+        
+        // Colapsar la selección al final del texto insertado
+        selection.collapseToEnd();
+        
+        // Trigger del onChange para actualizar el estado
+        handleInputLocal();
+    };
+
     return (
         <div className="w-[95%] mx-auto overflow-y-auto overflow-x-hidden min-h-0 min-w-0 flex-1">
 
@@ -68,6 +95,7 @@ const CuerpoEdicion = forwardRef(({ handleNotaChange, handleNotaKeyDown, esModoV
                     onFocus={handleFocus}
                     onBlur={handleBlur}
                     onKeyDown={(e) => handleNotaKeyDown(e, notaRef)}
+                    onPaste={handlePaste}
                     className={`text-base md:text-xl text-black dark:text-white
                                 outline-none border-none bg-transparent
                                 min-h-[1.5em] w-full overflow-hidden
