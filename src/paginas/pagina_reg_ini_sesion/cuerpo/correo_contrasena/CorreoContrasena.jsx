@@ -1,23 +1,22 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setVerToast, setMensajeToast, toggleVerModalRestablecerContrasena } from "../../../../store/accesoSlice";
 import { motion } from "framer-motion";
 import { useLocation, useNavigate } from "react-router-dom";
 import BotonAccion from "../../../../componentes/botones/BotonAccion";
 import { HiEye, HiEyeOff } from "react-icons/hi";
-import { FaSpinner } from "react-icons/fa";
+import { FaSpinner, FaCheck, FaTimes } from "react-icons/fa";
 import infoRegIniSesion from "../../../../data/infoRegIniSesion.json";
-import { registrarUsuario, iniciarSesion } from "../../../../services/authService";
-
-import { restablecerContrasena } from "../../../../services/authService";
-
+import { registrarUsuario, iniciarSesion, restablecerContrasena } from "../../../../services/authService";
 import { toggleVerMenuHamburguesa } from "../../../../store/layoutSlice";
+import { validarFortalezaContrasena, obtenerMensajesRequisitos } from "../../../../utils/validacionContrasenaUtils";
 
 export default function CorreoContrasena({ textoContrasena, restablecer, noRestablecer }) {
     const [verContrasena, setVerContrasena] = useState(false);
     const [nombreUsuario, setNombreUsuario] = useState("");
     const [contrasena, setContrasena] = useState("");
     const [cargando, setCargando] = useState(false);
+    const [fortalezaContrasena, setFortalezaContrasena] = useState(null);
 
     const verMenuHamburguesa = useSelector((state) => state.layout.verMenuHamburguesa);
 
@@ -34,6 +33,16 @@ export default function CorreoContrasena({ textoContrasena, restablecer, noResta
 
     const MiBoton = motion.create(BotonAccion);
 
+    // Validar fortaleza de contraseña en tiempo real
+    useEffect(() => {
+        if (contrasena.length > 0) {
+            const validacion = validarFortalezaContrasena(contrasena);
+            setFortalezaContrasena(validacion);
+        } else {
+            setFortalezaContrasena(null);
+        }
+    }, [contrasena]);
+
     const mostrarToast = (mensaje) => {
         dispatch(setMensajeToast(mensaje));
         dispatch(setVerToast(true));
@@ -46,11 +55,10 @@ export default function CorreoContrasena({ textoContrasena, restablecer, noResta
     const handleCerrarModal = () => {
         if (!cargando) {
             dispatch(toggleVerModalRestablecerContrasena());
-            // Limpiar campos
             setNombreUsuario("");
             setContrasena("");
             setVerContrasena(false);
-
+            setFortalezaContrasena(null);
             dispatch(setVerToast(false));
         }
     };
@@ -72,11 +80,20 @@ export default function CorreoContrasena({ textoContrasena, restablecer, noResta
             return;
         }
 
+        // Validar fortaleza de contraseña solo en registro
+        if (esRegistro) {
+            const validacion = validarFortalezaContrasena(contrasena);
+            if (!validacion.valida) {
+                const mensajes = obtenerMensajesRequisitos(validacion.requisitos);
+                mostrarToast(`La contraseña debe cumplir: ${mensajes.join(', ')}`);
+                return;
+            }
+        }
+
         setCargando(true);
 
         try {
             if (esRegistro) {
-                // Registrar usuario
                 await registrarUsuario(nombreUsuario, contrasena);
 
                 if (verMenuHamburguesa) {
@@ -85,7 +102,6 @@ export default function CorreoContrasena({ textoContrasena, restablecer, noResta
                 navigate("/");
 
             } else {
-                // Iniciar sesión
                 await iniciarSesion(nombreUsuario, contrasena);
 
                 if (verMenuHamburguesa) {
@@ -94,7 +110,6 @@ export default function CorreoContrasena({ textoContrasena, restablecer, noResta
                 navigate("/");
             }
         } catch (error) {
-            // Mostrar mensaje de error del backend
             mostrarToast(error.message || "Error en el servidor");
         } finally {
             setCargando(false);
@@ -102,19 +117,21 @@ export default function CorreoContrasena({ textoContrasena, restablecer, noResta
     };
 
     const handleRestablecerContrasena = async () => {
-        // Validaciones
         if (!nombreUsuario.trim()) {
-            mostrarToast("Por favor ingresa tu nombre de usuario", "error");
+            mostrarToast("Por favor ingresa tu nombre de usuario");
             return;
         }
 
         if (!contrasena.trim()) {
-            mostrarToast("Por favor ingresa tu nueva contraseña", "error");
+            mostrarToast("Por favor ingresa tu nueva contraseña");
             return;
         }
 
-        if (contrasena.length < 6) {
-            mostrarToast("La contraseña debe tener al menos 6 caracteres", "error");
+        // Validar fortaleza de contraseña
+        const validacion = validarFortalezaContrasena(contrasena);
+        if (!validacion.valida) {
+            const mensajes = obtenerMensajesRequisitos(validacion.requisitos);
+            mostrarToast(`La contraseña debe cumplir: ${mensajes.join(', ')}`);
             return;
         }
 
@@ -122,17 +139,15 @@ export default function CorreoContrasena({ textoContrasena, restablecer, noResta
 
         try {
             await restablecerContrasena(nombreUsuario, contrasena);
+            mostrarToast("Contraseña restablecida exitosamente");
 
-            mostrarToast("Contraseña restablecida exitosamente", "success");
-
-            // Cerrar modal después de 1 segundo
             setTimeout(() => {
                 handleCerrarModal();
             }, 1000);
 
         } catch (error) {
             const mensajeError = error.message || "Error al restablecer contraseña";
-            mostrarToast(mensajeError, "error");
+            mostrarToast(mensajeError);
         } finally {
             setCargando(false);
         }
@@ -176,37 +191,21 @@ export default function CorreoContrasena({ textoContrasena, restablecer, noResta
                                 active:bg-gray-200 dark:active:bg-gray-700
                                 flex flex-row items-center justify-between">
 
-                    {noRestablecer && (
-                        <input
-                            className="w-full text-base md:text-xl p-2
-                                    focus:outline-none bg-transparent
-                                    text-black dark:text-white"
-                            type={verContrasena ? "text" : "password"}
-                            placeholder="Mínimo 6 caracteres"
-                            value={contrasena}
-                            onChange={(e) => setContrasena(e.target.value)}
-                            disabled={cargando}
-                            onKeyDown={(e) => {
-                                if (e.key === 'Enter' && !cargando) {
-                                    handleSubmit();
-                                }
-                            }}
-                        />
-                    )}
-
-                    {restablecer && (
-                        <input
-                            className="w-full text-base md:text-lg p-2
-                            focus:outline-none bg-transparent
-                            text-black dark:text-white"
-                            type={verContrasena ? "text" : "password"}
-                            placeholder="Mínimo 6 caracteres"
-                            value={contrasena}
-                            onChange={(e) => setContrasena(e.target.value)}
-                            disabled={cargando}
-                        />
-                    )}
-
+                    <input
+                        className="w-full text-base md:text-xl p-2
+                                focus:outline-none bg-transparent
+                                text-black dark:text-white"
+                        type={verContrasena ? "text" : "password"}
+                        placeholder="Mínimo 8 caracteres"
+                        value={contrasena}
+                        onChange={(e) => setContrasena(e.target.value)}
+                        disabled={cargando}
+                        onKeyDown={(e) => {
+                            if (e.key === 'Enter' && !cargando && noRestablecer) {
+                                handleSubmit();
+                            }
+                        }}
+                    />
 
                     <div className="text-base md:text-xl mr-2
                         text-black dark:text-white cursor-pointer"
@@ -214,6 +213,36 @@ export default function CorreoContrasena({ textoContrasena, restablecer, noResta
                         {verContrasena ? <HiEye /> : <HiEyeOff />}
                     </div>
                 </div>
+
+                {/* Indicador de fortaleza de contraseña */}
+                {fortalezaContrasena && (esRegistro || restablecer) && (
+                    <div className="flex flex-col gap-2">
+                        <div className="flex items-center gap-2">
+                            <div className="flex-1 h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+                                <div 
+                                    className={`h-full transition-all duration-300 ${fortalezaContrasena.colorTailwind}`}
+                                    style={{ width: `${(fortalezaContrasena.cumplidos / 5) * 100}%` }}
+                                />
+                            </div>
+                            <span className={`text-sm font-semibold ${
+                                fortalezaContrasena.fortaleza === 'fuerte' ? 'text-green-600 dark:text-green-400' :
+                                fortalezaContrasena.fortaleza === 'media' ? 'text-yellow-600 dark:text-yellow-400' :
+                                'text-red-600 dark:text-red-400'
+                            }`}>
+                                {fortalezaContrasena.fortaleza.charAt(0).toUpperCase() + fortalezaContrasena.fortaleza.slice(1)}
+                            </span>
+                        </div>
+
+                        {/* Lista de requisitos */}
+                        <div className="text-xs md:text-sm space-y-1">
+                            <RequisitoItem cumple={fortalezaContrasena.requisitos.longitud} texto="Mínimo 8 caracteres" />
+                            <RequisitoItem cumple={fortalezaContrasena.requisitos.minuscula} texto="Una letra minúscula" />
+                            <RequisitoItem cumple={fortalezaContrasena.requisitos.mayuscula} texto="Una letra mayúscula" />
+                            <RequisitoItem cumple={fortalezaContrasena.requisitos.numero} texto="Un número" />
+                            <RequisitoItem cumple={fortalezaContrasena.requisitos.simbolo} texto="Un símbolo (!@#$%^&*...)" />
+                        </div>
+                    </div>
+                )}
             </div>
 
             {noRestablecer && (
@@ -252,6 +281,22 @@ export default function CorreoContrasena({ textoContrasena, restablecer, noResta
                 </>
             )}
 
+        </div>
+    );
+}
+
+// Componente auxiliar para mostrar requisitos
+function RequisitoItem({ cumple, texto }) {
+    return (
+        <div className="flex items-center gap-2">
+            {cumple ? (
+                <FaCheck className="text-green-600 dark:text-green-400 flex-shrink-0" />
+            ) : (
+                <FaTimes className="text-red-600 dark:text-red-400 flex-shrink-0" />
+            )}
+            <span className={`${cumple ? 'text-green-600 dark:text-green-400' : 'text-gray-600 dark:text-gray-400'}`}>
+                {texto}
+            </span>
         </div>
     );
 }
