@@ -11,11 +11,10 @@ import { useNavigate, useLocation } from "react-router-dom";
 
 import { useDispatch, useSelector } from "react-redux";
 
-import { actualizarFavoritoLocal, cargarAnotaciones } from "../../../../store/anotacionesSlice";
+import { actualizarFavoritoLocal, 
+        setAnotaciones, toggleVerAdminAnotacion} from "../../../../store/anotacionesSlice";
 
-import { toggleVerAdminAnotacion } from "../../../../store/anotacionesSlice";
-
-import { actualizarFavorito } from "../../../../services/anotacionesService";
+import { actualizarFavorito, obtenerAnotaciones } from "../../../../services/anotacionesService";
 
 import { setAnotacionId, toggleVerModalRestaurarNota, toggleVerModalEliminarNotaDefinitiva } from "../../../../store/tareasSlice";
 
@@ -30,6 +29,10 @@ export default function NotaVistaPrevia({ anotacionId, iconoFavorito, texto, no_
 
     const esVistaPapelera = location.pathname.includes('/papelera');
 
+    const [cargando, setCargando] = useState(false);
+
+    const [error, setError] = useState(null);
+
     // ✅ Obtener el estado de verSoloFavoritos
     const verSoloFavoritos = useSelector((state) => state.preferencia.verSoloFavoritos);
 
@@ -41,42 +44,57 @@ export default function NotaVistaPrevia({ anotacionId, iconoFavorito, texto, no_
     }
 
     const handleVerVistaPrevia = (e) => {
-        if(esVistaPapelera){
+        if (esVistaPapelera) {
             e.stopPropagation();
-            
-        }else{
+
+        } else {
             navigate(`/vista-previa/nota/${anotacionId}`);
+        }
+    }
+
+    //Cargar todas las anotaciones
+    const cargarAnotaciones = async () => {
+        try {
+            setCargando(true);
+            const anotacionesData = await obtenerAnotaciones();
+            dispatch(setAnotaciones(anotacionesData));
+            setCargando(false);
+        } catch (error) {
+            setError('Error al cargar las anotaciones eliminadas');
+            setCargando(false);
+        } finally {
+            setCargando(false);
         }
     }
 
     const handleToggleFavorito = async (e) => {
         e.stopPropagation();
-    
+
         if (actualizandoFavorito) return;
-    
+
         try {
             setActualizandoFavorito(true);
-    
+
             const nuevoEstadoFavorito = !esFavorito;  // ✅ Cambiar a boolean
-    
+
             // Actualizar en el backend PRIMERO
             await actualizarFavorito(anotacionId, nuevoEstadoFavorito);
-    
+
             // Luego actualizar localmente
             dispatch(actualizarFavoritoLocal({
                 anotacionId,
                 favorito: nuevoEstadoFavorito
             }));
-    
+
             // Solo recargar si estamos filtrando por favoritos
             if (verSoloFavoritos || !verSoloFavoritos) {
-                dispatch(cargarAnotaciones());
+                cargarAnotaciones();
             }
-    
+
         } catch (error) {
             console.error('Error al actualizar favorito:', error);
-            dispatch(cargarAnotaciones());
-            
+            cargarAnotaciones();
+
         } finally {
             setActualizandoFavorito(false);
         }

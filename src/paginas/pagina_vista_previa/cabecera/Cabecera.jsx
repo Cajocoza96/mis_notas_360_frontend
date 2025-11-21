@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 
 import { toggleVerOpcCabPagVisPrev } from "../../../store/layoutSlice";
 
-import { setAnotacionActual, setError, actualizarFavoritoLocal } from "../../../store/anotacionesSlice";
+import { setAnotacionActual, actualizarFavoritoLocal } from "../../../store/anotacionesSlice";
 
 import { HiOutlineStar, HiStar } from "react-icons/hi2";
 
@@ -29,7 +29,9 @@ export default function Cabecera({ esModoVistaPrevia }) {
     const { anotacionActual } = useSelector((state) => state.anotaciones);
 
     const [actualizandoFavorito, setActualizandoFavorito] = useState(false);
-    const [cargandoLocal, setCargandoLocal] = useState(false);
+    const [cargando, setCargando] = useState(false);
+
+    const [error, setError] = useState(null);
 
     // Cargar la anotación cuando se monta el componente (solo si NO es modo vista previa)
     // En modo vista previa, la carga se maneja desde PaginaVistaPrevia.jsx
@@ -41,18 +43,18 @@ export default function Cabecera({ esModoVistaPrevia }) {
 
     const cargarAnotacion = async () => {
         try {
-            setCargandoLocal(true);
+            setCargando(true);
 
             const anotacion = await obtenerAnotacionPorId(id);
 
             dispatch(setAnotacionActual(anotacion));
         } catch (error) {
             console.error('Error al cargar la anotación en cabecera:', error);
-            dispatch(setError('Error al cargar la anotación'));
+            setError('Error al cargar la anotación');
             // Redirigir a página de error
             navigate('/error', { replace: true });
         } finally {
-            setCargandoLocal(false);
+            setCargando(false);
         }
     }
 
@@ -98,7 +100,7 @@ export default function Cabecera({ esModoVistaPrevia }) {
     };
 
     // ✅ No mostrar nada mientras está cargando localmente
-    if (cargandoLocal) {
+    if (cargando) {
         return null;
     }
 

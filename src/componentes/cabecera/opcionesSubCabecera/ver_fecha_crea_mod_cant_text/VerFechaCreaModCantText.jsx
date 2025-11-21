@@ -5,7 +5,9 @@ import { formatearFechaConHora } from "../../../../utils/dateUtils";
 
 export default function VerFechaCreaModCantText() {
     // ✅ Obtener la anotación actual desde Redux
-    const { anotacionActual, cargando } = useSelector((state) => state.anotaciones);
+    const { anotacionActual } = useSelector((state) => state.anotaciones);
+
+    const [cargando, setCargando] = useState(false);
 
     // ✅ Calcular totales de caracteres usando useMemo para optimizar
     const totales = useMemo(() => {

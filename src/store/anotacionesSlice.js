@@ -128,6 +128,8 @@ const anotacionesSlice = createSlice({
             return initialState;
         }
     },
+
+    /*
     extraReducers: (builder) => {
         builder
             // ✅ Cargar anotaciones
@@ -147,6 +149,7 @@ const anotacionesSlice = createSlice({
                 state.error = action.payload || 'Error al cargar las anotaciones';
             });
     }
+    */
 })
 
 export const {

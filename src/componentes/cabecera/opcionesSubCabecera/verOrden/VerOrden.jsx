@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 
 import { useDispatch, useSelector } from "react-redux";
 
@@ -6,9 +6,11 @@ import { toggleVerOpcionesCabecera } from "../../../../store/layoutSlice";
 
 import { toggleVerOrden, guardarOrdenAnotaciones } from "../../../../store/preferenciaSlice";
 
-import { cargarAnotaciones } from "../../../../store/anotacionesSlice";
-
 import SubOpcionesCabecera from "../SubOpcionesCabecera";
+
+import { setAnotaciones } from "../../../../store/anotacionesSlice";
+
+import { obtenerAnotaciones } from "../../../../services/anotacionesService";
 
 import { HiCheckCircle } from "react-icons/hi";
 
@@ -18,19 +20,42 @@ export default function VerOrden() {
 
     const ordenAnotaciones = useSelector((state) => state.preferencia.ordenAnotaciones);
 
+    const verOpcionesCabecera = useSelector((state) => state.layout.verOpcionesCabecera);
+
+    const [cargando, setCargando] = useState(false);
+
+    const [error, setError] = useState(null);
+
+    //Cargar todas las anotaciones
+    const cargarAnotaciones = async () => {
+        try {
+            setCargando(true);
+            const anotacionesData = await obtenerAnotaciones();
+            dispatch(setAnotaciones(anotacionesData));
+            setCargando(false);
+        } catch (error) {
+            setError('Error al cargar las anotaciones eliminadas');
+            setCargando(false);
+        } finally {
+            setCargando(false);
+        }
+    }
+
     const handleCambiarOrden = async (nuevoOrden) => {
         if (ordenAnotaciones !== nuevoOrden) {
             // Guardar en BD y Redux
             await dispatch(guardarOrdenAnotaciones(nuevoOrden));
             // Recargar las anotaciones con el nuevo orden
-            await dispatch(cargarAnotaciones());
-        }
 
-        // Cerrar menú
-        requestAnimationFrame(() => {
-            dispatch(toggleVerOrden());
-            dispatch(toggleVerOpcionesCabecera());
-        });
+            // Cerrar menú
+            requestAnimationFrame(() => {
+                if (verOpcionesCabecera) {
+                    dispatch(toggleVerOpcionesCabecera());
+                }
+            });
+
+            await cargarAnotaciones();
+        }
     };
 
     return (

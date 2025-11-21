@@ -10,7 +10,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 
 import { HiOutlineBookOpen, HiMinusCircle, HiClock, HiCheckCircle } from "react-icons/hi";
 
-import { cargarAnotaciones, setAnotaciones, setCargando, setError, setMostrandoResultados } from "../../store/anotacionesSlice";
+import { setAnotaciones } from "../../store/anotacionesSlice";
 
 import { setContadores } from "../../store/tareasSlice";
 
@@ -18,7 +18,8 @@ import { guardarVerAnotacEstado } from "../../store/preferenciaSlice";
 
 import { obtenerEstadoProps } from "../../utils/estadoUtils";
 
-import { obtenerContadores, obtenerAnotacionesEliminadas } from "../../services/anotacionesService";
+import { obtenerContadores, 
+        obtenerAnotaciones, obtenerAnotacionesEliminadas } from "../../services/anotacionesService";
 
 import AdminAnotacion from "../admin_anotacion/AdminAnotacion";
 
@@ -41,7 +42,7 @@ export default function Cuerpo({ notaNoEliminada,
     const verAdminAnotacion = useSelector((state) => state.anotaciones.verAdminAnotacion);
 
     // ✅ Obtener también mostrandoResultados
-    const { anotaciones, cargando, mostrandoResultados } = useSelector((state) => state.anotaciones);
+    const { anotaciones } = useSelector((state) => state.anotaciones);
 
     const { terminoBusqueda, resultadosBusqueda, cargandoBusqueda } = useSelector((state) => state.busqueda);
 
@@ -53,23 +54,25 @@ export default function Cuerpo({ notaNoEliminada,
 
     // Cargar contadores al montar el componente
     useEffect(() => {
-        if (verTodosEstados && !cargCantEstado) {
+        if (verTodosEstados && !cargando) {
             cargarContadores();
         }
     }, [verTodosEstados]);
 
-    const [cargCantEstado, setCargCantEstado] = useState(false);
+    const [cargando, setCargando] = useState(false);
+
+    const [error, setError] = useState(null);
 
     const cargarContadores = async () => {
         try {
             /*dispatch(setCargando(true));*/
-            setCargCantEstado(true);
+            setCargando(true);
             const datos = await obtenerContadores();
             dispatch(setContadores(datos));
-            setCargCantEstado(false);
+            setCargando(false);
         } catch (error) {
             // El error ya se loguea en el servicio
-            setCargCantEstado(false);
+            setCargando(false);
             console.error('Error al cargar contadores en el componente:', error);
         }
     };
@@ -77,45 +80,39 @@ export default function Cuerpo({ notaNoEliminada,
     // ✅ Cargar anotaciones usando el thunk cuando cambien los filtros
     useEffect(() => {
         if (verContenidoCuerpo) {
-            dispatch(cargarAnotaciones());
+            cargarAnotaciones();
         } else if (verNotaEliminada) {
             cargarAnotacionesEliminadas();
         }
-    }, [verContenidoCuerpo, verNotaEliminada, verSoloFavoritos, verAnotacEstado, ordenAnotaciones, location.pathname, dispatch]);
+    }, [verContenidoCuerpo, verNotaEliminada, verSoloFavoritos, verAnotacEstado, ordenAnotaciones, location.pathname]);
 
-    // ✅ Controlar cuándo mostrar resultados con delay
-    useEffect(() => {
-        // Limpiar timeout anterior si existe
-        if (timeoutRef.current) {
-            clearTimeout(timeoutRef.current);
+    //Cargar todas las anotaciones
+    const cargarAnotaciones = async () => {
+        try {
+            setCargando(true);
+            const anotacionesData = await obtenerAnotaciones();
+            dispatch(setAnotaciones(anotacionesData));
+            setCargando(false);
+        } catch (error) {
+            setError('Error al cargar las anotaciones eliminadas');
+            setCargando(false);
+        } finally {
+            setCargando(false);
         }
-
-        if (!cargando && verContenidoCuerpo) {
-            // Esperar 200ms después de que termine de cargar antes de mostrar resultados
-            timeoutRef.current = setTimeout(() => {
-                dispatch(setMostrandoResultados(true));
-            }, 200);
-        }
-
-        // Cleanup
-        return () => {
-            if (timeoutRef.current) {
-                clearTimeout(timeoutRef.current);
-            }
-        };
-    }, [cargando, verContenidoCuerpo, dispatch]);
+    }
 
     //Cargar anotaciones eliminadas
     const cargarAnotacionesEliminadas = async () => {
         try {
-            setCargCantEstado(true);
+            setCargando(true);
             const anotacionesData = await obtenerAnotacionesEliminadas();
             dispatch(setAnotaciones(anotacionesData));
-            setCargCantEstado(false);
+            setCargando(false);
         } catch (error) {
-            dispatch(setError('Error al cargar las anotaciones eliminadas'));
+            setError('Error al cargar las anotaciones eliminadas');
+            setCargando(false);
         } finally {
-            setCargCantEstado(false);
+            setCargando(false);
         }
     }
 
@@ -159,7 +156,7 @@ export default function Cuerpo({ notaNoEliminada,
                                 overflow-x-hidden min-h-0 min-w-0 pb-3
                                 grid
                 ${organizarPorColumna ? 'grid-cols-2 2xs:grid-cols-3 lg:grid-cols-5' : 'grid-cols-1'} gap-5 lg:gap-3
-                ${anotaciones.length === 0 || cargando || !mostrandoResultados ? 'auto-rows-auto' : 'auto-rows-[11rem]'}`}>
+                ${anotaciones.length === 0 || cargando ? 'auto-rows-auto' : 'auto-rows-[11rem]'}`}>
 
                     {verAdminAnotacion && (
                         <AdminAnotacion />
@@ -168,7 +165,7 @@ export default function Cuerpo({ notaNoEliminada,
                     {verContenidoCuerpo && (
                         <>
                             {/* ✅ Mostrar spinner mientras carga O mientras no se deben mostrar resultados */}
-                            {cargando || !mostrandoResultados ? (
+                            {cargando ? (
                                 <CargandoNoHayNada CargandoAnotaciones={true} />
 
                             ) : anotaciones.length === 0 ? (
@@ -193,7 +190,7 @@ export default function Cuerpo({ notaNoEliminada,
                         <>
                             {cargandoBusqueda ? (
                                 <div className="col-span-full text-center p-4 select-none
-                            flex flex-col items-center justify-center gap-3">
+                                                flex flex-col items-center justify-center gap-3">
                                     <p className="text-base md:text-xl text-black dark:text-white">
                                         Buscando...
                                     </p>
@@ -223,7 +220,7 @@ export default function Cuerpo({ notaNoEliminada,
 
                     {verNotaEliminada && (
                         <>
-                            {cargCantEstado ? (
+                            {cargando ? (
                                 <CargandoNoHayNada
                                     CargandoAnotaciones={true}
                                 />
@@ -255,7 +252,7 @@ export default function Cuerpo({ notaNoEliminada,
                     <EstadosVistaPrevia
                         iconoEstado={<HiMinusCircle className="text-blue-700" />}
                         tipoEstado="No asignado"
-                        cantidadEstado={cargCantEstado ? <CargandoNoHayNada iconoDeCarga={true}/> : contadores.cant_no_asignado}
+                        cantidadEstado={cargando ? <CargandoNoHayNada iconoDeCarga={true}/> : contadores.cant_no_asignado}
                         no_asignado={true}
                         seleccionado={verAnotacEstado === 'ver_no_asignado'}
                         onClick={() => handleEstadoClick('ver_no_asignado')}
@@ -264,7 +261,7 @@ export default function Cuerpo({ notaNoEliminada,
                     <EstadosVistaPrevia
                         iconoEstado={<HiClock className="text-yellow-700" />}
                         tipoEstado="Pendiente"
-                        cantidadEstado={cargCantEstado ? <CargandoNoHayNada iconoDeCarga={true}/> : contadores.cant_pendiente}
+                        cantidadEstado={cargando ? <CargandoNoHayNada iconoDeCarga={true}/> : contadores.cant_pendiente}
                         pendiente={true}
                         seleccionado={verAnotacEstado === 'ver_pendiente'}
                         onClick={() => handleEstadoClick('ver_pendiente')}
@@ -273,7 +270,7 @@ export default function Cuerpo({ notaNoEliminada,
                     <EstadosVistaPrevia
                         iconoEstado={<HiCheckCircle className="text-green-700" />}
                         tipoEstado="Finalizado"
-                        cantidadEstado={cargCantEstado ? <CargandoNoHayNada iconoDeCarga={true}/> : contadores.cant_finalizado}
+                        cantidadEstado={cargando ? <CargandoNoHayNada iconoDeCarga={true}/> : contadores.cant_finalizado}
                         finalizado={true}
                         seleccionado={verAnotacEstado === 'ver_finalizado'}
                         onClick={() => handleEstadoClick('ver_finalizado')}
@@ -281,7 +278,7 @@ export default function Cuerpo({ notaNoEliminada,
 
                     <EstadosVistaPrevia
                         tipoEstado="Todos los estados"
-                        cantidadEstado={cargCantEstado ? <CargandoNoHayNada iconoDeCarga={true}/> : contadores.cant_todos_estados}
+                        cantidadEstado={cargando ? <CargandoNoHayNada iconoDeCarga={true}/> : contadores.cant_todos_estados}
                         seleccionado={verAnotacEstado === 'ver_todos_estados'}
                         onClick={() => handleEstadoClick('ver_todos_estados')}
                     />
