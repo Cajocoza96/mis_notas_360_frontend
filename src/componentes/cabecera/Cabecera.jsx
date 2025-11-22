@@ -17,7 +17,8 @@ import {
 
 
 export default function Cabecera({ paginaPrincipal, paginaBusqueda,
-    paginaPapelera, paginaEstado, paginaRegIniSesion, paginaInfoUsuario }) {
+    paginaPapelera, paginaEstado, paginaRegIniSesion, paginaInfoUsuario,
+    paginaTerminosPoliticas, tituloTerminoPolitica }) {
 
     const verModo = useSelector((state) => state.preferencia.verModo);
 
@@ -155,6 +156,22 @@ export default function Cabecera({ paginaPrincipal, paginaBusqueda,
                         </p>
                     </Link>
 
+                )}
+
+                {paginaTerminosPoliticas && (
+                    <div className="w-fit mx-auto
+                                    flex flex-row items-center gap-2">
+
+                        <Link to="/panel-principal">
+                            <HiChevronLeft className="text-2xl md:text-3xl text-black dark:text-white cursor-pointer flex-shrink-0" />
+                        </Link>
+
+                        <p className="w-full text-center text-xl md:text-2xl
+                                    font-bold select-none truncate
+                                text-black dark:text-white">
+                            {tituloTerminoPolitica}
+                        </p>
+                    </div>
                 )}
 
                 {paginaPrincipal && (

@@ -3,9 +3,9 @@ import Rutas from "./rutas/Rutas";
 
 function App() {
     return (
-        <div 
+        <div
             className="bg-white dark:bg-gray-800"
-            style={{ 
+            style={{
                 position: 'relative',
                 minHeight: '100dvh',
                 overflow: 'hidden' // Evita scrollbar durante transiciones

@@ -5,6 +5,7 @@ import { useLocation } from "react-router-dom";
 import Toast from "../../componentes/toast/Toast";
 import Cabecera from "../../componentes/cabecera/Cabecera";
 import Cuerpo from "./cuerpo/Cuerpo";
+import SeccionTerminosPoliticas from "./footer/SeccionTerminosPoliticas";
 import Footer from "./footer/Footer";
 import ModalRestablecerContrasena from "../../componentes/modal/ModalRestablecerContrasena";
 
@@ -52,24 +53,29 @@ export default function PaginaRegIniSesion() {
             {verModalRestablecerContrasena && (
                 <ModalRestablecerContrasena />
             )}
-                <AnimatePresence mode="wait" custom={esRegistro ? 1 : -1}>
-                    <motion.div
-                        key={location.pathname}
-                        custom={esRegistro ? 1 : -1}
-                        variants={pageVariants}
-                        initial="initial"
-                        animate="animate"
-                        exit="exit">
+            <AnimatePresence mode="wait" custom={esRegistro ? 1 : -1}>
+                <motion.div
+                    key={location.pathname}
+                    custom={esRegistro ? 1 : -1}
+                    variants={pageVariants}
+                    initial="initial"
+                    animate="animate"
+                    exit="exit">
 
-                        <Cabecera paginaRegIniSesion={true} />
-                        <Cuerpo />
+                    <Cabecera paginaRegIniSesion={true} />
+                    <Cuerpo />
 
-                    </motion.div>
-                </AnimatePresence>
+                </motion.div>
+            </AnimatePresence>
 
-            <Footer />
+            <div>
+                {esRegistro && (
+                    <SeccionTerminosPoliticas />
+                )}
+                <Footer />
+            </div>
 
-            
+
         </div>
     );
 }
