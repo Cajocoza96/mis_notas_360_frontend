@@ -89,7 +89,7 @@ const Cabecera = forwardRef(({ handleTituloChange, handleTituloKeyDown,
                             onKeyDown={(e) => handleTituloKeyDown(e, tituloRef)}
                             onPaste={handlePaste}
                             className="text-base md:text-xl text-black dark:text-white
-                                        outline-none border-none bg-transparent
+                                        outline-none border-none bg-transparent font-semibold
                                         min-h-[1.5em] w-full overflow-hidden
                                         whitespace-pre-wrap"
                             style={{
@@ -101,7 +101,7 @@ const Cabecera = forwardRef(({ handleTituloChange, handleTituloKeyDown,
                         />
 
                         {!tieneTitulo && !isTituloFocused && (
-                            <div className="absolute top-2 left-2 pointer-events-none
+                            <div className="absolute top-2 left-2 pointer-events-none font-semibold
                                     text-base md:text-xl text-gray-500 dark:text-gray-400">
                                 {esModoVistaPrevia ? 'Sin título' : 'Colocar título'}
                             </div>

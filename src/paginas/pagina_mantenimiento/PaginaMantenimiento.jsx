@@ -6,8 +6,8 @@ import mantenimiento from "../../assets/lottie/pagina_mantenimiento/mantenimient
 
 export default function PaginaMantenimiento() {
     return (
-        <div className="mx-auto min-h-dvh bg-white dark:bg-gray-800 
-                        overflow-hidden
+        <div className="mx-auto h-dvh bg-white dark:bg-gray-800 
+                        overflow-hidden overflow-y-auto
                         flex flex-col 2xs:flex-row 
                         items-center justify-center gap-3">
 

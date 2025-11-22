@@ -41,6 +41,13 @@ export default function Cabecera({ esModoVistaPrevia }) {
         }
     }, [id, esModoVistaPrevia]);
 
+    // useEffect para manejar la redirección cuando no hay anotación
+    useEffect(() => {
+        if (!cargando && !anotacionActual && !esModoVistaPrevia) {
+            navigate('/error', { replace: true });
+        }
+    }, [cargando, anotacionActual, navigate, esModoVistaPrevia]);
+
     const cargarAnotacion = async () => {
         try {
             setCargando(true);
@@ -51,8 +58,6 @@ export default function Cabecera({ esModoVistaPrevia }) {
         } catch (error) {
             console.error('Error al cargar la anotación en cabecera:', error);
             setError('Error al cargar la anotación');
-            // Redirigir a página de error
-            navigate('/error', { replace: true });
         } finally {
             setCargando(false);
         }
@@ -104,17 +109,9 @@ export default function Cabecera({ esModoVistaPrevia }) {
         return null;
     }
 
-    // ✅ Solo mostrar "Anotación no encontrada" si NO está cargando Y no hay anotación
+    // ✅ No mostrar nada mientras se está redirigiendo
     if (!anotacionActual) {
-        return (
-            <div className="flex-shrink-0 z-10 min-h-0 min-w-0 py-1 overflow-hidden">
-                <div className="w-[95%] mx-auto flex items-center justify-center p-4">
-                    <p className="text-base md:text-xl text-black dark:text-white">
-                        Anotación no encontrada
-                    </p>
-                </div>
-            </div>
-        );
+        return null;
     }
 
     return (
@@ -170,7 +167,7 @@ export default function Cabecera({ esModoVistaPrevia }) {
 
                 <div className="w-full p-1 flex flex-row items-center justify-between">
                     <p className={`text-base md:text-xl truncate
-                            text-black dark:text-white 
+                            text-black dark:text-white font-semibold
                             ${!anotacionActual.titulo ? 'text-gray-500 dark:text-gray-400' : ''}
                             ${esModoVistaPrevia ? 'cursor-default' : ''}`}>
                         {anotacionActual.titulo && anotacionActual.titulo.trim() !== ''

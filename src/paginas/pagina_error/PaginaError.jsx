@@ -19,8 +19,8 @@ export default function PaginaError() {
     const handleNavegarInicio = () => navigate("/");
 
     return (
-        <div className="min-h-dvh bg-white dark:bg-gray-800 
-                        overflow-hidden
+        <div className="h-dvh bg-white dark:bg-gray-800 
+                        overflow-hidden overflow-y-auto
                         flex flex-col items-center justify-center gap-2">
 
             <div className="flex items-center justify-center">

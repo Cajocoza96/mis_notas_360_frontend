@@ -111,7 +111,7 @@ export default function PaginaBienvenida() {
                 className="absolute inset-0"
             />
 
-            <div className="border border-white relative z-10 flex flex-col items-center justify-center gap-4 lg:gap-8 min-h-dvh px-4">
+            <div className="relative z-10 flex flex-col items-center justify-center gap-4 lg:gap-8 min-h-dvh px-4">
 
 
                 <div className="flex flex-col gap-3">
