@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setVerToast, setMensajeToast, toggleVerModalRestablecerContrasena } from "../../../../store/accesoSlice";
 import { motion } from "framer-motion";
@@ -17,10 +17,17 @@ export default function CorreoContrasena({ textoContrasena, restablecer, noResta
     const [contrasena, setContrasena] = useState("");
     const [cargando, setCargando] = useState(false);
     const [fortalezaContrasena, setFortalezaContrasena] = useState(null);
+    const [inputUsuarioFocused, setInputUsuarioFocused] = useState(false);
+    const [inputContrasenaFocused, setInputContrasenaFocused] = useState(false);
+    
+    const blurTimerUsuario = useRef(null);
+    const blurTimerContrasena = useRef(null);
 
     const verMenuHamburguesa = useSelector((state) => state.layout.verMenuHamburguesa);
 
-    const handleVerContrasena = () => {
+    const handleVerContrasena = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
         setVerContrasena(!verContrasena);
     };
 
@@ -32,6 +39,14 @@ export default function CorreoContrasena({ textoContrasena, restablecer, noResta
     const textoBoton = esRegistro ? infoRegIniSesion.registrate.accionBoton : infoRegIniSesion.iniciar.accionBoton;
 
     const MiBoton = motion.create(BotonAccion);
+
+    // Limpiar timers al desmontar
+    useEffect(() => {
+        return () => {
+            if (blurTimerUsuario.current) clearTimeout(blurTimerUsuario.current);
+            if (blurTimerContrasena.current) clearTimeout(blurTimerContrasena.current);
+        };
+    }, []);
 
     // Validar fortaleza de contraseña en tiempo real
     useEffect(() => {
@@ -153,64 +168,122 @@ export default function CorreoContrasena({ textoContrasena, restablecer, noResta
         }
     };
 
+    const handleUsuarioBlur = () => {
+        if (blurTimerUsuario.current) clearTimeout(blurTimerUsuario.current);
+        blurTimerUsuario.current = setTimeout(() => {
+            setInputUsuarioFocused(false);
+        }, 200);
+    };
+
+    const handleContrasenaBlur = () => {
+        if (blurTimerContrasena.current) clearTimeout(blurTimerContrasena.current);
+        blurTimerContrasena.current = setTimeout(() => {
+            setInputContrasenaFocused(false);
+        }, 200);
+    };
+
+    const handleBotonClick = (e, callback) => {
+        e.preventDefault();
+        e.stopPropagation();
+        
+        // Limpiar timers para evitar que se ejecute el blur
+        if (blurTimerUsuario.current) clearTimeout(blurTimerUsuario.current);
+        if (blurTimerContrasena.current) clearTimeout(blurTimerContrasena.current);
+        
+        if (!cargando) {
+            callback();
+        }
+    };
+
     return (
         <div className="flex flex-col gap-5">
-            <div className="flex flex-col gap-3">
-                <p className="w-full text-left font-bold text-base md:text-xl 
-                            select-none truncate
-                        text-black dark:text-white">
-                    Nombre de usuario
-                </p>
-
-                <div className="border border-gray-300 dark:border-gray-700 rounded-md
-                                focus-within:border-violet-800
-                                active:bg-gray-200 dark:active:bg-gray-700 
-                                flex flex-row items-center justify-between">
+            {/* Input de Nombre de Usuario con Floating Label */}
+            <div className="relative">
+                <div className={`border rounded-md
+                                flex flex-row items-center justify-between
+                                transition-all duration-200
+                                ${inputUsuarioFocused ? 'border-violet-800' : 'border-gray-300 dark:border-gray-700'}
+                                ${!cargando && 'active:bg-gray-200 dark:active:bg-gray-700'}`}>
                     <input
-                        className="w-full text-base md:text-xl p-2
+                        className="w-full text-base md:text-xl p-2 pt-6 pb-2
                                 focus:outline-none bg-transparent
                                 text-black dark:text-white"
                         type="text"
-                        placeholder="Ejemplo: Carlitos"
                         value={nombreUsuario}
                         onChange={(e) => setNombreUsuario(e.target.value)}
+                        onFocus={() => {
+                            if (blurTimerUsuario.current) clearTimeout(blurTimerUsuario.current);
+                            setInputUsuarioFocused(true);
+                        }}
+                        onBlur={handleUsuarioBlur}
                         disabled={cargando}
                     />
+                    
+                    {/* Floating Label */}
+                    <label 
+                        className={`absolute left-2 pointer-events-none
+                                    transition-all duration-200 ease-out
+                                    text-gray-500 dark:text-gray-400
+                                    ${inputUsuarioFocused || nombreUsuario ? 
+                                        'text-xs top-1 font-semibold' : 
+                                        'text-base md:text-xl top-1/2 -translate-y-1/2'
+                                    }
+                                    ${inputUsuarioFocused ? 'text-violet-800 dark:text-violet-400' : ''}`}>
+                        Nombre de usuario
+                    </label>
                 </div>
             </div>
 
+            {/* Input de Contraseña con Floating Label */}
             <div className="flex flex-col gap-3">
-                <p className="w-full text-left font-bold text-base md:text-xl
-                            select-none truncate
-                        text-black dark:text-white">
-                    {textoContrasena}
-                </p>
+                <div className="relative">
+                    <div className={`border rounded-md
+                                    flex flex-row items-center justify-between
+                                    transition-all duration-200
+                                    ${inputContrasenaFocused ? 'border-violet-800' : 'border-gray-300 dark:border-gray-700'}
+                                    ${!cargando && 'active:bg-gray-200 dark:active:bg-gray-700'}`}>
 
-                <div className="border border-gray-300 dark:border-gray-700 rounded-md
-                                focus-within:border-violet-800 
-                                active:bg-gray-200 dark:active:bg-gray-700
-                                flex flex-row items-center justify-between">
+                        <input
+                            className="w-full text-base md:text-xl p-2 pt-6 pb-2
+                                    focus:outline-none bg-transparent
+                                    text-black dark:text-white"
+                            type={verContrasena ? "text" : "password"}
+                            value={contrasena}
+                            onChange={(e) => setContrasena(e.target.value)}
+                            onFocus={() => {
+                                if (blurTimerContrasena.current) clearTimeout(blurTimerContrasena.current);
+                                setInputContrasenaFocused(true);
+                            }}
+                            onBlur={handleContrasenaBlur}
+                            disabled={cargando}
+                            onKeyDown={(e) => {
+                                if (e.key === 'Enter' && !cargando && noRestablecer) {
+                                    e.preventDefault();
+                                    handleSubmit();
+                                }
+                            }}
+                        />
 
-                    <input
-                        className="w-full text-base md:text-xl p-2
-                                focus:outline-none bg-transparent
-                                text-black dark:text-white"
-                        type={verContrasena ? "text" : "password"}
-                        placeholder="Mínimo 8 caracteres"
-                        value={contrasena}
-                        onChange={(e) => setContrasena(e.target.value)}
-                        disabled={cargando}
-                        onKeyDown={(e) => {
-                            if (e.key === 'Enter' && !cargando && noRestablecer) {
-                                handleSubmit();
-                            }
-                        }}
-                    />
+                        {/* Floating Label */}
+                        <label 
+                            className={`absolute left-2 pointer-events-none
+                                        transition-all duration-200 ease-out
+                                        text-gray-500 dark:text-gray-400
+                                        ${inputContrasenaFocused || contrasena ? 
+                                            'text-xs top-1 font-semibold' : 
+                                            'text-base md:text-xl top-1/2 -translate-y-1/2'
+                                        }
+                                        ${inputContrasenaFocused ? 'text-violet-800 dark:text-violet-400' : ''}`}>
+                            {textoContrasena}
+                        </label>
 
-                    <div className="text-base md:text-xl mr-2
-                        text-black dark:text-white cursor-pointer"
-                        onClick={handleVerContrasena}>
-                        {verContrasena ? <HiEye /> : <HiEyeOff />}
+                        <div 
+                            className="text-base md:text-xl mr-2
+                                text-black dark:text-white cursor-pointer z-10 touch-manipulation"
+                            onTouchEnd={handleVerContrasena}
+                            onMouseDown={handleVerContrasena}>
+                            {verContrasena ? <HiEye /> : <HiEyeOff />}
+                        </div>
                     </div>
                 </div>
 
@@ -244,29 +317,17 @@ export default function CorreoContrasena({ textoContrasena, restablecer, noResta
                     </div>
                 )}
             </div>
-
+            
+            {/* Botones */}
             {noRestablecer && (
-                <MiBoton
-                    className={`bg-violet-800 text-white hover:bg-violet-800 active:bg-violet-800 
-                    ${cargando ? 'opacity-50 cursor-not-allowed' : ''}`}
-                    accion={cargando ? <FaSpinner className="animate-spin text-base md:text-xl text-white" /> : textoBoton}
-                    onClick={handleSubmit}
-                    disabled={cargando}
-                    whileTap={!cargando ? {
-                        scale: 0.96,
-                        boxShadow: "0px 2px 8px rgba(147, 51, 234, 0.3)"
-                    } : {}}
-                    transition={{ type: "spring", stiffness: 300, damping: 15 }}
-                />
-            )}
-
-            {restablecer && (
-                <>
+                <div 
+                    onTouchEnd={(e) => handleBotonClick(e, handleSubmit)}
+                    onMouseDown={(e) => handleBotonClick(e, handleSubmit)}
+                    className="touch-manipulation">
                     <MiBoton
-                        className={`w-full bg-violet-800 text-white hover:bg-violet-800 active:bg-violet-800 
-                                ${cargando ? 'opacity-50 cursor-not-allowed' : ''}`}
-                        accion={cargando ? 'Restableciendo...' : 'Restablecer contraseña'}
-                        onClick={handleRestablecerContrasena}
+                        className={`bg-violet-800 text-white hover:bg-violet-800 active:bg-violet-800 
+                        ${cargando ? 'opacity-50 cursor-not-allowed' : ''}`}
+                        accion={cargando ? <FaSpinner className="animate-spin text-base md:text-xl text-white" /> : textoBoton}
                         disabled={cargando}
                         whileTap={!cargando ? {
                             scale: 0.96,
@@ -274,6 +335,27 @@ export default function CorreoContrasena({ textoContrasena, restablecer, noResta
                         } : {}}
                         transition={{ type: "spring", stiffness: 300, damping: 15 }}
                     />
+                </div>
+            )}
+
+            {restablecer && (
+                <>
+                    <div 
+                        onTouchEnd={(e) => handleBotonClick(e, handleRestablecerContrasena)}
+                        onMouseDown={(e) => handleBotonClick(e, handleRestablecerContrasena)}
+                        className="touch-manipulation">
+                        <MiBoton
+                            className={`w-full bg-violet-800 text-white hover:bg-violet-800 active:bg-violet-800 
+                                    ${cargando ? 'opacity-50 cursor-not-allowed' : ''}`}
+                            accion={cargando ? 'Restableciendo...' : 'Restablecer contraseña'}
+                            disabled={cargando}
+                            whileTap={!cargando ? {
+                                scale: 0.96,
+                                boxShadow: "0px 2px 8px rgba(147, 51, 234, 0.3)"
+                            } : {}}
+                            transition={{ type: "spring", stiffness: 300, damping: 15 }}
+                        />
+                    </div>
 
                     <p className="text-sm text-gray-600 dark:text-gray-400 text-center">
                         Esta opción solo aplica para cuentas locales. Las cuentas de Google y Facebook no pueden usar este método.
