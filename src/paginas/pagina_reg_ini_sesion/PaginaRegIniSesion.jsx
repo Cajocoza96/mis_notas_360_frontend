@@ -41,10 +41,10 @@ export default function PaginaRegIniSesion() {
     const verModalRestablecerContrasena = useSelector((state) => state.acceso.verModalRestablecerContrasena);
 
     return (
-        <div className="min-h-dvh w-full bg-white dark:bg-gray-800 
-                        overflow-x-hidden overscroll-none
+        <div className="h-dvh w-full bg-white dark:bg-gray-800 
+                        overflow-x-hidden overflow-y-auto
                         flex flex-col justify-between">
-            
+
             {verToast && (
                 <Toast />
             )}
@@ -52,26 +52,24 @@ export default function PaginaRegIniSesion() {
             {verModalRestablecerContrasena && (
                 <ModalRestablecerContrasena />
             )}
-            
-            <AnimatePresence mode="wait" custom={esRegistro ? 1 : -1}>
-                <motion.div
-                    key={location.pathname}
-                    custom={esRegistro ? 1 : -1}
-                    variants={pageVariants}
-                    initial="initial"
-                    animate="animate"
-                    exit="exit"
-                    className="flex-1 min-h-0">
+                <AnimatePresence mode="wait" custom={esRegistro ? 1 : -1}>
+                    <motion.div
+                        key={location.pathname}
+                        custom={esRegistro ? 1 : -1}
+                        variants={pageVariants}
+                        initial="initial"
+                        animate="animate"
+                        exit="exit">
 
-                    <Cabecera
-                        paginaRegIniSesion={true}
-                    />
-                    <Cuerpo />
+                        <Cabecera paginaRegIniSesion={true} />
+                        <Cuerpo />
 
-                </motion.div>
-            </AnimatePresence>
+                    </motion.div>
+                </AnimatePresence>
 
             <Footer />
+
+            
         </div>
     );
 }

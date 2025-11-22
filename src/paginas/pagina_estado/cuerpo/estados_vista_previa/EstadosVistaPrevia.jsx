@@ -14,12 +14,12 @@ export default function EstadosVistaPrevia({ iconoEstado, tipoEstado, cantidadEs
                             pendiente ? 'bg-yellow-200 dark:bg-yellow-950':
                             finalizado ? 'bg-green-200 dark:bg-green-950': 'bg-gray-200 dark:bg-black'}`}>
 
-            <div className="flex flex-row items-center gap-2">
+            <div className="w-full flex flex-row items-center gap-2">
                 <div className="text-2xl md:text-3xl">
                     {iconoEstado}
                 </div>
 
-                <p className="text-base md:text-xl px-1 
+                <p className="text-base md:text-xl px-1 truncate 
                         text-black dark:text-white">
                     {tipoEstado}
                 </p>

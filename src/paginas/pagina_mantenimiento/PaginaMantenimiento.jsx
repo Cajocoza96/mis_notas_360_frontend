@@ -20,7 +20,7 @@ export default function PaginaMantenimiento() {
                 <p className="text-center text-xl md:text-2xl 
                             font-bold select-none
                             text-black dark:text-white">
-                    <span translate="no">Misnotas360</span> está en mantenimiento
+                    <span translate="no">MisNotas360</span> está en mantenimiento
                 </p>
 
                 <p className="text-center text-base md:text-xl 

@@ -25,6 +25,7 @@ export default function CorreoContrasena({ textoContrasena, restablecer, noResta
 
     const verMenuHamburguesa = useSelector((state) => state.layout.verMenuHamburguesa);
 
+    // CORRECCIÓN: Función mejorada para manejar el toggle de visibilidad
     const handleVerContrasena = (e) => {
         e.preventDefault();
         e.stopPropagation();
@@ -276,14 +277,19 @@ export default function CorreoContrasena({ textoContrasena, restablecer, noResta
                                         ${inputContrasenaFocused ? 'text-violet-800 dark:text-violet-400' : ''}`}>
                             {textoContrasena}
                         </label>
-
-                        <div 
-                            className="text-base md:text-xl mr-2
-                                text-black dark:text-white cursor-pointer z-10 touch-manipulation"
+                        
+                        {/* CORRECCIÓN: Botón del ojo mejorado para móvil */}
+                        <button
+                            type="button"
+                            className="text-base md:text-xl mr-2 p-2 -m-2
+                                text-black dark:text-white cursor-pointer z-10 
+                                touch-manipulation select-none"
+                            onMouseDown={handleVerContrasena}
                             onTouchEnd={handleVerContrasena}
-                            onMouseDown={handleVerContrasena}>
+                            tabIndex={-1}
+                        >
                             {verContrasena ? <HiEye /> : <HiEyeOff />}
-                        </div>
+                        </button>
                     </div>
                 </div>
 
@@ -323,7 +329,7 @@ export default function CorreoContrasena({ textoContrasena, restablecer, noResta
                 <div 
                     onTouchEnd={(e) => handleBotonClick(e, handleSubmit)}
                     onMouseDown={(e) => handleBotonClick(e, handleSubmit)}
-                    className="touch-manipulation">
+                    className="touch-manipulation w-fit">
                     <MiBoton
                         className={`bg-violet-800 text-white hover:bg-violet-800 active:bg-violet-800 
                         ${cargando ? 'opacity-50 cursor-not-allowed' : ''}`}

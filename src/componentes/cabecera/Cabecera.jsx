@@ -144,11 +144,11 @@ export default function Cabecera({ paginaPrincipal, paginaBusqueda,
                 )}
 
                 {paginaRegIniSesion && (
-                    <Link to="/" className="w-fit 
+                    <Link to="/" className="w-fit mx-auto
                                     flex flex-row items-center gap-2">
                         <HiOutlineBookOpen className="text-2xl md:text-3xl 
                                                 text-black dark:text-white" />
-                        <p className="w-full text-left text-xl md:text-2xl
+                        <p className="w-full text-center text-xl md:text-2xl
                                     font-bold select-none truncate
                                 text-black dark:text-white">
                             MisNotas360
