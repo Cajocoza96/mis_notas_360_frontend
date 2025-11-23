@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -20,6 +20,8 @@ import ContIconoInfoUsua from "../../componentes/admin_usuario/cont_icono_info_u
 
 import CargandoNoHayNada from "../../componentes/cargando_no_hay_nada/CargandoNoHayNada";
 
+import { useNavigate } from "react-router-dom";
+
 export default function PaginaInfoUsuario() {
     const dispatch = useDispatch();
     const { usuario, cargando } = useAuth();
@@ -29,6 +31,10 @@ export default function PaginaInfoUsuario() {
     const verModalCerrarSesion = useSelector((state) => state.acceso.verModalCerrarSesion);
 
     const verMenuHamburguesa = useSelector((state) => state.layout.verMenuHamburguesa);
+
+    const navigate = useNavigate();
+
+    const handleIrTerminosPoliticas = () => navigate("/terminos-de-servicio");
 
     const handleEliminarCuenta = () => {
         if (verMenuHamburguesa) {
@@ -127,6 +133,7 @@ export default function PaginaInfoUsuario() {
                 />
 
                 <ContIconoInfoUsua
+                    onClick={handleIrTerminosPoliticas}
                     className="text-black dark:text-white cursor-pointer
                             hover:bg-gray-300 active:bg-gray-300
                             dark:hover:bg-gray-700 dark:active:bg-gray-700

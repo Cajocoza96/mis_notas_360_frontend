@@ -18,6 +18,7 @@ import PaginaPapelera from "../paginas/pagina_papelera/PaginaPapelera";
 import PaginaEstado from "../paginas/pagina_estado/PaginaEstado";
 import PaginaInfoUsuario from "../paginas/pagina_info_usuario/PaginaInfoUsuario";
 import PaginaRegIniSesion from "../paginas/pagina_reg_ini_sesion/PaginaRegIniSesion";
+import PaginaTerminosPoliticas from "../paginas/pagina_terminos_politicas/PaginaTerminosPoliticas";
 import PaginaError from "../paginas/pagina_error/PaginaError";
 
 // Componentes
@@ -38,143 +39,161 @@ export default function Rutas() {
     }, [location.pathname, dispatch]);
 
     return (
-            <Routes location={location} key={location.pathname}>
-                <Route
-                    path="/"
-                    element={
+        <Routes location={location} key={location.pathname}>
+            <Route
+                path="/"
+                element={
+                    <PageTransition>
+                        <PaginaBienvenida />
+                    </PageTransition>
+                }
+            />
+
+            <Route
+                path="/panel-principal"
+                element={
+                    <RutaProtegida>
                         <PageTransition>
-                            <PaginaBienvenida />
+                            <PanelPrincipal />
                         </PageTransition>
-                    }
-                />
+                    </RutaProtegida>
+                }
+            />
 
-                <Route
-                    path="/panel-principal"
-                    element={
-                        <RutaProtegida>
-                            <PageTransition>
-                                <PanelPrincipal />
-                            </PageTransition>
-                        </RutaProtegida>
-                    }
-                />
-
-                <Route
-                    path="/agregar-nota"
-                    element={
-                        <RutaProtegida>
-                            <PageTransition>
-                                <PaginaCrearEditNota />
-                            </PageTransition>
-                        </RutaProtegida>
-                    }
-                />
-
-                <Route
-                    path="/vista-previa/nota/:id"
-                    element={
-                        <RutaProtegida>
-                            <PageTransition>
-                                <PaginaVistaPrevia />
-                            </PageTransition>
-                        </RutaProtegida>
-                    }
-                />
-
-                <Route
-                    path="/editar/nota/:id"
-                    element={
-                        <RutaProtegida>
-                            <PageTransition>
-                                <PaginaCrearEditNota />
-                            </PageTransition>
-                        </RutaProtegida>
-                    }
-                />
-
-                <Route
-                    path="/buscar"
-                    element={
-                        <RutaProtegida>
-                            <PageTransition>
-                                <PaginaBuscar />
-                            </PageTransition>
-                        </RutaProtegida>
-                    }
-                />
-
-                <Route
-                    path="/papelera"
-                    element={
-                        <RutaProtegida>
-                            <PageTransition>
-                                <PaginaPapelera />
-                            </PageTransition>
-                        </RutaProtegida>
-                    }
-                />
-
-                <Route
-                    path="/estados"
-                    element={
-                        <RutaProtegida>
-                            <PageTransition>
-                                <PaginaEstado />
-                            </PageTransition>
-                        </RutaProtegida>
-                    }
-                />
-
-                <Route
-                    path="/informacion-usuario"
-                    element={
-                        <RutaProtegida>
-                            <PageTransition>
-                                <PaginaInfoUsuario />
-                            </PageTransition>
-                        </RutaProtegida>
-                    }
-                />
-
-                <Route
-                    path="/registrar"
-                    element={
-                        <RutaPublica>
-                            <PageTransition>
-                                <PaginaRegIniSesion />
-                            </PageTransition>
-                        </RutaPublica>
-                    }
-                />
-
-                <Route
-                    path="/iniciar-sesion"
-                    element={
-                        <RutaPublica>
-                            <PageTransition>
-                                <PaginaRegIniSesion />
-                            </PageTransition>
-                        </RutaPublica>
-                    }
-                />
-
-                <Route
-                    path="/error"
-                    element={
+            <Route
+                path="/agregar-nota"
+                element={
+                    <RutaProtegida>
                         <PageTransition>
-                            <PaginaError />
+                            <PaginaCrearEditNota />
                         </PageTransition>
-                    }
-                />
+                    </RutaProtegida>
+                }
+            />
 
-                <Route
-                    path="*"
-                    element={
+            <Route
+                path="/vista-previa/nota/:id"
+                element={
+                    <RutaProtegida>
                         <PageTransition>
-                            <PaginaError />
+                            <PaginaVistaPrevia />
                         </PageTransition>
-                    }
-                />
-            </Routes>
+                    </RutaProtegida>
+                }
+            />
+
+            <Route
+                path="/editar/nota/:id"
+                element={
+                    <RutaProtegida>
+                        <PageTransition>
+                            <PaginaCrearEditNota />
+                        </PageTransition>
+                    </RutaProtegida>
+                }
+            />
+
+            <Route
+                path="/buscar"
+                element={
+                    <RutaProtegida>
+                        <PageTransition>
+                            <PaginaBuscar />
+                        </PageTransition>
+                    </RutaProtegida>
+                }
+            />
+
+            <Route
+                path="/papelera"
+                element={
+                    <RutaProtegida>
+                        <PageTransition>
+                            <PaginaPapelera />
+                        </PageTransition>
+                    </RutaProtegida>
+                }
+            />
+
+            <Route
+                path="/estados"
+                element={
+                    <RutaProtegida>
+                        <PageTransition>
+                            <PaginaEstado />
+                        </PageTransition>
+                    </RutaProtegida>
+                }
+            />
+
+            <Route
+                path="/informacion-usuario"
+                element={
+                    <RutaProtegida>
+                        <PageTransition>
+                            <PaginaInfoUsuario />
+                        </PageTransition>
+                    </RutaProtegida>
+                }
+            />
+
+            <Route
+                path="/registrar"
+                element={
+                    <RutaPublica>
+                        <PageTransition>
+                            <PaginaRegIniSesion />
+                        </PageTransition>
+                    </RutaPublica>
+                }
+            />
+
+            <Route
+                path="/iniciar-sesion"
+                element={
+                    <RutaPublica>
+                        <PageTransition>
+                            <PaginaRegIniSesion />
+                        </PageTransition>
+                    </RutaPublica>
+                }
+            />
+
+            <Route
+                path="/terminos-de-servicio"
+                element={
+                    <PageTransition>
+                        <PaginaTerminosPoliticas />
+                    </PageTransition>
+                }
+            />
+
+            <Route
+                path="/politica-de-privacidad"
+                element={
+                    <PageTransition>
+                        <PaginaTerminosPoliticas />
+                    </PageTransition>
+                }
+            />
+
+            <Route
+                path="/error"
+                element={
+                    <PageTransition>
+                        <PaginaError />
+                    </PageTransition>
+                }
+            />
+
+            <Route
+                path="*"
+                element={
+                    <PageTransition>
+                        <PaginaError />
+                    </PageTransition>
+                }
+            />
+        </Routes>
     );
 }

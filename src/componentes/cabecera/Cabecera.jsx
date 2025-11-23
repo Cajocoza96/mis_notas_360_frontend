@@ -1,6 +1,6 @@
 import React from "react";
 
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 import { useSelector, useDispatch } from "react-redux";
 
@@ -18,7 +18,7 @@ import {
 
 export default function Cabecera({ paginaPrincipal, paginaBusqueda,
     paginaPapelera, paginaEstado, paginaRegIniSesion, paginaInfoUsuario,
-    paginaTerminosPoliticas, tituloTerminoPolitica }) {
+    paginaTerminosPoliticas, tituloTerminoPolitica, irATerminoPolitica }) {
 
     const verModo = useSelector((state) => state.preferencia.verModo);
 
@@ -45,6 +45,12 @@ export default function Cabecera({ paginaPrincipal, paginaBusqueda,
     const handleVerMenuHamburguesa = () => {
         dispatch(toggleVerMenuHamburguesa())
     }
+
+    const location = useLocation();
+
+    const esTerminoDeServicio = location.pathname === "/terminos-de-servicio";
+
+    const rutaDestino = esTerminoDeServicio ? "/politica-de-privacidad" : "/terminos-de-servicio";
 
     return (
         <div className="flex-shrink-0 z-10 py-1 overflow-hidden">
@@ -159,17 +165,27 @@ export default function Cabecera({ paginaPrincipal, paginaBusqueda,
                 )}
 
                 {paginaTerminosPoliticas && (
+
                     <div className="w-fit mx-auto
-                                    flex flex-row items-center gap-2">
+                                    flex flex-col justify-center items-center gap-2">
+                        <div className="flex flex-row items-center gap-2">
+                            <Link to="/">
+                                <HiChevronLeft className="text-2xl md:text-3xl text-black dark:text-white cursor-pointer flex-shrink-0" />
+                            </Link>
 
-                        <Link to="/panel-principal">
-                            <HiChevronLeft className="text-2xl md:text-3xl text-black dark:text-white cursor-pointer flex-shrink-0" />
-                        </Link>
-
-                        <p className="w-full text-center text-xl md:text-2xl
-                                    font-bold select-none truncate
+                            <p className="w-full text-center text-xl md:text-2xl
+                                    font-bold truncate
                                 text-black dark:text-white">
-                            {tituloTerminoPolitica}
+                                {tituloTerminoPolitica}
+                            </p>
+                        </div>
+
+                        <p className="w-fit text-center text-base md:text-xl 
+                                    select-none cursor-pointer
+                                text-black dark:text-white">
+                            <Link to={rutaDestino}>
+                                ir a {irATerminoPolitica}
+                            </Link>
                         </p>
                     </div>
                 )}
