@@ -52,29 +52,36 @@ export default function PanelPrincipal() {
                 initial="initial"
                 animate="animate">
 
-                <ModalExitoError />
+                <AnimatePresence>
+                    <ModalExitoError />
+                </AnimatePresence>
 
                 {verOpcionesCabecera && (
                     <ContOpSubCabecera />
                 )}
 
+                <AnimatePresence>
+                    {verModalCrearNota && (
+                        <ModalConfirmacion textoPregunta="¿Desea crear una nota?" />
+                    )}
+                </AnimatePresence>
 
-                {verModalCrearNota && (
-                    <ModalConfirmacion textoPregunta="¿Desea crear una nota?" />
-                )}
+                <AnimatePresence>
+                    {verModalPapeleraNota && (
+                        <ModalConfirmacion
+                            textoPregunta="¿Mover nota a la papelera?"
+                            eliminarAceptar={true} />
+                    )}
+                </AnimatePresence>
 
-                {verModalPapeleraNota && (
-                    <ModalConfirmacion
-                        textoPregunta="¿Mover nota a la papelera?"
-                        eliminarAceptar={true} />
-                )}
-
-                {verModalEliminarNotaDefinitiva && (
-                    <ModalConfirmacion
-                        textoPregunta="¿Desea eliminar definitivamente la nota?"
-                        eliminarPregunta={true}
-                        eliminarAceptar={true} />
-                )}
+                <AnimatePresence>
+                    {verModalEliminarNotaDefinitiva && (
+                        <ModalConfirmacion
+                            textoPregunta="¿Desea eliminar definitivamente la nota?"
+                            eliminarPregunta={true}
+                            eliminarAceptar={true} />
+                    )}
+                </AnimatePresence>
 
                 <AnimatePresence>
                     {verMenuHamburguesa && (

@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
-import { FaSpinner } from "react-icons/fa";
 import { HiOutlineBookOpen } from "react-icons/hi";
+
+import { FaSpinner } from "react-icons/fa";
 
 export default function CargandoNoHayNada({
     pantallaCompletaCarga,
@@ -20,18 +21,18 @@ export default function CargandoNoHayNada({
             {pantallaCompletaCarga && (
                 <div className="fixed inset-0 z-90 bg-black/50
                                 flex items-center justify-center">
-                    <FaSpinner className="animate-spin text-xl md:text-2xl text-white" />
+                    <FaSpinner className="animate-spin text-2xl md:text-3xl text-white" />
                 </div>
             )}
 
             {iconoDeCarga && (
-                <FaSpinner className="animate-spin text-xl md:text-2xl text-black dark:text-white" />
+                <FaSpinner className="animate-spin text-2xl md:text-3xl text-black dark:text-white" />
             )}
 
             {CargandoAnotaciones && (
                 <div className="col-span-full text-center p-4 select-none
                                 flex flex-col items-center justify-center gap-3">
-                    <FaSpinner className="animate-spin text-xl md:text-2xl text-black dark:text-white" />
+                    <FaSpinner className="animate-spin text-2xl md:text-3xl text-black dark:text-white" />
                 </div>
             )}
 

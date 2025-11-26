@@ -101,18 +101,25 @@ export default function ContOpSubCabecera() {
         <>
             {verOpcionesCabecera && (
                 <>
-                    <div className="fixed inset-0 z-20 bg-black/70" onClick={handleVerOpcionesCabecera}></div>
-
                     <motion.div
-                        className="fixed bottom-0 z-20 w-full h-auto bg-white"
-                        initial={{ y: "100%" }}
-                        animate={{ y: 0 }}
-                        exit={{ y: "100%" }}
-                        transition={{ duration: 0.4, ease: "easeOut" }}>
+                        className="fixed inset-0 z-20 bg-black/70"
+                        onClick={handleVerOpcionesCabecera}
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ duration: 0.2 }}>
 
-                        {verOpcionesCabecera && !verModo && !verOrden && (
-                            <>  
-                                {/*
+                        <motion.div
+                            onClick={(e) => e.stopPropagation()}
+                            className="fixed bottom-0 z-20 w-full h-auto bg-white"
+                            initial={{ y: "100%" }}
+                            animate={{ y: 0 }}
+                            exit={{ y: "100%" }}
+                            transition={{ duration: 0.4, ease: "easeOut" }}>
+
+                            {verOpcionesCabecera && !verModo && !verOrden && (
+                                <>
+                                    {/*
                                 <div className="w-full p-1 border-b border-gray-400
                                         text-black dark:text-white 
                                         bg-white dark:bg-gray-800 cursor-pointer"
@@ -125,57 +132,59 @@ export default function ContOpSubCabecera() {
                                 </div>
                                 */}
 
-                                <div className="w-full p-1 border-b border-gray-400
+                                    <div className="w-full p-1 border-b border-gray-400
                                         text-black dark:text-white 
                                         bg-white dark:bg-gray-800 cursor-pointer"
-                                    onClick={handleVerOrden}>
-                                    <OpcionesCabecera
-                                        className="justify-start"
-                                        iconoOpcion={<HiMenuAlt3 className="text-2xl md:text-3xl" />}
-                                        nombreOpcion="Ordenar"
-                                    />
-                                </div>
+                                        onClick={handleVerOrden}>
+                                        <OpcionesCabecera
+                                            className="justify-start"
+                                            iconoOpcion={<HiMenuAlt3 className="text-2xl md:text-3xl" />}
+                                            nombreOpcion="Ordenar"
+                                        />
+                                    </div>
 
-                                <div className="w-full p-1 border-b border-gray-400
+                                    <div className="w-full p-1 border-b border-gray-400
                                         text-black dark:text-white 
                                         bg-white dark:bg-gray-800 cursor-pointer"
-                                    onClick={handleVerModo}>
-                                    <OpcionesCabecera
-                                        className="justify-start"
-                                        iconoOpcion={theme == "sistema" && (
-                                            <HiOutlineDesktopComputer className="text-2xl md:text-3xl" />) ||
-                                            theme == "claro" && (
-                                                <HiOutlineSun className="text-2xl md:text-3xl" />) ||
-                                            theme == "oscuro" && (
-                                                <HiOutlineMoon className="text-2xl md:text-3xl" />)
-                                        }
-                                        nombreOpcion={theme == "sistema" && ("Sistema (predeterminado)") ||
-                                            theme == "claro" && ("Claro") ||
-                                            theme == "oscuro" && ("Oscuro")
-                                        }
-                                    />
-                                </div>
+                                        onClick={handleVerModo}>
+                                        <OpcionesCabecera
+                                            className="justify-start"
+                                            iconoOpcion={theme == "sistema" && (
+                                                <HiOutlineDesktopComputer className="text-2xl md:text-3xl" />) ||
+                                                theme == "claro" && (
+                                                    <HiOutlineSun className="text-2xl md:text-3xl" />) ||
+                                                theme == "oscuro" && (
+                                                    <HiOutlineMoon className="text-2xl md:text-3xl" />)
+                                            }
+                                            nombreOpcion={theme == "sistema" && ("Sistema (predeterminado)") ||
+                                                theme == "claro" && ("Claro") ||
+                                                theme == "oscuro" && ("Oscuro")
+                                            }
+                                        />
+                                    </div>
 
-                                <div className="w-full p-1 border-b border-gray-400
+                                    <div className="w-full p-1 border-b border-gray-400
                                         text-black dark:text-white 
                                         bg-white dark:bg-gray-800 cursor-pointer"
-                                    onClick={handleNavegarPapelera}>
-                                    <OpcionesCabecera
-                                        className="justify-start"
-                                        iconoOpcion={<HiOutlineTrash className="text-2xl md:text-3xl" />}
-                                        nombreOpcion="Papelera"
-                                    />
-                                </div>
-                            </>
-                        )}
+                                        onClick={handleNavegarPapelera}>
+                                        <OpcionesCabecera
+                                            className="justify-start"
+                                            iconoOpcion={<HiOutlineTrash className="text-2xl md:text-3xl" />}
+                                            nombreOpcion="Papelera"
+                                        />
+                                    </div>
+                                </>
+                            )}
 
-                        {verModo && (
-                            <VerModo />
-                        )}
+                            {verModo && (
+                                <VerModo />
+                            )}
 
-                        {verOrden && (
-                            <VerOrden />
-                        )}
+                            {verOrden && (
+                                <VerOrden />
+                            )}
+
+                        </motion.div>
 
                     </motion.div>
                 </>
@@ -183,61 +192,70 @@ export default function ContOpSubCabecera() {
 
             {verOpcCabPagVisPrev && (
                 <>
-                    <div className="fixed inset-0 z-20 bg-black/70" onClick={handleVerOpcCabPagVisPrev}></div>
-
                     <motion.div
-                        className="fixed bottom-0 z-20 w-full h-auto bg-white"
-                        initial={{ y: "100%" }}
-                        animate={{ y: 0 }}
-                        exit={{ y: "100%" }}
-                        transition={{ duration: 0.4, ease: "easeOut" }}>
+                        className="fixed inset-0 z-20 bg-black/70"
+                        onClick={handleVerOpcCabPagVisPrev}
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ duration: 0.2 }}>
 
-                        {verOpcCabPagVisPrev && !verFechaCreaModCantText && (
-                            <>
-                                <div className="w-full p-1 border-b border-gray-400
+                        <motion.div
+                            onClick={(e) => e.stopPropagation()}
+                            className="fixed bottom-0 z-20 w-full h-auto bg-white"
+                            initial={{ y: "100%" }}
+                            animate={{ y: 0 }}
+                            exit={{ y: "100%" }}
+                            transition={{ duration: 0.4, ease: "easeOut" }}>
+
+                            {verOpcCabPagVisPrev && !verFechaCreaModCantText && (
+                                <>
+                                    <div className="w-full p-1 border-b border-gray-400
                                         text-black dark:text-white
                                         bg-white dark:bg-gray-800 cursor-pointer">
-                                    <OpcionesCabecera
-                                        className="justify-center"
-                                        iconoOpcion={<HiOutlineInformationCircle
-                                            onClick={handleVerFechaCreaModCantText}
-                                            className="text-2xl md:text-3xl" />}
-                                    />
-                                </div>
-
-                                <div className="w-full p-1 border-b border-gray-400
-                                        text-black dark:text-white
-                                        bg-white dark:bg-gray-800 cursor-pointer">
-                                    <OpcionesCabecera
-                                        className="justify-center"
-                                        iconoOpcion={
-
-                                            /*Al dar clic aqui se debe mostrar el modal*/
-                                            <HiOutlineTrash
-                                                onClick={handleVerPapeleraNota}
+                                        <OpcionesCabecera
+                                            className="justify-center"
+                                            iconoOpcion={<HiOutlineInformationCircle
+                                                onClick={handleVerFechaCreaModCantText}
                                                 className="text-2xl md:text-3xl" />}
-                                    />
-                                </div>
+                                        />
+                                    </div>
 
-                                <div className="w-full p-1 border-b border-gray-400
+                                    <div className="w-full p-1 border-b border-gray-400
+                                        text-black dark:text-white
+                                        bg-white dark:bg-gray-800 cursor-pointer">
+                                        <OpcionesCabecera
+                                            className="justify-center"
+                                            iconoOpcion={
+
+                                                /*Al dar clic aqui se debe mostrar el modal*/
+                                                <HiOutlineTrash
+                                                    onClick={handleVerPapeleraNota}
+                                                    className="text-2xl md:text-3xl" />}
+                                        />
+                                    </div>
+
+                                    <div className="w-full p-1 border-b border-gray-400
                                         text-red-700 dark:text-red-500
                                         bg-white dark:bg-gray-800 cursor-pointer">
-                                    <OpcionesCabecera
-                                        className="justify-center"
-                                        iconoOpcion={
+                                        <OpcionesCabecera
+                                            className="justify-center"
+                                            iconoOpcion={
 
-                                            <MdDeleteForever
-                                                onClick={handleVerEliminarNotaDefinitiva}
-                                                className="text-3xl md:text-4xl" />}
-                                    />
-                                </div>
+                                                <MdDeleteForever
+                                                    onClick={handleVerEliminarNotaDefinitiva}
+                                                    className="text-3xl md:text-4xl" />}
+                                        />
+                                    </div>
 
-                            </>
-                        )}
+                                </>
+                            )}
 
-                        {verFechaCreaModCantText && (
-                            <VerFechaCreaModCantText />
-                        )}
+                            {verFechaCreaModCantText && (
+                                <VerFechaCreaModCantText />
+                            )}
+
+                        </motion.div>
 
                     </motion.div>
 

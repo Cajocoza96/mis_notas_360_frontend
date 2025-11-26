@@ -50,9 +50,12 @@ export default function PaginaRegIniSesion() {
                 <Toast />
             )}
 
-            {verModalRestablecerContrasena && (
-                <ModalRestablecerContrasena />
-            )}
+            <AnimatePresence>
+                {verModalRestablecerContrasena && (
+                    <ModalRestablecerContrasena />
+                )}
+            </AnimatePresence>
+
             <AnimatePresence mode="wait" custom={esRegistro ? 1 : -1}>
                 <motion.div
                     key={location.pathname}

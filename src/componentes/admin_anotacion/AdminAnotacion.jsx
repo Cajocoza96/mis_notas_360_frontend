@@ -6,6 +6,8 @@ import { toggleVerModalPapeleraNota, toggleVerModalEliminarNotaDefinitiva, setAn
 
 import { toggleVerAdminAnotacion } from "../../store/anotacionesSlice";
 
+import { motion } from "framer-motion";
+
 export default function AdminAnotacion() {
 
     const dispatch = useDispatch();
@@ -38,16 +40,28 @@ export default function AdminAnotacion() {
 
     return (
         <>
-            <div
+            <motion.div
                 onClick={handleVerAdminAnotacion}
-                className="fixed inset-0 z-50 bg-black/70
-                            flex items-center justify-center">
+                className="fixed inset-0 z-50 bg-black/70 select-none
+                            flex items-center justify-center"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.2 }}>
 
-                <div 
+                <motion.div
                     onClick={(e) => e.stopPropagation()}
                     className="bg-violet-700
                         z-50 p-3 overflow-hidden rounded-lg
-                        h-auto shadow-2xl">
+                        h-auto shadow-2xl"
+                    initial={{ opacity: 0, scale: 0.9, y: 20 }}
+                    animate={{ opacity: 1, scale: 1, y: 0 }}
+                    exit={{ opacity: 0, scale: 0.9, y: 0 }}
+                    transition={{
+                        type: "spring",
+                        stiffness: 300,
+                        damping: 25
+                    }}>
 
                     <div className="text-base md:text-xl text-white
                             flex flex-col gap-4">
@@ -71,9 +85,9 @@ export default function AdminAnotacion() {
                         </p>
                     </div>
 
-                </div>
+                </motion.div>
 
-            </div>
+            </motion.div>
         </>
     );
 }

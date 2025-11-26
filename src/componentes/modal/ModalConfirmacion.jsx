@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 
 import { useDispatch, useSelector } from "react-redux";
 
+import { motion } from "framer-motion";
+
 import { toggleVerMenuHamburguesa } from "../../store/layoutSlice";
 
 import {
@@ -343,8 +345,13 @@ export default function ModalConfirmacion({ textoPregunta, restaurarTexto, elimi
 
     return (
         <>
-            <div className="fixed inset-0 z-50 bg-black/70
+            <motion.div 
+                className="fixed inset-0 z-50 bg-black/70
                             flex items-center justify-center"
+                initial={{ opacity: 0}}
+                animate={{ opacity: 1}}
+                exit={{ opacity: 0}}
+                transition={{ duration: 0.2 }}
                 onClick={() => {
                     if (procesando) return; // No permitir cerrar mientras procesa
 
@@ -367,72 +374,80 @@ export default function ModalConfirmacion({ textoPregunta, restaurarTexto, elimi
                     }
                 }}>
 
-            <div 
-                onClick={(e) => e.stopPropagation()}
-                className="bg-white dark:bg-gray-800 select-none
+                <motion.div
+                    onClick={(e) => e.stopPropagation()}
+                    className="bg-white dark:bg-gray-800 select-none
                             z-50 p-3 overflow-hidden rounded-lg
-                            w-[90%] h-auto shadow-2xl">
+                            w-[90%] h-auto shadow-2xl"
+                    initial={{ opacity: 0, scale: 0.9, y:20 }} 
+                    animate={{ opacity: 1, scale: 1, y:0 }}
+                    exit={{ opacity: 0, scale: 0.9, y:0 }}
+                    transition={{
+                        type: "spring",
+                        stiffness: 300,
+                        damping: 25
+                    }}>
 
-                <div className="mx-auto w-full flex flex-col gap-4 2xl:gap-5">
-                    <div className="flex flex-col gap-2">
-                        <p className={`text-base md:text-xl
+                    <div className="mx-auto w-full flex flex-col gap-4 2xl:gap-5">
+                        <div className="flex flex-col gap-2">
+                            <p className={`text-base md:text-xl
                                     ${restaurarTexto ? 'text-blue-600 dark:text-blue-500' :
-                                eliminarPregunta ? 'text-red-600 dark:text-red-500' : 'text-black dark:text-white'}`}>
-                            {textoPregunta}
-                        </p>
-
-                        {procesando && (
-                            <p className="text-sm text-gray-500 dark:text-gray-400">
-                                Procesando...
+                                    eliminarPregunta ? 'text-red-600 dark:text-red-500' : 'text-black dark:text-white'}`}>
+                                {textoPregunta}
                             </p>
-                        )}
-                    </div>
 
-                    <div className="flex flex-row items-center justify-end gap-6 2xl:gap-7">
-                        <p
-                            className={`text-base md:text-xl
+                            {procesando && (
+                                <p className="text-sm text-gray-500 dark:text-gray-400">
+                                    Procesando...
+                                </p>
+                            )}
+                        </div>
+
+                        <div className="flex flex-row items-center justify-end gap-6 2xl:gap-7">
+                            <p
+                                className={`text-base md:text-xl
                                         text-black dark:text-white 
                                         ${procesando ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
-                            onClick={() => {
-                                if (procesando) return;
+                                onClick={() => {
+                                    if (procesando) return;
 
-                                if (verModalCrearNota) {
-                                    handleVerModalCrearNota();
+                                    if (verModalCrearNota) {
+                                        handleVerModalCrearNota();
 
-                                    /*Esto tiene que ver para eso de la papelera */
-                                } else if (verModalPapeleraNota) {
-                                    handleVerModalPapeleraNota();
-                                } else if (verModalRestaurarNota) {
-                                    handleVerModalRestaurarNota();
-                                } else if (verModalEliminarNotaDefinitiva) {
-                                    handleVerModalEliminarNotaDefinitiva();
-                                } else if (verModalEliminarTodasLasNotasDefinitivo) {
-                                    handleVerModalEliminarTodasLasNotasDefinitivo();
-                                } else if (verModalEliminarUsuario) {
-                                    handleVerModalEliminarUsuario();
-                                } else if (verModalCerrarSesion) {
-                                    handleVerModalCerrarSesion();
-                                }
-                            }}>
-                            Cancelar
-                        </p>
+                                        /*Esto tiene que ver para eso de la papelera */
+                                    } else if (verModalPapeleraNota) {
+                                        handleVerModalPapeleraNota();
+                                    } else if (verModalRestaurarNota) {
+                                        handleVerModalRestaurarNota();
+                                    } else if (verModalEliminarNotaDefinitiva) {
+                                        handleVerModalEliminarNotaDefinitiva();
+                                    } else if (verModalEliminarTodasLasNotasDefinitivo) {
+                                        handleVerModalEliminarTodasLasNotasDefinitivo();
+                                    } else if (verModalEliminarUsuario) {
+                                        handleVerModalEliminarUsuario();
+                                    } else if (verModalCerrarSesion) {
+                                        handleVerModalCerrarSesion();
+                                    }
+                                }}>
+                                Cancelar
+                            </p>
 
-                        <p
-                            className={`text-base md:text-xl
+                            <p
+                                className={`text-base md:text-xl
                                         ${restaurarTexto ? 'text-blue-600 dark:text-blue-500' :
-                                    eliminarAceptar ? 'text-red-600 dark:text-red-500' : 'text-violet-800 dark:text-violet-400'} 
+                                        eliminarAceptar ? 'text-red-600 dark:text-red-500' : 'text-violet-800 dark:text-violet-400'} 
                                         ${procesando ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer font-semibold'}`}
-                            onClick={() => {
-                                if (procesando) return;
-                                handleAceptar();
-                            }}>
-                            {procesando ? 'Procesando...' : 'Aceptar'}
-                        </p>
+                                onClick={() => {
+                                    if (procesando) return;
+                                    handleAceptar();
+                                }}>
+                                {procesando ? 'Procesando...' : 'Aceptar'}
+                            </p>
+                        </div>
                     </div>
-                </div>
-            </div>
+                </motion.div>
 
-            </div>
+            </motion.div>
         </>
     );
 }

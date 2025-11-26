@@ -10,9 +10,9 @@ export default function EstadosVistaPrevia({ iconoEstado, tipoEstado, cantidadEs
                         flex flex-row items-center justify-between gap-1 overflow-hidden
                         transition-all duration-200
                         ${seleccionado ? 'outline-2 outline-black dark:outline-white' : ''}
-                        ${no_asignado ? 'bg-blue-200 dark:bg-blue-950':
-                            pendiente ? 'bg-yellow-200 dark:bg-yellow-950':
-                            finalizado ? 'bg-green-200 dark:bg-green-950': 'bg-gray-200 dark:bg-black'}`}>
+                        ${no_asignado ? 'bg-blue-200 dark:bg-blue-950 hover:bg-blue-300 active:bg-blue-300 dark:hover:bg-blue-900 dark:active:bg-blue-900':
+                            pendiente ? 'bg-yellow-200 dark:bg-yellow-950 hover:bg-yellow-300 active:bg-yellow-300 dark:hover:bg-yellow-900 dark:active:bg-yellow-900':
+                            finalizado ? 'bg-green-200 dark:bg-green-950 hover:bg-green-300 active:bg-green-300 dark:hover:bg-green-900 dark:active:bg-green-900': 'bg-gray-200 dark:bg-black hover:bg-gray-300 active:bg-gray-300 dark:hover:bg-gray-900 dark:active:bg-gray-900'}`}>
 
             <div className="w-full flex flex-row items-center gap-2">
                 <div className="text-2xl md:text-3xl">

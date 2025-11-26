@@ -225,15 +225,19 @@ export default function PaginaCrearEditNota() {
                 initial="initial"
                 animate="animate">
 
-                <ModalExitoError />
+                <AnimatePresence>
+                    <ModalExitoError />
+                </AnimatePresence>
 
                 {cargando ? (
                     <SkeletonCrearEditPrevia />
                 ) : (
                     <>
-                        {verModalEstado && (
-                            <ModalEstado />
-                        )}
+                        <AnimatePresence>
+                            {verModalEstado && (
+                                <ModalEstado />
+                            )}
+                        </AnimatePresence>
 
                         <Cabecera
                             ref={tituloRef}

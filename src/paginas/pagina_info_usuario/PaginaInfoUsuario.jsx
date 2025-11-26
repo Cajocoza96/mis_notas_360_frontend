@@ -84,7 +84,8 @@ export default function PaginaInfoUsuario() {
             variants={pageVariants}
             initial="initial"
             animate="animate">
-
+            
+            <AnimatePresence>
             {verModalEliminarUsuario && (
                 <ModalConfirmacion
                     className="text-red-800 dark:text-red-400"
@@ -92,12 +93,15 @@ export default function PaginaInfoUsuario() {
                     eliminarAceptar={true}
                     textoPregunta="¿Desea eliminar la cuenta?" />
             )}
+            </AnimatePresence>
 
+            <AnimatePresence>
             {verModalCerrarSesion && (
                 <ModalConfirmacion
                     eliminarAceptar={true}
                     textoPregunta="¿Desea cerrar sesión?" />
             )}
+            </AnimatePresence>
 
             <Cabecera
                 paginaInfoUsuario={true}

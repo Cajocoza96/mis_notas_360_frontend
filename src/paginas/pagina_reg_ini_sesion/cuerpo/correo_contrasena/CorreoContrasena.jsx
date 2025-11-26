@@ -333,7 +333,7 @@ export default function CorreoContrasena({ textoContrasena, restablecer, noResta
                     <MiBoton
                         className={`bg-violet-800 text-white hover:bg-violet-800 active:bg-violet-800 
                         ${cargando ? 'opacity-50 cursor-not-allowed' : ''}`}
-                        accion={cargando ? <FaSpinner className="animate-spin text-base md:text-xl text-white" /> : textoBoton}
+                        accion={cargando ? <FaSpinner className="animate-spin text-2xl md:text-3xl text-white" /> : textoBoton}
                         disabled={cargando}
                         whileTap={!cargando ? {
                             scale: 0.96,

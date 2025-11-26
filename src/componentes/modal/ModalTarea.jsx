@@ -8,6 +8,8 @@ import { agregarTarea, editarTarea, eliminarTarea, toggleVerModalTarea } from ".
 
 import useIsMobile from "../../hooks/useIsMobile";
 
+import { motion } from "framer-motion";
+
 export default function ModalTarea() {
 
     const dispatch = useDispatch();
@@ -95,17 +97,29 @@ export default function ModalTarea() {
 
     return (
         <>
-            <div
+            <motion.div
                 onClick={handleverModalTarea}
                 className="fixed inset-0 z-30 bg-black/70
-                            flex items-center justify-center">
+                            flex items-center justify-center"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.2 }}>
 
-                <div 
+                <motion.div
                     onClick={(e) => e.stopPropagation()}
                     className="bg-white dark:bg-gray-800 
                                 z-50  overflow-hidde
                                 w-[70%] h-auto
-                                flex flex-col gap-5">
+                                flex flex-col gap-5"
+                    initial={{ opacity: 0, scale: 0.9, y: 20 }}
+                    animate={{ opacity: 1, scale: 1, y: 0 }}
+                    exit={{ opacity: 0, scale: 0.9, y: 0 }}
+                    transition={{
+                        type: "spring",
+                        stiffness: 300,
+                        damping: 25
+                    }}>
 
                     <div className="p-2 flex flex-col">
 
@@ -166,8 +180,8 @@ export default function ModalTarea() {
 
                     </div>
 
-                </div>
-            </div>
+                </motion.div>
+            </motion.div>
         </>
     );
 }

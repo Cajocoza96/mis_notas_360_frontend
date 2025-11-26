@@ -8,6 +8,8 @@ import { toggleVerModalEstado, setEstadoSeleccionado } from "../../store/tareasS
 
 import { obtenerOpcionesDisponibles } from "../../utils/estadoUtils";
 
+import { motion } from "framer-motion";
+
 export default function ModalEstado() {
 
     const dispatch = useDispatch();
@@ -42,16 +44,28 @@ export default function ModalEstado() {
 
     return (
         <>
-            <div
+            <motion.div
                 onClick={handleVerModalEstado} 
                 className="fixed inset-0 z-30 bg-black/70
-                            flex items-center justify-center">
+                            flex items-center justify-center"
+                initial={{ opacity: 0}}
+                animate={{ opacity: 1}}
+                exit={{ opacity: 0}}
+                transition={{ duration: 0.2 }}>
 
-            <div
+            <motion.div
                 onClick={(e) => e.stopPropagation()}
                 className="bg-white dark:bg-gray-800 
                             z-50 p-3 overflow-hidden
-                            w-[90%] h-auto ">
+                            w-[90%] h-auto "
+                initial={{ opacity: 0, scale: 0.9, y:20 }} 
+                animate={{ opacity: 1, scale: 1, y:0 }}
+                exit={{ opacity: 0, scale: 0.9, y:0 }}
+                transition={{
+                    type: "spring",
+                    stiffness: 300,
+                    damping: 25
+                }}>
 
                 <div className="flex flex-col gap-2">
 
@@ -136,9 +150,9 @@ export default function ModalEstado() {
                     </p>
                 </div>
 
-            </div>
+            </motion.div>
             
-            </div>
+            </motion.div>
         </>
     );
 }

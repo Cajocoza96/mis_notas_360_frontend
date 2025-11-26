@@ -5,6 +5,8 @@ import { toggleVerModalRestablecerContrasena, setVerToast } from "../../store/ac
 
 import CorreoContrasena from "../../paginas/pagina_reg_ini_sesion/cuerpo/correo_contrasena/CorreoContrasena";
 
+import { motion } from "framer-motion";
+
 export default function ModalRestablecerContrasena() {
 
     const dispatch = useDispatch();
@@ -21,17 +23,30 @@ export default function ModalRestablecerContrasena() {
 
     return (
         <>
-            <div
+            <motion.div
                 onClick={handleCerrarModal}
                 className="fixed inset-0 z-50 bg-black/70
-                            flex items-center justify-center">
+                            flex items-center justify-center"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.2 }}>
 
-                <div 
+                <motion.div
                     onClick={(e) => e.stopPropagation()}
                     className="bg-white dark:bg-gray-800 select-none
                             z-50 p-4 overflow-hidden rounded-lg
                             w-[90%] max-w-md h-auto shadow-2xl
-                            flex flex-col gap-3">
+                            flex flex-col gap-3"
+                    initial={{ opacity: 0, scale: 0.9, y: 20 }}
+                    animate={{ opacity: 1, scale: 1, y: 0 }}
+                    exit={{ opacity: 0, scale: 0.9, y: 0 }}
+                    transition={{
+                        type: "spring",
+                        stiffness: 300,
+                        damping: 25
+                    }}>
+
                     <div
                         className="text-2xl md:text-3xl text-red-600 dark:text-red-500
                                 flex flex-col items-end">
@@ -51,9 +66,9 @@ export default function ModalRestablecerContrasena() {
                         restablecer={true}
                     />
 
-                </div>
+                </motion.div>
 
-            </div>
+            </motion.div>
         </>
     );
 }

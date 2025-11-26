@@ -27,6 +27,8 @@ import AdminAnotacion from "../admin_anotacion/AdminAnotacion";
 
 import CargandoNoHayNada from "../cargando_no_hay_nada/CargandoNoHayNada";
 
+import { AnimatePresence } from "framer-motion";
+
 export default function Cuerpo({ notaNoEliminada,
     verContenidoCuerpo, verNotaBusqueda, verNotaEliminada, verTodosEstados }) {
 
@@ -165,9 +167,11 @@ export default function Cuerpo({ notaNoEliminada,
                 ${organizarPorColumna ? 'grid-cols-2 2xs:grid-cols-3 lg:grid-cols-5' : 'grid-cols-1'} gap-5 lg:gap-3
                 ${anotaciones.length === 0 || cargando ? 'auto-rows-auto' : 'auto-rows-[11rem]'}`}>
 
-                    {verAdminAnotacion && (
-                        <AdminAnotacion />
-                    )}
+                    <AnimatePresence>
+                        {verAdminAnotacion && (
+                            <AdminAnotacion />
+                        )}
+                    </AnimatePresence>
 
                     {verContenidoCuerpo && (
                         <>

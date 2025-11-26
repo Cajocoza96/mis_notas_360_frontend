@@ -114,48 +114,54 @@ export default function PaginaVistaPrevia() {
 
     return (
         <AnimatePresence mode="wait">
-        <motion.div
-            className="h-dvh bg-white dark:bg-gray-800 min-h-0 min-w-0 
+            <motion.div
+                className="h-dvh bg-white dark:bg-gray-800 min-h-0 min-w-0 
                         overflow-hidden relative
                         flex flex-col"
-            variants={pageVariants}
-            initial="initial"
-            animate="animate">
+                variants={pageVariants}
+                initial="initial"
+                animate="animate">
 
-            <ModalExitoError />
+                <AnimatePresence>
+                    <ModalExitoError />
+                </AnimatePresence>
 
-            {verModalPapeleraNota && (
-                <ModalConfirmacion
-                    textoPregunta="¿Mover nota a la papelera?"
-                    eliminarAceptar={true} />
-            )}
+                <AnimatePresence>
+                    {verModalPapeleraNota && (
+                        <ModalConfirmacion
+                            textoPregunta="¿Mover nota a la papelera?"
+                            eliminarAceptar={true} />
+                    )}
+                </AnimatePresence>
 
-            {verModalEliminarNotaDefinitiva && (
-                <ModalConfirmacion
-                    textoPregunta="¿Desea eliminar definitivamente la nota?"
-                    eliminarPregunta={true}
-                    eliminarAceptar={true} />
-            )}
+                <AnimatePresence>
+                    {verModalEliminarNotaDefinitiva && (
+                        <ModalConfirmacion
+                            textoPregunta="¿Desea eliminar definitivamente la nota?"
+                            eliminarPregunta={true}
+                            eliminarAceptar={true} />
+                    )}
+                </AnimatePresence>
 
-            {/* ✅ Mostrar skeleton que replica la estructura exacta */}
-            {cargando ? (
-                <SkeletonCrearEditPrevia />
-            ) : (
-                <>
-                    <Cabecera
-                        esModoVistaPrevia={esModoVistaPrevia}
-                    />
+                {/* ✅ Mostrar skeleton que replica la estructura exacta */}
+                {cargando ? (
+                    <SkeletonCrearEditPrevia />
+                ) : (
+                    <>
+                        <Cabecera
+                            esModoVistaPrevia={esModoVistaPrevia}
+                        />
 
-                    <CuerpoEdicion
-                        ref={notaRef}
-                        esModoVistaPrevia={esModoVistaPrevia}
-                    />
+                        <CuerpoEdicion
+                            ref={notaRef}
+                            esModoVistaPrevia={esModoVistaPrevia}
+                        />
 
-                    <ContOpSubCabecera />
-                </>
-            )}
+                        <ContOpSubCabecera />
+                    </>
+                )}
 
-        </motion.div>
+            </motion.div>
         </AnimatePresence>
     );
 }

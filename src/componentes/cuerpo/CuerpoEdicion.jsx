@@ -1,6 +1,7 @@
 import React, { forwardRef, useEffect, useCallback } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { setIsNotaFocused, setEstadoAutomatico  } from "../../store/tareasSlice";
+import { setIsNotaFocused, setEstadoAutomatico } from "../../store/tareasSlice";
+import { AnimatePresence } from "framer-motion";
 
 import Tarea from "../tarea/Tarea";
 import ModalTarea from "../modal/ModalTarea";
@@ -28,14 +29,14 @@ const CuerpoEdicion = forwardRef(({ handleNotaChange, handleNotaKeyDown, esModoV
             } else if (notaRef) {
                 notaRef.current = element;
             }
-            
+
             // ✅ Establecer contenido inmediatamente si estamos en modo vista previa
             if (esModoVistaPrevia && nota && element.innerText !== nota) {
                 element.innerText = nota;
             }
         }
     }, [notaRef, esModoVistaPrevia, nota]);
-    
+
     const handleFocus = () => {
         if (!esModoVistaPrevia) {
             dispatch(setIsNotaFocused(true));
@@ -55,26 +56,26 @@ const CuerpoEdicion = forwardRef(({ handleNotaChange, handleNotaKeyDown, esModoV
     // ✅ Manejador para forzar texto plano al pegar
     const handlePaste = (e) => {
         if (esModoVistaPrevia) return;
-        
+
         e.preventDefault();
-        
+
         // Obtener solo texto plano del portapapeles
         const text = (e.clipboardData || window.clipboardData).getData('text/plain');
-        
+
         // Mantener saltos de línea en la nota
         // Solo normalizamos los diferentes tipos de saltos de línea
         const textoLimpio = text.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
-        
+
         // Insertar el texto sin formato en la posición del cursor
         const selection = window.getSelection();
         if (!selection.rangeCount) return;
-        
+
         selection.deleteFromDocument();
         selection.getRangeAt(0).insertNode(document.createTextNode(textoLimpio));
-        
+
         // Colapsar la selección al final del texto insertado
         selection.collapseToEnd();
-        
+
         // Trigger del onChange para actualizar el estado
         handleInputLocal();
     };
@@ -82,9 +83,11 @@ const CuerpoEdicion = forwardRef(({ handleNotaChange, handleNotaKeyDown, esModoV
     return (
         <div className="w-[95%] mx-auto overflow-y-auto overflow-x-hidden min-h-0 min-w-0 flex-1">
 
-            {verModalTarea && !esModoVistaPrevia && (
-                <ModalTarea />
-            )}
+            <AnimatePresence>
+                {verModalTarea && !esModoVistaPrevia && (
+                    <ModalTarea />
+                )}
+            </AnimatePresence>
 
             <div className="relative p-2">
                 <div
