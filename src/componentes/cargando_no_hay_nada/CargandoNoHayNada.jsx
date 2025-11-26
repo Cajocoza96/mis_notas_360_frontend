@@ -18,7 +18,7 @@ export default function CargandoNoHayNada({
     return (
         <>
             {pantallaCompletaCarga && (
-                <div className="fixed inset-0 z-90 bg-black/70
+                <div className="fixed inset-0 z-90 bg-black/50
                                 flex items-center justify-center">
                     <FaSpinner className="animate-spin text-xl md:text-2xl text-white" />
                 </div>

@@ -14,6 +14,8 @@ import { obtenerAnotaciones } from "../../../../services/anotacionesService";
 
 import { HiCheckCircle } from "react-icons/hi";
 
+import CargandoNoHayNada from "../../../cargando_no_hay_nada/CargandoNoHayNada";
+
 export default function VerOrden() {
 
     const dispatch = useDispatch();
@@ -26,6 +28,8 @@ export default function VerOrden() {
 
     const [error, setError] = useState(null);
 
+    const [procesando, setProcesando] = useState(false);
+
     //Cargar todas las anotaciones
     const cargarAnotaciones = async () => {
         try {
@@ -34,7 +38,7 @@ export default function VerOrden() {
             dispatch(setAnotaciones(anotacionesData));
             setCargando(false);
         } catch (error) {
-            setError('Error al cargar las anotaciones eliminadas');
+            setError('Error al cargar las anotaciones');
             setCargando(false);
         } finally {
             setCargando(false);
@@ -44,6 +48,7 @@ export default function VerOrden() {
     const handleCambiarOrden = async (nuevoOrden) => {
         if (ordenAnotaciones !== nuevoOrden) {
             // Guardar en BD y Redux
+            setProcesando(true);
             await dispatch(guardarOrdenAnotaciones(nuevoOrden));
             // Recargar las anotaciones con el nuevo orden
 
@@ -55,11 +60,15 @@ export default function VerOrden() {
             });
 
             await cargarAnotaciones();
+            setProcesando(false);
         }
     };
 
     return (
         <>
+
+            {procesando && (<CargandoNoHayNada pantallaCompletaCarga={true} />)}
+            
             <div className="w-full p-1 border-b border-gray-400 select-none
                                                 text-black dark:text-white
                                                 bg-white dark:bg-gray-800 cursor-pointer">

@@ -252,51 +252,48 @@ export default function Cuerpo({ notaNoEliminada,
             )}
 
             {verTodosEstados && (
-                <>
-                    {procesando ? <CargandoNoHayNada pantallaCompletaCarga={true} /> : (
-                        
-                        <div className={`w-[95%] h-full mx-auto overflow-y-auto 
+                <div className={`w-[95%] h-full mx-auto overflow-y-auto 
                                         overflow-x-hidden min-h-0 min-w-0 pb-3
                                         flex flex-col justify-start gap-5`}>
 
-                            <EstadosVistaPrevia
-                                iconoEstado={<HiMinusCircle className="text-blue-700" />}
-                                tipoEstado="No asignado"
-                                cantidadEstado={cargando ? <CargandoNoHayNada iconoDeCarga={true} /> : contadores.cant_no_asignado}
-                                no_asignado={true}
-                                seleccionado={verAnotacEstado === 'ver_no_asignado'}
-                                onClick={() => handleEstadoClick('ver_no_asignado')}
-                            />
+                    {procesando && (<CargandoNoHayNada pantallaCompletaCarga={true} />)}
 
-                            <EstadosVistaPrevia
-                                iconoEstado={<HiClock className="text-yellow-700" />}
-                                tipoEstado="Pendiente"
-                                cantidadEstado={cargando ? <CargandoNoHayNada iconoDeCarga={true} /> : contadores.cant_pendiente}
-                                pendiente={true}
-                                seleccionado={verAnotacEstado === 'ver_pendiente'}
-                                onClick={() => handleEstadoClick('ver_pendiente')}
-                            />
+                    <EstadosVistaPrevia
+                        iconoEstado={<HiMinusCircle className="text-blue-700" />}
+                        tipoEstado="No asignado"
+                        cantidadEstado={cargando ? <CargandoNoHayNada iconoDeCarga={true} /> : contadores.cant_no_asignado}
+                        no_asignado={true}
+                        seleccionado={verAnotacEstado === 'ver_no_asignado'}
+                        onClick={() => handleEstadoClick('ver_no_asignado')}
+                    />
 
-                            <EstadosVistaPrevia
-                                iconoEstado={<HiCheckCircle className="text-green-700" />}
-                                tipoEstado="Finalizado"
-                                cantidadEstado={cargando ? <CargandoNoHayNada iconoDeCarga={true} /> : contadores.cant_finalizado}
-                                finalizado={true}
-                                seleccionado={verAnotacEstado === 'ver_finalizado'}
-                                onClick={() => handleEstadoClick('ver_finalizado')}
-                            />
+                    <EstadosVistaPrevia
+                        iconoEstado={<HiClock className="text-yellow-700" />}
+                        tipoEstado="Pendiente"
+                        cantidadEstado={cargando ? <CargandoNoHayNada iconoDeCarga={true} /> : contadores.cant_pendiente}
+                        pendiente={true}
+                        seleccionado={verAnotacEstado === 'ver_pendiente'}
+                        onClick={() => handleEstadoClick('ver_pendiente')}
+                    />
 
-                            <EstadosVistaPrevia
-                                tipoEstado="Todos los estados"
-                                cantidadEstado={cargando ? <CargandoNoHayNada iconoDeCarga={true} /> : contadores.cant_todos_estados}
-                                seleccionado={verAnotacEstado === 'ver_todos_estados'}
-                                onClick={() => handleEstadoClick('ver_todos_estados')}
-                            />
+                    <EstadosVistaPrevia
+                        iconoEstado={<HiCheckCircle className="text-green-700" />}
+                        tipoEstado="Finalizado"
+                        cantidadEstado={cargando ? <CargandoNoHayNada iconoDeCarga={true} /> : contadores.cant_finalizado}
+                        finalizado={true}
+                        seleccionado={verAnotacEstado === 'ver_finalizado'}
+                        onClick={() => handleEstadoClick('ver_finalizado')}
+                    />
 
-                        </div>
-                    )}
+                    <EstadosVistaPrevia
+                        tipoEstado="Todos los estados"
+                        cantidadEstado={cargando ? <CargandoNoHayNada iconoDeCarga={true} /> : contadores.cant_todos_estados}
+                        seleccionado={verAnotacEstado === 'ver_todos_estados'}
+                        onClick={() => handleEstadoClick('ver_todos_estados')}
+                    />
 
-                </>
+                </div>
+
             )}
 
         </>

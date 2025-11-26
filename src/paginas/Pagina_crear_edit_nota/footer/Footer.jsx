@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { HiReply, HiCheck, HiPlusCircle } from "react-icons/hi";
 import { useNavigate } from "react-router-dom";
@@ -14,8 +14,12 @@ import { mostrarNotificacion, ocultarNotificacion } from "../../../store/anotaci
 
 import { crearAnotacion, actualizarAnotacion } from "../../../services/anotacionesService";
 
+import CargandoNoHayNada from "../../../componentes/cargando_no_hay_nada/CargandoNoHayNada";
+
 export default function Footer({ handleUndoClick, handleRedoClick, esModoEdicion, tituloRef, notaRef }) {
     const { actualizarContadores } = useContadores();
+
+    const [procesando, setProcesando] = useState(false);
 
     const {
         canUndo,
@@ -93,7 +97,9 @@ export default function Footer({ handleUndoClick, handleRedoClick, esModoEdicion
 
             let data;
             if (esActualizacion) {
+                setProcesando(true);
                 data = await actualizarAnotacion(anotacionId, payload);
+                setProcesando(false);
                 console.log('Actualización exitosa:', data);
 
                 // ✅ Mostrar notificación de éxito para actualización
@@ -103,9 +109,11 @@ export default function Footer({ handleUndoClick, handleRedoClick, esModoEdicion
                 }));
 
             } else {
+                setProcesando(true);
                 data = await crearAnotacion(payload);
+                setProcesando(false);
                 console.log('Guardado exitoso:', data);
-
+                
                 // ✅ Mostrar notificación de éxito para creación
                 dispatch(mostrarNotificacion({
                     mensaje: '¡Nota guardada!',
@@ -131,7 +139,9 @@ export default function Footer({ handleUndoClick, handleRedoClick, esModoEdicion
             }, 2000); // Esperar 3 segundos antes de redirigir
 
         } catch (error) {
+            setProcesando(true);
             console.error('Error al guardar y redirigir:', error);
+            setProcesando(false);
 
             // ✅ Mostrar notificación de error
             dispatch(mostrarNotificacion({
@@ -150,6 +160,8 @@ export default function Footer({ handleUndoClick, handleRedoClick, esModoEdicion
         <div className="p-2 z-10 w-full
                         bg-violet-300 dark:bg-black
                         grid grid-cols-3">
+                            
+            {procesando && (<CargandoNoHayNada pantallaCompletaCarga={true} />)}
 
             <div className="flex flex-col items-center select-none">
 
