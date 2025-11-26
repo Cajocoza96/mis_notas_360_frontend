@@ -18,7 +18,7 @@ export default function SeccionTerminosPoliticas() {
     return (
         <div className="w-full p-3 bg-violet-950 dark:bg-gray-900">
             <p className="text-xs md:text-sm text-center">
-                <span className="text-gray-300 dark:text-gray-400">{inforTermPol.texto1}</span> <span onClick={handleTerminosDeServicio} className="text-white font-semibold cursor-pointer">{inforTermPol.texto2Terminos}</span> <span className="text-gray-300 dark:text-gray-400">{inforTermPol.texto3}</span>  <span className="text-gray-300 dark:text-gray-400">{inforTermPol.texto4MisNotas360}</span> <span className="text-gray-300 dark:text-gray-400">{inforTermPol.texto5}</span> <span onClick={handlePoliticaDePrivacidad} className="text-white font-semibold cursor-pointer">{inforTermPol.texto6Politicas}</span> 
+                <span className="text-gray-300 dark:text-gray-400">{inforTermPol.texto1}</span> <span onClick={handleTerminosDeServicio} className="text-white font-semibold cursor-pointer">{inforTermPol.texto2Terminos}</span> <span className="text-gray-300 dark:text-gray-400">{inforTermPol.texto3}</span>  <span translate="no" className="text-gray-300 dark:text-gray-400">{inforTermPol.texto4MisNotas360}</span> <span className="text-gray-300 dark:text-gray-400">{inforTermPol.texto5}</span> <span onClick={handlePoliticaDePrivacidad} className="text-white font-semibold cursor-pointer">{inforTermPol.texto6Politicas}</span> 
             </p>
         </div>
     );

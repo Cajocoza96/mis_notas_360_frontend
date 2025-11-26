@@ -85,8 +85,9 @@ export default function AdminUsuario() {
             ) : usuario?.imagenPerfil ? (
                 // Cuenta OAuth con imagen
                 <img
+                    translate="no"
                     src={usuario.imagenPerfil}
-                    alt={usuario.nombreCuenta || usuario.nombreUsuario || 'Usuario'}
+                    alt={usuario.nombreCuenta || usuario.nombreUsuario}
                     className="w-7 h-7 lg:w-9 lg:h-9 rounded-full object-cover"
                     onError={(e) => {
                         // Si la imagen falla al cargar, mostrar letra
@@ -99,6 +100,7 @@ export default function AdminUsuario() {
             {/* Fallback: Primera letra con color aleatorio (oculto por defecto) */}
             {!esCuentaLocal && (
                 <div
+                    translate="no"
                     className={`w-7 h-7 lg:w-9 lg:h-9 rounded-full ${avatarBg} text-white 
                                 flex items-center justify-center font-bold text-xl
                                 ${usuario?.imagenPerfil ? 'hidden' : 'flex'}`}
@@ -108,8 +110,8 @@ export default function AdminUsuario() {
             )}
 
             {/* Nombre del usuario */}
-            <p className="truncate text-left text-base md:text-xl">
-                {usuario?.nombreCuenta || usuario?.nombreUsuario || 'Usuario'}
+            <p className="truncate text-left text-base md:text-xl" translate="no">
+                {usuario?.nombreCuenta || usuario?.nombreUsuario}
             </p>
 
             <HiChevronDown className="text-2xl md:text-3xl" />

@@ -118,7 +118,7 @@ export default function PaginaBienvenida() {
 
                     <div className="animate-bounce flex flex-row items-center justify-center gap-2">
                         <HiOutlineBookOpen className="text-2xl md:text-3xl text-white" />
-                        <p className="text-2xl md:text-3xl font-bold text-white text-center tracking-tight">
+                        <p className="text-2xl md:text-3xl font-bold text-white text-center tracking-tight" translate="no">
                             MisNotas360
                         </p>
                     </div>

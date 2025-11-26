@@ -106,7 +106,7 @@ export default function Cabecera({ paginaPrincipal, paginaBusqueda,
                         </div>
                         <p className="w-full text-center text-xl md:text-2xl 
                                     font-bold select-none truncate
-                                    text-black dark:text-white">
+                                    text-black dark:text-white" translate="no">
                             MisNotas360
                         </p>
 
@@ -157,7 +157,7 @@ export default function Cabecera({ paginaPrincipal, paginaBusqueda,
                                                 text-black dark:text-white" />
                         <p className="w-full text-center text-xl md:text-2xl
                                     font-bold select-none truncate
-                                text-black dark:text-white">
+                                text-black dark:text-white" translate="no">
                             MisNotas360
                         </p>
                     </Link>

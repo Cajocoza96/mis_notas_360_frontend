@@ -109,24 +109,28 @@ export default function PaginaInfoUsuario() {
 
             <div className="flex flex-col gap-1">
                 <ContIconoInfoUsua
+                    translate="no"
                     className="text-black dark:text-white"
                     iconoInfoUsua={usuario?.imagenPerfil ? (
                         <img
+                            translate="no"
                             src={usuario?.imagenPerfil || 'No disponible'}
-                            alt={usuario?.nombreCuenta || usuario?.nombreUsuario || 'Usuario'}
+                            alt={usuario?.nombreCuenta || usuario?.nombreUsuario}
                             className="w-7 h-7 lg:w-9 lg:h-9 rounded-full object-cover" />
                     ) : (
                         <HiOutlineUser className="text-2xl md:text-3xl" />
                     )}
 
-                    titulo={usuario?.nombreCuenta || usuario?.nombreUsuario || 'Usuario'}
+                    titulo={usuario?.nombreCuenta || usuario?.nombreUsuario}
                 />
 
                 <ContIconoInfoUsua
                     className="text-black dark:text-white"
                     iconoInfoUsua={<HiOutlineMail />}
                     titulo="Correo electrónico"
-                    texto={usuario?.email || 'No disponible'}
+                    texto={usuario?.email
+                        ? <span translate="no">{usuario.email}</span>
+                        : 'No disponible'}
                 />
 
                 <ContIconoInfoUsua

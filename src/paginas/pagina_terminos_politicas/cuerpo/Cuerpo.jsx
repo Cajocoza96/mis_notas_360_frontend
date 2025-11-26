@@ -22,7 +22,7 @@ export default function Cuerpo() {
                         flex flex-col justify-between gap-3">
 
             <div className="flex flex-col gap-1">
-                <p className="text-xl md:text-2xl font-semibold text-center">
+                <p className="text-xl md:text-2xl font-semibold text-center" translate="no">
                     {infoMisNotas360.texto4MisNotas360}
                 </p>
                 <p className="text-sm md:text-base text-center">
@@ -38,7 +38,7 @@ export default function Cuerpo() {
                             {inforTerminosServicio.texto1}
                         </p>
                         <p className="text-base md:text-xl">
-                            <span>{inforTerminosServicio.texto2} {infoMisNotas360.texto4MisNotas360} {inforTerminosServicio.texto3}</span>
+                            <span>{inforTerminosServicio.texto2} <span translate="no">{infoMisNotas360.texto4MisNotas360}</span> {inforTerminosServicio.texto3}</span>
                         </p>
                     </div>
 
@@ -47,14 +47,14 @@ export default function Cuerpo() {
                             {inforTerminosServicio.texto4}
                         </p>
                         <p className="text-base md:text-xl">
-                            <span>{infoMisNotas360.texto4MisNotas360} {inforTerminosServicio.texto5}</span>
+                            <span> <span translate="no">{infoMisNotas360.texto4MisNotas360}</span> {inforTerminosServicio.texto5}</span>
                         </p>
                     </div>
 
                     <div className="flex flex-col gap-1">
                         <div>
                             <p className="text-base md:text-xl font-semibold">
-                                <span>{inforTerminosServicio.texto6} {infoMisNotas360.texto4MisNotas360}</span>
+                                <span>{inforTerminosServicio.texto6} <span translate="no">{infoMisNotas360.texto4MisNotas360}</span> </span>
                             </p>
                             <p className="text-base md:text-xl">
                                 {inforTerminosServicio.texto7}
@@ -102,7 +102,7 @@ export default function Cuerpo() {
                             {inforTerminosServicio.texto26}
                         </p>
                         <p className="text-base md:text-xl">
-                            <span>{inforTerminosServicio.texto27} {infoMisNotas360.texto4MisNotas360} {inforTerminosServicio.texto28}</span>
+                            <span>{inforTerminosServicio.texto27} <span translate="no">{infoMisNotas360.texto4MisNotas360}</span> {inforTerminosServicio.texto28}</span>
                         </p>
                     </div>
 
@@ -111,7 +111,7 @@ export default function Cuerpo() {
                             {inforTerminosServicio.texto29}
                         </p>
                         <p className="text-base md:text-xl">
-                            <span>{infoMisNotas360.texto4MisNotas360} {inforTerminosServicio.texto30}</span>
+                            <span> <span translate="no">{infoMisNotas360.texto4MisNotas360}</span> {inforTerminosServicio.texto30}</span>
                         </p>
 
                         <div>
@@ -141,7 +141,7 @@ export default function Cuerpo() {
                             {inforTerminosServicio.texto37}
                         </p>
                         <p className="text-base md:text-xl">
-                            <span>{inforTerminosServicio.texto38} {infoMisNotas360.texto4MisNotas360}</span>
+                            <span>{inforTerminosServicio.texto38} <span translate="no">{infoMisNotas360.texto4MisNotas360}</span> </span>
                         </p>
                     </div>
                 </div>
@@ -155,7 +155,7 @@ export default function Cuerpo() {
                             {inforPoliticaPrivacidad.texto1}
                         </p>
                         <p className="text-base md:text-xl">
-                            <span>{inforPoliticaPrivacidad.texto2} {infoMisNotas360.texto4MisNotas360} {inforPoliticaPrivacidad.texto3}</span>
+                            <span>{inforPoliticaPrivacidad.texto2} <span translate="no">{infoMisNotas360.texto4MisNotas360}</span> {inforPoliticaPrivacidad.texto3}</span>
                         </p>
                     </div>
 
@@ -309,7 +309,7 @@ export default function Cuerpo() {
                         </p>
                         <div className="flex flex-col gap-2">
                             <p className="text-base md:text-xl">
-                                <span>{inforPoliticaPrivacidad.texto40} {infoMisNotas360.texto4MisNotas360}</span>
+                                <span>{inforPoliticaPrivacidad.texto40} <span translate="no">{infoMisNotas360.texto4MisNotas360}</span> </span>
                             </p>
                         </div>
                     </div>

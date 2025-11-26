@@ -43,7 +43,7 @@ export default function MenuHamburguesa() {
                         </div>
                         <p className="w-full text-left text-base md:text-xl 
                                     font-bold select-none truncate
-                                    text-black dark:text-white">
+                                    text-black dark:text-white" translate="no">
                             MisNotas360
                         </p>
                     </Link>
