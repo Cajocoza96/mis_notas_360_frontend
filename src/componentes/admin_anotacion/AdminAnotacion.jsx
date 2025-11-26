@@ -40,33 +40,37 @@ export default function AdminAnotacion() {
         <>
             <div
                 onClick={handleVerAdminAnotacion}
-                className="fixed inset-0 z-50 bg-black/70"></div>
+                className="fixed inset-0 z-50 bg-black/70
+                            flex items-center justify-center">
 
-            <div className="bg-violet-700
+                <div 
+                    onClick={(e) => e.stopPropagation()}
+                    className="bg-violet-700
                         z-50 p-3 overflow-hidden rounded-lg
-                        h-auto shadow-2xl
-                        absolute top-1/2 left-1/2 transform -translate-x-1/2  -translate-y-1/2">
+                        h-auto shadow-2xl">
 
-                <div className="text-base md:text-xl text-white
+                    <div className="text-base md:text-xl text-white
                             flex flex-col gap-4">
-                    
-                    {/*
+
+                        {/*
                     <p className="cursor-pointer whitespace-nowrap">
                         Seleccionar
                     </p>
                     */}
 
-                    <p
-                        onClick={handleVerPapeleraNota}
-                        className="cursor-pointer whitespace-nowrap">
-                        Mover a papelera
-                    </p>
+                        <p
+                            onClick={handleVerPapeleraNota}
+                            className="cursor-pointer whitespace-nowrap">
+                            Mover a papelera
+                        </p>
 
-                    <p
-                        onClick={handleVerEliminarNotaDefinitiva}
-                        className="cursor-pointer whitespace-nowrap">
-                        Eliminar definitivamente
-                    </p>
+                        <p
+                            onClick={handleVerEliminarNotaDefinitiva}
+                            className="cursor-pointer whitespace-nowrap">
+                            Eliminar definitivamente
+                        </p>
+                    </div>
+
                 </div>
 
             </div>

@@ -343,7 +343,8 @@ export default function ModalConfirmacion({ textoPregunta, restaurarTexto, elimi
 
     return (
         <>
-            <div className="fixed inset-0 z-50 bg-black/70"
+            <div className="fixed inset-0 z-50 bg-black/70
+                            flex items-center justify-center"
                 onClick={() => {
                     if (procesando) return; // No permitir cerrar mientras procesa
 
@@ -365,12 +366,12 @@ export default function ModalConfirmacion({ textoPregunta, restaurarTexto, elimi
                         handleVerModalCerrarSesion();
                     }
                 }}>
-            </div>
 
-            <div className="bg-white dark:bg-gray-800 select-none
+            <div 
+                onClick={(e) => e.stopPropagation()}
+                className="bg-white dark:bg-gray-800 select-none
                             z-50 p-3 overflow-hidden rounded-lg
-                        absolute top-1/2 left-1/2 transform -translate-x-1/2  -translate-y-1/2
-                        w-[90%] max-w-md h-auto shadow-2xl">
+                            w-[90%] h-auto shadow-2xl">
 
                 <div className="mx-auto w-full flex flex-col gap-4 2xl:gap-5">
                     <div className="flex flex-col gap-2">
@@ -429,6 +430,8 @@ export default function ModalConfirmacion({ textoPregunta, restaurarTexto, elimi
                         </p>
                     </div>
                 </div>
+            </div>
+
             </div>
         </>
     );

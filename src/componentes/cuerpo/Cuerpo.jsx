@@ -18,8 +18,10 @@ import { guardarVerAnotacEstado } from "../../store/preferenciaSlice";
 
 import { obtenerEstadoProps } from "../../utils/estadoUtils";
 
-import { obtenerContadores, 
-        obtenerAnotaciones, obtenerAnotacionesEliminadas } from "../../services/anotacionesService";
+import {
+    obtenerContadores,
+    obtenerAnotaciones, obtenerAnotacionesEliminadas
+} from "../../services/anotacionesService";
 
 import AdminAnotacion from "../admin_anotacion/AdminAnotacion";
 
@@ -61,17 +63,22 @@ export default function Cuerpo({ notaNoEliminada,
 
     const [cargando, setCargando] = useState(false);
 
+    const [procesando, setProcesando] = useState(false);
+
     const [error, setError] = useState(null);
 
     const cargarContadores = async () => {
         try {
             /*dispatch(setCargando(true));*/
+            setProcesando(true);
             setCargando(true);
             const datos = await obtenerContadores();
             dispatch(setContadores(datos));
             setCargando(false);
+            setProcesando(false);
         } catch (error) {
             // El error ya se loguea en el servicio
+            setProcesando(false);
             setCargando(false);
             console.error('Error al cargar contadores en el componente:', error);
         }
@@ -245,45 +252,51 @@ export default function Cuerpo({ notaNoEliminada,
             )}
 
             {verTodosEstados && (
-                <div className={`w-[95%] h-full mx-auto overflow-y-auto 
-                                overflow-x-hidden min-h-0 min-w-0 pb-3
-                                flex flex-col justify-start gap-5`}>
+                <>
+                    {procesando ? <CargandoNoHayNada pantallaCompletaCarga={true} /> : (
+                        
+                        <div className={`w-[95%] h-full mx-auto overflow-y-auto 
+                                        overflow-x-hidden min-h-0 min-w-0 pb-3
+                                        flex flex-col justify-start gap-5`}>
 
-                    <EstadosVistaPrevia
-                        iconoEstado={<HiMinusCircle className="text-blue-700" />}
-                        tipoEstado="No asignado"
-                        cantidadEstado={cargando ? <CargandoNoHayNada iconoDeCarga={true}/> : contadores.cant_no_asignado}
-                        no_asignado={true}
-                        seleccionado={verAnotacEstado === 'ver_no_asignado'}
-                        onClick={() => handleEstadoClick('ver_no_asignado')}
-                    />
+                            <EstadosVistaPrevia
+                                iconoEstado={<HiMinusCircle className="text-blue-700" />}
+                                tipoEstado="No asignado"
+                                cantidadEstado={cargando ? <CargandoNoHayNada iconoDeCarga={true} /> : contadores.cant_no_asignado}
+                                no_asignado={true}
+                                seleccionado={verAnotacEstado === 'ver_no_asignado'}
+                                onClick={() => handleEstadoClick('ver_no_asignado')}
+                            />
 
-                    <EstadosVistaPrevia
-                        iconoEstado={<HiClock className="text-yellow-700" />}
-                        tipoEstado="Pendiente"
-                        cantidadEstado={cargando ? <CargandoNoHayNada iconoDeCarga={true}/> : contadores.cant_pendiente}
-                        pendiente={true}
-                        seleccionado={verAnotacEstado === 'ver_pendiente'}
-                        onClick={() => handleEstadoClick('ver_pendiente')}
-                    />
+                            <EstadosVistaPrevia
+                                iconoEstado={<HiClock className="text-yellow-700" />}
+                                tipoEstado="Pendiente"
+                                cantidadEstado={cargando ? <CargandoNoHayNada iconoDeCarga={true} /> : contadores.cant_pendiente}
+                                pendiente={true}
+                                seleccionado={verAnotacEstado === 'ver_pendiente'}
+                                onClick={() => handleEstadoClick('ver_pendiente')}
+                            />
 
-                    <EstadosVistaPrevia
-                        iconoEstado={<HiCheckCircle className="text-green-700" />}
-                        tipoEstado="Finalizado"
-                        cantidadEstado={cargando ? <CargandoNoHayNada iconoDeCarga={true}/> : contadores.cant_finalizado}
-                        finalizado={true}
-                        seleccionado={verAnotacEstado === 'ver_finalizado'}
-                        onClick={() => handleEstadoClick('ver_finalizado')}
-                    />
+                            <EstadosVistaPrevia
+                                iconoEstado={<HiCheckCircle className="text-green-700" />}
+                                tipoEstado="Finalizado"
+                                cantidadEstado={cargando ? <CargandoNoHayNada iconoDeCarga={true} /> : contadores.cant_finalizado}
+                                finalizado={true}
+                                seleccionado={verAnotacEstado === 'ver_finalizado'}
+                                onClick={() => handleEstadoClick('ver_finalizado')}
+                            />
 
-                    <EstadosVistaPrevia
-                        tipoEstado="Todos los estados"
-                        cantidadEstado={cargando ? <CargandoNoHayNada iconoDeCarga={true}/> : contadores.cant_todos_estados}
-                        seleccionado={verAnotacEstado === 'ver_todos_estados'}
-                        onClick={() => handleEstadoClick('ver_todos_estados')}
-                    />
+                            <EstadosVistaPrevia
+                                tipoEstado="Todos los estados"
+                                cantidadEstado={cargando ? <CargandoNoHayNada iconoDeCarga={true} /> : contadores.cant_todos_estados}
+                                seleccionado={verAnotacEstado === 'ver_todos_estados'}
+                                onClick={() => handleEstadoClick('ver_todos_estados')}
+                            />
 
-                </div>
+                        </div>
+                    )}
+
+                </>
             )}
 
         </>

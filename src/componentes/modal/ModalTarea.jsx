@@ -95,74 +95,78 @@ export default function ModalTarea() {
 
     return (
         <>
-            <div className="fixed inset-0 z-30 bg-black/70" onClick={handleverModalTarea}></div>
+            <div
+                onClick={handleverModalTarea}
+                className="fixed inset-0 z-30 bg-black/70
+                            flex items-center justify-center">
 
+                <div 
+                    onClick={(e) => e.stopPropagation()}
+                    className="bg-white dark:bg-gray-800 
+                                z-50  overflow-hidde
+                                w-[70%] h-auto
+                                flex flex-col gap-5">
 
-            <div className="bg-white dark:bg-gray-800 
-                            z-50  overflow-hidden
-                        absolute top-1/2 left-1/2 transform -translate-x-1/2  -translate-y-1/2
-                        w-[70%] h-auto
-                        flex flex-col gap-5">
+                    <div className="p-2 flex flex-col">
 
-                <div className="p-2 flex flex-col">
-
-                    <div className="flex flex-row justify-end">
-                        <HiX
-                            className="text-xl md:text-2xl
+                        <div className="flex flex-row justify-end">
+                            <HiX
+                                className="text-xl md:text-2xl
                                 text-black dark:text-white cursor-pointer"
-                            onClick={handleverModalTarea} />
-                    </div>
+                                onClick={handleverModalTarea} />
+                        </div>
 
-                    <p className="text-center text-base md:text-xl select-none 
+                        <p className="text-center text-base md:text-xl select-none 
                                 text-violet-800 dark:text-white">
-                        Casilla de tarea
-                    </p>
+                            Casilla de tarea
+                        </p>
 
-                    <div className="border-b-3 border-violet-500 p-2">
-                        <input
-                            ref={inputRef}
-                            type="text"
-                            value={textoTarea}
-                            onChange={handleInputChange}
-                            onClick={handleInputInteraction}
-                            onKeyDown={handleInputInteraction}
-                            className="w-full text-base md:text-xl
+                        <div className="border-b-3 border-violet-500 p-2">
+                            <input
+                                ref={inputRef}
+                                type="text"
+                                value={textoTarea}
+                                onChange={handleInputChange}
+                                onClick={handleInputInteraction}
+                                onKeyDown={handleInputInteraction}
+                                className="w-full text-base md:text-xl
                                 border-0 focus:outline-none
                                 text-black dark:text-white"/>
+                        </div>
+
                     </div>
 
-                </div>
-
-                <div className="p-2 w-full bg-violet-800 dark:bg-black
+                    <div className="p-2 w-full bg-violet-800 dark:bg-black
                                 flex flex-row items-center justify-around select-none">
 
-                    {modoModal === 'editar' && (
-                        <>
-                            <p
-                                className="text-base md:text-xl text-white cursor-pointer"
-                                onClick={handleEliminar}>
-                                Eliminar
-                            </p>
-                        </>
-                    )}
-
-                    <div className="text-base md:text-xl text-white" onClick={handleAgregar}>
                         {modoModal === 'editar' && (
-                            <p className="cursor-pointer">
-                                Editar
-                            </p>
+                            <>
+                                <p
+                                    className="text-base md:text-xl text-white cursor-pointer"
+                                    onClick={handleEliminar}>
+                                    Eliminar
+                                </p>
+                            </>
                         )}
 
-                        {modoModal === 'crear' && (
-                            <p className="cursor-pointer">
-                                Añadir
-                            </p>
-                        )}
+                        <div className="text-base md:text-xl text-white" onClick={handleAgregar}>
+                            {modoModal === 'editar' && (
+                                <p className="cursor-pointer">
+                                    Editar
+                                </p>
+                            )}
+
+                            {modoModal === 'crear' && (
+                                <p className="cursor-pointer">
+                                    Añadir
+                                </p>
+                            )}
+                        </div>
+
+
                     </div>
 
-
                 </div>
-
             </div>
         </>
     );

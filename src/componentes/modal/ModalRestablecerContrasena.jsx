@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
-import { HiX} from "react-icons/hi";
+import { HiX } from "react-icons/hi";
 import { toggleVerModalRestablecerContrasena, setVerToast } from "../../store/accesoSlice";
 
 import CorreoContrasena from "../../paginas/pagina_reg_ini_sesion/cuerpo/correo_contrasena/CorreoContrasena";
@@ -23,32 +23,35 @@ export default function ModalRestablecerContrasena() {
         <>
             <div
                 onClick={handleCerrarModal}
-                className="fixed inset-0 z-50 bg-black/70">
-            </div>
+                className="fixed inset-0 z-50 bg-black/70
+                            flex items-center justify-center">
 
-            <div className="bg-white dark:bg-gray-800 select-none
+                <div 
+                    onClick={(e) => e.stopPropagation()}
+                    className="bg-white dark:bg-gray-800 select-none
                             z-50 p-4 overflow-hidden rounded-lg
-                            absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2
                             w-[90%] max-w-md h-auto shadow-2xl
                             flex flex-col gap-3">
-                <div
-                    className="text-2xl md:text-3xl text-red-600 dark:text-red-500
+                    <div
+                        className="text-2xl md:text-3xl text-red-600 dark:text-red-500
                                 flex flex-col items-end">
-                    <HiX
-                        onClick={handleCerrarModal}
-                        className={`cursor-pointer ${cargando ? 'opacity-50 cursor-not-allowed' : ''}`}
-                    />
-                </div>
+                        <HiX
+                            onClick={handleCerrarModal}
+                            className={`cursor-pointer ${cargando ? 'opacity-50 cursor-not-allowed' : ''}`}
+                        />
+                    </div>
 
-                <p className="text-base md:text-xl text-center
+                    <p className="text-base md:text-xl text-center
                             text-black dark:text-white font-semibold">
-                    Restablecer contraseña
-                </p>
+                        Restablecer contraseña
+                    </p>
 
-                <CorreoContrasena 
-                    textoContrasena="Nueva contraseña"
-                    restablecer={true}
-                />
+                    <CorreoContrasena
+                        textoContrasena="Nueva contraseña"
+                        restablecer={true}
+                    />
+
+                </div>
 
             </div>
         </>
