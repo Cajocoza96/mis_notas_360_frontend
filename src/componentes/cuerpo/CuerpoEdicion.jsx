@@ -1,4 +1,4 @@
-import React, { forwardRef, useEffect, useCallback } from "react";
+import React, { forwardRef, useEffect, useCallback, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { setIsNotaFocused, setEstadoAutomatico } from "../../store/tareasSlice";
 import { AnimatePresence } from "framer-motion";
@@ -14,6 +14,7 @@ const CuerpoEdicion = forwardRef(({ handleNotaChange, handleNotaKeyDown, esModoV
 
     // ✅ Determinar si tiene nota directamente desde Redux
     const tieneNota = nota && nota.trim() !== "";
+    const isProcessingRef = useRef(false); // ✅ Prevenir loops infinitos
 
     // Efecto para actualizar el estado automáticamente cuando cambien las tareas
     useEffect(() => {
@@ -50,7 +51,44 @@ const CuerpoEdicion = forwardRef(({ handleNotaChange, handleNotaKeyDown, esModoV
     };
 
     const handleInputLocal = () => {
-        handleNotaChange(notaRef);
+        // ✅ Prevenir llamadas simultáneas
+        if (isProcessingRef.current) return;
+        isProcessingRef.current = true;
+
+        try {
+            if (notaRef.current) {
+                // ✅ Obtener el texto limpio
+                let contenido = notaRef.current.innerText;
+                
+                // ✅ Si está vacío o solo tiene espacios/saltos de línea, limpiar completamente
+                if (!contenido || contenido.trim() === '') {
+                    notaRef.current.innerText = '';
+                    handleNotaChange(notaRef);
+                    return;
+                }
+                
+                // ✅ Limitar a 50000 caracteres
+                if (contenido.length > 50000) {
+                    const textoLimitado = contenido.substring(0, 50000);
+                    notaRef.current.innerText = textoLimitado;
+                    
+                    // Restaurar el cursor al final
+                    const selection = window.getSelection();
+                    const range = document.createRange();
+                    range.selectNodeContents(notaRef.current);
+                    range.collapse(false);
+                    selection.removeAllRanges();
+                    selection.addRange(range);
+                }
+            }
+            
+            handleNotaChange(notaRef);
+        } finally {
+            // ✅ Liberar el lock después de un pequeño delay
+            setTimeout(() => {
+                isProcessingRef.current = false;
+            }, 10);
+        }
     };
 
     // ✅ Manejador para forzar texto plano al pegar
@@ -59,24 +97,26 @@ const CuerpoEdicion = forwardRef(({ handleNotaChange, handleNotaKeyDown, esModoV
 
         e.preventDefault();
 
-        // Obtener solo texto plano del portapapeles
         const text = (e.clipboardData || window.clipboardData).getData('text/plain');
-
-        // Mantener saltos de línea en la nota
-        // Solo normalizamos los diferentes tipos de saltos de línea
         const textoLimpio = text.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
 
-        // Insertar el texto sin formato en la posición del cursor
+        const contenidoActual = notaRef.current?.innerText || "";
         const selection = window.getSelection();
-        if (!selection.rangeCount) return;
+        
+        if (selection.rangeCount) {
+            const range = selection.getRangeAt(0);
+            const textoBorrado = range.toString().length;
+            
+            const espacioDisponible = 50000 - (contenidoActual.length - textoBorrado);
+            const textoAPegar = textoLimpio.substring(0, Math.max(0, espacioDisponible));
+            
+            if (textoAPegar.length > 0) {
+                selection.deleteFromDocument();
+                selection.getRangeAt(0).insertNode(document.createTextNode(textoAPegar));
+                selection.collapseToEnd();
+            }
+        }
 
-        selection.deleteFromDocument();
-        selection.getRangeAt(0).insertNode(document.createTextNode(textoLimpio));
-
-        // Colapsar la selección al final del texto insertado
-        selection.collapseToEnd();
-
-        // Trigger del onChange para actualizar el estado
         handleInputLocal();
     };
 

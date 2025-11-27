@@ -1,4 +1,4 @@
-import React, { forwardRef, useState, useEffect } from "react";
+import React, { forwardRef, useState, useEffect, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { HiChevronLeft } from "react-icons/hi";
 import { Link } from "react-router-dom";
@@ -11,9 +11,11 @@ const Cabecera = forwardRef(({ handleTituloChange, handleTituloKeyDown,
 
     const dispatch = useDispatch();
     const { isTituloFocused, titulo } = useSelector((state) => state.tareas);
-    
+
     // ✅ Usar el estado de Redux en lugar de verificar el ref
     const [tieneTitulo, setTieneTitulo] = useState(false);
+
+    const isProcessingRef = useRef(false); // ✅ Prevenir loops infinitos
 
     // ✅ Sincronizar con el estado de Redux (más confiable que verificar el ref)
     useEffect(() => {
@@ -34,32 +36,72 @@ const Cabecera = forwardRef(({ handleTituloChange, handleTituloKeyDown,
     };
 
     const handleInputLocal = () => {
-        handleTituloChange(tituloRef);
+        // ✅ Prevenir llamadas simultáneas
+        if (isProcessingRef.current) return;
+        isProcessingRef.current = true;
+
+        try {
+            if (tituloRef.current) {
+                // ✅ Obtener el texto limpio (sin \n ni espacios extra)
+                let contenido = tituloRef.current.innerText;
+
+                // ✅ Si está vacío o solo tiene espacios/saltos de línea, limpiar completamente
+                if (!contenido || contenido.trim() === '') {
+                    tituloRef.current.innerText = '';
+                    handleTituloChange(tituloRef);
+                    return;
+                }
+
+                // ✅ Limitar a 255 caracteres
+                if (contenido.length > 255) {
+                    const textoLimitado = contenido.substring(0, 255);
+                    tituloRef.current.innerText = textoLimitado;
+
+                    // Restaurar el cursor al final
+                    const selection = window.getSelection();
+                    const range = document.createRange();
+                    range.selectNodeContents(tituloRef.current);
+                    range.collapse(false);
+                    selection.removeAllRanges();
+                    selection.addRange(range);
+                }
+            }
+
+            handleTituloChange(tituloRef);
+        } finally {
+            // ✅ Liberar el lock después de un pequeño delay
+            setTimeout(() => {
+                isProcessingRef.current = false;
+            }, 10);
+        }
     };
 
     // ✅ Manejador para forzar texto plano al pegar
     const handlePaste = (e) => {
         if (esModoVistaPrevia) return;
-        
+
         e.preventDefault();
-        
-        // Obtener solo texto plano del portapapeles
+
         const text = (e.clipboardData || window.clipboardData).getData('text/plain');
-        
-        // Remover saltos de línea para el título (convertir a espacios)
         const textoLimpio = text.replace(/\r?\n|\r/g, ' ');
-        
-        // Insertar el texto sin formato en la posición del cursor
+
+        const contenidoActual = tituloRef.current?.innerText || "";
         const selection = window.getSelection();
-        if (!selection.rangeCount) return;
-        
-        selection.deleteFromDocument();
-        selection.getRangeAt(0).insertNode(document.createTextNode(textoLimpio));
-        
-        // Colapsar la selección al final del texto insertado
-        selection.collapseToEnd();
-        
-        // Trigger del onChange para actualizar el estado
+
+        if (selection.rangeCount) {
+            const range = selection.getRangeAt(0);
+            const textoBorrado = range.toString().length;
+
+            const espacioDisponible = 255 - (contenidoActual.length - textoBorrado);
+            const textoAPegar = textoLimpio.substring(0, Math.max(0, espacioDisponible));
+
+            if (textoAPegar.length > 0) {
+                selection.deleteFromDocument();
+                selection.getRangeAt(0).insertNode(document.createTextNode(textoAPegar));
+                selection.collapseToEnd();
+            }
+        }
+
         handleInputLocal();
     };
 

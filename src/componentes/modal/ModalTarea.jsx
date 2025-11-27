@@ -22,6 +22,10 @@ export default function ModalTarea() {
     const initialSetupDoneRef = useRef(false);
     const isMobile = useIsMobile();
 
+    // ✅ Calcular cantidad de caracteres en tiempo real
+    const cantTarea = textoTarea ? textoTarea.length : 0;
+    const limiteExcedido = cantTarea >= 500;
+
     useEffect(() => {
         if (modoModal === 'editar' && tareaActual) {
             setTextoTarea(tareaActual.texto);
@@ -70,6 +74,12 @@ export default function ModalTarea() {
 
     const handleAgregar = () => {
         if (textoTarea.trim()) {
+            // ✅ Validar límite antes de agregar/editar
+            if (textoTarea.length > 500) {
+                alert('La tarea solo permite 500 caracteres');
+                return;
+            }
+
             if (modoModal === 'crear') {
                 dispatch(agregarTarea(textoTarea));
             } else if (modoModal === 'editar' && tareaActual) {
@@ -87,7 +97,13 @@ export default function ModalTarea() {
     }
 
     const handleInputChange = (e) => {
-        setTextoTarea(e.target.value);
+        const nuevoTexto = e.target.value;
+        
+        // ✅ Limitar a 500 caracteres máximo
+        if (nuevoTexto.length <= 500) {
+            setTextoTarea(nuevoTexto);
+        }
+        
         hasInteractedRef.current = true;
     }
 
@@ -143,6 +159,7 @@ export default function ModalTarea() {
                                 onChange={handleInputChange}
                                 onClick={handleInputInteraction}
                                 onKeyDown={handleInputInteraction}
+                                maxLength={500}
                                 className="w-full text-base md:text-xl
                                 border-0 focus:outline-none
                                 text-black dark:text-white"/>
@@ -150,33 +167,46 @@ export default function ModalTarea() {
 
                     </div>
 
-                    <div className="p-2 w-full bg-violet-800 dark:bg-black
-                                flex flex-row items-center justify-around select-none">
+                    <div className="p-2 w-full bg-violet-800 dark:bg-black select-none
+                                    flex flex-col gap-2">
+                        <div className="flex flex-row items-center justify-around ">
 
-                        {modoModal === 'editar' && (
-                            <>
-                                <p
-                                    className="text-base md:text-xl text-white cursor-pointer"
-                                    onClick={handleEliminar}>
-                                    Eliminar
-                                </p>
-                            </>
-                        )}
-
-                        <div className="text-base md:text-xl text-white" onClick={handleAgregar}>
                             {modoModal === 'editar' && (
-                                <p className="cursor-pointer">
-                                    Editar
-                                </p>
+                                <>
+                                    <p
+                                        className="text-base md:text-xl text-white cursor-pointer"
+                                        onClick={handleEliminar}>
+                                        Eliminar
+                                    </p>
+                                </>
                             )}
 
-                            {modoModal === 'crear' && (
-                                <p className="cursor-pointer">
-                                    Añadir
-                                </p>
-                            )}
+                            <div className="text-base md:text-xl text-white" onClick={handleAgregar}>
+                                {modoModal === 'editar' && (
+                                    <p className="cursor-pointer">
+                                        Editar
+                                    </p>
+                                )}
+
+                                {modoModal === 'crear' && (
+                                    <p className="cursor-pointer">
+                                        Añadir
+                                    </p>
+                                )}
+                            </div>
+
                         </div>
 
+                        {/* ✅ Contador de tarea en tiempo real */}
+                        <div className="flex flex-col items-center">
+                            <p className={`text-center text-base md:text-xl ${
+                                limiteExcedido 
+                                    ? "text-red-500" 
+                                    : "text-white"
+                            }`}>
+                                {cantTarea}/500
+                            </p>
+                        </div>
 
                     </div>
 

@@ -11,6 +11,7 @@ import { setAnotacionActual } from "../../store/anotacionesSlice";
 import Cabecera from "./cabecera/Cabecera";
 import CuerpoEdicion from "../../componentes/cuerpo/CuerpoEdicion";
 import Footer from "./footer/Footer";
+import CantidadTituloNota from "./cantidad_titulo_nota/CantidadTituloNota";
 
 import ModalEstado from "../../componentes/modal/ModalEstado";
 
@@ -251,6 +252,8 @@ export default function PaginaCrearEditNota() {
                             handleNotaKeyDown={handleNotaKeyDownAdapter}
                             esModoVistaPrevia={false}
                         />
+
+                        <CantidadTituloNota />
 
                         <Footer
                             handleUndoClick={handleUndoClickAdapter}
