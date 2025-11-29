@@ -2,29 +2,15 @@ import React from "react";
 
 import Lottie from "lottie-react";
 
-import { useSelector } from "react-redux";
-
 import mantenimiento from "../../assets/lottie/pagina_mantenimiento/mantenimiento.json";
 
-import Toast from "../../componentes/toast/Toast";
-import useToastConexion from "../../hooks/useToastConexion";
-
 export default function PaginaMantenimiento() {
-
-    const verToast = useSelector((state) => state.acceso.verToast);
-
-    // ✅ Hook que maneja automáticamente los toasts de conexión
-    useToastConexion();
 
     return (
         <div className="mx-auto h-dvh bg-white dark:bg-gray-800 
                         overflow-hidden overflow-y-auto
                         flex flex-col 2xs:flex-row 
                         items-center justify-center gap-3">
-
-            {verToast && (
-                <Toast />
-            )}
 
             <div className="w-[90%] lg:w-[50%] flex items-center justify-center">
                 <Lottie className="w-full object-cover"
