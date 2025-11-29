@@ -1,5 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 
+import { logDesarrollo, errorDesarrollo, registrarError } from "../utils/errorHandler";
+
 export const useContentEditable = (initialState, undoRedoHook) => {
     const [titulo, setTitulo] = useState(initialState.titulo || "");
     const [nota, setNota] = useState(initialState.nota || "");
@@ -32,7 +34,7 @@ export const useContentEditable = (initialState, undoRedoHook) => {
     }, [nota]);
 
     const updateContentEditable = (state, tituloRef, notaRef) => {
-        console.log('🔄 Actualizando contentEditable con:', state);
+        logDesarrollo('🔄 Actualizando contentEditable con:', state);
         
         if (tituloRef?.current) {
             tituloRef.current.innerText = state.titulo || "";
@@ -63,7 +65,7 @@ export const useContentEditable = (initialState, undoRedoHook) => {
             // ✅ Obtener la nota actual del DOM
             const notaActual = elementRefsCache.current.nota?.innerText || notaRefValue.current || "";
             
-            console.log('✏️ Título cambiado:', { titulo: newTitulo, nota: notaActual });
+            logDesarrollo('✏️ Título cambiado:', { titulo: newTitulo, nota: notaActual });
             
             setTitulo(newTitulo);
             addToHistory({ titulo: newTitulo, nota: notaActual });
@@ -78,7 +80,7 @@ export const useContentEditable = (initialState, undoRedoHook) => {
             // ✅ Obtener el título actual del DOM
             const tituloActual = elementRefsCache.current.titulo?.innerText || tituloRefValue.current || "";
             
-            console.log('📝 Nota cambiada:', { titulo: tituloActual, nota: newNota });
+            logDesarrollo('📝 Nota cambiada:', { titulo: tituloActual, nota: newNota });
             
             setNota(newNota);
             addToHistory({ titulo: tituloActual, nota: newNota });
@@ -129,7 +131,7 @@ export const useContentEditable = (initialState, undoRedoHook) => {
     };
 
     const handleUndoClick = (tituloRef, notaRef) => {
-        console.log('⬅️ Undo click');
+        logDesarrollo('⬅️ Undo click');
         
         // Guardar referencias antes del undo
         elementRefsCache.current.titulo = tituloRef?.current;
@@ -137,13 +139,13 @@ export const useContentEditable = (initialState, undoRedoHook) => {
         
         const prevState = undo();
         if (prevState) {
-            console.log('Restaurando estado previo:', prevState);
+            logDesarrollo('Restaurando estado previo:', prevState);
             updateContentEditable(prevState, tituloRef, notaRef);
         }
     };
 
     const handleRedoClick = (tituloRef, notaRef) => {
-        console.log('➡️ Redo click');
+        logDesarrollo('➡️ Redo click');
         
         // Guardar referencias antes del redo
         elementRefsCache.current.titulo = tituloRef?.current;
@@ -151,7 +153,7 @@ export const useContentEditable = (initialState, undoRedoHook) => {
         
         const nextState = redo();
         if (nextState) {
-            console.log('Restaurando estado siguiente:', nextState);
+            logDesarrollo('Restaurando estado siguiente:', nextState);
             updateContentEditable(nextState, tituloRef, notaRef);
         }
     };

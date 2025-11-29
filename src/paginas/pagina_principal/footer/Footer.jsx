@@ -8,13 +8,12 @@ import { useSelector, useDispatch } from "react-redux";
 
 import { toggleOrganizarPorColumna, toggleVerSoloFavoritos,
         guardarOrgColumna, guardarVerSoloFavoritos } from "../../../store/preferenciaSlice"; 
-
-// ✅ YA NO necesitas importar cargarAnotaciones aquí
-// import { cargarAnotaciones } from "../../../store/anotacionesSlice";
         
 import { toggleVerModalCrearNota } from "../../../store/tareasSlice";
 
 import { useNavigate } from "react-router-dom";
+
+import { logDesarrollo, errorDesarrollo, registrarError } from "../../../utils/errorHandler";
 
 export default function Footer() {
 
@@ -53,7 +52,7 @@ export default function Footer() {
             // ✅ El useEffect de Cuerpo.jsx detectará el cambio y recargará automáticamente
             // NO necesitas llamar a cargarAnotaciones() aquí
         } catch (error) {
-            console.error('Error al cambiar filtro de favoritos:', error);
+            errorDesarrollo('Error al cambiar filtro de favoritos:', error);
         }
     }
 

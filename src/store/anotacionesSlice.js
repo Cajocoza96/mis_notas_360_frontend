@@ -1,6 +1,8 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { obtenerAnotaciones } from "../services/anotacionesService";
 
+import { obtenerMensajeError, registrarError, logDesarrollo } from "../utils/errorHandler";
+
 // ✅ Thunk para cargar anotaciones
 export const cargarAnotaciones = createAsyncThunk(
     'anotaciones/cargarAnotaciones',
@@ -9,7 +11,15 @@ export const cargarAnotaciones = createAsyncThunk(
             const anotacionesData = await obtenerAnotaciones();
             return anotacionesData;
         } catch (error) {
-            return rejectWithValue(error.message || 'Error al cargar las anotaciones');
+            // ✅ Registrar el error con contexto
+            registrarError('Cargar anotaciones', error);
+            
+            // ✅ Retornar mensaje de error seguro
+            const mensajeSeguro = obtenerMensajeError(
+                error, 
+                'Error al cargar las anotaciones.'
+            );
+            return rejectWithValue(mensajeSeguro);
         }
     }
 );
@@ -127,29 +137,7 @@ const anotacionesSlice = createSlice({
         resetAllANotacionesState: (state) => {
             return initialState;
         }
-    },
-
-    /*
-    extraReducers: (builder) => {
-        builder
-            // ✅ Cargar anotaciones
-            .addCase(cargarAnotaciones.pending, (state) => {
-                state.cargando = true;
-                state.mostrandoResultados = false,
-                state.error = null;
-            })
-            .addCase(cargarAnotaciones.fulfilled, (state, action) => {
-                state.anotaciones = action.payload;
-                state.cargando = false;
-                state.error = null;
-            })
-            .addCase(cargarAnotaciones.rejected, (state, action) => {
-                state.cargando = false;
-                state.mostrandoResultados = true;
-                state.error = action.payload || 'Error al cargar las anotaciones';
-            });
     }
-    */
 })
 
 export const {

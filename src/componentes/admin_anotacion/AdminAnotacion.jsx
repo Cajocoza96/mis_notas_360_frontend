@@ -49,19 +49,11 @@ export default function AdminAnotacion() {
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.2 }}>
 
-                <motion.div
+                <div
                     onClick={(e) => e.stopPropagation()}
                     className="bg-violet-700
                         z-50 p-3 overflow-hidden rounded-lg
-                        h-auto shadow-2xl"
-                    initial={{ opacity: 0, scale: 0.9, y: 20 }}
-                    animate={{ opacity: 1, scale: 1, y: 0 }}
-                    exit={{ opacity: 0, scale: 0.9, y: 0 }}
-                    transition={{
-                        type: "spring",
-                        stiffness: 300,
-                        damping: 25
-                    }}>
+                        h-auto shadow-2xl">
 
                     <div className="text-base md:text-xl text-white
                             flex flex-col gap-4">
@@ -85,7 +77,7 @@ export default function AdminAnotacion() {
                         </p>
                     </div>
 
-                </motion.div>
+                </div>
 
             </motion.div>
         </>

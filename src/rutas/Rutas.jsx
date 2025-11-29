@@ -63,11 +63,11 @@ export default function Rutas() {
             <Route
                 path="/agregar-nota"
                 element={
-                    //<RutaProtegida>
+                    <RutaProtegida>
                         <PageTransition>
                             <PaginaCrearEditNota />
                         </PageTransition>
-                    //</RutaProtegida>
+                    </RutaProtegida>
                 }
             />
 

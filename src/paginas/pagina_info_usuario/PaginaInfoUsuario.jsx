@@ -22,6 +22,9 @@ import CargandoNoHayNada from "../../componentes/cargando_no_hay_nada/CargandoNo
 
 import { useNavigate } from "react-router-dom";
 
+import Toast from "../../componentes/toast/Toast";
+import useToastConexion from "../../hooks/useToastConexion";
+
 export default function PaginaInfoUsuario() {
     const dispatch = useDispatch();
     const { usuario, cargando } = useAuth();
@@ -50,6 +53,11 @@ export default function PaginaInfoUsuario() {
         dispatch(toggleVerModalCerrarSesion());
     };
 
+    const verToast = useSelector((state) => state.acceso.verToast);
+
+    // ✅ Hook que maneja automáticamente los toasts de conexión
+    useToastConexion();
+
     const pageVariants = {
         initial: {
             x: "100%",
@@ -68,113 +76,117 @@ export default function PaginaInfoUsuario() {
         }
     }
 
-    
+
     if (cargando) {
         return (
-            <CargandoNoHayNada pantallaCompletaCarga={true}/>
+            <CargandoNoHayNada pantallaCompletaCarga={true} />
         );
     }
 
     return (
         <AnimatePresence mode="wait">
-        <motion.div
-            className="min-h-dvh bg-white dark:bg-gray-800 
+            <motion.div
+                className="min-h-dvh bg-white dark:bg-gray-800 
                             overflow-hidden
                             flex flex-col justify-start"
-            variants={pageVariants}
-            initial="initial"
-            animate="animate">
-            
-            <AnimatePresence>
-            {verModalEliminarUsuario && (
-                <ModalConfirmacion
-                    className="text-red-800 dark:text-red-400"
-                    eliminarPregunta={true}
-                    eliminarAceptar={true}
-                    textoPregunta="¿Desea eliminar la cuenta?" />
-            )}
-            </AnimatePresence>
+                variants={pageVariants}
+                initial="initial"
+                animate="animate">
 
-            <AnimatePresence>
-            {verModalCerrarSesion && (
-                <ModalConfirmacion
-                    eliminarAceptar={true}
-                    textoPregunta="¿Desea cerrar sesión?" />
-            )}
-            </AnimatePresence>
+                {verToast && (
+                    <Toast />
+                )}
 
-            <Cabecera
-                paginaInfoUsuario={true}
-            />
-
-            <div className="flex flex-col gap-1">
-                <ContIconoInfoUsua
-                    translate="no"
-                    className="text-black dark:text-white"
-                    iconoInfoUsua={usuario?.imagenPerfil ? (
-                        <img
-                            translate="no"
-                            src={usuario?.imagenPerfil || 'No disponible'}
-                            alt={usuario?.nombreCuenta || usuario?.nombreUsuario}
-                            className="w-7 h-7 lg:w-9 lg:h-9 rounded-full object-cover" />
-                    ) : (
-                        <HiOutlineUser className="text-2xl md:text-3xl" />
+                <AnimatePresence>
+                    {verModalEliminarUsuario && (
+                        <ModalConfirmacion
+                            className="text-red-800 dark:text-red-400"
+                            eliminarPregunta={true}
+                            eliminarAceptar={true}
+                            textoPregunta="¿Desea eliminar la cuenta?" />
                     )}
+                </AnimatePresence>
 
-                    titulo={usuario?.nombreCuenta || usuario?.nombreUsuario}
+                <AnimatePresence>
+                    {verModalCerrarSesion && (
+                        <ModalConfirmacion
+                            eliminarAceptar={true}
+                            textoPregunta="¿Desea cerrar sesión?" />
+                    )}
+                </AnimatePresence>
+
+                <Cabecera
+                    paginaInfoUsuario={true}
                 />
 
-                <ContIconoInfoUsua
-                    className="text-black dark:text-white"
-                    iconoInfoUsua={<HiOutlineMail />}
-                    titulo="Correo electrónico"
-                    texto={usuario?.email
-                        ? <span translate="no">{usuario.email}</span>
-                        : 'No disponible'}
-                />
+                <div className="flex flex-col gap-1">
+                    <ContIconoInfoUsua
+                        translate="no"
+                        className="text-black dark:text-white"
+                        iconoInfoUsua={usuario?.imagenPerfil ? (
+                            <img
+                                translate="no"
+                                src={usuario?.imagenPerfil || 'No disponible'}
+                                alt={usuario?.nombreCuenta || usuario?.nombreUsuario}
+                                className="w-7 h-7 lg:w-9 lg:h-9 rounded-full object-cover" />
+                        ) : (
+                            <HiOutlineUser className="text-2xl md:text-3xl" />
+                        )}
 
-                <ContIconoInfoUsua
-                    className="text-black dark:text-white"
-                    iconoInfoUsua={<HiOutlinePhone />}
-                    titulo="Número de teléfono"
-                    texto="No disponible"
-                />
+                        titulo={usuario?.nombreCuenta || usuario?.nombreUsuario}
+                    />
 
-                <ContIconoInfoUsua
-                    onClick={handleIrTerminosPoliticas}
-                    className="text-black dark:text-white cursor-pointer
+                    <ContIconoInfoUsua
+                        className="text-black dark:text-white"
+                        iconoInfoUsua={<HiOutlineMail />}
+                        titulo="Correo electrónico"
+                        texto={usuario?.email
+                            ? <span translate="no">{usuario.email}</span>
+                            : 'No disponible'}
+                    />
+
+                    <ContIconoInfoUsua
+                        className="text-black dark:text-white"
+                        iconoInfoUsua={<HiOutlinePhone />}
+                        titulo="Número de teléfono"
+                        texto="No disponible"
+                    />
+
+                    <ContIconoInfoUsua
+                        onClick={handleIrTerminosPoliticas}
+                        className="text-black dark:text-white cursor-pointer
                             hover:bg-gray-300 active:bg-gray-300
                             dark:hover:bg-gray-700 dark:active:bg-gray-700
                             rounded-md transition-colors duration-200"
-                    iconoInfoUsua={<HiOutlineInformationCircle />}
-                    titulo="Acerca de"
-                />
+                        iconoInfoUsua={<HiOutlineInformationCircle />}
+                        titulo="Acerca de"
+                    />
 
-                {/*Eliminar cuenta*/}
-                <ContIconoInfoUsua
-                    onClick={handleEliminarCuenta}
-                    className="text-red-600 cursor-pointer 
+                    {/*Eliminar cuenta*/}
+                    <ContIconoInfoUsua
+                        onClick={handleEliminarCuenta}
+                        className="text-red-600 cursor-pointer 
                             hover:bg-red-200 active:bg-red-200
                             dark:hover:bg-red-900/30 dark:active:bg-red-900/30
                             rounded-md transition-colors duration-200"
-                    iconoInfoUsua={<HiOutlineExclamationCircle />}
-                    titulo="Eliminar cuenta"
-                />
+                        iconoInfoUsua={<HiOutlineExclamationCircle />}
+                        titulo="Eliminar cuenta"
+                    />
 
 
-                {/* Cerrar sesión */}
-                <ContIconoInfoUsua
-                    onClick={handleCerrarSesion}
-                    className="text-red-600 cursor-pointer 
+                    {/* Cerrar sesión */}
+                    <ContIconoInfoUsua
+                        onClick={handleCerrarSesion}
+                        className="text-red-600 cursor-pointer 
                             hover:bg-red-200 active:bg-red-200
                             dark:hover:bg-red-900/30 dark:active:bg-red-900/30
                             rounded-md transition-colors duration-200"
-                    iconoInfoUsua={<HiOutlineLogout />}
-                    titulo="Cerrar sesión"
-                />
-            </div>
+                        iconoInfoUsua={<HiOutlineLogout />}
+                        titulo="Cerrar sesión"
+                    />
+                </div>
 
-        </motion.div>
+            </motion.div>
         </AnimatePresence>
     );
 }

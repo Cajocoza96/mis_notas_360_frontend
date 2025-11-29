@@ -1,12 +1,22 @@
 import React from "react";
 
+import { useSelector } from "react-redux";
+
 import { motion, AnimatePresence } from "framer-motion";
 
 import Cabecera from "../../componentes/cabecera/Cabecera";
 
 import Cuerpo from "../../componentes/cuerpo/Cuerpo";
 
+import Toast from "../../componentes/toast/Toast";
+import useToastConexion from "../../hooks/useToastConexion";
+
 export default function PaginaEstado() {
+
+    const verToast = useSelector((state) => state.acceso.verToast);
+
+    // ✅ Hook que maneja automáticamente los toasts de conexión
+    useToastConexion();
 
     const pageVariants = {
         initial: {
@@ -35,6 +45,10 @@ export default function PaginaEstado() {
                 variants={pageVariants}
                 initial="initial"
                 animate="animate">
+
+                {verToast && (
+                    <Toast />
+                )}
 
                 <Cabecera
                     paginaEstado={true}

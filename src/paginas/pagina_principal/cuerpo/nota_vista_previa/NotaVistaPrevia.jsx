@@ -18,6 +18,8 @@ import { actualizarFavorito, obtenerAnotaciones } from "../../../../services/ano
 
 import { setAnotacionId, toggleVerModalRestaurarNota, toggleVerModalEliminarNotaDefinitiva } from "../../../../store/tareasSlice";
 
+import { logDesarrollo, errorDesarrollo, registrarError } from "../../../../utils/errorHandler";
+
 export default function NotaVistaPrevia({ anotacionId, iconoFavorito, texto, no_asignado,
     pendiente, finalizado, esFavorito = false, iconoAdministrar, iconoRestaurarEliminarDefinitivo }) {
 
@@ -92,7 +94,7 @@ export default function NotaVistaPrevia({ anotacionId, iconoFavorito, texto, no_
             }
 
         } catch (error) {
-            console.error('Error al actualizar favorito:', error);
+            errorDesarrollo('Error al actualizar favorito:', error);
             cargarAnotaciones();
 
         } finally {

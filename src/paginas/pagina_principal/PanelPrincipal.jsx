@@ -14,6 +14,9 @@ import MenuHamburguesa from "../../componentes/menu_hamburguesa/MenuHamburguesa"
 
 import ModalExitoError from "../../componentes/modal/ModalExitoError";
 
+import Toast from "../../componentes/toast/Toast";
+import useToastConexion from "../../hooks/useToastConexion";
+
 export default function PanelPrincipal() {
     const verOpcionesCabecera = useSelector((state) => state.layout.verOpcionesCabecera);
 
@@ -22,6 +25,11 @@ export default function PanelPrincipal() {
     const verModalEliminarNotaDefinitiva = useSelector((state) => state.tareas.verModalEliminarNotaDefinitiva);
 
     const verMenuHamburguesa = useSelector((state) => state.layout.verMenuHamburguesa);
+
+    const verToast = useSelector((state) => state.acceso.verToast);
+
+    // ✅ Hook que maneja automáticamente los toasts de conexión
+    useToastConexion();
 
     const pageVariants = {
         initial: {
@@ -51,6 +59,10 @@ export default function PanelPrincipal() {
                 variants={pageVariants}
                 initial="initial"
                 animate="animate">
+
+                {verToast && (
+                    <Toast />
+                )}
 
                 <AnimatePresence>
                     <ModalExitoError />

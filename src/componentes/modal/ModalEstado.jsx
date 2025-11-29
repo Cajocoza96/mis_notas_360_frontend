@@ -53,19 +53,11 @@ export default function ModalEstado() {
                 exit={{ opacity: 0}}
                 transition={{ duration: 0.2 }}>
 
-            <motion.div
+            <div
                 onClick={(e) => e.stopPropagation()}
                 className="bg-white dark:bg-gray-800 
                             z-50 p-3 overflow-hidden
-                            w-[90%] h-auto "
-                initial={{ opacity: 0, scale: 0.9, y:20 }} 
-                animate={{ opacity: 1, scale: 1, y:0 }}
-                exit={{ opacity: 0, scale: 0.9, y:0 }}
-                transition={{
-                    type: "spring",
-                    stiffness: 300,
-                    damping: 25
-                }}>
+                            w-[90%] h-auto ">
 
                 <div className="flex flex-col gap-2">
 
@@ -150,7 +142,7 @@ export default function ModalEstado() {
                     </p>
                 </div>
 
-            </motion.div>
+            </div>
             
             </motion.div>
         </>

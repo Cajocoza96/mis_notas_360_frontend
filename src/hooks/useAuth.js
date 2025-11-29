@@ -1,20 +1,22 @@
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { 
-    cerrarSesion as cerrarSesionService, 
+import {
+    cerrarSesion as cerrarSesionService,
     eliminarCuenta as eliminarCuentaService
 } from '../services/authService';
 import { cerrarSesionLocal, actualizarUsuarioLocal } from '../store/authSlice';
-import { 
-    setVerModalEliminarUsuario, 
+import {
+    setVerModalEliminarUsuario,
     setVerModalCerrarSesion,
-    setVerToast 
+    setVerToast
 } from '../store/accesoSlice';
+
+import { logDesarrollo, errorDesarrollo, registrarError } from "../utils/errorHandler";
 
 export const useAuth = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
-    
+
     // ✅ Obtener datos del Redux store
     const { usuario, autenticado, inicializando } = useSelector((state) => state.auth);
 
@@ -27,11 +29,19 @@ export const useAuth = () => {
             navigate('/iniciar-sesion');
             return { exito: true };
         } catch (error) {
-            console.error('Error al cerrar sesión:', error);
+            // ✅ Registrar el error de forma segura
+            registrarError('Cerrar sesión', error);
+
+            // Cerrar sesión localmente de todas formas
             dispatch(cerrarSesionLocal());
             dispatch(setVerModalCerrarSesion(false));
             navigate('/iniciar-sesion');
-            return { exito: false, error: error.message };
+
+            // ✅ Retornar mensaje de error seguro
+            return {
+                exito: false,
+                error: obtenerMensajeError(error, 'Error al cerrar sesión')
+            };
         }
     };
 
@@ -44,15 +54,27 @@ export const useAuth = () => {
             navigate('/registrar');
             return { exito: true };
         } catch (error) {
-            console.error('Error al eliminar cuenta:', error);
+            // ✅ Registrar el error de forma segura
+            registrarError('Eliminar cuenta', error);
+
             dispatch(setVerModalEliminarUsuario(false));
-            
+
+            // ✅ Mostrar mensaje de error seguro al usuario
+            const mensajeSeguro = obtenerMensajeError(
+                error,
+                'Error al eliminar la cuenta. Por favor intenta más tarde'
+            );
+            dispatch(setMensajeToast(mensajeSeguro));
             dispatch(setVerToast(true));
+
             setTimeout(() => {
                 dispatch(setVerToast(false));
             }, 3000);
-            
-            return { exito: false, error: error.message };
+
+            return {
+                exito: false,
+                error: mensajeSeguro
+            };
         }
     };
 

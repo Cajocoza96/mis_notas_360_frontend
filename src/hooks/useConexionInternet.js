@@ -11,15 +11,18 @@ export default function useConexionInternet() {
 
         const handleOnline = () => {
             if (!isOnline) {
-                // Solo marcar como reconectado si realmente estaba offline
                 setJustReconnected(true);
                 setWasOffline(true);
                 
-                // Limpiar el timer de tiempo offline
                 if (offlineTimer) {
                     clearInterval(offlineTimer);
                     offlineTimer = null;
                 }
+                
+                // Resetear justReconnected después de un tiempo
+                setTimeout(() => {
+                    setJustReconnected(false);
+                }, 100);
             }
             setIsOnline(true);
         };
@@ -30,22 +33,18 @@ export default function useConexionInternet() {
             setJustReconnected(false);
             setTimeOffline(0);
             
-            // Iniciar contador de tiempo offline
             offlineTimer = setInterval(() => {
                 setTimeOffline(prev => prev + 1);
             }, 1000);
         };
 
-        // Verificar conexión inicial
         if (!navigator.onLine) {
             handleOffline();
         }
 
-        // Agregar event listeners
         window.addEventListener('online', handleOnline);
         window.addEventListener('offline', handleOffline);
 
-        // Limpiar event listeners y timer
         return () => {
             window.removeEventListener('online', handleOnline);
             window.removeEventListener('offline', handleOffline);
@@ -55,7 +54,6 @@ export default function useConexionInternet() {
         };
     }, [isOnline]);
 
-    // Función para resetear el estado de reconexión
     const resetReconnectionState = () => {
         setJustReconnected(false);
         setWasOffline(false);

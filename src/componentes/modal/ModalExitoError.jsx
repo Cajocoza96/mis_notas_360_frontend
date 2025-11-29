@@ -36,18 +36,10 @@ export default function ModalExitoError() {
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.2 }}>
 
-                <motion.div
+                <div
                     className="bg-white dark:bg-gray-800 select-none
                                     z-50 p-3 overflow-hidden rounded-lg
-                                    w-[90%] max-w-md h-auto shadow-2xl"
-                    initial={{ opacity: 0, scale: 0.9, y: 20 }}
-                    animate={{ opacity: 1, scale: 1, y: 0 }}
-                    exit={{ opacity: 0, scale: 0.9, y: 0 }}
-                    transition={{
-                        type: "spring",
-                        stiffness: 300,
-                        damping: 25
-                    }}>
+                                    w-[90%] max-w-md h-auto shadow-2xl">
 
                     <div className="mx-auto w-full flex flex-col items-center gap-4 2xl:gap-8">
                         <div className="flex flex-col items-center gap-2 2xl:gap-6">
@@ -80,7 +72,7 @@ export default function ModalExitoError() {
                         </div>
 
                     </div>
-                </motion.div>
+                </div>
 
             </motion.div>
         </>

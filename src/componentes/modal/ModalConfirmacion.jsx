@@ -29,6 +29,8 @@ import {
     eliminarDefinitivamente, vaciarPapelera
 } from "../../services/anotacionesService";
 
+import { logDesarrollo, errorDesarrollo, registrarError } from "../../utils/errorHandler";
+
 export default function ModalConfirmacion({ textoPregunta, restaurarTexto, eliminarPregunta, eliminarAceptar }) {
     const location = useLocation();
 
@@ -69,7 +71,7 @@ export default function ModalConfirmacion({ textoPregunta, restaurarTexto, elimi
         const anotacionId = anotacionIdRedux || id;
 
         if (!anotacionId) {
-            console.error('No se encontró el ID de la anotación');
+            errorDesarrollo('No se encontró el ID de la anotación');
             alert('Error: No se pudo identificar la anotación');
             return;
         }
@@ -80,7 +82,7 @@ export default function ModalConfirmacion({ textoPregunta, restaurarTexto, elimi
             const data = await moverAPapelera(anotacionId);
 
             await actualizarContadores();
-            console.log('Nota movida a papelera:', data);
+            logDesarrollo('Nota movida a papelera:', data);
 
             // Actualizar Redux: eliminar la anotación de la lista
             dispatch(papeleraAnotacion(anotacionId));
@@ -128,7 +130,7 @@ export default function ModalConfirmacion({ textoPregunta, restaurarTexto, elimi
         const anotacionId = anotacionIdRedux || id;
 
         if (!anotacionId) {
-            console.error('No se encontró el ID de la anotación');
+            errorDesarrollo('No se encontró el ID de la anotación');
             alert('Error: No se pudo identificar la anotación');
             return;
         }
@@ -139,7 +141,7 @@ export default function ModalConfirmacion({ textoPregunta, restaurarTexto, elimi
             const data = await restaurarDesdePapelera(anotacionId);
 
             await actualizarContadores();
-            console.log('Nota restaurada desde la papelera:', data);
+            logDesarrollo('Nota restaurada desde la papelera:', data);
 
             // Ocultar el modal automaticamente despues de 3 segundos
             setTimeout(() => {
@@ -178,7 +180,7 @@ export default function ModalConfirmacion({ textoPregunta, restaurarTexto, elimi
         const anotacionId = anotacionIdRedux || id;
 
         if (!anotacionId) {
-            console.error('No se encontró el ID de la anotación');
+            errorDesarrollo('No se encontró el ID de la anotación');
             alert('Error: No se pudo identificar la anotación');
             return;
         }
@@ -190,7 +192,7 @@ export default function ModalConfirmacion({ textoPregunta, restaurarTexto, elimi
 
             await actualizarContadores();
 
-            console.log(`Nota eliminada definitivamente desde la ${esModoVistaPrevia ? 'vista previa' : 'papelera'}`, data);
+            logDesarrollo(`Nota eliminada definitivamente desde la ${esModoVistaPrevia ? 'vista previa' : 'papelera'}`, data);
 
             // Actualizar Redux: eliminar la anotación de la lista de papelera
             dispatch(eliminarAnotacion(anotacionId));
@@ -239,7 +241,7 @@ export default function ModalConfirmacion({ textoPregunta, restaurarTexto, elimi
             const data = await vaciarPapelera();
 
             await actualizarContadores();
-            console.log('Han sido eliminada definitivamente todas las notas desde la papelera:', data);
+            logDesarrollo('Han sido eliminada definitivamente todas las notas desde la papelera:', data);
 
             // Ocultar el modal automaticamente despues de 3 segundos
             setTimeout(() => {
@@ -374,19 +376,11 @@ export default function ModalConfirmacion({ textoPregunta, restaurarTexto, elimi
                     }
                 }}>
 
-                <motion.div
+                <div
                     onClick={(e) => e.stopPropagation()}
                     className="bg-white dark:bg-gray-800 select-none
                             z-50 p-3 overflow-hidden rounded-lg
-                            w-[90%] h-auto shadow-2xl"
-                    initial={{ opacity: 0, scale: 0.9, y:20 }} 
-                    animate={{ opacity: 1, scale: 1, y:0 }}
-                    exit={{ opacity: 0, scale: 0.9, y:0 }}
-                    transition={{
-                        type: "spring",
-                        stiffness: 300,
-                        damping: 25
-                    }}>
+                            w-[90%] h-auto shadow-2xl">
 
                     <div className="mx-auto w-full flex flex-col gap-4 2xl:gap-5">
                         <div className="flex flex-col gap-2">
@@ -445,7 +439,7 @@ export default function ModalConfirmacion({ textoPregunta, restaurarTexto, elimi
                             </p>
                         </div>
                     </div>
-                </motion.div>
+                </div>
 
             </motion.div>
         </>

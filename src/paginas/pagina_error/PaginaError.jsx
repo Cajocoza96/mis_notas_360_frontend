@@ -2,6 +2,8 @@ import React from "react";
 
 import { useNavigate } from "react-router-dom";
 
+import { useSelector } from "react-redux";
+
 import Lottie from "lottie-react";
 
 import error404 from "../../assets/lottie/pagina_error/error404.json";
@@ -9,6 +11,9 @@ import error404 from "../../assets/lottie/pagina_error/error404.json";
 import BotonAccion from "../../componentes/botones/BotonAccion";
 
 import { motion } from "framer-motion";
+
+import Toast from "../../componentes/toast/Toast";
+import useToastConexion from "../../hooks/useToastConexion";
 
 export default function PaginaError() {
 
@@ -18,10 +23,19 @@ export default function PaginaError() {
 
     const handleNavegarInicio = () => navigate("/");
 
+    const verToast = useSelector((state) => state.acceso.verToast);
+
+    // ✅ Hook que maneja automáticamente los toasts de conexión
+    useToastConexion();
+
     return (
         <div className="h-dvh bg-white dark:bg-gray-800 
                         overflow-hidden overflow-y-auto
                         flex flex-col items-center justify-center gap-2">
+
+            {verToast && (
+                <Toast />
+            )}
 
             <div className="flex items-center justify-center">
                 <Lottie className="w-[60%] object-cover" animationData={error404} loop={true} />

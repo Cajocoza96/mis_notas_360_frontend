@@ -20,6 +20,11 @@ import ModalExitoError from "../../componentes/modal/ModalExitoError";
 
 import SkeletonCrearEditPrevia from "../../componentes/cargando_no_hay_nada/SkeletonCrearEditPrevia";
 
+import { logDesarrollo, errorDesarrollo, registrarError } from "../../utils/errorHandler";
+
+import Toast from "../../componentes/toast/Toast";
+import useToastConexion from "../../hooks/useToastConexion";
+
 export default function PaginaVistaPrevia() {
     const { id } = useParams();
 
@@ -28,6 +33,11 @@ export default function PaginaVistaPrevia() {
 
     const dispatch = useDispatch();
     const notaRef = useRef(null);
+
+    const verToast = useSelector((state) => state.acceso.verToast);
+
+    // ✅ Hook que maneja automáticamente los toasts de conexión
+    useToastConexion();
 
     // ✅ Estado local simple para controlar la carga
     const [cargando, setCargando] = useState(true);
@@ -73,7 +83,7 @@ export default function PaginaVistaPrevia() {
             // ✅ Terminar carga - el ref se llenará automáticamente en CuerpoEdicion
             setCargando(false);
         } catch (error) {
-            console.error('Error al cargar la anotación para vista previa:', error);
+            errorDesarrollo('Error al cargar la anotación para vista previa:', error);
             setCargando(false);
             // Redirigir a la página de error
             navigate('/error', { replace: true });
@@ -121,6 +131,10 @@ export default function PaginaVistaPrevia() {
                 variants={pageVariants}
                 initial="initial"
                 animate="animate">
+
+                {verToast && (
+                    <Toast />
+                )}
 
                 <AnimatePresence>
                     <ModalExitoError />

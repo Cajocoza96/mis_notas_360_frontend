@@ -1,6 +1,10 @@
 import { useDispatch } from 'react-redux';
 import { setContadores } from '../store/tareasSlice';
 
+import { logDesarrollo, errorDesarrollo, registrarError } from "../utils/errorHandler";
+
+import { fetchConAuth } from "../services/authService";
+
 export const useContadores = () => {
     const dispatch = useDispatch();
     const API_URL = import.meta.env.VITE_API_URL;
@@ -9,7 +13,7 @@ export const useContadores = () => {
         try {
             const token = localStorage.getItem('token');
             
-            const respuesta = await fetch(`${API_URL}/anotaciones/contadores`, {
+            const respuesta = await fetchConAuth(`${API_URL}/anotaciones/contadores`, {
                 method: 'GET',
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -22,11 +26,11 @@ export const useContadores = () => {
                 dispatch(setContadores(datos));
                 return datos;
             } else {
-                console.error('Error al actualizar contadores');
+                errorDesarrollo('Error al actualizar contadores');
                 return null;
             }
         } catch (error) {
-            console.error('Error al actualizar contadores:', error);
+            errorDesarrollo('Error al actualizar contadores:', error);
             return null;
         }
     };

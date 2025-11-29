@@ -32,20 +32,12 @@ export default function ModalRestablecerContrasena() {
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.2 }}>
 
-                <motion.div
+                <div
                     onClick={(e) => e.stopPropagation()}
                     className="bg-white dark:bg-gray-800 select-none
                             z-50 p-4 overflow-hidden rounded-lg
                             w-[90%] max-w-md h-auto shadow-2xl
-                            flex flex-col gap-3"
-                    initial={{ opacity: 0, scale: 0.9, y: 20 }}
-                    animate={{ opacity: 1, scale: 1, y: 0 }}
-                    exit={{ opacity: 0, scale: 0.9, y: 0 }}
-                    transition={{
-                        type: "spring",
-                        stiffness: 300,
-                        damping: 25
-                    }}>
+                            flex flex-col gap-3">
 
                     <div
                         className="text-2xl md:text-3xl text-red-600 dark:text-red-500
@@ -66,7 +58,7 @@ export default function ModalRestablecerContrasena() {
                         restablecer={true}
                     />
 
-                </motion.div>
+                </div>
 
             </motion.div>
         </>

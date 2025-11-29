@@ -11,6 +11,8 @@ import { GoogleLogin } from "@react-oauth/google";
 import { jwtDecode } from "jwt-decode";
 import { toggleVerMenuHamburguesa } from "../../../store/layoutSlice";
 
+import { obtenerMensajeError, registrarError, logDesarrollo } from "../../../utils/errorHandler";
+
 export default function Cuerpo() {
     const location = useLocation();
     const navigate = useNavigate();
@@ -41,14 +43,19 @@ export default function Cuerpo() {
             // Ya NO decodificamos en el frontend
             // Enviamos el token completo al backend para que lo verifique
             await autenticarConGoogle(credentialResponse.credential);
-    
+
             if (verMenuHamburguesa) {
                 dispatch(toggleVerMenuHamburguesa());
             }
             navigate("/panel-principal");
-    
+
         } catch (error) {
-            mostrarToast(error.message || "Error al autenticar con Google");
+            registrarError('Autenticar con Google', error);
+            const mensajeSeguro = obtenerMensajeError(
+                error,
+                'Error al autenticar con Google'
+            );
+            mostrarToast(mensajeSeguro);
         }
     };
 
@@ -85,7 +92,12 @@ export default function Cuerpo() {
                         navigate("/panel-principal");
 
                     } catch (error) {
-                        mostrarToast(error.message || "Error al autenticar con Facebook");
+                        registrarError('Autenticar con Facebook', error);
+                        const mensajeSeguro = obtenerMensajeError(
+                            error,
+                            'Error al autenticar con Facebook'
+                        );
+                        mostrarToast(mensajeSeguro);
                     }
                 });
             } else {
@@ -102,7 +114,7 @@ export default function Cuerpo() {
                         text-black dark:text-white">
                 {textoAccion}
             </p>
-            
+
 
             {/* Botón de Facebook 
             <div onClick={handleFacebookAuth}>
@@ -113,7 +125,7 @@ export default function Cuerpo() {
             </div>
             */}
 
-            
+
             {/* Botón de Google - Versión oculta con estilo personalizado 
             <div className="relative cursor-pointer">
                 <div className="absolute inset-0 opacity-0 z-10">
@@ -133,7 +145,7 @@ export default function Cuerpo() {
                     />
                 </div>
             </div>
-            */} 
+            */}
 
             <p className="w-full text-center text-base md:text-xl 
                             select-none truncate
@@ -141,14 +153,14 @@ export default function Cuerpo() {
                 o
             </p>
 
-            <CorreoContrasena 
+            <CorreoContrasena
                 textoContrasena="Contraseña"
                 noRestablecer={true}
-                />
+            />
 
             {!esRegistro && (
 
-                <div 
+                <div
                     onClick={handleRestablecerContrasena}
                     className="w-fit">
                     <p className="mt-1 text-left text-base md:text-xl 

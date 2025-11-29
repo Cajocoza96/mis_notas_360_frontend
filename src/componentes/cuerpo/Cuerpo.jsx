@@ -29,6 +29,8 @@ import CargandoNoHayNada from "../cargando_no_hay_nada/CargandoNoHayNada";
 
 import { AnimatePresence } from "framer-motion";
 
+import { logDesarrollo, errorDesarrollo, registrarError } from "../../utils/errorHandler";
+
 export default function Cuerpo({ notaNoEliminada,
     verContenidoCuerpo, verNotaBusqueda, verNotaEliminada, verTodosEstados }) {
 
@@ -82,7 +84,7 @@ export default function Cuerpo({ notaNoEliminada,
             // El error ya se loguea en el servicio
             setProcesando(false);
             setCargando(false);
-            console.error('Error al cargar contadores en el componente:', error);
+            errorDesarrollo('Error al cargar contadores en el componente:', error);
         }
     };
 
@@ -133,7 +135,7 @@ export default function Cuerpo({ notaNoEliminada,
 
             navigate("/panel-principal");
         } catch (error) {
-            console.error('Error al cambiar filtro de estado:', error);
+            errorDesarrollo('Error al cambiar filtro de estado:', error);
         }
     };
 

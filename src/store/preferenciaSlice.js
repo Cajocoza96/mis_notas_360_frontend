@@ -1,5 +1,9 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
+import { obtenerMensajeError, registrarError, logDesarrollo } from "../utils/errorHandler";
+
+import { fetchConAuth } from "../services/authService";
+
 const API_URL = import.meta.env.VITE_API_URL;
 
 // Thunk para cargar las preferencias desde el backend
@@ -8,7 +12,7 @@ export const cargarPreferencia = createAsyncThunk(
     async (_, { rejectWithValue }) => {
         try {
             const token = localStorage.getItem('token');
-            const response = await fetch(`${API_URL}/auth/preferencia`, {
+            const response = await fetchConAuth(`${API_URL}/auth/preferencia`, {
                 method: 'GET',
                 headers: {
                     'Authorization': `Bearer ${token}`
@@ -28,7 +32,12 @@ export const cargarPreferencia = createAsyncThunk(
                 ordenAnotaciones: data.ordenAnotaciones || 'fecha_creacion'
             };
         } catch (error) {
-            return rejectWithValue(error.message);
+            registrarError('Cargar preferencia', error);
+            const mensajeSeguro = obtenerMensajeError(
+                error, 
+                'Error al cargar las preferencias'
+            );
+            return rejectWithValue(mensajeSeguro);
         }
     }
 );
@@ -39,7 +48,7 @@ export const guardarOrgColumna = createAsyncThunk(
     async (organizarPorColumna, { rejectWithValue }) => {
         try {
             const token = localStorage.getItem('token');
-            const response = await fetch(`${API_URL}/auth/preferencia`, {
+            const response = await fetchConAuth(`${API_URL}/auth/preferencia`, {
                 method: 'PUT',
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -54,7 +63,12 @@ export const guardarOrgColumna = createAsyncThunk(
 
             return organizarPorColumna;
         } catch (error) {
-            return rejectWithValue(error.message);
+            registrarError('Guardar organización por columna', error);
+            const mensajeSeguro = obtenerMensajeError(
+                error, 
+                'Error al guardar la preferencia de organización'
+            );
+            return rejectWithValue(mensajeSeguro);
         }
     }
 );
@@ -65,7 +79,7 @@ export const guardarTema = createAsyncThunk(
     async (tema, { rejectWithValue }) => {
         try {
             const token = localStorage.getItem('token');
-            const response = await fetch(`${API_URL}/auth/preferencia`, {
+            const response = await fetchConAuth(`${API_URL}/auth/preferencia`, {
                 method: 'PUT',
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -80,7 +94,12 @@ export const guardarTema = createAsyncThunk(
 
             return tema;
         } catch (error) {
-            return rejectWithValue(error.message);
+            registrarError('Guardar tema', error);
+            const mensajeSeguro = obtenerMensajeError(
+                error, 
+                'Error al guardar el tema'
+            );
+            return rejectWithValue(mensajeSeguro);
         }
     }
 );
@@ -91,7 +110,7 @@ export const guardarVerSoloFavoritos = createAsyncThunk(
     async (verSoloFavoritos, { rejectWithValue }) => {
         try {
             const token = localStorage.getItem('token');
-            const response = await fetch(`${API_URL}/auth/preferencia`, {
+            const response = await fetchConAuth(`${API_URL}/auth/preferencia`, {
                 method: 'PUT',
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -106,7 +125,12 @@ export const guardarVerSoloFavoritos = createAsyncThunk(
 
             return verSoloFavoritos;
         } catch (error) {
-            return rejectWithValue(error.message);
+            registrarError('Guardar filtro de favoritos', error);
+            const mensajeSeguro = obtenerMensajeError(
+                error, 
+                'Error al guardar el filtro de favoritos'
+            );
+            return rejectWithValue(mensajeSeguro);
         }
     }
 );
@@ -117,7 +141,7 @@ export const guardarVerAnotacEstado = createAsyncThunk(
     async (verAnotacEstado, { rejectWithValue }) => {
         try {
             const token = localStorage.getItem('token');
-            const response = await fetch(`${API_URL}/auth/preferencia`, {
+            const response = await fetchConAuth(`${API_URL}/auth/preferencia`, {
                 method: 'PUT',
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -132,7 +156,12 @@ export const guardarVerAnotacEstado = createAsyncThunk(
 
             return verAnotacEstado;
         } catch (error) {
-            return rejectWithValue(error.message);
+            registrarError('Guardar vista de estado', error);
+            const mensajeSeguro = obtenerMensajeError(
+                error, 
+                'Error al guardar la vista de estado'
+            );
+            return rejectWithValue(mensajeSeguro);
         }
     }
 );
@@ -143,7 +172,7 @@ export const guardarOrdenAnotaciones = createAsyncThunk(
     async (ordenAnotaciones, { rejectWithValue }) => {
         try {
             const token = localStorage.getItem('token');
-            const response = await fetch(`${API_URL}/auth/preferencia`, {
+            const response = await fetchConAuth(`${API_URL}/auth/preferencia`, {
                 method: 'PUT',
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -158,7 +187,12 @@ export const guardarOrdenAnotaciones = createAsyncThunk(
 
             return ordenAnotaciones;
         } catch (error) {
-            return rejectWithValue(error.message);
+            registrarError('Guardar orden de anotaciones', error);
+            const mensajeSeguro = obtenerMensajeError(
+                error, 
+                'Error al guardar el orden de anotaciones'
+            );
+            return rejectWithValue(mensajeSeguro);
         }
     }
 );

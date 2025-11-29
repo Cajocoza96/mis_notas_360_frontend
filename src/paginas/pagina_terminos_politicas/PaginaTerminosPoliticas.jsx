@@ -1,5 +1,7 @@
 import React from "react";
 
+import { useSelector } from "react-redux";
+
 import { motion, AnimatePresence } from "framer-motion";
 
 import { useLocation } from "react-router-dom";
@@ -12,6 +14,9 @@ import Cuerpo from "./cuerpo/Cuerpo";
 
 import Footer from "./footer/Footer";
 
+import Toast from "../../componentes/toast/Toast";
+import useToastConexion from "../../hooks/useToastConexion";
+
 export default function PaginaTerminosPoliticas() {
 
     const inforTermPol = infoTerminosPoliticas.seccionTerminosPoliticas;
@@ -19,6 +24,11 @@ export default function PaginaTerminosPoliticas() {
     const location = useLocation();
 
     const esTerminoDeServicio = location.pathname === "/terminos-de-servicio";
+
+    const verToast = useSelector((state) => state.acceso.verToast);
+
+    // ✅ Hook que maneja automáticamente los toasts de conexión
+    useToastConexion();
 
     const pageVariants = {
         initial: (direction) => ({
@@ -49,6 +59,10 @@ export default function PaginaTerminosPoliticas() {
         <div className="h-dvh bg-white dark:bg-gray-800 
                         overflow-hidden
                         flex flex-col justify-between">
+
+            {verToast && (
+                <Toast />
+            )}
 
             <AnimatePresence mode="wait" custom={esTerminoDeServicio ? 1 : -1}>
                 <motion.div

@@ -12,6 +12,9 @@ import Footer from "../../componentes/footer/Footer";
 
 import ModalExitoError from "../../componentes/modal/ModalExitoError";
 
+import Toast from "../../componentes/toast/Toast";
+import useToastConexion from "../../hooks/useToastConexion";
+
 export default function PaginaPapelera() {
 
     const verModalRestaurarNota = useSelector((state) => state.tareas.verModalRestaurarNota);
@@ -21,6 +24,11 @@ export default function PaginaPapelera() {
     const verModalEliminarTodasLasNotasDefinitivo = useSelector((state) => state.tareas.verModalEliminarTodasLasNotasDefinitivo);
 
     const { anotaciones } = useSelector((state) => state.anotaciones);
+
+    const verToast = useSelector((state) => state.acceso.verToast);
+
+    // ✅ Hook que maneja automáticamente los toasts de conexión
+    useToastConexion();
 
     const pageVariants = {
         initial: {
@@ -49,6 +57,10 @@ export default function PaginaPapelera() {
                 variants={pageVariants}
                 initial="initial"
                 animate="animate">
+
+                {verToast && (
+                    <Toast />
+                )}
 
                 <AnimatePresence>
                     <ModalExitoError />

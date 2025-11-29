@@ -2,16 +2,25 @@ import React from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useSelector } from "react-redux";
 import { useLocation } from "react-router-dom";
-import Toast from "../../componentes/toast/Toast";
 import Cabecera from "../../componentes/cabecera/Cabecera";
 import Cuerpo from "./cuerpo/Cuerpo";
 import SeccionTerminosPoliticas from "./footer/SeccionTerminosPoliticas";
 import Footer from "./footer/Footer";
 import ModalRestablecerContrasena from "../../componentes/modal/ModalRestablecerContrasena";
 
+import Toast from "../../componentes/toast/Toast";
+import useToastConexion from "../../hooks/useToastConexion";
+
 export default function PaginaRegIniSesion() {
     const location = useLocation();
     const esRegistro = location.pathname === "/registrar";
+
+    const verModalRestablecerContrasena = useSelector((state) => state.acceso.verModalRestablecerContrasena);
+
+    const verToast = useSelector((state) => state.acceso.verToast);
+
+    // ✅ Hook que maneja automáticamente los toasts de conexión
+    useToastConexion();
 
     const pageVariants = {
         initial: (direction) => ({
@@ -37,9 +46,6 @@ export default function PaginaRegIniSesion() {
             }
         })
     };
-
-    const verToast = useSelector((state) => state.acceso.verToast);
-    const verModalRestablecerContrasena = useSelector((state) => state.acceso.verModalRestablecerContrasena);
 
     return (
         <div className="h-dvh w-full bg-white dark:bg-gray-800 

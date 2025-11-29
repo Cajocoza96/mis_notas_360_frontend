@@ -23,6 +23,11 @@ import { obtenerAnotacionPorId } from "../../services/anotacionesService";
 
 import SkeletonCrearEditPrevia from "../../componentes/cargando_no_hay_nada/SkeletonCrearEditPrevia";
 
+import { logDesarrollo, errorDesarrollo, registrarError } from "../../utils/errorHandler";
+
+import Toast from "../../componentes/toast/Toast";
+import useToastConexion from "../../hooks/useToastConexion";
+
 export default function PaginaCrearEditNota() {
     const { id } = useParams();
     const location = useLocation();
@@ -69,7 +74,7 @@ export default function PaginaCrearEditNota() {
 
             // ✅ Si estamos en modo edición pero no hay ID, error
             if (!id) {
-                console.error('❌ Modo edición sin ID');
+                errorDesarrollo('❌ Modo edición sin ID');
                 setCargando(false);
                 return;
             }
@@ -77,9 +82,9 @@ export default function PaginaCrearEditNota() {
             // ✅ Cargar datos en modo edición
             try {
                 setCargando(true);
-                console.log('🔄 Iniciando carga de anotación...');
+                logDesarrollo('🔄 Iniciando carga de anotación...');
                 const anotacion = await obtenerAnotacionPorId(id);
-                console.log('✅ Anotación obtenida:', anotacion);
+                logDesarrollo('✅ Anotación obtenida:', anotacion);
 
                 // Guardar en Redux
                 dispatch(setAnotacionActual(anotacion));
@@ -101,7 +106,7 @@ export default function PaginaCrearEditNota() {
                 setAnotacionCargada(anotacion);
 
             } catch (error) {
-                console.error('❌ Error al cargar la anotación:', error);
+                errorDesarrollo('❌ Error al cargar la anotación:', error);
             } finally {
                 // ✅ IMPORTANTE: Siempre desactivar carga al finalizar
                 setCargando(false);
@@ -119,7 +124,7 @@ export default function PaginaCrearEditNota() {
     // ✅ Efecto SEPARADO para actualizar los refs cuando la anotación esté lista Y los refs estén montados
     useEffect(() => {
         if (anotacionCargada && tituloRef.current && notaRef.current) {
-            console.log('🎯 Actualizando refs con datos de anotación...');
+            logDesarrollo('🎯 Actualizando refs con datos de anotación...');
 
             const tituloInicial = anotacionCargada.titulo || "";
             const notaInicial = anotacionCargada.nota || "";
@@ -128,7 +133,7 @@ export default function PaginaCrearEditNota() {
             tituloRef.current.innerText = tituloInicial;
             notaRef.current.innerText = notaInicial;
 
-            console.log('📋 Valores iniciales:', { titulo: tituloInicial, nota: notaInicial });
+            logDesarrollo('📋 Valores iniciales:', { titulo: tituloInicial, nota: notaInicial });
 
             // Actualizar Redux
             dispatch(setTitulo(tituloInicial));
@@ -142,7 +147,7 @@ export default function PaginaCrearEditNota() {
                         titulo: tituloInicial,
                         nota: notaInicial
                     });
-                    console.log('✅ Historial reiniciado con valores iniciales');
+                    logDesarrollo('✅ Historial reiniciado con valores iniciales');
                 }
             }, 0);
         }
@@ -199,6 +204,11 @@ export default function PaginaCrearEditNota() {
         handleRedoClick(tituloRef, notaRef);
     };
 
+    const verToast = useSelector((state) => state.acceso.verToast);
+
+    // ✅ Hook que maneja automáticamente los toasts de conexión
+    useToastConexion();
+
     const pageVariants = {
         initial: {
             x: "100%",
@@ -229,6 +239,10 @@ export default function PaginaCrearEditNota() {
                 <AnimatePresence>
                     <ModalExitoError />
                 </AnimatePresence>
+
+                {verToast && (
+                    <Toast />
+                )}
 
                 {cargando ? (
                     <SkeletonCrearEditPrevia />

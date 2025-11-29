@@ -15,9 +15,9 @@ export default function Toast() {
           exit={{ y: 100, opacity: 0 }}
           transition={{ duration: 0.35, ease: "easeOut" }}
           className="fixed bottom-8 left-1/2 transform -translate-x-1/2 
-                    bg-gray-300 dark:bg-gray-700
+                    bg-black dark:bg-gray-300
                     outline outline-gray-300 dark:outline-gray-700
-                    text-black dark:text-white px-4 py-3 rounded-md 
+                    text-white dark:text-black px-4 py-3 rounded-md 
                     shadow-xl flex items-center justify-center 
                     w-[95%] z-90 backdrop-blur-sm"
         >

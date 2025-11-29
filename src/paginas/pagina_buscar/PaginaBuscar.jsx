@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 
 import { motion, AnimatePresence } from "framer-motion";
 
-import { useDispatch } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 
 import Cabecera from "../../componentes/cabecera/Cabecera";
 
@@ -14,6 +14,11 @@ import {
 } from "../../store/busquedaSlice";
 
 import { buscarAnotaciones as buscarAnotacionesService } from "../../services/anotacionesService";
+
+import { logDesarrollo, errorDesarrollo, registrarError } from "../../utils/errorHandler";
+
+import Toast from "../../componentes/toast/Toast";
+import useToastConexion from "../../hooks/useToastConexion";
 
 export default function PaginaBuscar() {
 
@@ -44,7 +49,7 @@ export default function PaginaBuscar() {
             dispatch(setResultadosBusqueda(anotaciones));
             dispatch(setTerminoBusqueda(termino));
         } catch (error) {
-            console.error('Error en búsqueda:', error);
+            errorDesarrollo('Error en búsqueda:', error);
             // Opcional: podrías mostrar un mensaje de error al usuario
             dispatch(setResultadosBusqueda([]));
         } finally {
@@ -67,6 +72,11 @@ export default function PaginaBuscar() {
             buscarAnotaciones(valor);
         }, 300);
     };
+
+    const verToast = useSelector((state) => state.acceso.verToast);
+
+    // ✅ Hook que maneja automáticamente los toasts de conexión
+    useToastConexion();
 
     const pageVariants = {
         initial: {
@@ -95,6 +105,10 @@ export default function PaginaBuscar() {
                 variants={pageVariants}
                 initial="initial"
                 animate="animate">
+
+                {verToast && (
+                    <Toast />
+                )}
 
                 <Cabecera
                     paginaBusqueda={true}

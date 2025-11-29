@@ -115,27 +115,19 @@ export default function ModalTarea() {
         <>
             <motion.div
                 onClick={handleverModalTarea}
-                className="fixed inset-0 z-30 bg-black/70
+                className="fixed inset-0 z-50 bg-black/70
                             flex items-center justify-center"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.2 }}>
 
-                <motion.div
+                <div
                     onClick={(e) => e.stopPropagation()}
                     className="bg-white dark:bg-gray-800 
                                 z-50  overflow-hidde
                                 w-[70%] h-auto
-                                flex flex-col gap-5"
-                    initial={{ opacity: 0, scale: 0.9, y: 20 }}
-                    animate={{ opacity: 1, scale: 1, y: 0 }}
-                    exit={{ opacity: 0, scale: 0.9, y: 0 }}
-                    transition={{
-                        type: "spring",
-                        stiffness: 300,
-                        damping: 25
-                    }}>
+                                flex flex-col gap-5">
 
                     <div className="p-2 flex flex-col">
 
@@ -167,7 +159,7 @@ export default function ModalTarea() {
 
                     </div>
 
-                    <div className="p-2 w-full bg-violet-800 dark:bg-black select-none
+                    <div className="p-2 w-full bg-violet-950 dark:bg-black select-none
                                     flex flex-col gap-2">
                         <div className="flex flex-row items-center justify-around ">
 
@@ -201,7 +193,7 @@ export default function ModalTarea() {
                         <div className="flex flex-col items-center">
                             <p className={`text-center text-base md:text-xl ${
                                 limiteExcedido 
-                                    ? "text-red-500" 
+                                    ? "text-red-600" 
                                     : "text-white"
                             }`}>
                                 {cantTarea}/500
@@ -210,7 +202,7 @@ export default function ModalTarea() {
 
                     </div>
 
-                </motion.div>
+                </div>
             </motion.div>
         </>
     );

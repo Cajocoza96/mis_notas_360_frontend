@@ -1,23 +1,33 @@
 const API_URL = import.meta.env.VITE_API_URL;
 
+import { logDesarrollo, errorDesarrollo, registrarError } from "../utils/errorHandler";
+
+import { fetchConAuth } from "./authService";
+
+//Maneja errores de las peticiones HTTP
+const manejarErrorRespuesta = (response, mensajeError) => {
+    if (!response.ok) {
+        // ✅ Solo mostrar URL en desarrollo
+        if (import.meta.env.MODE === 'development') {
+            console.error(`❌ Error en: ${response.url}`);
+        }
+        throw new Error(mensajeError);
+    }
+};
+
 //Obtiene el token de autenticación del localStorage
 const obtenerToken = () => {
     return localStorage.getItem('token');
 };
 
-//Maneja errores de las peticiones HTTP
-const manejarErrorRespuesta = (response, mensajeError) => {
-    if (!response.ok) {
-        throw new Error(mensajeError);
-    }
-};
-
-//Obtiene los contadores de anotaciones por estado
+//Obtiene los contadores de notas por estado
 export const obtenerContadores = async () => {
     try {
         const token = obtenerToken();
-        
-        const respuesta = await fetch(`${API_URL}/anotaciones/contadores`, {
+
+        logDesarrollo('📤 Obteniendo contadores:');
+
+        const response = await fetchConAuth(`${API_URL}/anotaciones/contadores`, {
             method: 'GET',
             headers: {
                 'Authorization': `Bearer ${token}`,
@@ -25,12 +35,15 @@ export const obtenerContadores = async () => {
             }
         });
 
-        manejarErrorRespuesta(respuesta, 'Error al cargar contadores');
+        manejarErrorRespuesta(response, 'Error al cargar contadores');
 
-        const datos = await respuesta.json();
-        return datos;
+        const data = await response.json();
+
+        logDesarrollo('✅ Contadores obtenidos:', data);
+
+        return data;
     } catch (error) {
-        console.error('Error al cargar contadores:', error);
+        registrarError('obtenerContadores', error);
         throw error;
     }
 };
@@ -40,7 +53,9 @@ export const obtenerAnotaciones = async () => {
     try {
         const token = obtenerToken();
 
-        const response = await fetch(`${API_URL}/anotaciones/obtener`, {
+        logDesarrollo('📤 Obteniendo notas:');
+
+        const response = await fetchConAuth(`${API_URL}/anotaciones/obtener`, {
             method: 'GET',
             headers: {
                 'Authorization': `Bearer ${token}`,
@@ -48,12 +63,15 @@ export const obtenerAnotaciones = async () => {
             }
         });
 
-        manejarErrorRespuesta(response, 'Error al cargar anotaciones');
+        manejarErrorRespuesta(response, 'Error al cargar notas');
 
         const data = await response.json();
+
+        logDesarrollo('✅ Notas obtenidas:', data);
+
         return data.anotaciones;
     } catch (error) {
-        console.error('Error al cargar anotaciones:', error);
+        registrarError('obtenerAnotaciones', error);
         throw error;
     }
 };
@@ -63,7 +81,9 @@ export const obtenerAnotacionesEliminadas = async () => {
     try {
         const token = obtenerToken();
 
-        const response = await fetch(`${API_URL}/anotaciones/obtener-papelera`, {
+        logDesarrollo('📤 Obteniendo notas eliminadas:');
+
+        const response = await fetchConAuth(`${API_URL}/anotaciones/obtener-papelera`, {
             method: 'GET',
             headers: {
                 'Authorization': `Bearer ${token}`,
@@ -71,12 +91,15 @@ export const obtenerAnotacionesEliminadas = async () => {
             }
         });
 
-        manejarErrorRespuesta(response, 'Error al cargar anotaciones eliminadas');
+        manejarErrorRespuesta(response, 'Error al cargar notas eliminadas');
 
         const data = await response.json();
+
+        logDesarrollo('✅ Notas eliminadas obtenidas:', data);
+
         return data.anotaciones;
     } catch (error) {
-        console.error('Error al cargar anotaciones eliminadas:', error);
+        registrarError('obtenerAnotacionesEliminadas', error);
         throw error;
     }
 };
@@ -86,7 +109,9 @@ export const actualizarFavorito = async (anotacionId, favorito) => {
     try {
         const token = obtenerToken();
 
-        const response = await fetch(`${API_URL}/anotaciones/favorito/${anotacionId}`, {
+        logDesarrollo('📤 Asignando como favorita la nota:', anotacionId, favorito);
+
+        const response = await fetchConAuth(`${API_URL}/anotaciones/favorito/${anotacionId}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
@@ -98,9 +123,12 @@ export const actualizarFavorito = async (anotacionId, favorito) => {
         manejarErrorRespuesta(response, 'Error al actualizar favorito');
 
         const data = await response.json();
+
+        logDesarrollo('✅ Nota asignada como favorita:', data);
+
         return data;
     } catch (error) {
-        console.error('Error al actualizar favorito:', error);
+        registrarError('actualizarFavorito', error);
         throw error;
     }
 };
@@ -110,7 +138,9 @@ export const moverAPapelera = async (id) => {
     try {
         const token = obtenerToken();
 
-        const response = await fetch(`${API_URL}/anotaciones/papelera/${id}`, {
+        logDesarrollo('📤 En proceso de mover nota a papelera:', id);
+
+        const response = await fetchConAuth(`${API_URL}/anotaciones/papelera/${id}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
@@ -121,9 +151,12 @@ export const moverAPapelera = async (id) => {
         manejarErrorRespuesta(response, 'Error al mover a papelera');
 
         const data = await response.json();
+
+        logDesarrollo('✅ Nota movida a papelera:', data);
+
         return data;
     } catch (error) {
-        console.error('Error al mover a papelera:', error);
+        registrarError('moverAPapelera', error);
         throw error;
     }
 };
@@ -133,7 +166,9 @@ export const restaurarDesdePapelera = async (anotacionId) => {
     try {
         const token = obtenerToken();
 
-        const response = await fetch(`${API_URL}/anotaciones/restaurar/${anotacionId}`, {
+        logDesarrollo('📤 En proceso de restaurar la nota:', anotacionId);
+
+        const response = await fetchConAuth(`${API_URL}/anotaciones/restaurar/${anotacionId}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
@@ -144,9 +179,12 @@ export const restaurarDesdePapelera = async (anotacionId) => {
         manejarErrorRespuesta(response, 'Error al restaurar nota desde la papelera');
 
         const data = await response.json();
+
+        logDesarrollo('✅ Nota restaurada desde la papelera:', data);
+
         return data;
     } catch (error) {
-        console.error('Error al restaurar nota desde la papelera:', error);
+        registrarError('restaurarDesdePapelera', error);
         throw error;
     }
 };
@@ -156,7 +194,9 @@ export const eliminarDefinitivamente = async (anotacionId) => {
     try {
         const token = obtenerToken();
 
-        const response = await fetch(`${API_URL}/anotaciones/eliminar-definitivamente/${anotacionId}`, {
+        logDesarrollo('📤 En proceso de eliminar definitivamente la nota:', anotacionId);
+
+        const response = await fetchConAuth(`${API_URL}/anotaciones/eliminar-definitivamente/${anotacionId}`, {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',
@@ -167,9 +207,12 @@ export const eliminarDefinitivamente = async (anotacionId) => {
         manejarErrorRespuesta(response, 'Error al eliminar la nota definitivamente');
 
         const data = await response.json();
+
+        logDesarrollo('✅ Nota eliminada definitivamente:', data);
+
         return data;
     } catch (error) {
-        console.error('Error al eliminar la nota definitivamente desde la papelera:', error);
+        registrarError('eliminarDefinitivamente', error);
         throw error;
     }
 };
@@ -179,7 +222,9 @@ export const vaciarPapelera = async () => {
     try {
         const token = obtenerToken();
 
-        const response = await fetch(`${API_URL}/anotaciones/obtener-papelera/vaciar`, {
+        logDesarrollo('📤 Papelera vaciando..');
+
+        const response = await fetchConAuth(`${API_URL}/anotaciones/obtener-papelera/vaciar`, {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',
@@ -190,9 +235,12 @@ export const vaciarPapelera = async () => {
         manejarErrorRespuesta(response, 'Error al vaciar la papelera');
 
         const data = await response.json();
+
+        logDesarrollo('✅ Papelera vaciada:', data);
+
         return data;
     } catch (error) {
-        console.error('Error al eliminar todas las notas definitivamente desde la papelera:', error);
+        registrarError('vaciarPapelera', error);
         throw error;
     }
 };
@@ -202,7 +250,9 @@ export const buscarAnotaciones = async (termino) => {
     try {
         const token = obtenerToken();
 
-        const response = await fetch(
+        logDesarrollo('📤 Buscando nota:', termino);
+
+        const response = await fetchConAuth(
             `${API_URL}/anotaciones/buscar?q=${encodeURIComponent(termino)}`,
             {
                 method: 'GET',
@@ -216,9 +266,12 @@ export const buscarAnotaciones = async (termino) => {
         manejarErrorRespuesta(response, 'Error al buscar anotaciones');
 
         const data = await response.json();
+
+        logDesarrollo('✅ Nota buscada:', data);
+
         return data.anotaciones;
     } catch (error) {
-        console.error('Error en búsqueda:', error);
+        registrarError('buscarAnotaciones', error);
         throw error;
     }
 };
@@ -228,7 +281,9 @@ export const obtenerAnotacionPorId = async (id) => {
     try {
         const token = obtenerToken();
 
-        const response = await fetch(`${API_URL}/anotaciones/obtener/${id}`, {
+        logDesarrollo('📤 obteniendo nota por id:', id);
+
+        const response = await fetchConAuth(`${API_URL}/anotaciones/obtener/${id}`, {
             method: 'GET',
             headers: {
                 'Authorization': `Bearer ${token}`,
@@ -239,9 +294,12 @@ export const obtenerAnotacionPorId = async (id) => {
         manejarErrorRespuesta(response, 'Error al cargar la anotación');
 
         const data = await response.json();
+
+        logDesarrollo('✅ Obtenida id de nota:', data);
+
         return data.anotacion;
     } catch (error) {
-        console.error('Error al cargar la anotación:', error);
+        registrarError('obtenerAnotacionPorId', error);
         throw error;
     }
 };
@@ -251,7 +309,10 @@ export const crearAnotacion = async (datosAnotacion) => {
     try {
         const token = obtenerToken();
 
-        const response = await fetch(`${API_URL}/anotaciones/guardar`, {
+        // ✅ Log solo en desarrollo
+        logDesarrollo('📤 Enviando nota:', datosAnotacion);
+
+        const response = await fetchConAuth(`${API_URL}/anotaciones/guardar`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -260,12 +321,17 @@ export const crearAnotacion = async (datosAnotacion) => {
             body: JSON.stringify(datosAnotacion)
         });
 
-        manejarErrorRespuesta(response, 'Error al guardar la anotación');
+        manejarErrorRespuesta(response, 'Error al guardar la nota');
 
         const data = await response.json();
+
+        // ✅ Log solo en desarrollo
+        logDesarrollo('✅ Nota guardada:', data);
+
         return data;
     } catch (error) {
-        console.error('Error al guardar la anotación:', error);
+        // ✅ Registrar error de forma segura
+        registrarError('crearAnotacion', error);
         throw error;
     }
 };
@@ -275,7 +341,10 @@ export const actualizarAnotacion = async (anotacionId, datosAnotacion) => {
     try {
         const token = obtenerToken();
 
-        const response = await fetch(`${API_URL}/anotaciones/actualizar/${anotacionId}`, {
+        // ✅ Log solo en desarrollo
+        logDesarrollo('📤 Actualizando anotación:', anotacionId, datosAnotacion);
+
+        const response = await fetchConAuth(`${API_URL}/anotaciones/actualizar/${anotacionId}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
@@ -284,12 +353,15 @@ export const actualizarAnotacion = async (anotacionId, datosAnotacion) => {
             body: JSON.stringify(datosAnotacion)
         });
 
-        manejarErrorRespuesta(response, 'Error al actualizar la anotación');
+        manejarErrorRespuesta(response, 'Error al actualizar la nota');
 
         const data = await response.json();
+
+        logDesarrollo('✅ Nota actualizada:', data);
+
         return data;
     } catch (error) {
-        console.error('Error al actualizar la anotación:', error);
+        registrarError('actualizarAnotacion', error);
         throw error;
     }
 };

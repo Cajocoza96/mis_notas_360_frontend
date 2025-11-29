@@ -18,6 +18,8 @@ import { obtenerNombreEstado } from "../../../utils/estadoUtils";
 
 import { obtenerAnotacionPorId, actualizarFavorito } from "../../../services/anotacionesService";
 
+import { logDesarrollo, errorDesarrollo, registrarError } from "../../../utils/errorHandler";
+
 export default function Cabecera({ esModoVistaPrevia }) {
     const { id } = useParams();
 
@@ -56,7 +58,7 @@ export default function Cabecera({ esModoVistaPrevia }) {
 
             dispatch(setAnotacionActual(anotacion));
         } catch (error) {
-            console.error('Error al cargar la anotación en cabecera:', error);
+            errorDesarrollo('Error al cargar la anotación en cabecera:', error);
             setError('Error al cargar la anotación');
         } finally {
             setCargando(false);
@@ -93,7 +95,7 @@ export default function Cabecera({ esModoVistaPrevia }) {
 
             
         } catch (error) {
-            console.error('Error al actualizar favorito:', error);
+            errorDesarrollo('Error al actualizar favorito:', error);
             // Revertir el cambio local si falla
             dispatch(actualizarFavoritoLocal({ 
                 anotacionId: parseInt(id),

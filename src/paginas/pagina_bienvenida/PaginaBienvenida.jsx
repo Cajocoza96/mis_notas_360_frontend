@@ -8,6 +8,9 @@ import { HiOutlineBookOpen } from "react-icons/hi";
 import { useNavigate } from "react-router-dom";
 import BotonAccion from "../../componentes/botones/BotonAccion";
 
+import Toast from "../../componentes/toast/Toast";
+import useToastConexion from "../../hooks/useToastConexion";
+
 export default function PaginaBienvenida() {
     const particlesInit = useCallback(async (engine) => {
         await loadSlim(engine);
@@ -33,9 +36,19 @@ export default function PaginaBienvenida() {
 
     const MiBoton = motion.create(BotonAccion);
 
+    const verToast = useSelector((state) => state.acceso.verToast);
+
+    // ✅ Hook que maneja automáticamente los toasts de conexión
+    useToastConexion();
+
     return (
         <div className="relative min-h-dvh bg-gradient-to-br from-indigo-900 via-purple-900 to-pink-800 overflow-hidden">
             {/* Particles Background */}
+
+            {verToast && (
+                <Toast />
+            )}
+
             <Particles
                 id="tsparticles"
                 init={particlesInit}

@@ -10,6 +10,19 @@ import infoRegIniSesion from "../../../../data/infoRegIniSesion.json";
 import { registrarUsuario, iniciarSesion, restablecerContrasena } from "../../../../services/authService";
 import { toggleVerMenuHamburguesa } from "../../../../store/layoutSlice";
 import { validarFortalezaContrasena, obtenerMensajesRequisitos } from "../../../../utils/validacionContrasenaUtils";
+import { obtenerMensajeError, registrarError, logDesarrollo } from "../../../../utils/errorHandler";
+
+// ✅ CONSTANTES DE LÍMITES
+const LIMITE_USUARIO = 100;
+const LIMITE_CONTRASENA = 255;
+
+// ✅ FUNCIÓN PARA LIMPIAR Y VALIDAR TEXTO PLANO
+const limpiarTextoPlano = (texto) => {
+    // Eliminar caracteres de control y líneas nuevas
+    return texto
+        .replace(/[\r\n\t]/g, '') // Eliminar saltos de línea, retornos y tabulaciones
+        .replace(/[\u0000-\u001F\u007F-\u009F]/g, ''); // Eliminar caracteres de control
+};
 
 export default function CorreoContrasena({ textoContrasena, restablecer, noRestablecer }) {
     const [verContrasena, setVerContrasena] = useState(false);
@@ -19,13 +32,12 @@ export default function CorreoContrasena({ textoContrasena, restablecer, noResta
     const [fortalezaContrasena, setFortalezaContrasena] = useState(null);
     const [inputUsuarioFocused, setInputUsuarioFocused] = useState(false);
     const [inputContrasenaFocused, setInputContrasenaFocused] = useState(false);
-    
+
     const blurTimerUsuario = useRef(null);
     const blurTimerContrasena = useRef(null);
 
     const verMenuHamburguesa = useSelector((state) => state.layout.verMenuHamburguesa);
 
-    // CORRECCIÓN: Función mejorada para manejar el toggle de visibilidad
     const handleVerContrasena = (e) => {
         e.preventDefault();
         e.stopPropagation();
@@ -41,7 +53,6 @@ export default function CorreoContrasena({ textoContrasena, restablecer, noResta
 
     const MiBoton = motion.create(BotonAccion);
 
-    // Limpiar timers al desmontar
     useEffect(() => {
         return () => {
             if (blurTimerUsuario.current) clearTimeout(blurTimerUsuario.current);
@@ -49,7 +60,6 @@ export default function CorreoContrasena({ textoContrasena, restablecer, noResta
         };
     }, []);
 
-    // Validar fortaleza de contraseña en tiempo real
     useEffect(() => {
         if (contrasena.length > 0) {
             const validacion = validarFortalezaContrasena(contrasena);
@@ -68,6 +78,76 @@ export default function CorreoContrasena({ textoContrasena, restablecer, noResta
         }, 3000);
     };
 
+    // ✅ MANEJADOR PARA NOMBRE DE USUARIO CON VALIDACIONES
+    const handleUsuarioChange = (e) => {
+        let valor = e.target.value;
+        
+        // Limpiar texto (eliminar saltos de línea y caracteres de control)
+        valor = limpiarTextoPlano(valor);
+        
+        // Validar límite de caracteres
+        if (valor.length > LIMITE_USUARIO) {
+            mostrarToast(`El nombre de usuario solo permite ${LIMITE_USUARIO} caracteres`);
+            valor = valor.slice(0, LIMITE_USUARIO);
+        }
+        
+        setNombreUsuario(valor);
+    };
+
+    // ✅ MANEJADOR PARA CONTRASEÑA CON VALIDACIONES
+    const handleContrasenaChange = (e) => {
+        let valor = e.target.value;
+        
+        // Limpiar texto (eliminar saltos de línea y caracteres de control)
+        valor = limpiarTextoPlano(valor);
+        
+        // Validar límite de caracteres
+        if (valor.length > LIMITE_CONTRASENA) {
+            mostrarToast(`La contraseña solo permite ${LIMITE_CONTRASENA} caracteres`);
+            valor = valor.slice(0, LIMITE_CONTRASENA);
+        }
+        
+        setContrasena(valor);
+    };
+
+    // ✅ MANEJADOR PARA PEGADO EN NOMBRE DE USUARIO
+    const handleUsuarioPaste = (e) => {
+        e.preventDefault();
+        
+        // Obtener texto del portapapeles
+        let textoPegado = e.clipboardData.getData('text/plain');
+        
+        // Limpiar texto
+        textoPegado = limpiarTextoPlano(textoPegado);
+        
+        // Validar y cortar si excede el límite
+        if (textoPegado.length > LIMITE_USUARIO) {
+            mostrarToast(`El nombre de usuario solo permite ${LIMITE_USUARIO} caracteres. Se ha cortado el texto`);
+            textoPegado = textoPegado.slice(0, LIMITE_USUARIO);
+        }
+        
+        setNombreUsuario(textoPegado);
+    };
+
+    // ✅ MANEJADOR PARA PEGADO EN CONTRASEÑA
+    const handleContrasenaPaste = (e) => {
+        e.preventDefault();
+        
+        // Obtener texto del portapapeles
+        let textoPegado = e.clipboardData.getData('text/plain');
+        
+        // Limpiar texto
+        textoPegado = limpiarTextoPlano(textoPegado);
+        
+        // Validar y cortar si excede el límite
+        if (textoPegado.length > LIMITE_CONTRASENA) {
+            mostrarToast(`La contraseña solo permite ${LIMITE_CONTRASENA} caracteres. Se ha cortado el texto`);
+            textoPegado = textoPegado.slice(0, LIMITE_CONTRASENA);
+        }
+        
+        setContrasena(textoPegado);
+    };
+
     const handleCerrarModal = () => {
         if (!cargando) {
             dispatch(toggleVerModalRestablecerContrasena());
@@ -80,7 +160,6 @@ export default function CorreoContrasena({ textoContrasena, restablecer, noResta
     };
 
     const handleSubmit = async () => {
-        // Validaciones del frontend
         if (!nombreUsuario && !contrasena) {
             mostrarToast("Ingrese nombre de usuario");
             return;
@@ -126,7 +205,12 @@ export default function CorreoContrasena({ textoContrasena, restablecer, noResta
                 navigate("/");
             }
         } catch (error) {
-            mostrarToast(error.message || "Error en el servidor");
+            registrarError('Inicio de sesión/Registro', error);
+            const mensajeSeguro = obtenerMensajeError(
+                error,
+                esRegistro ? 'Error al registrar usuario' : 'Error al iniciar sesión'
+            );
+            mostrarToast(mensajeSeguro);
         } finally {
             setCargando(false);
         }
@@ -143,7 +227,6 @@ export default function CorreoContrasena({ textoContrasena, restablecer, noResta
             return;
         }
 
-        // Validar fortaleza de contraseña
         const validacion = validarFortalezaContrasena(contrasena);
         if (!validacion.valida) {
             const mensajes = obtenerMensajesRequisitos(validacion.requisitos);
@@ -162,8 +245,12 @@ export default function CorreoContrasena({ textoContrasena, restablecer, noResta
             }, 1000);
 
         } catch (error) {
-            const mensajeError = error.message || "Error al restablecer contraseña";
-            mostrarToast(mensajeError);
+            registrarError('Restablecer contraseña', error);
+            const mensajeSeguro = obtenerMensajeError(
+                error,
+                'Error al restablecer contraseña. Por favor intenta más tarde'
+            );
+            mostrarToast(mensajeSeguro);
         } finally {
             setCargando(false);
         }
@@ -186,11 +273,10 @@ export default function CorreoContrasena({ textoContrasena, restablecer, noResta
     const handleBotonClick = (e, callback) => {
         e.preventDefault();
         e.stopPropagation();
-        
-        // Limpiar timers para evitar que se ejecute el blur
+
         if (blurTimerUsuario.current) clearTimeout(blurTimerUsuario.current);
         if (blurTimerContrasena.current) clearTimeout(blurTimerContrasena.current);
-        
+
         if (!cargando) {
             callback();
         }
@@ -198,7 +284,7 @@ export default function CorreoContrasena({ textoContrasena, restablecer, noResta
 
     return (
         <div className="flex flex-col gap-5">
-            {/* Input de Nombre de Usuario con Floating Label */}
+            {/* Input de Nombre de Usuario */}
             <div className="relative">
                 <div className={`border rounded-md
                                 flex flex-row items-center justify-between
@@ -211,31 +297,32 @@ export default function CorreoContrasena({ textoContrasena, restablecer, noResta
                                 text-black dark:text-white"
                         type="text"
                         value={nombreUsuario}
-                        onChange={(e) => setNombreUsuario(e.target.value)}
+                        onChange={handleUsuarioChange}
+                        onPaste={handleUsuarioPaste}
                         onFocus={() => {
                             if (blurTimerUsuario.current) clearTimeout(blurTimerUsuario.current);
                             setInputUsuarioFocused(true);
                         }}
                         onBlur={handleUsuarioBlur}
                         disabled={cargando}
+                        maxLength={LIMITE_USUARIO}
                     />
-                    
-                    {/* Floating Label */}
-                    <label 
+
+                    <label
                         className={`absolute left-2 pointer-events-none
                                     transition-all duration-200 ease-out
                                     text-gray-500 dark:text-gray-400
-                                    ${inputUsuarioFocused || nombreUsuario ? 
-                                        'text-xs top-1 font-semibold' : 
-                                        'text-base md:text-xl top-1/2 -translate-y-1/2'
-                                    }
+                                    ${inputUsuarioFocused || nombreUsuario ?
+                                'text-xs top-1 font-semibold' :
+                                'text-base md:text-xl top-1/2 -translate-y-1/2'
+                            }
                                     ${inputUsuarioFocused ? 'text-violet-800 dark:text-violet-400' : ''}`}>
                         Nombre de usuario
                     </label>
                 </div>
             </div>
 
-            {/* Input de Contraseña con Floating Label */}
+            {/* Input de Contraseña */}
             <div className="flex flex-col gap-3">
                 <div className="relative">
                     <div className={`border rounded-md
@@ -250,13 +337,15 @@ export default function CorreoContrasena({ textoContrasena, restablecer, noResta
                                     text-black dark:text-white"
                             type={verContrasena ? "text" : "password"}
                             value={contrasena}
-                            onChange={(e) => setContrasena(e.target.value)}
+                            onChange={handleContrasenaChange}
+                            onPaste={handleContrasenaPaste}
                             onFocus={() => {
                                 if (blurTimerContrasena.current) clearTimeout(blurTimerContrasena.current);
                                 setInputContrasenaFocused(true);
                             }}
                             onBlur={handleContrasenaBlur}
                             disabled={cargando}
+                            maxLength={LIMITE_CONTRASENA}
                             onKeyDown={(e) => {
                                 if (e.key === 'Enter' && !cargando && noRestablecer) {
                                     e.preventDefault();
@@ -265,20 +354,18 @@ export default function CorreoContrasena({ textoContrasena, restablecer, noResta
                             }}
                         />
 
-                        {/* Floating Label */}
-                        <label 
+                        <label
                             className={`absolute left-2 pointer-events-none
                                         transition-all duration-200 ease-out
                                         text-gray-500 dark:text-gray-400
-                                        ${inputContrasenaFocused || contrasena ? 
-                                            'text-xs top-1 font-semibold' : 
-                                            'text-base md:text-xl top-1/2 -translate-y-1/2'
-                                        }
+                                        ${inputContrasenaFocused || contrasena ?
+                                    'text-xs top-1 font-semibold' :
+                                    'text-base md:text-xl top-1/2 -translate-y-1/2'
+                                }
                                         ${inputContrasenaFocused ? 'text-violet-800 dark:text-violet-400' : ''}`}>
                             {textoContrasena}
                         </label>
-                        
-                        {/* CORRECCIÓN: Botón del ojo mejorado para móvil */}
+
                         <button
                             type="button"
                             className="text-base md:text-xl mr-2 p-2 -m-2
@@ -298,21 +385,19 @@ export default function CorreoContrasena({ textoContrasena, restablecer, noResta
                     <div className="flex flex-col gap-2">
                         <div className="flex items-center gap-2">
                             <div className="flex-1 h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
-                                <div 
+                                <div
                                     className={`h-full transition-all duration-300 ${fortalezaContrasena.colorTailwind}`}
                                     style={{ width: `${(fortalezaContrasena.cumplidos / 5) * 100}%` }}
                                 />
                             </div>
-                            <span className={`text-sm font-semibold ${
-                                fortalezaContrasena.fortaleza === 'fuerte' ? 'text-green-600 dark:text-green-400' :
-                                fortalezaContrasena.fortaleza === 'media' ? 'text-yellow-600 dark:text-yellow-400' :
-                                'text-red-600 dark:text-red-400'
-                            }`}>
+                            <span className={`text-sm font-semibold ${fortalezaContrasena.fortaleza === 'fuerte' ? 'text-green-600 dark:text-green-400' :
+                                    fortalezaContrasena.fortaleza === 'media' ? 'text-yellow-600 dark:text-yellow-400' :
+                                        'text-red-600 dark:text-red-400'
+                                }`}>
                                 {fortalezaContrasena.fortaleza.charAt(0).toUpperCase() + fortalezaContrasena.fortaleza.slice(1)}
                             </span>
                         </div>
 
-                        {/* Lista de requisitos */}
                         <div className="text-xs md:text-sm space-y-1">
                             <RequisitoItem cumple={fortalezaContrasena.requisitos.longitud} texto="Mínimo 8 caracteres" />
                             <RequisitoItem cumple={fortalezaContrasena.requisitos.minuscula} texto="Una letra minúscula" />
@@ -323,10 +408,10 @@ export default function CorreoContrasena({ textoContrasena, restablecer, noResta
                     </div>
                 )}
             </div>
-            
+
             {/* Botones */}
             {noRestablecer && (
-                <div 
+                <div
                     onTouchEnd={(e) => handleBotonClick(e, handleSubmit)}
                     onMouseDown={(e) => handleBotonClick(e, handleSubmit)}
                     className="touch-manipulation w-fit">
@@ -346,7 +431,7 @@ export default function CorreoContrasena({ textoContrasena, restablecer, noResta
 
             {restablecer && (
                 <>
-                    <div 
+                    <div
                         onTouchEnd={(e) => handleBotonClick(e, handleRestablecerContrasena)}
                         onMouseDown={(e) => handleBotonClick(e, handleRestablecerContrasena)}
                         className="touch-manipulation">

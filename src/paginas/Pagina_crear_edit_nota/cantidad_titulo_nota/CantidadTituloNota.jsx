@@ -16,17 +16,17 @@ export default function CantidadTituloNota() {
     const limiteExcedidoNota = cantNota >= 50000;
 
     return (
-        <div className="p-2 z-10 w-full bg-violet-500 dark:bg-gray-700 select-none
+        <div className="p-2 z-10 w-full bg-gray-300 dark:bg-gray-900 select-none
                         flex flex-row justify-between">
             
             <p className="text-sm md:text-base text-black dark:text-white">
-                Titulo <span className={limiteExcedidoTitulo ? "text-red-900 dark:text-red-300" : ""}>
+                Titulo <span className={limiteExcedidoTitulo ? "text-red-600" : ""}>
                     {cantTitulo}/255
                 </span>
             </p>
             
             <p className="text-sm md:text-base text-black dark:text-white">
-                Nota <span className={limiteExcedidoNota ? "text-red-900 dark:text-red-300" : ""}>
+                Nota <span className={limiteExcedidoNota ? "text-red-600" : ""}>
                     {cantNota}/50000
                 </span>
             </p>

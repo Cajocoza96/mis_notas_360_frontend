@@ -16,6 +16,8 @@ import { crearAnotacion, actualizarAnotacion } from "../../../services/anotacion
 
 import CargandoNoHayNada from "../../../componentes/cargando_no_hay_nada/CargandoNoHayNada";
 
+import { logDesarrollo, errorDesarrollo, registrarError } from "../../../utils/errorHandler";
+
 export default function Footer({ handleUndoClick, handleRedoClick, esModoEdicion, tituloRef, notaRef }) {
     const { actualizarContadores } = useContadores();
 
@@ -69,12 +71,12 @@ export default function Footer({ handleUndoClick, handleRedoClick, esModoEdicion
             tituloActual = tituloActual.trim();
             notaActual = notaActual.trim();
 
-            console.log('=== DEBUG GUARDAR ===');
-            console.log('Título limpio:', tituloActual);
-            console.log('Nota limpia:', notaActual);
-            console.log('Estado:', estadoSeleccionado);
-            console.log('Tareas:', tareas);
-            console.log('==================');
+            logDesarrollo('=== DEBUG GUARDAR ===');
+            logDesarrollo('Título limpio:', tituloActual);
+            logDesarrollo('Nota limpia:', notaActual);
+            logDesarrollo('Estado:', estadoSeleccionado);
+            logDesarrollo('Tareas:', tareas);
+            logDesarrollo('==================');
 
             // Preparar el array de tareas con su estado de completado
             const tareasParaGuardar = tareas.map(tarea => ({
@@ -90,7 +92,7 @@ export default function Footer({ handleUndoClick, handleRedoClick, esModoEdicion
                 tareas: tareasParaGuardar
             };
 
-            console.log('Payload a enviar:', payload);
+            logDesarrollo('Payload a enviar:', payload);
 
             // Determinar si es guardar nuevo o actualizar existente
             const esActualizacion = esModoEdicion && anotacionId !== null;
@@ -100,7 +102,7 @@ export default function Footer({ handleUndoClick, handleRedoClick, esModoEdicion
                 setProcesando(true);
                 data = await actualizarAnotacion(anotacionId, payload);
                 setProcesando(false);
-                console.log('Actualización exitosa:', data);
+                logDesarrollo('Actualización exitosa:', data);
 
                 // ✅ Mostrar notificación de éxito para actualización
                 dispatch(mostrarNotificacion({
@@ -112,7 +114,7 @@ export default function Footer({ handleUndoClick, handleRedoClick, esModoEdicion
                 setProcesando(true);
                 data = await crearAnotacion(payload);
                 setProcesando(false);
-                console.log('Guardado exitoso:', data);
+                logDesarrollo('Guardado exitoso:', data);
                 
                 // ✅ Mostrar notificación de éxito para creación
                 dispatch(mostrarNotificacion({
@@ -140,7 +142,7 @@ export default function Footer({ handleUndoClick, handleRedoClick, esModoEdicion
 
         } catch (error) {
             setProcesando(true);
-            console.error('Error al guardar y redirigir:', error);
+            errorDesarrollo('Error al guardar y redirigir:', error);
             setProcesando(false);
 
             // ✅ Mostrar notificación de error

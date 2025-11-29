@@ -1,5 +1,7 @@
 import { useState, useCallback, useRef, useEffect } from "react";
 
+import { logDesarrollo, errorDesarrollo, registrarError } from "../utils/errorHandler";
+
 export const useUndoRedo = (initialState = {}) => {
     // Estados para el historial
     const [history, setHistory] = useState([initialState]);
@@ -116,7 +118,7 @@ export const useUndoRedo = (initialState = {}) => {
             clearTimeout(timeoutRef.current);
         }
         
-        console.log('🔄 Reiniciando historial con:', newInitialState);
+        logDesarrollo('🔄 Reiniciando historial con:', newInitialState);
         
         setHistory([newInitialState]);
         setCurrentIndex(0);
