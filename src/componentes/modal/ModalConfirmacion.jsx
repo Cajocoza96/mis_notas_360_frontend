@@ -50,15 +50,6 @@ export default function ModalConfirmacion({ textoPregunta, restaurarTexto, elimi
     //Obtener la ID de la anotacion desde Redux
     const anotacionIdRedux = useSelector((state) => state.tareas.anotacionId);
 
-    /*
-    // Limpiar el estado del modal exito error
-    useEffect(() => {
-        setTimeout(() => {
-            dispatch(ocultarNotificacion());
-        }, 3000);
-    }, [dispatch]);
-    */
-
     const crearNota = () => {
         dispatch(toggleVerModalCrearNota());
         navigate("/agregar-nota");
@@ -112,11 +103,19 @@ export default function ModalConfirmacion({ textoPregunta, restaurarTexto, elimi
 
         } catch (error) {
 
+            // Cerrar el modal
+            dispatch(toggleVerModalPapeleraNota());
+
             // ✅ Mostrar notificación de error
             dispatch(mostrarNotificacion({
                 mensaje: '¡Error al enviar la nota a la papelera!',
                 esError: true
             }));
+
+            // Ocultar el modal automaticamente despues de 2 segundos
+            setTimeout(() => {
+                dispatch(ocultarNotificacion());
+            }, 2000);
 
         } finally {
             setProcesando(false);
@@ -143,11 +142,6 @@ export default function ModalConfirmacion({ textoPregunta, restaurarTexto, elimi
             await actualizarContadores();
             logDesarrollo('Nota restaurada desde la papelera:', data);
 
-            // Ocultar el modal automaticamente despues de 3 segundos
-            setTimeout(() => {
-                dispatch(ocultarNotificacion());
-            }, 2000);
-
             // Actualizar Redux: eliminar la anotación de la lista de papelera
             dispatch(restaurarAnotacion(anotacionId));
 
@@ -160,13 +154,26 @@ export default function ModalConfirmacion({ textoPregunta, restaurarTexto, elimi
                 esError: false
             }));
 
+            // Ocultar el modal automaticamente despues de 2 segundos
+            setTimeout(() => {
+                dispatch(ocultarNotificacion());
+            }, 2000);
+
         } catch (error) {
+
+            // Cerrar el modal
+            dispatch(toggleVerModalRestaurarNota());
 
             // ✅ Mostrar notificación de error
             dispatch(mostrarNotificacion({
                 mensaje: '¡Error al restaurar la nota!',
                 esError: true
             }));
+
+            // Ocultar el modal automaticamente despues de 2 segundos
+            setTimeout(() => {
+                dispatch(ocultarNotificacion());
+            }, 2000);
 
         } finally {
             setProcesando(false);
@@ -220,11 +227,19 @@ export default function ModalConfirmacion({ textoPregunta, restaurarTexto, elimi
 
         } catch (error) {
 
+            // Cerrar el modal
+            dispatch(toggleVerModalEliminarNotaDefinitiva());
+
             // ✅ Mostrar notificación de error
             dispatch(mostrarNotificacion({
                 mensaje: '¡Error al eliminar la nota definitivamente!',
                 esError: true
             }));
+
+            // Ocultar el modal automaticamente despues de 2 segundos
+            setTimeout(() => {
+                dispatch(ocultarNotificacion());
+            }, 2000);
 
         } finally {
             setProcesando(false);
@@ -243,11 +258,6 @@ export default function ModalConfirmacion({ textoPregunta, restaurarTexto, elimi
             await actualizarContadores();
             logDesarrollo('Han sido eliminada definitivamente todas las notas desde la papelera:', data);
 
-            // Ocultar el modal automaticamente despues de 3 segundos
-            setTimeout(() => {
-                dispatch(ocultarNotificacion());
-            }, 2000);
-
             // Actualizar Redux: limpiar todas las anotaciones
             dispatch(eliminarTodasAnotaciones());
 
@@ -260,13 +270,27 @@ export default function ModalConfirmacion({ textoPregunta, restaurarTexto, elimi
                 esError: false
             }));
 
+            // Ocultar el modal automaticamente despues de 2 segundos
+            setTimeout(() => {
+                dispatch(ocultarNotificacion());
+            }, 2000);
 
         } catch (error) {
+
+            // Cerrar el modal
+            dispatch(toggleVerModalEliminarTodasLasNotasDefinitivo());
+
             // ✅ Mostrar notificación de error
             dispatch(mostrarNotificacion({
                 mensaje: '¡Error al eliminar todas las notas definitivamente!',
                 esError: true
             }));
+
+            // Ocultar el modal automaticamente despues de 2 segundos
+            setTimeout(() => {
+                dispatch(ocultarNotificacion());
+            }, 2000);
+
         } finally {
             setProcesando(false);
         }
@@ -313,8 +337,6 @@ export default function ModalConfirmacion({ textoPregunta, restaurarTexto, elimi
     const handleAceptar = async () => {
         if (verModalCrearNota) {
             crearNota();
-
-            /*Esto tiene que ver para eso de la papelera */
         } else if (verModalPapeleraNota) {
             papeleraNota();
         } else if (verModalRestaurarNota) {
@@ -343,16 +365,16 @@ export default function ModalConfirmacion({ textoPregunta, restaurarTexto, elimi
                 // No necesitamos setProcesando(false) porque ya navegamos
             })
         }
-    };
+    }
 
     return (
         <>
-            <motion.div 
+            <motion.div
                 className="fixed inset-0 z-50 bg-black/70
                             flex items-center justify-center"
-                initial={{ opacity: 0}}
-                animate={{ opacity: 1}}
-                exit={{ opacity: 0}}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
                 transition={{ duration: 0.2 }}
                 onClick={() => {
                     if (procesando) return; // No permitir cerrar mientras procesa
@@ -444,4 +466,5 @@ export default function ModalConfirmacion({ textoPregunta, restaurarTexto, elimi
             </motion.div>
         </>
     );
-}
+
+};

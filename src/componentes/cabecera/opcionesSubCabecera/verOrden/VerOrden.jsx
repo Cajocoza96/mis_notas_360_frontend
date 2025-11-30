@@ -16,6 +16,8 @@ import { HiCheckCircle } from "react-icons/hi";
 
 import CargandoNoHayNada from "../../../cargando_no_hay_nada/CargandoNoHayNada";
 
+import useConexionInternet from "../../../../hooks/useConexionInternet";
+
 export default function VerOrden() {
 
     const dispatch = useDispatch();
@@ -27,6 +29,8 @@ export default function VerOrden() {
     const [cargando, setCargando] = useState(false);
 
     const [error, setError] = useState(null);
+
+    const {isOnline}  = useConexionInternet();
 
     const [procesando, setProcesando] = useState(false);
 
@@ -66,8 +70,7 @@ export default function VerOrden() {
 
     return (
         <>
-
-            {procesando && (<CargandoNoHayNada pantallaCompletaCarga={true} />)}
+            {procesando && isOnline && (<CargandoNoHayNada pantallaCompletaCarga={true} />)}
             
             <div className="w-full p-1 border-b border-gray-400 select-none
                                                 text-black dark:text-white

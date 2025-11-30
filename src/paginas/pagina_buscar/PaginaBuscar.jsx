@@ -20,7 +20,13 @@ import { logDesarrollo, errorDesarrollo, registrarError } from "../../utils/erro
 import Toast from "../../componentes/toast/Toast";
 import useToastConexion from "../../hooks/useToastConexion";
 
+import useConexionInternet from "../../hooks/useConexionInternet";
+
+import CargandoNoHayNada from "../../componentes/cargando_no_hay_nada/CargandoNoHayNada";
+
 export default function PaginaBuscar() {
+
+    const { isOnline } = useConexionInternet();
 
     const [inputValue, setInputValue] = useState('');
     const debounceTimer = useRef(null);
@@ -116,16 +122,19 @@ export default function PaginaBuscar() {
                     paginaPapelera={false}
                 />
 
-                <div className="w-[95%] mx-auto mb-3">
+                <div className={`w-[95%] mx-auto mb-3 ${!isOnline ? 'h-full flex flex-col items-center justify-center' : ''}`}>
 
-                    <input
-                        value={inputValue}
-                        onChange={handleInputChange}
-                        className="w-full text-base md:text-xl 
+                    {!isOnline ? <CargandoNoHayNada /> :
+                        <input
+                            value={inputValue}
+                            onChange={handleInputChange}
+                            className="w-full text-base md:text-xl 
                                 border-0 focus:outline-none
                                 text-black dark:text-white"
-                        placeholder="Buscar contenido en anotacion..."
-                    />
+                            placeholder="Buscar contenido en anotacion..."
+                        />
+                    }
+
                 </div>
 
                 <Cuerpo

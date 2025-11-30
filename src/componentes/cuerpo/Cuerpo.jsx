@@ -31,8 +31,12 @@ import { AnimatePresence } from "framer-motion";
 
 import { logDesarrollo, errorDesarrollo, registrarError } from "../../utils/errorHandler";
 
+import useConexionInternet from "../../hooks/useConexionInternet";
+
 export default function Cuerpo({ notaNoEliminada,
     verContenidoCuerpo, verNotaBusqueda, verNotaEliminada, verTodosEstados }) {
+
+    const { isOnline, justReconnected, resetReconnectionState } = useConexionInternet();
 
     const location = useLocation();
 
@@ -73,7 +77,6 @@ export default function Cuerpo({ notaNoEliminada,
 
     const cargarContadores = async () => {
         try {
-            /*dispatch(setCargando(true));*/
             setProcesando(true);
             setCargando(true);
             const datos = await obtenerContadores();
@@ -96,6 +99,26 @@ export default function Cuerpo({ notaNoEliminada,
             cargarAnotacionesEliminadas();
         }
     }, [verContenidoCuerpo, verNotaEliminada, verSoloFavoritos, verAnotacEstado, ordenAnotaciones, location.pathname]);
+
+    // Efecto para recargar anotaciones cuando se restablece la conexión
+    useEffect(() => {
+        if (justReconnected) {
+            // Recargar anotaciones según el contexto actual
+            if (verContenidoCuerpo) {
+                cargarAnotaciones();
+            } else if (verNotaEliminada) {
+                cargarAnotacionesEliminadas();
+            }
+
+            // Esperar un momento antes de resetear el estado de reconexión
+            const timer = setTimeout(() => {
+                resetReconnectionState();
+            }, 3000); // El mensaje desaparecerá después de 3 segundos
+
+            return () => clearTimeout(timer);
+        }
+    }, [justReconnected]);
+
 
     //Cargar todas las anotaciones
     const cargarAnotaciones = async () => {
@@ -201,14 +224,14 @@ export default function Cuerpo({ notaNoEliminada,
 
                     {verNotaBusqueda && (
                         <>
-                            {cargandoBusqueda ? (
+                            {cargandoBusqueda && isOnline ? (
                                 <div className="col-span-full text-center p-4 select-none
                                                 flex flex-col items-center justify-center gap-3">
                                     <p className="text-base md:text-xl text-black dark:text-white">
                                         Buscando...
                                     </p>
                                 </div>
-                            ) : resultadosBusqueda.length === 0 && terminoBusqueda ? (
+                            ) : resultadosBusqueda.length === 0 && isOnline && terminoBusqueda ? (
                                 <div className="col-span-full text-center p-4 select-none
                                                 flex flex-col items-center justify-center gap-3">
                                     <p className="text-base md:text-xl text-black dark:text-white">
@@ -219,7 +242,7 @@ export default function Cuerpo({ notaNoEliminada,
                                     </div>
                                 </div>
                             ) : (
-                                resultadosBusqueda.map((anotacion) => (
+                                isOnline && resultadosBusqueda.map((anotacion) => (
                                     <NotaVistaPrevia
                                         key={anotacion.id}
                                         anotacionId={anotacion.id}
@@ -267,7 +290,7 @@ export default function Cuerpo({ notaNoEliminada,
                     <EstadosVistaPrevia
                         iconoEstado={<HiMinusCircle className="text-blue-700" />}
                         tipoEstado="No asignado"
-                        cantidadEstado={cargando ? <CargandoNoHayNada iconoDeCarga={true} /> : contadores.cant_no_asignado}
+                        cantidadEstado={cargando && isOnline ? <CargandoNoHayNada iconoDeCarga={true} /> : !isOnline ? <CargandoNoHayNada iconoSinConexion={true} /> : contadores.cant_no_asignado}
                         no_asignado={true}
                         seleccionado={verAnotacEstado === 'ver_no_asignado'}
                         onClick={() => handleEstadoClick('ver_no_asignado')}
@@ -276,7 +299,7 @@ export default function Cuerpo({ notaNoEliminada,
                     <EstadosVistaPrevia
                         iconoEstado={<HiClock className="text-yellow-700" />}
                         tipoEstado="Pendiente"
-                        cantidadEstado={cargando ? <CargandoNoHayNada iconoDeCarga={true} /> : contadores.cant_pendiente}
+                        cantidadEstado={cargando && isOnline ? <CargandoNoHayNada iconoDeCarga={true} /> : !isOnline ? <CargandoNoHayNada iconoSinConexion={true} /> : contadores.cant_pendiente}
                         pendiente={true}
                         seleccionado={verAnotacEstado === 'ver_pendiente'}
                         onClick={() => handleEstadoClick('ver_pendiente')}
@@ -285,7 +308,7 @@ export default function Cuerpo({ notaNoEliminada,
                     <EstadosVistaPrevia
                         iconoEstado={<HiCheckCircle className="text-green-700" />}
                         tipoEstado="Finalizado"
-                        cantidadEstado={cargando ? <CargandoNoHayNada iconoDeCarga={true} /> : contadores.cant_finalizado}
+                        cantidadEstado={cargando && isOnline ? <CargandoNoHayNada iconoDeCarga={true} /> : !isOnline ? <CargandoNoHayNada iconoSinConexion={true} /> : contadores.cant_finalizado}
                         finalizado={true}
                         seleccionado={verAnotacEstado === 'ver_finalizado'}
                         onClick={() => handleEstadoClick('ver_finalizado')}
@@ -293,7 +316,7 @@ export default function Cuerpo({ notaNoEliminada,
 
                     <EstadosVistaPrevia
                         tipoEstado="Todos los estados"
-                        cantidadEstado={cargando ? <CargandoNoHayNada iconoDeCarga={true} /> : contadores.cant_todos_estados}
+                        cantidadEstado={cargando && isOnline ? <CargandoNoHayNada iconoDeCarga={true} /> : !isOnline ? <CargandoNoHayNada iconoSinConexion={true} /> : contadores.cant_todos_estados}
                         seleccionado={verAnotacEstado === 'ver_todos_estados'}
                         onClick={() => handleEstadoClick('ver_todos_estados')}
                     />
