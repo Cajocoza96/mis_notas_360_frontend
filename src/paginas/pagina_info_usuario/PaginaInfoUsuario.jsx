@@ -23,7 +23,6 @@ import CargandoNoHayNada from "../../componentes/cargando_no_hay_nada/CargandoNo
 import { useNavigate } from "react-router-dom";
 
 import Toast from "../../componentes/toast/Toast";
-import useToastConexion from "../../hooks/useToastConexion";
 
 export default function PaginaInfoUsuario() {
     const dispatch = useDispatch();
@@ -54,9 +53,6 @@ export default function PaginaInfoUsuario() {
     };
 
     const verToast = useSelector((state) => state.acceso.verToast);
-
-    // ✅ Hook que maneja automáticamente los toasts de conexión
-    useToastConexion();
 
     const pageVariants = {
         initial: {

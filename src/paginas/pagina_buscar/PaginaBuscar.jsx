@@ -17,12 +17,11 @@ import { buscarAnotaciones as buscarAnotacionesService } from "../../services/an
 
 import { logDesarrollo, errorDesarrollo, registrarError } from "../../utils/errorHandler";
 
-import Toast from "../../componentes/toast/Toast";
-import useToastConexion from "../../hooks/useToastConexion";
-
 import useConexionInternet from "../../hooks/useConexionInternet";
 
 import CargandoNoHayNada from "../../componentes/cargando_no_hay_nada/CargandoNoHayNada";
+
+import Toast from "../../componentes/toast/Toast";
 
 export default function PaginaBuscar() {
 
@@ -80,9 +79,6 @@ export default function PaginaBuscar() {
     };
 
     const verToast = useSelector((state) => state.acceso.verToast);
-
-    // ✅ Hook que maneja automáticamente los toasts de conexión
-    useToastConexion();
 
     const pageVariants = {
         initial: {

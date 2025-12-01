@@ -9,7 +9,6 @@ import Footer from "./footer/Footer";
 import ModalRestablecerContrasena from "../../componentes/modal/ModalRestablecerContrasena";
 
 import Toast from "../../componentes/toast/Toast";
-import useToastConexion from "../../hooks/useToastConexion";
 
 export default function PaginaRegIniSesion() {
     const location = useLocation();
@@ -18,9 +17,6 @@ export default function PaginaRegIniSesion() {
     const verModalRestablecerContrasena = useSelector((state) => state.acceso.verModalRestablecerContrasena);
 
     const verToast = useSelector((state) => state.acceso.verToast);
-
-    // ✅ Hook que maneja automáticamente los toasts de conexión
-    useToastConexion();
 
     const pageVariants = {
         initial: (direction) => ({

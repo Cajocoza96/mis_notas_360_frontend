@@ -26,7 +26,6 @@ import SkeletonCrearEditPrevia from "../../componentes/cargando_no_hay_nada/Skel
 import { logDesarrollo, errorDesarrollo, registrarError } from "../../utils/errorHandler";
 
 import Toast from "../../componentes/toast/Toast";
-import useToastConexion from "../../hooks/useToastConexion";
 
 export default function PaginaCrearEditNota() {
     const { id } = useParams();
@@ -206,9 +205,6 @@ export default function PaginaCrearEditNota() {
 
     const verToast = useSelector((state) => state.acceso.verToast);
 
-    // ✅ Hook que maneja automáticamente los toasts de conexión
-    useToastConexion();
-
     const pageVariants = {
         initial: {
             x: "100%",
@@ -236,13 +232,13 @@ export default function PaginaCrearEditNota() {
                 initial="initial"
                 animate="animate">
 
-                <AnimatePresence>
-                    <ModalExitoError />
-                </AnimatePresence>
-
                 {verToast && (
                     <Toast />
                 )}
+
+                <AnimatePresence>
+                    <ModalExitoError />
+                </AnimatePresence>
 
                 {cargando ? (
                     <SkeletonCrearEditPrevia />

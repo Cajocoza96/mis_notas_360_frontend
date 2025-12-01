@@ -23,7 +23,6 @@ import SkeletonCrearEditPrevia from "../../componentes/cargando_no_hay_nada/Skel
 import { logDesarrollo, errorDesarrollo, registrarError } from "../../utils/errorHandler";
 
 import Toast from "../../componentes/toast/Toast";
-import useToastConexion from "../../hooks/useToastConexion";
 
 export default function PaginaVistaPrevia() {
     const { id } = useParams();
@@ -33,11 +32,6 @@ export default function PaginaVistaPrevia() {
 
     const dispatch = useDispatch();
     const notaRef = useRef(null);
-
-    const verToast = useSelector((state) => state.acceso.verToast);
-
-    // ✅ Hook que maneja automáticamente los toasts de conexión
-    useToastConexion();
 
     // ✅ Estado local simple para controlar la carga
     const [cargando, setCargando] = useState(true);
@@ -103,6 +97,8 @@ export default function PaginaVistaPrevia() {
             dispatch(resetNotaState());
         };
     }, [dispatch]);
+
+    const verToast = useSelector((state) => state.acceso.verToast);
 
     const pageVariants = {
         initial: {

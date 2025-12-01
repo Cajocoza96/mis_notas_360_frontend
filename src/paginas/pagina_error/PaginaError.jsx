@@ -13,7 +13,6 @@ import BotonAccion from "../../componentes/botones/BotonAccion";
 import { motion } from "framer-motion";
 
 import Toast from "../../componentes/toast/Toast";
-import useToastConexion from "../../hooks/useToastConexion";
 
 export default function PaginaError() {
 
@@ -25,14 +24,11 @@ export default function PaginaError() {
 
     const verToast = useSelector((state) => state.acceso.verToast);
 
-    // ✅ Hook que maneja automáticamente los toasts de conexión
-    useToastConexion();
-
     return (
         <div className="h-dvh bg-white dark:bg-gray-800 
                         overflow-hidden overflow-y-auto
                         flex flex-col items-center justify-center gap-2">
-
+            
             {verToast && (
                 <Toast />
             )}

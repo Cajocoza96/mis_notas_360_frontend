@@ -1,4 +1,5 @@
 import React from "react";
+import ConexionMonitor from "./componentes/conexion_monitor/ConexionMonitor";
 import Rutas from "./rutas/Rutas";
 
 function App() {
@@ -11,7 +12,9 @@ function App() {
                 overflow: 'hidden' // Evita scrollbar durante transiciones
             }}
         >
+            <ConexionMonitor>
             <Rutas />
+            </ConexionMonitor>
         </div>
     );
 }

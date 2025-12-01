@@ -9,14 +9,10 @@ import Cabecera from "../../componentes/cabecera/Cabecera";
 import Cuerpo from "../../componentes/cuerpo/Cuerpo";
 
 import Toast from "../../componentes/toast/Toast";
-import useToastConexion from "../../hooks/useToastConexion";
 
 export default function PaginaEstado() {
 
     const verToast = useSelector((state) => state.acceso.verToast);
-
-    // ✅ Hook que maneja automáticamente los toasts de conexión
-    useToastConexion();
 
     const pageVariants = {
         initial: {

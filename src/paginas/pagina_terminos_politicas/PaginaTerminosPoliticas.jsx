@@ -15,7 +15,6 @@ import Cuerpo from "./cuerpo/Cuerpo";
 import Footer from "./footer/Footer";
 
 import Toast from "../../componentes/toast/Toast";
-import useToastConexion from "../../hooks/useToastConexion";
 
 export default function PaginaTerminosPoliticas() {
 
@@ -26,9 +25,6 @@ export default function PaginaTerminosPoliticas() {
     const esTerminoDeServicio = location.pathname === "/terminos-de-servicio";
 
     const verToast = useSelector((state) => state.acceso.verToast);
-
-    // ✅ Hook que maneja automáticamente los toasts de conexión
-    useToastConexion();
 
     const pageVariants = {
         initial: (direction) => ({
