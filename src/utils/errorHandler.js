@@ -26,13 +26,15 @@ export const errorDesarrollo = (...args) => {
 
 /**
  * Obtiene un mensaje de error seguro para mostrar al usuario
- * En desarrollo: muestra el error real
- * En producción: muestra mensaje genérico
+ * 🔥 CAMBIO: Ahora siempre muestra el mensaje del backend si existe
  */
 export const obtenerMensajeError = (error, mensajeGenerico = 'Ocurrió un error') => {
-    if (esDesarrollo()) {
-        return error.message || error.toString();
+    // Si el error tiene un mensaje, lo mostramos (viene del backend)
+    if (error?.message) {
+        return error.message;
     }
+    
+    // Si no hay mensaje específico, usamos el genérico
     return mensajeGenerico;
 };
 

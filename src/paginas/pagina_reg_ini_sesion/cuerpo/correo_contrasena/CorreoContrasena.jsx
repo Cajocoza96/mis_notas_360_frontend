@@ -218,12 +218,12 @@ export default function CorreoContrasena({ textoContrasena, restablecer, noResta
 
     const handleRestablecerContrasena = async () => {
         if (!nombreUsuario.trim()) {
-            mostrarToast("Por favor ingresa tu nombre de usuario");
+            mostrarToast("Ingrese nombre de usuario");
             return;
         }
 
         if (!contrasena.trim()) {
-            mostrarToast("Por favor ingresa tu nueva contraseña");
+            mostrarToast("Ingrese nueva contraseña");
             return;
         }
 
@@ -251,6 +251,10 @@ export default function CorreoContrasena({ textoContrasena, restablecer, noResta
                 'Error al restablecer contraseña. Por favor intenta más tarde'
             );
             mostrarToast(mensajeSeguro);
+            
+            setTimeout(() => {
+                handleCerrarModal();
+            }, 1000);
         } finally {
             setCargando(false);
         }

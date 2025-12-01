@@ -66,7 +66,9 @@ const manejarRespuestaAuth = async (response) => {
             throw new Error('Tu sesión ha expirado. Por favor, inicia sesión nuevamente.');
         }
 
-        throw new Error(data.error || 'Error en la operación');
+        // 🔥 CAMBIO: Lanzar el error con el mensaje específico del backend
+        // Si existe data.error o data.mensaje, lo usamos; si no, mensaje genérico
+        throw new Error(data.error || data.mensaje || 'Error en la operación');
     }
 
     return data;
