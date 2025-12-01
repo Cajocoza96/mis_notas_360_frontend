@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from "react";
+import { motion } from "framer-motion";
 import { useSelector } from "react-redux";
 import { HiOutlineBookOpen } from "react-icons/hi";
 import { FaSpinner } from "react-icons/fa";
 import { BiWifiOff } from "react-icons/bi";
 import useConexionInternet from "../../hooks/useConexionInternet";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
+
+import BotonAccion from "../botones/BotonAccion";
 
 export default function CargandoNoHayNada({
     pantallaCompletaCarga,
@@ -24,9 +27,15 @@ export default function CargandoNoHayNada({
 
     const location = useLocation();
 
+    const navigate = useNavigate();
+
+    const handleNavegarInicio = () => navigate("/");
+
+    const MiBoton = motion.create(BotonAccion);
+
     const esPaginaEstado = location.pathname.includes('/estados');
-    const esPaginaAgregar = location.pathname.includes('/agregar-nota');
-    const esPaginaEditar = location.pathname.includes('/editar/nota/');
+
+    const esPaginaPanelPrincipal = location.pathname.includes('/panel-principal');
 
     return (
         <>
@@ -41,7 +50,7 @@ export default function CargandoNoHayNada({
                 <FaSpinner className="animate-spin text-2xl md:text-3xl text-black dark:text-white" />
             )}
 
-            {iconoSinConexion && !isOnline && (
+            {iconoSinConexion && (
                 <BiWifiOff className="text-2xl md:text-3xl text-black dark:text-white" />
             )}
 
@@ -53,7 +62,7 @@ export default function CargandoNoHayNada({
             )}
 
             {/* Mensaje de conexión a internet */}
-            {!isOnline && !iconoSinConexion && !esPaginaEstado && !esPaginaAgregar && !esPaginaEditar &&(
+            {!isOnline && !iconoSinConexion && !esPaginaEstado && (
                 <div className="col-span-full text-center p-4 select-none
                                 text-black dark:text-white
                                 flex flex-col items-center justify-center gap-3">
@@ -62,6 +71,30 @@ export default function CargandoNoHayNada({
                     </p>
 
                     <BiWifiOff className="text-6xl md:text-7xl" />
+
+                    <p className="text-base md:text-xl">
+                        Al volver la conexión, los datos se actualizarán automáticamente.
+                    </p>
+
+                    {!esPaginaPanelPrincipal && (
+                        <MiBoton
+                            className="bg-violet-800 text-white
+                                        hover:bg-violet-800 active:bg-violet-800
+                                        rounded-full"
+                            accion="Volver a inicio"
+                            onClick={handleNavegarInicio}
+                            whileHover={{
+                                scale: 1.15,
+                                boxShadow: "0px 4px 20px rgba(147, 51, 234, 0.4)"
+                            }}
+                            whileTap={{
+                                scale: 0.96,
+                                boxShadow: "0px 2px 8px rgba(147, 51, 234, 0.3"
+                            }}
+                            transition={{ type: "spring", stiffness: 300, damping: 10 }}
+                        />
+                    )}
+
                 </div>
             )}
 

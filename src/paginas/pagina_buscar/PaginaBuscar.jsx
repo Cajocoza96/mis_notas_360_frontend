@@ -112,32 +112,38 @@ export default function PaginaBuscar() {
                     <Toast />
                 )}
 
-                <Cabecera
-                    paginaBusqueda={true}
-                    paginaPrincipal={false}
-                    paginaPapelera={false}
-                />
-
-                <div className={`w-[95%] mx-auto mb-3 ${!isOnline ? 'h-full flex flex-col items-center justify-center' : ''}`}>
-
-                    {!isOnline ? <CargandoNoHayNada /> :
-                        <input
-                            value={inputValue}
-                            onChange={handleInputChange}
-                            className="w-full text-base md:text-xl 
-                                border-0 focus:outline-none
-                                text-black dark:text-white"
-                            placeholder="Buscar contenido en anotacion..."
+                {!isOnline ? (
+                    <div className="flex-1 flex items-center justify-center">
+                        <CargandoNoHayNada />
+                    </div>
+                ) : (
+                    <>
+                        <Cabecera
+                            paginaBusqueda={true}
+                            paginaPrincipal={false}
+                            paginaPapelera={false}
                         />
-                    }
 
-                </div>
+                        <div className="w-[95%] mx-auto mb-3">
+                            <input
+                                value={inputValue}
+                                onChange={handleInputChange}
+                                className="w-full text-base md:text-xl 
+                                border-0 focus:outline-none
+                                text-black dark:text-white bg-transparent"
+                                placeholder="Buscar contenido en anotacion..."
+                            />
+                        </div>
 
-                <Cuerpo
-                    notaBusquedaNotaEliminada={false}
-                    notaNoEliminada={true}
-                    verNotaBusqueda={true}
-                />
+                        <Cuerpo
+                            notaBusquedaNotaEliminada={false}
+                            notaNoEliminada={true}
+                            verNotaBusqueda={true}
+                        />
+                    </>
+                )}
+
+
             </motion.div>
         </AnimatePresence>
     );

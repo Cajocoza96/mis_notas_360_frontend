@@ -24,6 +24,10 @@ import { logDesarrollo, errorDesarrollo, registrarError } from "../../utils/erro
 
 import Toast from "../../componentes/toast/Toast";
 
+import useConexionInternet from "../../hooks/useConexionInternet";
+
+import CargandoNoHayNada from "../../componentes/cargando_no_hay_nada/CargandoNoHayNada";
+
 export default function PaginaVistaPrevia() {
     const { id } = useParams();
 
@@ -35,6 +39,10 @@ export default function PaginaVistaPrevia() {
 
     // ✅ Estado local simple para controlar la carga
     const [cargando, setCargando] = useState(true);
+    // ✅ NUEVO: Estado para controlar si hubo error
+    const [errorCarga, setErrorCarga] = useState(false);
+
+    const { isOnline, justReconnected, resetReconnectionState } = useConexionInternet();
 
     const nota = useSelector((state) => state.tareas.nota);
 
@@ -47,14 +55,29 @@ export default function PaginaVistaPrevia() {
 
     // Cargar la anotación cuando se monta el componente
     useEffect(() => {
-        if (id && esModoVistaPrevia) {
+        if (id && esModoVistaPrevia && isOnline) {
             cargarAnotacion();
         }
     }, [id]);
 
+    // ✅ NUEVO: Reintentar cargar cuando se recupere la conexión
+    useEffect(() => {
+        // Si estaba sin conexión y ahora hay conexión, reintentar carga
+        if (isOnline && cargando && id && esModoVistaPrevia) {
+            cargarAnotacion();
+        }
+    }, [isOnline]);
+
     const cargarAnotacion = async () => {
+        // ✅ CRÍTICO: Si no hay conexión, no intentar cargar
+        if (!isOnline) {
+            setCargando(true);
+            return;
+        }
+
         try {
             setCargando(true);
+            setErrorCarga(false);
 
             const anotacion = await obtenerAnotacionPorId(id);
 
@@ -78,9 +101,18 @@ export default function PaginaVistaPrevia() {
             setCargando(false);
         } catch (error) {
             errorDesarrollo('Error al cargar la anotación para vista previa:', error);
-            setCargando(false);
-            // Redirigir a la página de error
-            navigate('/error', { replace: true });
+            
+            // ✅ Solo procesar error si hay conexión
+            // Si perdió la conexión durante la carga, no redirigir
+            if (isOnline) {
+                setErrorCarga(true);
+                setCargando(false);
+                navigate('/error', { replace: true });
+            } else {
+                // Sin conexión: mantener en estado de carga
+                setCargando(true);
+                setErrorCarga(false);
+            }
         }
     }
 
@@ -97,6 +129,27 @@ export default function PaginaVistaPrevia() {
             dispatch(resetNotaState());
         };
     }, [dispatch]);
+
+    const [reload, setReload] = useState(false);
+
+    const recargarComponente = () => {
+        setReload(prev => !prev);
+    }
+
+    // Efecto para recargar pagina cuando se restablece la conexión
+    useEffect(() => {
+        if (justReconnected) {
+
+            recargarComponente();
+
+            // Esperar un momento antes de resetear el estado de reconexión
+            const timer = setTimeout(() => {
+                resetReconnectionState();
+            }, 3000); // El mensaje desaparecerá después de 3 segundos
+
+            return () => clearTimeout(timer);
+        }
+    }, [justReconnected]);
 
     const verToast = useSelector((state) => state.acceso.verToast);
 
@@ -117,6 +170,45 @@ export default function PaginaVistaPrevia() {
             }
         }
     }
+
+    // ✅ SOLUCIÓN PROBLEMA 1 y 2: Determinar qué mostrar según el estado
+    const renderContenido = () => {
+        // Si está cargando sin conexión O si hubo error sin conexión
+        if (!isOnline && (cargando || errorCarga)) {
+            return (
+                <div className="flex-1 flex items-center justify-center">
+                    <CargandoNoHayNada />
+                </div>
+            );
+        }
+
+        // Si está cargando con conexión, mostrar skeleton
+        if (cargando && isOnline) {
+            return <SkeletonCrearEditPrevia />;
+        }
+
+        // ✅ SOLUCIÓN PROBLEMA 2: Si hubo error con conexión, no mostrar nada
+        // (ya se redirigió a /error en el catch)
+        if (errorCarga && isOnline) {
+            return null;
+        }
+
+        // Si no está cargando y no hay error, mostrar el contenido normal
+        return (
+            <>
+                <Cabecera
+                    esModoVistaPrevia={esModoVistaPrevia}
+                />
+
+                <CuerpoEdicion
+                    ref={notaRef}
+                    esModoVistaPrevia={esModoVistaPrevia}
+                />
+
+                <ContOpSubCabecera />
+            </>
+        );
+    };
 
     return (
         <AnimatePresence mode="wait">
@@ -153,23 +245,7 @@ export default function PaginaVistaPrevia() {
                     )}
                 </AnimatePresence>
 
-                {/* ✅ Mostrar skeleton que replica la estructura exacta */}
-                {cargando ? (
-                    <SkeletonCrearEditPrevia />
-                ) : (
-                    <>
-                        <Cabecera
-                            esModoVistaPrevia={esModoVistaPrevia}
-                        />
-
-                        <CuerpoEdicion
-                            ref={notaRef}
-                            esModoVistaPrevia={esModoVistaPrevia}
-                        />
-
-                        <ContOpSubCabecera />
-                    </>
-                )}
+                {renderContenido()}
 
             </motion.div>
         </AnimatePresence>

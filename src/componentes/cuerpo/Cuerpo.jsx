@@ -108,6 +108,8 @@ export default function Cuerpo({ notaNoEliminada,
                 cargarAnotaciones();
             } else if (verNotaEliminada) {
                 cargarAnotacionesEliminadas();
+            } else if (verTodosEstados) {
+                cargarContadores();
             }
 
             // Esperar un momento antes de resetear el estado de reconexión

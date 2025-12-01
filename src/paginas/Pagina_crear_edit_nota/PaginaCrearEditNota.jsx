@@ -3,7 +3,7 @@ import React, { useRef, useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
 import { useDispatch, useSelector } from "react-redux";
-import { useParams, useLocation } from "react-router-dom";
+import { useParams, useLocation, useNavigate } from "react-router-dom";
 import { useUndoRedo } from "../../hooks/useUndoRedo";
 import { useContentEditable } from "../../hooks/useContentEditable";
 import { resetNotaState, setCanUndo, setCanRedo, setTitulo, setNota, setTareas, setAnotacionId, setEstadoSeleccionado } from "../../store/tareasSlice";
@@ -27,6 +27,10 @@ import { logDesarrollo, errorDesarrollo, registrarError } from "../../utils/erro
 
 import Toast from "../../componentes/toast/Toast";
 
+import useConexionInternet from "../../hooks/useConexionInternet";
+
+import CargandoNoHayNada from "../../componentes/cargando_no_hay_nada/CargandoNoHayNada";
+
 export default function PaginaCrearEditNota() {
     const { id } = useParams();
     const location = useLocation();
@@ -34,11 +38,18 @@ export default function PaginaCrearEditNota() {
     const tituloRef = useRef(null);
     const notaRef = useRef(null);
 
+    const navigate = useNavigate();
+
+    // ✅ Estado para controlar si la anotación fue validada
+    const [anotacionValidada, setAnotacionValidada] = useState(false);
+
     // ✅ Estado local para los datos cargados
     const [anotacionCargada, setAnotacionCargada] = useState(null);
 
     // ✅ Estado local simple para controlar la carga
     const [cargando, setCargando] = useState(true);
+
+    const { isOnline, justReconnected, resetReconnectionState } = useConexionInternet();
 
     const verModalEstado = useSelector((state) => state.tareas.verModalEstado);
 
@@ -67,6 +78,7 @@ export default function PaginaCrearEditNota() {
         const cargarDatos = async () => {
             // ✅ Si NO estamos en modo edición, desactivar carga inmediatamente
             if (!esModoEdicion) {
+                setAnotacionValidada(true);
                 setCargando(false);
                 return;
             }
@@ -75,6 +87,14 @@ export default function PaginaCrearEditNota() {
             if (!id) {
                 errorDesarrollo('❌ Modo edición sin ID');
                 setCargando(false);
+                navigate('/error', { replace: true });
+                return;
+            }
+
+            // ✅ Si no hay conexión en modo edición, mantener el estado de carga
+            if (!isOnline) {
+                logDesarrollo('⚠️ Sin conexión - manteniendo estado de carga');
+                setCargando(true);
                 return;
             }
 
@@ -83,6 +103,14 @@ export default function PaginaCrearEditNota() {
                 setCargando(true);
                 logDesarrollo('🔄 Iniciando carga de anotación...');
                 const anotacion = await obtenerAnotacionPorId(id);
+
+                // ✅ VALIDACIÓN: Si no existe, redirigir ANTES de actualizar estados
+                if (!anotacion || !anotacion.id) {
+                    errorDesarrollo('❌ Anotación no encontrada');
+                    navigate('/error', { replace: true });
+                    return;
+                }
+
                 logDesarrollo('✅ Anotación obtenida:', anotacion);
 
                 // Guardar en Redux
@@ -103,12 +131,18 @@ export default function PaginaCrearEditNota() {
 
                 // ✅ Guardar la anotación en estado local
                 setAnotacionCargada(anotacion);
+                setAnotacionValidada(true);
+                setCargando(false);
 
             } catch (error) {
                 errorDesarrollo('❌ Error al cargar la anotación:', error);
-            } finally {
-                // ✅ IMPORTANTE: Siempre desactivar carga al finalizar
                 setCargando(false);
+                navigate('/error', { replace: true });
+            } finally {
+                // ✅ IMPORTANTE: Solo desactivar carga si hubo éxito
+                if (isOnline) {
+                    setCargando(false);
+                }
             }
         };
 
@@ -118,11 +152,11 @@ export default function PaginaCrearEditNota() {
         return () => {
             dispatch(resetNotaState());
         };
-    }, [id, esModoEdicion, dispatch]);
+    }, [id, esModoEdicion, isOnline, dispatch]);
 
     // ✅ Efecto SEPARADO para actualizar los refs cuando la anotación esté lista Y los refs estén montados
     useEffect(() => {
-        if (anotacionCargada && tituloRef.current && notaRef.current) {
+        if (anotacionValidada && anotacionCargada && tituloRef.current && notaRef.current) {
             logDesarrollo('🎯 Actualizando refs con datos de anotación...');
 
             const tituloInicial = anotacionCargada.titulo || "";
@@ -150,7 +184,7 @@ export default function PaginaCrearEditNota() {
                 }
             }, 0);
         }
-    }, [anotacionCargada, dispatch]);
+    }, [anotacionValidada, anotacionCargada, dispatch]);
 
     // Limpiar el historial cuando entramos en modo edición
     useEffect(() => {
@@ -203,6 +237,27 @@ export default function PaginaCrearEditNota() {
         handleRedoClick(tituloRef, notaRef);
     };
 
+    const [reload, setReload] = useState(false);
+
+    const recargarComponente = () => {
+        setReload(prev => !prev);
+    }
+
+    // Efecto para recargar pagina cuando se restablece la conexión
+    useEffect(() => {
+        if (justReconnected) {
+
+            recargarComponente();
+
+            // Esperar un momento antes de resetear el estado de reconexión
+            const timer = setTimeout(() => {
+                resetReconnectionState();
+            }, 3000); // El mensaje desaparecerá después de 3 segundos
+
+            return () => clearTimeout(timer);
+        }
+    }, [justReconnected]);
+
     const verToast = useSelector((state) => state.acceso.verToast);
 
     const pageVariants = {
@@ -223,6 +278,11 @@ export default function PaginaCrearEditNota() {
         }
     }
 
+    // ✅ Logica: Determinar qué mostrar
+    const mostrarSkeleton = cargando && isOnline;
+    const mostrarSinConexion = !isOnline && (cargando || esModoEdicion);
+    const mostrarContenido = anotacionValidada && !mostrarSkeleton && !mostrarSinConexion;
+
     return (
         <AnimatePresence mode="wait">
             <motion.div
@@ -240,40 +300,45 @@ export default function PaginaCrearEditNota() {
                     <ModalExitoError />
                 </AnimatePresence>
 
-                {cargando ? (
+                {mostrarSkeleton ? (
                     <SkeletonCrearEditPrevia />
-                ) : (
-                    <>
-                        <AnimatePresence>
-                            {verModalEstado && (
-                                <ModalEstado />
-                            )}
-                        </AnimatePresence>
+                ) : mostrarSinConexion ? (
+                        <div className="flex-1 flex items-center justify-center">
+                            <CargandoNoHayNada />
+                        </div>
+                    ) : mostrarContenido ? (
+                        <>
+                            <AnimatePresence>
+                                {verModalEstado && (
+                                    <ModalEstado />
+                                )}
+                            </AnimatePresence>
 
-                        <Cabecera
-                            ref={tituloRef}
-                            handleTituloChange={handleTituloChangeAdapter}
-                            handleTituloKeyDown={handleTituloKeyDownAdapter}
-                        />
+                            <Cabecera
+                                ref={tituloRef}
+                                handleTituloChange={handleTituloChangeAdapter}
+                                handleTituloKeyDown={handleTituloKeyDownAdapter}
+                            />
 
-                        <CuerpoEdicion
-                            ref={notaRef}
-                            handleNotaChange={handleNotaChangeAdapter}
-                            handleNotaKeyDown={handleNotaKeyDownAdapter}
-                            esModoVistaPrevia={false}
-                        />
+                            <CuerpoEdicion
+                                ref={notaRef}
+                                handleNotaChange={handleNotaChangeAdapter}
+                                handleNotaKeyDown={handleNotaKeyDownAdapter}
+                                esModoVistaPrevia={false}
+                            />
 
-                        <CantidadTituloNota />
+                            <CantidadTituloNota />
 
-                        <Footer
-                            handleUndoClick={handleUndoClickAdapter}
-                            handleRedoClick={handleRedoClickAdapter}
-                            esModoEdicion={esModoEdicion}
-                            tituloRef={tituloRef}
-                            notaRef={notaRef}
-                        />
-                    </>
-                )}
+                            <Footer
+                                handleUndoClick={handleUndoClickAdapter}
+                                handleRedoClick={handleRedoClickAdapter}
+                                esModoEdicion={esModoEdicion}
+                                tituloRef={tituloRef}
+                                notaRef={notaRef}
+                            />
+                        </>
+                        
+                    ): null}
 
             </motion.div>
         </AnimatePresence>
