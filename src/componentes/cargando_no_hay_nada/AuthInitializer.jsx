@@ -10,14 +10,18 @@ export default function AuthInitializer({ children }) {
     const { inicializando, autenticado } = useSelector((state) => state.auth);
 
     useEffect(() => {
-        // Verificar token solo una vez al montar la aplicación
-        dispatch(inicializarAuth()).then((result) => {
+        // ✅ Verificar token solo una vez al montar la aplicación
+        const inicializar = async () => {
+            const result = await dispatch(inicializarAuth());
+            
             // Si está autenticado, cargar preferencias
             if (result.payload?.autenticado) {
-                dispatch(cargarPreferencia());
+                await dispatch(cargarPreferencia());
             }
-        });
-    }, [dispatch]);
+        };
+        
+        inicializar();
+    }, [dispatch]); // ✅ Solo se ejecuta una vez
 
     // Mostrar pantalla de carga mientras inicializa
     if (inicializando) {
@@ -28,7 +32,7 @@ export default function AuthInitializer({ children }) {
                             z-[9999] select-none">
                 <FaSpinner className="animate-spin text-2xl md:text-3xl" />
                 <p className="text-xl md:text-2xl font-bold">
-                    Verificando sesión....
+                    Verificando sesión...
                 </p>
             </div>
         );

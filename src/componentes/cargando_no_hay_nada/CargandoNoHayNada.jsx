@@ -20,6 +20,9 @@ export default function CargandoNoHayNada({
     const verSoloFavoritos = useSelector((state) => state.preferencia.verSoloFavoritos);
     const verAnotacEstado = useSelector((state) => state.preferencia.verAnotacEstado);
 
+    // ✅ Verificar si la autenticación está inicializando
+    const { inicializando } = useSelector((state) => state.auth);
+
     const [cargando, setCargando] = useState(false);
 
     // Hook de conexión a internet
@@ -42,6 +45,19 @@ export default function CargandoNoHayNada({
 
     const ModosCrearEdicion = esModoCrear || esModoEdicion;
 
+    // ✅ Si está inicializando auth, mostrar loader
+    if (inicializando && CargandoAnotaciones) {
+        return (
+            <div className="col-span-full text-center p-4 select-none
+                            flex flex-col items-center justify-center gap-3">
+                <FaSpinner className="animate-spin text-2xl md:text-3xl text-black dark:text-white" />
+                <p className="text-base md:text-xl text-black dark:text-white">
+                    Verificando sesión...
+                </p>
+            </div>
+        );
+    }
+
     return (
         <>
             {pantallaCompletaCarga && isOnline && (
@@ -59,7 +75,7 @@ export default function CargandoNoHayNada({
                 <BiWifiOff className="text-2xl md:text-3xl text-black dark:text-white" />
             )}
 
-            {CargandoAnotaciones && isOnline && (
+            {CargandoAnotaciones && isOnline && !inicializando && (
                 <div className="col-span-full text-center p-4 select-none
                                 flex flex-col items-center justify-center gap-3">
                     <FaSpinner className="animate-spin text-2xl md:text-3xl text-black dark:text-white" />
@@ -121,7 +137,7 @@ export default function CargandoNoHayNada({
             )}
 
             {/* Contenido normal cuando hay conexión y no está reconectando */}
-            {sinEstadoFavoritoNada && !cargando && isOnline && !justReconnected && (
+            {sinEstadoFavoritoNada && !cargando && isOnline && !justReconnected && !inicializando && (
                 <div className="col-span-full text-center p-4 select-none
                                 flex flex-col items-center justify-center gap-3">
                     <p className="text-base md:text-xl text-black dark:text-white">
@@ -144,7 +160,7 @@ export default function CargandoNoHayNada({
                 </div>
             )}
 
-            {noHayEliminadas && !cargando && isOnline && !justReconnected && (
+            {noHayEliminadas && !cargando && isOnline && !justReconnected && !inicializando && (
                 <div className="col-span-full text-center p-4 select-none
                                 flex flex-col items-center justify-center gap-3">
                     <p className="text-base md:text-xl text-black dark:text-white">
