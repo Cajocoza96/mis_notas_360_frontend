@@ -6,6 +6,8 @@ import { AnimatePresence } from "framer-motion";
 import Tarea from "../tarea/Tarea";
 import ModalTarea from "../modal/ModalTarea";
 
+import useConexionInternet from "../../hooks/useConexionInternet";
+
 const CuerpoEdicion = forwardRef(({ handleNotaChange, handleNotaKeyDown, esModoVistaPrevia }, notaRef) => {
 
     const dispatch = useDispatch();
@@ -15,6 +17,8 @@ const CuerpoEdicion = forwardRef(({ handleNotaChange, handleNotaKeyDown, esModoV
     // ✅ Determinar si tiene nota directamente desde Redux
     const tieneNota = nota && nota.trim() !== "";
     const isProcessingRef = useRef(false); // ✅ Prevenir loops infinitos
+
+    const {isOnline, justReconnected} = useConexionInternet();
 
     // Efecto para actualizar el estado automáticamente cuando cambien las tareas
     useEffect(() => {

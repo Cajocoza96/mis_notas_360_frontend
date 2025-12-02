@@ -19,7 +19,7 @@ import PaginaEstado from "../paginas/pagina_estado/PaginaEstado";
 import PaginaInfoUsuario from "../paginas/pagina_info_usuario/PaginaInfoUsuario";
 import PaginaRegIniSesion from "../paginas/pagina_reg_ini_sesion/PaginaRegIniSesion";
 import PaginaTerminosPoliticas from "../paginas/pagina_terminos_politicas/PaginaTerminosPoliticas";
-import PaginaError from "../paginas/pagina_error/PaginaError";
+import PaginaErrorNotaNoEncontrada from "../paginas/pagina_error_nota_no_encontrada/PaginaErrorNotaNoEncontrada";
 
 // Componentes
 import RutaProtegida from "./RutaProtegida";
@@ -178,10 +178,10 @@ export default function Rutas() {
             />
 
             <Route
-                path="/error"
+                path="/nota-no-encontrada"
                 element={
                     <PageTransition>
-                        <PaginaError />
+                        <PaginaErrorNotaNoEncontrada />
                     </PageTransition>
                 }
             />
@@ -190,7 +190,7 @@ export default function Rutas() {
                 path="*"
                 element={
                     <PageTransition>
-                        <PaginaError />
+                        <PaginaErrorNotaNoEncontrada />
                     </PageTransition>
                 }
             />

@@ -37,6 +37,11 @@ export default function CargandoNoHayNada({
 
     const esPaginaPanelPrincipal = location.pathname.includes('/panel-principal');
 
+    const esModoCrear = location.pathname.includes('/agregar-nota');
+    const esModoEdicion = location.pathname.includes('/editar/nota/');
+
+    const ModosCrearEdicion = esModoCrear || esModoEdicion;
+
     return (
         <>
             {pantallaCompletaCarga && isOnline && (
@@ -72,9 +77,26 @@ export default function CargandoNoHayNada({
 
                     <BiWifiOff className="text-6xl md:text-7xl" />
 
-                    <p className="text-base md:text-xl">
-                        Al volver la conexión, los datos se actualizarán automáticamente.
-                    </p>
+                    {!ModosCrearEdicion && (
+                        <p className="text-base md:text-xl">
+                            Al volver la conexión, los datos se actualizarán automáticamente.
+                        </p>
+                    )}
+
+                    {ModosCrearEdicion && (
+                        <div className="text-base md:text-xl flex flex-col items-center gap-3">
+                            <div>
+                                <span>Por ahora la aplicación no incluye autoguardado sin conexión.</span> <span>Si se pierde la conexión, los cambios no guardados se perderán.</span>
+                            </div>
+
+                            <div>
+                                <span>
+                                    Al volver la conexión, podrá seguir con la {esModoCrear ? 'creación' : 'edición'} de la nota
+                                </span>
+                            </div>
+                        </div>
+                    )}
+
 
                     {!esPaginaPanelPrincipal && (
                         <MiBoton

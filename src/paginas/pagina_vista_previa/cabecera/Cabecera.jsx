@@ -46,7 +46,7 @@ export default function Cabecera({ esModoVistaPrevia }) {
     // useEffect para manejar la redirección cuando no hay anotación
     useEffect(() => {
         if (!cargando && !anotacionActual && !esModoVistaPrevia) {
-            navigate('/error', { replace: true });
+            navigate('/nota-no-encontrada', { replace: true });
         }
     }, [cargando, anotacionActual, navigate, esModoVistaPrevia]);
 

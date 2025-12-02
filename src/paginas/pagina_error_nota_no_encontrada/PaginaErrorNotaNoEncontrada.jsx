@@ -1,6 +1,6 @@
 import React from "react";
 
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 import { useSelector } from "react-redux";
 
@@ -8,13 +8,15 @@ import Lottie from "lottie-react";
 
 import error404 from "../../assets/lottie/pagina_error/error404.json";
 
+import notaNoEncontrada from "../../assets/lottie/nota_no_encontrada/notaNoEncontrada.json";
+
 import BotonAccion from "../../componentes/botones/BotonAccion";
 
 import { motion } from "framer-motion";
 
 import Toast from "../../componentes/toast/Toast";
 
-export default function PaginaError() {
+export default function PaginaErrorNotaNoEncontrada() {
 
     const MiBoton = motion.create(BotonAccion);
 
@@ -24,30 +26,50 @@ export default function PaginaError() {
 
     const verToast = useSelector((state) => state.acceso.verToast);
 
+    const location = useLocation();
+
+    const esRutaNotaNoEncontrada = location.pathname.includes('/nota-no-encontrada');
+
     return (
         <div className="h-dvh bg-white dark:bg-gray-800 
                         overflow-hidden overflow-y-auto
                         flex flex-col items-center justify-center gap-2">
-            
+
             {verToast && (
                 <Toast />
             )}
 
-            <div className="flex items-center justify-center">
-                <Lottie className="w-[60%] object-cover" animationData={error404} loop={true} />
-            </div>
+            {esRutaNotaNoEncontrada ? (
+                <div className="flex items-center justify-center mt-4">
+                    <Lottie className="w-[50%] 2xs:w-[35%] lg:w-[60%] object-cover" animationData={notaNoEncontrada} loop={true} />
+                </div>
+            ) : (
+                <div className="flex items-center justify-center mt-4">
+                    <Lottie className="w-[50%] 2xs:w-[35%] lg:w-[60%] object-cover" animationData={error404} loop={true} />
+                </div>
+            )}
+
 
             <div className="flex flex-col items-center gap-5">
-                <p className="text-center text-xl md:text-2xl 
-                            font-bold select-none
-                            text-black dark:text-white">
-                    Página no encontrada
-                </p>
+                {esRutaNotaNoEncontrada ? (
+                    <p className="text-center text-xl md:text-2xl 
+                    font-bold select-none
+                    text-black dark:text-white">
+                        Nota no encontrada
+                    </p>
+                ) : (
+                    <p className="text-center text-xl md:text-2xl 
+                    font-bold select-none
+                    text-black dark:text-white">
+                        Página no encontrada
+                    </p>
+                )}
+
 
                 <MiBoton
                     className="bg-violet-800 text-white
                                     hover:bg-violet-800 active:bg-violet-800
-                        rounded-full"
+                        rounded-full mb-4"
                     accion="Volver a inicio"
                     onClick={handleNavegarInicio}
                     whileHover={{

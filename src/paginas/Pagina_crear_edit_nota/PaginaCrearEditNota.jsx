@@ -55,6 +55,7 @@ export default function PaginaCrearEditNota() {
 
     // Determinar si estamos en modo edición
     const esModoEdicion = location.pathname.includes('/editar/nota/');
+    const esModoCrear = location.pathname.includes('/agregar-nota');
 
     // Usar el hook de deshacer/rehacer con estado inicial vacío
     const undoRedoHook = useUndoRedo({ titulo: "", nota: "" });
@@ -87,7 +88,7 @@ export default function PaginaCrearEditNota() {
             if (!id) {
                 errorDesarrollo('❌ Modo edición sin ID');
                 setCargando(false);
-                navigate('/error', { replace: true });
+                navigate('/nota-no-encontrada', { replace: true });
                 return;
             }
 
@@ -107,7 +108,7 @@ export default function PaginaCrearEditNota() {
                 // ✅ VALIDACIÓN: Si no existe, redirigir ANTES de actualizar estados
                 if (!anotacion || !anotacion.id) {
                     errorDesarrollo('❌ Anotación no encontrada');
-                    navigate('/error', { replace: true });
+                    navigate('/nota-no-encontrada', { replace: true });
                     return;
                 }
 
@@ -137,7 +138,7 @@ export default function PaginaCrearEditNota() {
             } catch (error) {
                 errorDesarrollo('❌ Error al cargar la anotación:', error);
                 setCargando(false);
-                navigate('/error', { replace: true });
+                navigate('/nota-no-encontrada', { replace: true });
             } finally {
                 // ✅ IMPORTANTE: Solo desactivar carga si hubo éxito
                 if (isOnline) {
@@ -280,7 +281,7 @@ export default function PaginaCrearEditNota() {
 
     // ✅ Logica: Determinar qué mostrar
     const mostrarSkeleton = cargando && isOnline;
-    const mostrarSinConexion = !isOnline && (cargando || esModoEdicion);
+    const mostrarSinConexion = !isOnline && (cargando || esModoEdicion || esModoCrear);
     const mostrarContenido = anotacionValidada && !mostrarSkeleton && !mostrarSinConexion;
 
     return (

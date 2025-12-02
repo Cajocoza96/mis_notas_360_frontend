@@ -107,7 +107,7 @@ export default function PaginaVistaPrevia() {
             if (isOnline) {
                 setErrorCarga(true);
                 setCargando(false);
-                navigate('/error', { replace: true });
+                navigate('/nota-no-encontrada', { replace: true });
             } else {
                 // Sin conexión: mantener en estado de carga
                 setCargando(true);
@@ -188,7 +188,7 @@ export default function PaginaVistaPrevia() {
         }
 
         // ✅ SOLUCIÓN PROBLEMA 2: Si hubo error con conexión, no mostrar nada
-        // (ya se redirigió a /error en el catch)
+        // (ya se redirigió a /nota-no-encontrada en el catch)
         if (errorCarga && isOnline) {
             return null;
         }
