@@ -1,5 +1,6 @@
 import { store } from "../store/store";
 import { cargarPreferencia } from "../store/preferenciaSlice";
+import { cerrarSesionLocal } from "../store/authSlice";
 import { establecerSesion } from "../store/authSlice";
 import { logDesarrollo, errorDesarrollo, obtenerMensajeError } from "../utils/errorHandler";
 
@@ -22,6 +23,9 @@ const limpiarSesion = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('usuario');
     localStorage.removeItem('theme');
+
+    // Limpiar también el store Redux
+    store.dispatch({ type: 'auth/cerrarSesionLocal' });
 };
 
 // Función helper para hacer fetch con timeout y manejo de errores
