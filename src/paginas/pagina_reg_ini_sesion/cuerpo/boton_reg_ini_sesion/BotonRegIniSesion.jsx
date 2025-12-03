@@ -8,7 +8,7 @@ export default function BotonRegIniSesion({ icono, nombreIcono }){
                         hover:bg-gray-300 dark:hover:bg-gray-900
                         active:bg-gray-200 dark:active:bg-gray-700
 
-                        rounded-md p-2 overflow-hidden
+                        rounded-md p-3 overflow-hidden
                         flex flex-row items-center justify-center gap-2 cursor-pointer select-none">
             {icono}
             <p className="text-base md:text-xl text-black dark:text-white">{nombreIcono}</p>
