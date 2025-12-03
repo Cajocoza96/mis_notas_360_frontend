@@ -111,7 +111,7 @@ export default function Cuerpo() {
     };
 
     return (
-        <div className="w-[95%] mx-auto flex flex-col justify-between p-2 gap-2">
+        <div className="w-[85%] lg:w-[65%] mx-auto flex flex-col justify-between p-2 gap-3">
 
             <p className="w-full text-left text-base md:text-xl 
                             font-bold select-none truncate
@@ -131,7 +131,7 @@ export default function Cuerpo() {
             {/* Botón oficial de Google */}
             <div 
                 key={googleKey}
-                className="w-full"
+                className="w-full flex justify-center items-center"
             >
                 <GoogleLogin
                     onSuccess={handleGoogleSuccess}
@@ -141,8 +141,9 @@ export default function Cuerpo() {
                     size="large"
                     text={esRegistro ? "signup_with" : "signin_with"}
                     shape="circle"
-                    logo_alignment="center"
+                    logo_alignment="left"
                     locale="es"
+                    type="standard"
                 />
             </div>
 
