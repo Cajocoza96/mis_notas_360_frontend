@@ -1,4 +1,4 @@
-import React, { useMemo, useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { setVerToast, setMensajeToast, toggleVerModalRestablecerContrasena } from "../../../store/accesoSlice";
@@ -17,44 +17,19 @@ export default function Cuerpo() {
     const verMenuHamburguesa = useSelector((state) => state.layout.verMenuHamburguesa);
     const tema = useSelector((state) => state.preferencia.tema);
 
-    const [buttonWidth, setButtonWidth] = useState(300);
-    const [key, setKey] = useState(0); // Para forzar re-render
+    const [googleKey, setGoogleKey] = useState(0);
 
     const esRegistro = location.pathname === "/registrar";
     const textoAccion = esRegistro ? infoRegIniSesion.registrate.accionCuenta : infoRegIniSesion.iniciar.accionCuenta;
 
-    // Determinar el tema actual para GoogleLogin
-    const googleTheme = useMemo(() => {
-        if (tema === "oscuro") {
-            return "filled_black";
-        } else if (tema === "claro") {
-            return "outline";
-        } else {
-            // tema === "sistema"
-            const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-            return prefersDark ? "filled_black" : "outline";
-        }
-    }, [tema]);
+    // Determinar si está en modo oscuro
+    const isDarkMode = tema === "oscuro" || 
+        (tema === "sistema" && window.matchMedia("(prefers-color-scheme: dark)").matches);
 
-    // Forzar re-render del botón cuando cambia el tema
+    // Forzar re-render cuando cambia el tema o la ruta
     useEffect(() => {
-        setKey(prev => prev + 1);
-    }, [googleTheme]);
-
-    // Calcular el ancho del botón dinámicamente
-    useEffect(() => {
-        const updateWidth = () => {
-            const container = document.querySelector('.google-button-container');
-            if (container) {
-                const width = container.offsetWidth;
-                setButtonWidth(width > 400 ? 400 : width); // Máximo 400px
-            }
-        };
-
-        updateWidth();
-        window.addEventListener('resize', updateWidth);
-        return () => window.removeEventListener('resize', updateWidth);
-    }, []);
+        setGoogleKey(prev => prev + 1);
+    }, [tema, location.pathname]);
 
     const mostrarToast = (mensaje) => {
         dispatch(setMensajeToast(mensaje));
@@ -73,6 +48,7 @@ export default function Cuerpo() {
     // Función para manejar autenticación con Google
     const handleGoogleSuccess = async (credentialResponse) => {
         try {
+            // Enviamos el JWT token como tu backend espera
             await autenticarConGoogle(credentialResponse.credential);
 
             if (verMenuHamburguesa) {
@@ -135,7 +111,7 @@ export default function Cuerpo() {
     };
 
     return (
-        <div className="w-[85%] mx-auto flex flex-col justify-between p-2 gap-3">
+        <div className="w-[95%] mx-auto flex flex-col justify-between p-2 gap-2">
 
             <p className="w-full text-left text-base md:text-xl 
                             font-bold select-none truncate
@@ -152,19 +128,21 @@ export default function Cuerpo() {
             </div>
             */}
 
-            {/* Botón oficial de Google con tema dinámico */}
-            <div className="w-full flex justify-center google-button-container">
+            {/* Botón oficial de Google */}
+            <div 
+                key={googleKey}
+                className="w-full"
+            >
                 <GoogleLogin
-                    key={key}
                     onSuccess={handleGoogleSuccess}
                     onError={handleGoogleError}
                     useOneTap={false}
-                    theme={googleTheme}
+                    theme={isDarkMode ? "filled_black" : "outline"}
                     size="large"
                     text={esRegistro ? "signup_with" : "signin_with"}
-                    width={buttonWidth}
-                    shape="rectangular"
+                    shape="circle"
                     logo_alignment="center"
+                    locale="es"
                 />
             </div>
 
