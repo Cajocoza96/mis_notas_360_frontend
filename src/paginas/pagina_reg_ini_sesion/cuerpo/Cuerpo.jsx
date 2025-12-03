@@ -1,17 +1,13 @@
-import React from "react";
+import React, { useMemo, useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { setVerToast, setMensajeToast, toggleVerModalRestablecerContrasena } from "../../../store/accesoSlice";
-import BotonRegIniSesion from "./boton_reg_ini_sesion/BotonRegIniSesion";
 import CorreoContrasena from "./correo_contrasena/CorreoContrasena";
-import { FaFacebook, FaGoogle } from "react-icons/fa";
 import infoRegIniSesion from "../../../data/infoRegIniSesion.json";
 import { autenticarConGoogle, autenticarConFacebook } from "../../../services/authService";
 import { GoogleLogin } from "@react-oauth/google";
-import { jwtDecode } from "jwt-decode";
 import { toggleVerMenuHamburguesa } from "../../../store/layoutSlice";
-
-import { obtenerMensajeError, registrarError, logDesarrollo } from "../../../utils/errorHandler";
+import { obtenerMensajeError, registrarError } from "../../../utils/errorHandler";
 
 export default function Cuerpo() {
     const location = useLocation();
@@ -19,9 +15,46 @@ export default function Cuerpo() {
     const dispatch = useDispatch();
 
     const verMenuHamburguesa = useSelector((state) => state.layout.verMenuHamburguesa);
+    const tema = useSelector((state) => state.preferencia.tema);
+
+    const [buttonWidth, setButtonWidth] = useState(300);
+    const [key, setKey] = useState(0); // Para forzar re-render
 
     const esRegistro = location.pathname === "/registrar";
     const textoAccion = esRegistro ? infoRegIniSesion.registrate.accionCuenta : infoRegIniSesion.iniciar.accionCuenta;
+
+    // Determinar el tema actual para GoogleLogin
+    const googleTheme = useMemo(() => {
+        if (tema === "oscuro") {
+            return "filled_black";
+        } else if (tema === "claro") {
+            return "outline";
+        } else {
+            // tema === "sistema"
+            const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+            return prefersDark ? "filled_black" : "outline";
+        }
+    }, [tema]);
+
+    // Forzar re-render del botón cuando cambia el tema
+    useEffect(() => {
+        setKey(prev => prev + 1);
+    }, [googleTheme]);
+
+    // Calcular el ancho del botón dinámicamente
+    useEffect(() => {
+        const updateWidth = () => {
+            const container = document.querySelector('.google-button-container');
+            if (container) {
+                const width = container.offsetWidth;
+                setButtonWidth(width > 400 ? 400 : width); // Máximo 400px
+            }
+        };
+
+        updateWidth();
+        window.addEventListener('resize', updateWidth);
+        return () => window.removeEventListener('resize', updateWidth);
+    }, []);
 
     const mostrarToast = (mensaje) => {
         dispatch(setMensajeToast(mensaje));
@@ -34,14 +67,12 @@ export default function Cuerpo() {
 
     const handleRestablecerContrasena = () => {
         dispatch(setVerToast(false));
-        dispatch(toggleVerModalRestablecerContrasena())
-    }
+        dispatch(toggleVerModalRestablecerContrasena());
+    };
 
     // Función para manejar autenticación con Google
     const handleGoogleSuccess = async (credentialResponse) => {
         try {
-            // Ya NO decodificamos en el frontend
-            // Enviamos el token completo al backend para que lo verifique
             await autenticarConGoogle(credentialResponse.credential);
 
             if (verMenuHamburguesa) {
@@ -65,7 +96,6 @@ export default function Cuerpo() {
 
     // Función para manejar autenticación con Facebook
     const handleFacebookAuth = () => {
-        // Cargar el SDK de Facebook si no está cargado
         if (!window.FB) {
             mostrarToast("Cargando Facebook...");
             return;
@@ -73,7 +103,6 @@ export default function Cuerpo() {
 
         window.FB.login((response) => {
             if (response.authResponse) {
-                // Usuario autenticado, obtener información del perfil
                 window.FB.api('/me', { fields: 'id,name,email,picture.type(large)' }, async (userInfo) => {
                     try {
                         const facebookData = {
@@ -83,7 +112,6 @@ export default function Cuerpo() {
                             imagenPerfil: userInfo.picture?.data?.url || null
                         };
 
-                        // Autenticar con tu backend
                         await autenticarConFacebook(facebookData);
 
                         if (verMenuHamburguesa) {
@@ -107,7 +135,7 @@ export default function Cuerpo() {
     };
 
     return (
-        <div className="w-[95%] mx-auto flex flex-col justify-between p-2 gap-2">
+        <div className="w-[85%] mx-auto flex flex-col justify-between p-2 gap-3">
 
             <p className="w-full text-left text-base md:text-xl 
                             font-bold select-none truncate
@@ -115,37 +143,30 @@ export default function Cuerpo() {
                 {textoAccion}
             </p>
 
-
             {/* Botón de Facebook 
             <div onClick={handleFacebookAuth}>
                 <BotonRegIniSesion
-                    icono={<FaFacebook className="text-base md:text-xl text-blue-700 " />}
+                    icono={<FaFacebook className="text-base md:text-xl text-blue-700" />}
                     nombreIcono="Facebook"
                 />
             </div>
             */}
 
-
-            {/* Botón de Google - Versión oculta con estilo personalizado*/}
-            <div className="relative cursor-pointer">
-                <div className="absolute inset-0 opacity-0 z-10">
-                    <GoogleLogin
-                        onSuccess={handleGoogleSuccess}
-                        onError={handleGoogleError}
-                        useOneTap={false}
-                        theme="outline"
-                        size="large"
-                        text={esRegistro ? "signup_with" : "signin_with"}
-                    />
-                </div>
-                <div className="relative z-0">
-                    <BotonRegIniSesion
-                        icono={<FaGoogle className="text-base md:text-xl text-red-600" />}
-                        nombreIcono="Google"
-                    />
-                </div>
+            {/* Botón oficial de Google con tema dinámico */}
+            <div className="w-full flex justify-center google-button-container">
+                <GoogleLogin
+                    key={key}
+                    onSuccess={handleGoogleSuccess}
+                    onError={handleGoogleError}
+                    useOneTap={false}
+                    theme={googleTheme}
+                    size="large"
+                    text={esRegistro ? "signup_with" : "signin_with"}
+                    width={buttonWidth}
+                    shape="rectangular"
+                    logo_alignment="center"
+                />
             </div>
-            
 
             <p className="w-full text-center text-base md:text-xl 
                             select-none truncate
@@ -159,7 +180,6 @@ export default function Cuerpo() {
             />
 
             {!esRegistro && (
-
                 <div
                     onClick={handleRestablecerContrasena}
                     className="w-fit">

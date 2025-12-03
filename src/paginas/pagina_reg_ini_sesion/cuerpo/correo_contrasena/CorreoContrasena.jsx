@@ -283,7 +283,7 @@ export default function CorreoContrasena({ textoContrasena, restablecer, noResta
     };
 
     return (
-        <div className="flex flex-col gap-5">
+        <div className="w-full flex flex-col justify-center gap-5">
             {/* Input de Nombre de Usuario */}
             <div className="relative">
                 <div className={`border rounded-md
