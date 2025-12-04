@@ -178,6 +178,15 @@ export default function Rutas() {
             />
 
             <Route
+                path="/informacion-eliminar-cuenta"
+                element={
+                    <PageTransition>
+                        <PaginaTerminosPoliticas />
+                    </PageTransition>
+                }
+            />
+
+            <Route
                 path="/nota-no-encontrada"
                 element={
                     <PageTransition>

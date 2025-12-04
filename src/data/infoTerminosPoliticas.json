@@ -8,7 +8,9 @@
         "texto6Politicas": "Política de privacidad",
         "texto7Fecha": "Última actualización: 22 de noviembre de 2025",
         "texto8fechaReservado": "© 2025.",
-        "texto9DerechosReservados": "Todos los derechos reservados."
+        "texto9DerechosReservados": "Todos los derechos reservados.",
+        "texto10Correo": "carloscogoza@gmail.com",
+        "texto11Eliminacion": "Eliminación de datos de usuario"
     },
 
     "terminosDeServicio":{
@@ -49,7 +51,7 @@
         "texto35": "6. Modificaciones",
         "texto36": "Nos reservamos el derecho de modificar estos Términos de Servicio en cualquier momento. Las modificaciones entrarán en vigencia inmediatamente tras su publicación en esta página. El uso continuado del servicio implicará la aceptación de los términos actualizados.",
         "texto37": "7. Contacto",
-        "texto38": "Si tiene preguntas sobre estos Términos de Servicio, puede contactarnos a través de los canales oficiales de"
+        "texto38": "Si tiene preguntas sobre estos Términos de Servicio, puede contactarnos a través del siguiente correo"
     },
 
     "politicaDePrivacidad":{
@@ -87,11 +89,28 @@
         "texto32": "Tus derechos",
         "texto33": "El usuario tiene derecho a:",
         "texto34": "Solicitar la corrección o actualización de información inexacta.",
-        "texto35": "Eliminar permanentemente su cuenta y todos sus datos asociados.",
+        "texto35": "Eliminar permanentemente su cuenta y todos sus datos asociados",
+        "texto35InfoEliminar": "(clic aqui para mas información).",
         "texto36": "Consultar qué información se almacena de su perfil dentro del sistema.",
         "texto37": "Actualizaciones de la política",
         "texto38": "Podemos actualizar esta Política de Privacidad periódicamente. Cualquier cambio será publicado en esta página con la fecha de actualización correspondiente. El uso del servicio después de cualquier actualización implica la aceptación de los cambios.",
         "texto39": "Contacto",
-        "texto40": "Para preguntas relacionadas con esta Política de Privacidad o sobre el manejo de su información, puede contactarnos a través de los canales oficiales de"
+        "texto40": "Para preguntas relacionadas con esta Política de Privacidad o sobre el manejo de su información, puede contactarnos a través del siguiente correo"
+    },
+
+    "eliminarCuenta": {
+        "texto1": "permite a todos los usuarios eliminar sus datos de manera inmediata y permanente.",
+        "texto2": "Para eliminar tu cuenta y todos tus datos asociados:",
+        "texto3": "Accede a tu página de perfil en:",
+        "texto4": "https://mis-notas-360-frontend.vercel.app/informacion-usuario",
+        "texto5": "Haz clic en Eliminar cuenta",
+        "texto6": "Este proceso borra:",
+        "texto7": "Datos de tu perfil",
+        "texto8": "Notas creadas",
+        "texto9": "Toda la actividad dentro de la aplicación",
+        "texto10A": "Información obtenida del inicio de sesión con nombre de usuario y contraseña",
+        "texto10B": "Información obtenida del inicio de sesión con Google",
+        "texto10C": "Información obtenida del inicio de sesión con Facebook",
+        "texto11": "Si no puedes acceder a tu cuenta o necesitas asistencia, puedes escribir al correo:"
     }
 }

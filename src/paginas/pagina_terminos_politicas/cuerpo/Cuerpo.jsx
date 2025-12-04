@@ -1,6 +1,6 @@
 import React from "react";
 
-import { useLocation } from "react-router-dom";
+import { useLocation, Link } from "react-router-dom";
 
 import infoTerminosPoliticas from "../../../data/infoTerminosPoliticas.json";
 
@@ -10,10 +10,15 @@ export default function Cuerpo() {
 
     const inforTerminosServicio = infoTerminosPoliticas.terminosDeServicio;
     const inforPoliticaPrivacidad = infoTerminosPoliticas.politicaDePrivacidad;
+    const inforEliminarCuenta = infoTerminosPoliticas.eliminarCuenta;
 
     const location = useLocation();
 
     const esTerminoDeServicio = location.pathname === "/terminos-de-servicio";
+
+    const esPoliticaDePrivacidad = location.pathname === "/politica-de-privacidad";
+
+    const esInfoEliminarCuenta = location.pathname === "/informacion-eliminar-cuenta";
 
     return (
         <div className="w-[95%] mx-auto p-2
@@ -141,14 +146,14 @@ export default function Cuerpo() {
                             {inforTerminosServicio.texto37}
                         </p>
                         <p className="text-base md:text-xl">
-                            <span>{inforTerminosServicio.texto38} <span translate="no">{infoMisNotas360.texto4MisNotas360}</span> </span>
+                            <span>{inforTerminosServicio.texto38} <span className="font-semibold" translate="no">{infoMisNotas360.texto10Correo}</span> </span>
                         </p>
                     </div>
                 </div>
             )}
 
             {/*Esto es para Politicas de privacidad*/}
-            {!esTerminoDeServicio && (
+            {esPoliticaDePrivacidad && (
                 <div className="flex flex-col gap-2">
                     <div className="flex flex-col gap-1">
                         <p className="text-xl md:text-2xl font-semibold text-center">
@@ -285,7 +290,7 @@ export default function Cuerpo() {
                             <div>
                                 <ul className="list-disc list-inside text-base md:text-xl">
                                     <li>{inforPoliticaPrivacidad.texto34}</li>
-                                    <li>{inforPoliticaPrivacidad.texto35}</li>
+                                    <li>{inforPoliticaPrivacidad.texto35} <Link to="/informacion-eliminar-cuenta"><span className="font-semibold cursor-pointer">{inforPoliticaPrivacidad.texto35InfoEliminar}</span></Link></li>
                                     <li>{inforPoliticaPrivacidad.texto36}</li>
                                 </ul>
                             </div>
@@ -309,13 +314,62 @@ export default function Cuerpo() {
                         </p>
                         <div className="flex flex-col gap-2">
                             <p className="text-base md:text-xl">
-                                <span>{inforPoliticaPrivacidad.texto40} <span translate="no">{infoMisNotas360.texto4MisNotas360}</span> </span>
+                                <span>{inforPoliticaPrivacidad.texto40} <span className="font-semibold" translate="no">{infoMisNotas360.texto10Correo}</span> </span>
                             </p>
                         </div>
                     </div>
                 </div>
             )
             }
+
+
+            {/*Esto es para informacion de eliminar cuenta*/}
+            {esInfoEliminarCuenta && (
+                <div className="flex flex-col gap-2">
+                    <div className="flex flex-col gap-2">
+                        <p className="text-base md:text-xl">
+                            <span translate="no">{infoMisNotas360.texto4MisNotas360}</span> <span>{inforEliminarCuenta.texto1}</span>
+                        </p>
+
+                        <p className="text-base md:text-xl">
+                            <span>{inforEliminarCuenta.texto2}</span>
+                        </p>
+
+                        <div className="flex flex-col gap-3">
+                            <ol className="list-disc list-inside text-base md:text-xl">
+                                <li>{inforEliminarCuenta.texto3}</li>
+                                <p className="text-base md:text-xl">
+                                    <span>{inforEliminarCuenta.texto4}</span>
+                                </p>
+                            </ol>
+
+                            <ol className="list-disc list-inside text-base md:text-xl">
+                                <li>{inforEliminarCuenta.texto5}</li>
+                            </ol>
+                        </div>
+
+                        <div className="flex flex-col gap-2">
+                            <p className="text-base md:text-xl">
+                                <span>{inforEliminarCuenta.texto6}</span>
+                            </p>
+                            <ol className="list-disc list-inside text-base md:text-xl">
+                                <li>{inforEliminarCuenta.texto7}</li>
+                                <li>{inforEliminarCuenta.texto8}</li>
+                                <li>{inforEliminarCuenta.texto9}</li>
+                                <li>{inforEliminarCuenta.texto10A}</li>
+                                <li>{inforEliminarCuenta.texto10B}</li>
+                                <li>{inforEliminarCuenta.texto10C}</li>
+                            </ol>
+                        </div>
+                    </div>
+
+                    <p className="text-base md:text-xl">
+                        <span>{inforEliminarCuenta.texto11}</span> <span className="font-semibold">{infoMisNotas360.texto10Correo}</span>
+                    </p>
+                </div>
+            )}
+
+
 
         </div >
     );

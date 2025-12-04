@@ -50,7 +50,12 @@ export default function Cabecera({ paginaPrincipal, paginaBusqueda,
 
     const esTerminoDeServicio = location.pathname === "/terminos-de-servicio";
 
+    const esPoliticaDePrivacidad = location.pathname === "/politica-de-privacidad";
+
+    const esTerminoPolitica = esTerminoDeServicio || esPoliticaDePrivacidad;
+
     const rutaDestino = esTerminoDeServicio ? "/politica-de-privacidad" : "/terminos-de-servicio";
+    
 
     return (
         <div className="flex-shrink-0 z-10 py-1 overflow-hidden">
@@ -180,13 +185,16 @@ export default function Cabecera({ paginaPrincipal, paginaBusqueda,
                             </p>
                         </div>
 
-                        <p className="w-fit text-center text-base md:text-xl 
-                                    select-none cursor-pointer
-                                text-black dark:text-white">
-                            <Link to={rutaDestino}>
-                                ir a {irATerminoPolitica}
-                            </Link>
-                        </p>
+                        {esTerminoPolitica && (
+                            <p className="w-fit text-center text-base md:text-xl 
+                            select-none cursor-pointer
+                        text-black dark:text-white">
+                                <Link to={rutaDestino}>
+                                    ir a {irATerminoPolitica}
+                                </Link>
+                            </p>
+                        )}
+
                     </div>
                 )}
 

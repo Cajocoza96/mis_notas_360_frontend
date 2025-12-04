@@ -24,6 +24,10 @@ export default function PaginaTerminosPoliticas() {
 
     const esTerminoDeServicio = location.pathname === "/terminos-de-servicio";
 
+    const esPoliticaDePrivacidad = location.pathname === "/politica-de-privacidad";
+
+    const esInformacionEliminarCuenta = location.pathname === "/informacion-eliminar-cuenta";
+
     const verToast = useSelector((state) => state.acceso.verToast);
 
     const pageVariants = {
@@ -71,7 +75,7 @@ export default function PaginaTerminosPoliticas() {
                     className="flex-shrink-0">
 
                     <Cabecera
-                        tituloTerminoPolitica={esTerminoDeServicio ? inforTermPol.texto2Terminos : inforTermPol.texto6Politicas}
+                        tituloTerminoPolitica={esInformacionEliminarCuenta ? inforTermPol.texto11Eliminacion : esTerminoDeServicio ? inforTermPol.texto2Terminos : inforTermPol.texto6Politicas}
                         irATerminoPolitica={esTerminoDeServicio ? inforTermPol.texto6Politicas : inforTermPol.texto2Terminos}
                         paginaTerminosPoliticas={true} />
 
