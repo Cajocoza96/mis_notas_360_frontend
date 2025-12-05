@@ -27,7 +27,7 @@ export default function Cuerpo() {
                         flex flex-col justify-between gap-3">
 
             <div className="flex flex-col gap-1">
-                <p className="text-xl md:text-2xl font-semibold text-center" translate="no">
+                <p className="text-lg md:text-xl font-semibold text-center" translate="no">
                     {infoMisNotas360.texto4MisNotas360}
                 </p>
                 <p className="text-sm md:text-base text-center">
@@ -39,35 +39,35 @@ export default function Cuerpo() {
             {esTerminoDeServicio && (
                 <div className="flex flex-col gap-2">
                     <div className="flex flex-col gap-1">
-                        <p className="text-xl md:text-2xl font-semibold text-center">
+                        <p className="text-lg md:text-xl font-semibold text-center">
                             {inforTerminosServicio.texto1}
                         </p>
-                        <p className="text-base md:text-xl">
+                        <p className="text-base md:text-lg">
                             <span>{inforTerminosServicio.texto2} <span translate="no">{infoMisNotas360.texto4MisNotas360}</span> {inforTerminosServicio.texto3}</span>
                         </p>
                     </div>
 
                     <div className="flex flex-col gap-1">
-                        <p className="text-xl md:text-2xl font-semibold text-center">
+                        <p className="text-lg md:text-xl font-semibold text-center">
                             {inforTerminosServicio.texto4}
                         </p>
-                        <p className="text-base md:text-xl">
+                        <p className="text-base md:text-lg">
                             <span> <span translate="no">{infoMisNotas360.texto4MisNotas360}</span> {inforTerminosServicio.texto5}</span>
                         </p>
                     </div>
 
                     <div className="flex flex-col gap-1">
                         <div>
-                            <p className="text-base md:text-xl font-semibold">
+                            <p className="text-base md:text-lg font-semibold">
                                 <span>{inforTerminosServicio.texto6} <span translate="no">{infoMisNotas360.texto4MisNotas360}</span> </span>
                             </p>
-                            <p className="text-base md:text-xl">
+                            <p className="text-base md:text-lg">
                                 {inforTerminosServicio.texto7}
                             </p>
                         </div>
 
                         <div>
-                            <ul className="list-disc list-inside text-base md:text-xl">
+                            <ul className="list-disc list-inside text-base md:text-lg">
                                 <li>{inforTerminosServicio.texto8}</li>
                                 <li>{inforTerminosServicio.texto9}</li>
                                 <li>{inforTerminosServicio.texto10}</li>
@@ -85,15 +85,15 @@ export default function Cuerpo() {
                     </div>
 
                     <div className="flex flex-col gap-1">
-                        <p className="text-xl md:text-2xl font-semibold text-center">
+                        <p className="text-lg md:text-xl font-semibold text-center">
                             {inforTerminosServicio.texto20}
                         </p>
-                        <p className="text-base md:text-xl">
+                        <p className="text-base md:text-lg">
                             {inforTerminosServicio.texto21}
                         </p>
 
                         <div>
-                            <ul className="list-disc list-inside text-base md:text-xl">
+                            <ul className="list-disc list-inside text-base md:text-lg">
                                 <li>{inforTerminosServicio.texto22}</li>
                                 <li>{inforTerminosServicio.texto23}</li>
                                 <li>{inforTerminosServicio.texto24}</li>
@@ -103,49 +103,49 @@ export default function Cuerpo() {
                     </div>
 
                     <div className="flex flex-col gap-1">
-                        <p className="text-xl md:text-2xl font-semibold text-center">
+                        <p className="text-lg md:text-xl font-semibold text-center">
                             {inforTerminosServicio.texto26}
                         </p>
-                        <p className="text-base md:text-xl">
+                        <p className="text-base md:text-lg">
                             <span>{inforTerminosServicio.texto27} <span translate="no">{infoMisNotas360.texto4MisNotas360}</span> {inforTerminosServicio.texto28}</span>
                         </p>
                     </div>
 
                     <div className="flex flex-col gap-1">
-                        <p className="text-xl md:text-2xl font-semibold text-center">
+                        <p className="text-lg md:text-xl font-semibold text-center">
                             {inforTerminosServicio.texto29}
                         </p>
-                        <p className="text-base md:text-xl">
+                        <p className="text-base md:text-lg">
                             <span> <span translate="no">{infoMisNotas360.texto4MisNotas360}</span> {inforTerminosServicio.texto30}</span>
                         </p>
 
                         <div>
-                            <ul className="list-disc list-inside text-base md:text-xl">
+                            <ul className="list-disc list-inside text-base md:text-lg">
                                 <li>{inforTerminosServicio.texto31}</li>
                                 <li>{inforTerminosServicio.texto32}</li>
                                 <li>{inforTerminosServicio.texto33}</li>
                             </ul>
                         </div>
 
-                        <p className="text-base md:text-xl">
+                        <p className="text-base md:text-lg">
                             {inforTerminosServicio.texto34}
                         </p>
                     </div>
 
                     <div className="flex flex-col gap-1">
-                        <p className="text-xl md:text-2xl font-semibold text-center">
+                        <p className="text-lg md:text-xl font-semibold text-center">
                             {inforTerminosServicio.texto35}
                         </p>
-                        <p className="text-base md:text-xl">
+                        <p className="text-base md:text-lg">
                             {inforTerminosServicio.texto36}
                         </p>
                     </div>
 
                     <div className="flex flex-col gap-1">
-                        <p className="text-xl md:text-2xl font-semibold text-center">
+                        <p className="text-lg md:text-xl font-semibold text-center">
                             {inforTerminosServicio.texto37}
                         </p>
-                        <p className="text-base md:text-xl">
+                        <p className="text-base md:text-lg">
                             <span>{inforTerminosServicio.texto38} <span className="font-semibold" translate="no">{infoMisNotas360.texto10Correo}</span> </span>
                         </p>
                     </div>
@@ -156,30 +156,30 @@ export default function Cuerpo() {
             {esPoliticaDePrivacidad && (
                 <div className="flex flex-col gap-2">
                     <div className="flex flex-col gap-1">
-                        <p className="text-xl md:text-2xl font-semibold text-center">
+                        <p className="text-lg md:text-xl font-semibold text-center">
                             {inforPoliticaPrivacidad.texto1}
                         </p>
-                        <p className="text-base md:text-xl">
+                        <p className="text-base md:text-lg">
                             <span>{inforPoliticaPrivacidad.texto2} <span translate="no">{infoMisNotas360.texto4MisNotas360}</span> {inforPoliticaPrivacidad.texto3}</span>
                         </p>
                     </div>
 
                     <div>
-                        <p className="text-xl md:text-2xl font-semibold text-center">
+                        <p className="text-lg md:text-xl font-semibold text-center">
                             {inforPoliticaPrivacidad.texto4}
                         </p>
 
                         <div className="flex flex-col gap-2">
                             <div className="flex flex-col gap-1">
-                                <p className="text-base md:text-xl font-semibold">
+                                <p className="text-base md:text-lg font-semibold">
                                     {inforPoliticaPrivacidad.texto5}
                                 </p>
-                                <p className="text-base md:text-xl">
+                                <p className="text-base md:text-lg">
                                     {inforPoliticaPrivacidad.texto6}
                                 </p>
 
                                 <div>
-                                    <ul className="list-disc list-inside text-base md:text-xl">
+                                    <ul className="list-disc list-inside text-base md:text-lg">
                                         <li>{inforPoliticaPrivacidad.texto7}</li>
                                         <li>{inforPoliticaPrivacidad.texto8}</li>
                                         <li>{inforPoliticaPrivacidad.texto9}</li>
@@ -190,11 +190,11 @@ export default function Cuerpo() {
 
 
                             <div className="flex flex-col gap-1">
-                                <p className="text-base md:text-xl font-semibold">
+                                <p className="text-base md:text-lg font-semibold">
                                     {inforPoliticaPrivacidad.texto10}
                                 </p>
                                 <div>
-                                    <ul className="list-disc list-inside text-base md:text-xl">
+                                    <ul className="list-disc list-inside text-base md:text-lg">
                                         <li>{inforPoliticaPrivacidad.texto11}</li>
                                         <li>{inforPoliticaPrivacidad.texto12}</li>
                                     </ul>
@@ -202,15 +202,15 @@ export default function Cuerpo() {
                             </div>
 
                             <div className="flex flex-col gap-1">
-                                <p className="text-base md:text-xl font-semibold">
+                                <p className="text-base md:text-lg font-semibold">
                                     {inforPoliticaPrivacidad.texto13}
                                 </p>
-                                <p className="text-base md:text-xl">
+                                <p className="text-base md:text-lg">
                                     {inforPoliticaPrivacidad.texto14}
                                 </p>
 
                                 <div>
-                                    <ul className="list-disc list-inside text-base md:text-xl">
+                                    <ul className="list-disc list-inside text-base md:text-lg">
                                         <li>{inforPoliticaPrivacidad.texto15}</li>
                                         <li>{inforPoliticaPrivacidad.texto16}</li>
                                         <li>{inforPoliticaPrivacidad.texto17} {inforPoliticaPrivacidad.texto18}</li>
@@ -225,16 +225,16 @@ export default function Cuerpo() {
 
 
                     <div>
-                        <p className="text-xl md:text-2xl font-semibold text-center">
+                        <p className="text-lg md:text-xl font-semibold text-center">
                             {inforPoliticaPrivacidad.texto19}
                         </p>
                         <div className="flex flex-col gap-2">
                             <div className="flex flex-col gap-1">
-                                <p className="text-base md:text-xl">
+                                <p className="text-base md:text-lg">
                                     {inforPoliticaPrivacidad.texto20}
                                 </p>
                                 <div>
-                                    <ul className="list-disc list-inside text-base md:text-xl">
+                                    <ul className="list-disc list-inside text-base md:text-lg">
                                         <li>{inforPoliticaPrivacidad.texto21}</li>
                                         <li>{inforPoliticaPrivacidad.texto22}</li>
                                         <li>{inforPoliticaPrivacidad.texto23}</li>
@@ -247,16 +247,16 @@ export default function Cuerpo() {
                     </div>
 
                     <div>
-                        <p className="text-xl md:text-2xl font-semibold text-center">
+                        <p className="text-lg md:text-xl font-semibold text-center">
                             {inforPoliticaPrivacidad.texto25}
                         </p>
                         <div className="flex flex-col gap-2">
                             <div className="flex flex-col gap-1">
-                                <p className="text-base md:text-xl">
+                                <p className="text-base md:text-lg">
                                     {inforPoliticaPrivacidad.texto26}
                                 </p>
                                 <div>
-                                    <ul className="list-disc list-inside text-base md:text-xl">
+                                    <ul className="list-disc list-inside text-base md:text-lg">
                                         <li>{inforPoliticaPrivacidad.texto27}</li>
                                         <li>{inforPoliticaPrivacidad.texto28}</li>
                                     </ul>
@@ -266,29 +266,29 @@ export default function Cuerpo() {
                     </div>
 
                     <div>
-                        <p className="text-xl md:text-2xl font-semibold text-center">
+                        <p className="text-lg md:text-xl font-semibold text-center">
                             {inforPoliticaPrivacidad.texto29}
                         </p>
                         <div className="flex flex-col gap-2">
-                            <p className="text-base md:text-xl">
+                            <p className="text-base md:text-lg">
                                 {inforPoliticaPrivacidad.texto30}
                             </p>
-                            <p className="text-base md:text-xl">
+                            <p className="text-base md:text-lg">
                                 {inforPoliticaPrivacidad.texto31}
                             </p>
                         </div>
                     </div>
 
                     <div>
-                        <p className="text-xl md:text-2xl font-semibold text-center">
+                        <p className="text-lg md:text-xl font-semibold text-center">
                             {inforPoliticaPrivacidad.texto32}
                         </p>
                         <div className="flex flex-col gap-2">
-                            <p className="text-base md:text-xl">
+                            <p className="text-base md:text-lg">
                                 {inforPoliticaPrivacidad.texto33}
                             </p>
                             <div>
-                                <ul className="list-disc list-inside text-base md:text-xl">
+                                <ul className="list-disc list-inside text-base md:text-lg">
                                     <li>{inforPoliticaPrivacidad.texto34}</li>
                                     <li>{inforPoliticaPrivacidad.texto35} <Link to="/informacion-eliminar-cuenta"><span className="font-semibold cursor-pointer">{inforPoliticaPrivacidad.texto35InfoEliminar}</span></Link></li>
                                     <li>{inforPoliticaPrivacidad.texto36}</li>
@@ -298,22 +298,22 @@ export default function Cuerpo() {
                     </div>
 
                     <div>
-                        <p className="text-xl md:text-2xl font-semibold text-center">
+                        <p className="text-lg md:text-xl font-semibold text-center">
                             {inforPoliticaPrivacidad.texto37}
                         </p>
                         <div className="flex flex-col gap-2">
-                            <p className="text-base md:text-xl">
+                            <p className="text-base md:text-lg">
                                 {inforPoliticaPrivacidad.texto38}
                             </p>
                         </div>
                     </div>
 
                     <div>
-                        <p className="text-xl md:text-2xl font-semibold text-center">
+                        <p className="text-lg md:text-xl font-semibold text-center">
                             {inforPoliticaPrivacidad.texto39}
                         </p>
                         <div className="flex flex-col gap-2">
-                            <p className="text-base md:text-xl">
+                            <p className="text-base md:text-lg">
                                 <span>{inforPoliticaPrivacidad.texto40} <span className="font-semibold" translate="no">{infoMisNotas360.texto10Correo}</span> </span>
                             </p>
                         </div>
@@ -327,32 +327,32 @@ export default function Cuerpo() {
             {esInfoEliminarCuenta && (
                 <div className="flex flex-col gap-2">
                     <div className="flex flex-col gap-2">
-                        <p className="text-base md:text-xl">
+                        <p className="text-base md:text-lg">
                             <span translate="no">{infoMisNotas360.texto4MisNotas360}</span> <span>{inforEliminarCuenta.texto1}</span>
                         </p>
 
-                        <p className="text-base md:text-xl">
+                        <p className="text-base md:text-lg">
                             <span>{inforEliminarCuenta.texto2}</span>
                         </p>
 
                         <div className="flex flex-col gap-3">
-                            <ol className="list-disc list-inside text-base md:text-xl">
+                            <ol className="list-disc list-inside text-base md:text-lg">
                                 <li>{inforEliminarCuenta.texto3}</li>
-                                <p className="text-base md:text-xl">
+                                <p className="text-base md:text-lg">
                                     <span>{inforEliminarCuenta.texto4}</span>
                                 </p>
                             </ol>
 
-                            <ol className="list-disc list-inside text-base md:text-xl">
+                            <ol className="list-disc list-inside text-base md:text-lg">
                                 <li>{inforEliminarCuenta.texto5}</li>
                             </ol>
                         </div>
 
                         <div className="flex flex-col gap-2">
-                            <p className="text-base md:text-xl">
+                            <p className="text-base md:text-lg">
                                 <span>{inforEliminarCuenta.texto6}</span>
                             </p>
-                            <ol className="list-disc list-inside text-base md:text-xl">
+                            <ol className="list-disc list-inside text-base md:text-lg">
                                 <li>{inforEliminarCuenta.texto7}</li>
                                 <li>{inforEliminarCuenta.texto8}</li>
                                 <li>{inforEliminarCuenta.texto9}</li>
@@ -363,7 +363,7 @@ export default function Cuerpo() {
                         </div>
                     </div>
 
-                    <p className="text-base md:text-xl">
+                    <p className="text-base md:text-lg">
                         <span>{inforEliminarCuenta.texto11}</span> <span className="font-semibold">{infoMisNotas360.texto10Correo}</span>
                     </p>
                 </div>

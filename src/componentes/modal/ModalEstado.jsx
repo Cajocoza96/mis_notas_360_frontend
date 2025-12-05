@@ -70,14 +70,14 @@ export default function ModalEstado() {
                             <div>
                                 {estadoTemporal === "no_asignado"
                                     ?
-                                    <FaCircle className="text-base md:text-xl text-black dark:text-white" />
+                                    <FaCircle className="text-base md:text-lg text-black dark:text-white" />
                                     :
-                                    <FaRegCircle className="text-base md:text-xl text-black dark:text-white" />
+                                    <FaRegCircle className="text-base md:text-lg text-black dark:text-white" />
                                 }
                             </div>
 
 
-                            <p className="text-base md:text-xl text-black dark:text-white">
+                            <p className="text-base md:text-lg text-black dark:text-white">
                                 No asignado
                             </p>
                         </div>
@@ -92,13 +92,13 @@ export default function ModalEstado() {
                             <div>
                                 {estadoTemporal === "pendiente"
                                     ?
-                                    <FaCircle className="text-base md:text-xl text-black dark:text-white" />
+                                    <FaCircle className="text-base md:text-lg text-black dark:text-white" />
                                     :
-                                    <FaRegCircle className="text-base md:text-xl text-black dark:text-white" />
+                                    <FaRegCircle className="text-base md:text-lg text-black dark:text-white" />
                                 }
                             </div>
 
-                            <p className="text-base md:text-xl text-black dark:text-white">
+                            <p className="text-base md:text-lg text-black dark:text-white">
                                 Pendiente
                             </p>
                         </div>
@@ -112,13 +112,13 @@ export default function ModalEstado() {
                             <div>
                                 {estadoTemporal === "finalizado"
                                     ?
-                                    <FaCircle className="text-base md:text-xl text-black dark:text-white" />
+                                    <FaCircle className="text-base md:text-lg text-black dark:text-white" />
                                     :
-                                    <FaRegCircle className="text-base md:text-xl text-black dark:text-white" />
+                                    <FaRegCircle className="text-base md:text-lg text-black dark:text-white" />
                                 }
                             </div>
 
-                            <p className="text-base md:text-xl text-black dark:text-white">
+                            <p className="text-base md:text-lg text-black dark:text-white">
                                 Finalizado
                             </p>
                         </div>
@@ -128,14 +128,14 @@ export default function ModalEstado() {
 
                 <div className="flex flex-row items-center justify-end gap-6 2xl:gap-7">
                     <p
-                        className="text-base md:text-xl
+                        className="text-base md:text-lg
                                         text-black dark:text-white cursor-pointer"
                         onClick={handleVerModalEstado}>
                         Cancelar
                     </p>
 
                     <p
-                        className="text-base md:text-xl
+                        className="text-base md:text-lg
                                         text-violet-800 dark:text-white cursor-pointer"
                         onClick={handleAceptar}>
                         Aceptar

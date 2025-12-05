@@ -127,12 +127,12 @@ export default function PaginaBienvenida() {
 
                     <div className="animate-bounce flex flex-row items-center justify-center gap-2">
                         <HiOutlineBookOpen className="text-2xl md:text-3xl text-white" />
-                        <p className="text-2xl md:text-3xl font-bold text-white text-center tracking-tight" translate="no">
+                        <p className="text-xl md:text-2xl font-bold text-white text-center tracking-tight" translate="no">
                             MisNotas360
                         </p>
                     </div>
 
-                    <p className="text-base md:text-xl text-white/80 text-center">
+                    <p className="text-base md:text-lg text-white/80 text-center">
                         Organiza tus ideas, captura tus pensamientos, sincroniza en todos tus dispositivos
                     </p>
                 </div>

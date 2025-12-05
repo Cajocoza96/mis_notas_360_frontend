@@ -110,7 +110,7 @@ export default function AdminUsuario() {
             )}
 
             {/* Nombre del usuario */}
-            <p className="truncate text-left text-base md:text-xl" translate="no">
+            <p className="truncate text-left text-base md:text-lg" translate="no">
                 {usuario?.nombreCuenta || usuario?.nombreUsuario}
             </p>
 

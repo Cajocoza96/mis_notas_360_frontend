@@ -35,14 +35,14 @@ export default function AgregarEstado() {
                                     <HiCheckCircle className="text-green-700" /> : ''}
                     </div>
 
-                    <p className="text-base md:text-xl text-black dark:text-white">
+                    <p className="text-base md:text-lg text-black dark:text-white">
                         {obtenerTextoEstado(estadoSeleccionado)}
                     </p>
                 </>
             ) : (
                 <>
                     <HiPlusCircle className="text-2xl md:text-3xl  text-violet-800 dark:text-violet-400 " />
-                    <p className="text-base md:text-xl text-black dark:text-white">
+                    <p className="text-base md:text-lg text-black dark:text-white">
                         Agregar estado
                     </p>
                 </>

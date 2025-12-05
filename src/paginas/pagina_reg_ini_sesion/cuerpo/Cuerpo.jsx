@@ -179,13 +179,14 @@ export default function Cuerpo() {
 
 
     return (
-        <div className="w-[85%] lg:w-[65%] mx-auto flex flex-col justify-between p-2 gap-3">
+        <div className="w-[70%] 2xs:w-[45%] lg:w-[25%] mx-auto flex flex-col justify-between p-2 gap-3">
 
-            <p className="w-full text-left text-base md:text-xl 
+            <p className="w-full text-left text-base md:text-lg 
                             font-bold select-none truncate
                         text-black dark:text-white">
                 {textoAccion}
             </p>
+
 
             {/* Botón oficial de Google */}
             <div
@@ -206,20 +207,20 @@ export default function Cuerpo() {
                 />
             </div>
 
-            <p className="w-full text-center text-base md:text-xl 
+            <p className="w-full text-center text-base md:text-lg 
                             select-none truncate
                         text-black dark:text-white">
                 o
             </p>
 
             {/* ✅ Botón de Facebook con advertencia de HTTPS */}
-            <div className="w-full">
+            <div className="w-full flex flex-col justify-center items-center">
                 <button
                     onClick={handleFacebookLogin}
                     disabled={!fbSDKLoaded || cargandoFB || !esHTTPS}
                     className={`
-                        w-full h-10 rounded-md flex items-center justify-center gap-2
-                        font-medium text-white transition-all
+                        w-auto h-auto p-1 overflow-hidden rounded-full 
+                        text-white transition-all
                         ${fbSDKLoaded && !cargandoFB && esHTTPS
                             ? 'bg-[#1877F2] hover:bg-[#166FE5] cursor-pointer'
                             : 'bg-gray-400 cursor-not-allowed'}
@@ -228,12 +229,12 @@ export default function Cuerpo() {
                     {cargandoFB ? (
                         <span className="text-sm">Cargando...</span>
                     ) : (
-                        <>
-                            <FaFacebook className="text-xl" />
-                            <span className="text-sm md:text-base">
+                        <div className="flex flex-row items-center gap-2">
+                            <FaFacebook className="text-4xl" />
+                            <span className="text-sm md:text-base mr-2">
                                 {esRegistro ? 'Registrarse con Facebook' : 'Iniciar sesión con Facebook'}
                             </span>
-                        </>
+                        </div>
                     )}
                 </button>
 
@@ -263,7 +264,7 @@ export default function Cuerpo() {
                 <div
                     onClick={handleRestablecerContrasena}
                     className="w-fit">
-                    <p className="mt-1 text-left text-base md:text-xl 
+                    <p className="mt-1 text-left text-base md:text-lg 
                                 select-none cursor-pointer
                             text-black dark:text-white">
                         ¿Olvidó su contraseña?

@@ -51,8 +51,7 @@ export default function ModalExitoError() {
                                 <HiCheckCircle className="text-8xl 2xl:text-10xl text-green-500" />
                             )}
 
-                            <p className="text-center text-base 
-                                        2xs:text-base md:text-xl 2xl:text-3xl
+                            <p className="text-center text-base md:text-lg 
                                     text-black dark:text-white">
                                 {mensajeNotificacion}
                             </p>

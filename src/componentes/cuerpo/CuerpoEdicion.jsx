@@ -143,7 +143,7 @@ const CuerpoEdicion = forwardRef(({ handleNotaChange, handleNotaKeyDown, esModoV
                     onBlur={handleBlur}
                     onKeyDown={(e) => handleNotaKeyDown(e, notaRef)}
                     onPaste={handlePaste}
-                    className={`text-base md:text-xl text-black dark:text-white
+                    className={`text-base md:text-lg text-black dark:text-white
                                 outline-none border-none bg-transparent
                                 min-h-[1.5em] w-full overflow-hidden
                                 whitespace-pre-wrap
@@ -158,7 +158,7 @@ const CuerpoEdicion = forwardRef(({ handleNotaChange, handleNotaKeyDown, esModoV
 
                 {!tieneNota && !isNotaFocused && (
                     <div className="absolute top-2 left-2 pointer-events-none
-                                    text-base md:text-xl text-gray-500 dark:text-gray-400">
+                                    text-base md:text-lg text-gray-500 dark:text-gray-400">
                         {esModoVistaPrevia ? 'Sin nota' : 'Colocar nota'}
                     </div>
                 )}

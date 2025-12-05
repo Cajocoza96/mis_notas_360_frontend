@@ -50,8 +50,8 @@ export default function CargandoNoHayNada({
         return (
             <div className="col-span-full text-center p-4 select-none
                             flex flex-col items-center justify-center gap-3">
-                <FaSpinner className="animate-spin text-2xl md:text-3xl text-black dark:text-white" />
-                <p className="text-base md:text-xl text-black dark:text-white">
+                <FaSpinner className="animate-spin text-xl md:text-2xl text-black dark:text-white" />
+                <p className="text-base md:text-lg text-black dark:text-white">
                     Verificando sesión...
                 </p>
             </div>
@@ -63,12 +63,12 @@ export default function CargandoNoHayNada({
             {pantallaCompletaCarga && isOnline && (
                 <div className="fixed inset-0 z-90 bg-black/50
                                 flex items-center justify-center">
-                    <FaSpinner className="animate-spin text-2xl md:text-3xl text-white" />
+                    <FaSpinner className="animate-spin text-xl md:text-2xl text-white" />
                 </div>
             )}
 
             {iconoDeCarga && isOnline && (
-                <FaSpinner className="animate-spin text-2xl md:text-3xl text-black dark:text-white" />
+                <FaSpinner className="animate-spin text-xl md:text-2xl text-black dark:text-white" />
             )}
 
             {iconoSinConexion && (
@@ -78,7 +78,7 @@ export default function CargandoNoHayNada({
             {CargandoAnotaciones && isOnline && !inicializando && (
                 <div className="col-span-full text-center p-4 select-none
                                 flex flex-col items-center justify-center gap-3">
-                    <FaSpinner className="animate-spin text-2xl md:text-3xl text-black dark:text-white" />
+                    <FaSpinner className="animate-spin text-xl md:text-2xl text-black dark:text-white" />
                 </div>
             )}
 
@@ -87,20 +87,20 @@ export default function CargandoNoHayNada({
                 <div className="col-span-full text-center p-4 select-none
                                 text-black dark:text-white
                                 flex flex-col items-center justify-center gap-3">
-                    <p className="text-base md:text-xl font-semibold">
+                    <p className="text-base md:text-lg font-semibold">
                         Sin conexión a internet
                     </p>
 
                     <BiWifiOff className="text-6xl md:text-7xl" />
 
                     {!ModosCrearEdicion && (
-                        <p className="text-base md:text-xl">
+                        <p className="text-base md:text-lg">
                             Al volver la conexión, los datos se actualizarán automáticamente.
                         </p>
                     )}
 
                     {ModosCrearEdicion && (
-                        <div className="text-base md:text-xl flex flex-col items-center gap-3">
+                        <div className="text-base md:text-lg flex flex-col items-center gap-3">
                             <div>
                                 <span>Por ahora la aplicación no incluye autoguardado sin conexión.</span> <span>Si se pierde la conexión, los cambios no guardados se perderán.</span>
                             </div>
@@ -140,7 +140,7 @@ export default function CargandoNoHayNada({
             {sinEstadoFavoritoNada && !cargando && isOnline && !justReconnected && !inicializando && (
                 <div className="col-span-full text-center p-4 select-none
                                 flex flex-col items-center justify-center gap-3">
-                    <p className="text-base md:text-xl text-black dark:text-white">
+                    <p className="text-base md:text-lg text-black dark:text-white">
                         {verAnotacEstado === 'ver_no_asignado' && verSoloFavoritos
                             ? 'No tienes anotaciones favoritas sin asignar'
                             : verAnotacEstado === 'ver_no_asignado' ? 'No tienes anotaciones sin asignar'
@@ -163,7 +163,7 @@ export default function CargandoNoHayNada({
             {noHayEliminadas && !cargando && isOnline && !justReconnected && !inicializando && (
                 <div className="col-span-full text-center p-4 select-none
                                 flex flex-col items-center justify-center gap-3">
-                    <p className="text-base md:text-xl text-black dark:text-white">
+                    <p className="text-base md:text-lg text-black dark:text-white">
                         No tienes anotaciones eliminadas.
                     </p>
 

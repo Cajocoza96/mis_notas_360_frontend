@@ -18,7 +18,7 @@ export default function Footer({ textoCantElimi }) {
             className="p-3 z-10  w-full
                         bg-red-600 cursor-pointer">
 
-            <p className="w-full text-center text-base md:text-xl select-none truncate
+            <p className="w-full text-center text-base md:text-lg select-none truncate
                     text-white">
                 {textoCantElimi}
             </p>

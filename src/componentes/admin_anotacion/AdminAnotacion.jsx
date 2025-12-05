@@ -55,7 +55,7 @@ export default function AdminAnotacion() {
                         z-50 p-3 overflow-hidden rounded-lg
                         h-auto shadow-2xl">
 
-                    <div className="text-base md:text-xl text-white
+                    <div className="text-base md:text-lg text-white
                             flex flex-col gap-4">
 
                         {/*

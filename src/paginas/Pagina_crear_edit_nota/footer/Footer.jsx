@@ -171,7 +171,7 @@ export default function Footer({ handleUndoClick, handleRedoClick, esModoEdicion
                                 2xs:flex-row items-center gap-2 cursor-pointer"
                     onClick={handleverModalTarea}>
                     <HiPlusCircle className="text-2xl md:text-3xl  text-violet-800 dark:text-violet-400 " />
-                    <p className="text-base md:text-xl text-black dark:text-white">
+                    <p className="text-base md:text-lg text-black dark:text-white">
                         Agregar tarea
                     </p>
                 </div>

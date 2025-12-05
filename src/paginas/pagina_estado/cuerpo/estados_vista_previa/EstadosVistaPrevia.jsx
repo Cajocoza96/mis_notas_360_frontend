@@ -19,13 +19,13 @@ export default function EstadosVistaPrevia({ iconoEstado, tipoEstado, cantidadEs
                     {iconoEstado}
                 </div>
 
-                <p className="text-base md:text-xl px-1 truncate 
+                <p className="text-base md:text-lg px-1 truncate 
                         text-black dark:text-white">
                     {tipoEstado}
                 </p>
             </div>
 
-            <p className="text-base md:text-xl px-1 
+            <p className="text-base md:text-lg px-1 
                         text-black dark:text-white">
                 {cantidadEstado}
             </p>

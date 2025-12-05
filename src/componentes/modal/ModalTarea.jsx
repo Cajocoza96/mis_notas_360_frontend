@@ -138,7 +138,7 @@ export default function ModalTarea() {
                                 onClick={handleverModalTarea} />
                         </div>
 
-                        <p className="text-center text-base md:text-xl select-none 
+                        <p className="text-center text-base md:text-lg select-none 
                                 text-violet-800 dark:text-white">
                             Casilla de tarea
                         </p>
@@ -152,7 +152,7 @@ export default function ModalTarea() {
                                 onClick={handleInputInteraction}
                                 onKeyDown={handleInputInteraction}
                                 maxLength={500}
-                                className="w-full text-base md:text-xl
+                                className="w-full text-base md:text-lg
                                 border-0 focus:outline-none
                                 text-black dark:text-white"/>
                         </div>
@@ -166,14 +166,14 @@ export default function ModalTarea() {
                             {modoModal === 'editar' && (
                                 <>
                                     <p
-                                        className="text-base md:text-xl text-white cursor-pointer"
+                                        className="text-base md:text-lg text-white cursor-pointer"
                                         onClick={handleEliminar}>
                                         Eliminar
                                     </p>
                                 </>
                             )}
 
-                            <div className="text-base md:text-xl text-white" onClick={handleAgregar}>
+                            <div className="text-base md:text-lg text-white" onClick={handleAgregar}>
                                 {modoModal === 'editar' && (
                                     <p className="cursor-pointer">
                                         Editar
@@ -191,7 +191,7 @@ export default function ModalTarea() {
 
                         {/* ✅ Contador de tarea en tiempo real */}
                         <div className="flex flex-col items-center">
-                            <p className={`text-center text-base md:text-xl ${
+                            <p className={`text-center text-base md:text-lg ${
                                 limiteExcedido 
                                     ? "text-red-600" 
                                     : "text-white"

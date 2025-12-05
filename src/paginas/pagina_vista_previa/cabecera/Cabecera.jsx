@@ -168,7 +168,7 @@ export default function Cabecera({ esModoVistaPrevia }) {
                 </div>
 
                 <div className="w-full p-1 flex flex-row items-center justify-between">
-                    <p className={`text-base md:text-xl truncate
+                    <p className={`text-base md:text-lg truncate
                             text-black dark:text-white font-semibold
                             ${!anotacionActual.titulo ? 'text-gray-500 dark:text-gray-400' : ''}
                             ${esModoVistaPrevia ? 'cursor-default' : ''}`}>

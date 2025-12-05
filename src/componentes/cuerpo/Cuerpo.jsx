@@ -229,14 +229,14 @@ export default function Cuerpo({ notaNoEliminada,
                             {cargandoBusqueda && isOnline ? (
                                 <div className="col-span-full text-center p-4 select-none
                                                 flex flex-col items-center justify-center gap-3">
-                                    <p className="text-base md:text-xl text-black dark:text-white">
+                                    <p className="text-base md:text-lg text-black dark:text-white">
                                         Buscando...
                                     </p>
                                 </div>
                             ) : resultadosBusqueda.length === 0 && isOnline && terminoBusqueda ? (
                                 <div className="col-span-full text-center p-4 select-none
                                                 flex flex-col items-center justify-center gap-3">
-                                    <p className="text-base md:text-xl text-black dark:text-white">
+                                    <p className="text-base md:text-lg text-black dark:text-white">
                                         No se encontraron resultados para "{terminoBusqueda}"
                                     </p>
                                     <div>

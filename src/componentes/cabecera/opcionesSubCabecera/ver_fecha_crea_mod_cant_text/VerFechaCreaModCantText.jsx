@@ -40,7 +40,7 @@ export default function VerFechaCreaModCantText() {
     if (cargando) {
         return (
             <div className="w-full p-1 select-none bg-white dark:bg-gray-800">
-                <p className="text-base md:text-xl text-black dark:text-white text-center py-4">
+                <p className="text-base md:text-lg text-black dark:text-white text-center py-4">
                     Cargando...
                 </p>
             </div>
@@ -51,7 +51,7 @@ export default function VerFechaCreaModCantText() {
     if (!anotacionActual) {
         return (
             <div className="w-full p-1 select-none bg-white dark:bg-gray-800">
-                <p className="text-base md:text-xl text-black dark:text-white text-center py-4">
+                <p className="text-base md:text-lg text-black dark:text-white text-center py-4">
                     No hay datos disponibles
                 </p>
             </div>

@@ -48,7 +48,7 @@ export default function ModalRestablecerContrasena() {
                         />
                     </div>
 
-                    <p className="text-base md:text-xl text-center
+                    <p className="text-base md:text-lg text-center
                             text-black dark:text-white font-semibold">
                         Restablecer contraseña
                     </p>

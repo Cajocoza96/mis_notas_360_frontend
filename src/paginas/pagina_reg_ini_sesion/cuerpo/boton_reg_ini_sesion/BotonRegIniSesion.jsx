@@ -11,7 +11,7 @@ export default function BotonRegIniSesion({ icono, nombreIcono }){
                         rounded-md p-3 overflow-hidden
                         flex flex-row items-center justify-center gap-2 cursor-pointer select-none">
             {icono}
-            <p className="text-base md:text-xl text-black dark:text-white">{nombreIcono}</p>
+            <p className="text-base md:text-lg text-black dark:text-white">{nombreIcono}</p>
         </div>
     );
 }

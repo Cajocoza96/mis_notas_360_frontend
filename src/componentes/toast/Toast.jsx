@@ -21,7 +21,7 @@ export default function Toast() {
                     shadow-xl flex items-center justify-center 
                     w-[95%] z-90 backdrop-blur-sm"
         >
-          <span className="text-center text-sm md:text-base 2xl:text-3xl font-medium">
+          <span className="text-center text-sm md:text-base font-medium">
             {mensajeToast || "Error desconocido"}
           </span>
         </motion.div>

@@ -65,7 +65,7 @@ export default function Footer() {
                                 rounded-sm cursor-pointer
                                 flex items-center justify-center"
                     onClick={handleNavegarEstado}>
-                    <p className="text-base md:text-xl 
+                    <p className="text-base md:text-lg
                                 text-violet-800 dark:text-white">
                         Estados
                     </p>
@@ -110,7 +110,7 @@ export default function Footer() {
                         <HiViewColumns className="text-2xl md:text-3xl text-violet-800 dark:text-white" />
                     )}
 
-                    <HiArrowDown className="text-base md:text-xl text-violet-800 dark:text-white" />
+                    <HiArrowDown className="text-base md:text-lg text-violet-800 dark:text-white" />
                 </div>
             </div>
 

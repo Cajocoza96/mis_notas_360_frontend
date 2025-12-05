@@ -18,25 +18,25 @@ export default function PaginaMantenimiento() {
             </div>
 
             <div className="flex flex-col items-center gap-5">
-                <p className="text-center text-xl md:text-2xl 
+                <p className="text-center text-xl md:text-2xl
                             font-bold select-none
                             text-black dark:text-white">
                     <span translate="no">MisNotas360</span> está en mantenimiento
                 </p>
 
-                <p className="text-center text-base md:text-xl 
+                <p className="text-center text-base md:text-lg
                             font-bold select-none
                             text-gray-600 dark:text-gray-400">
                     Se trabajará en todo lo posible.
                 </p>
 
-                <p className="text-center text-base md:text-xl 
+                <p className="text-center text-base md:text-lg
                             font-bold select-none
                             text-gray-600 dark:text-gray-400">
                     El objetivo es mejorar su experiencia.
                 </p>
 
-                <p className="text-center text-base md:text-xl 
+                <p className="text-center text-base md:text-lg 
                             font-bold select-none
                             text-gray-600 dark:text-gray-400">
                     Por favor espera..

@@ -30,8 +30,8 @@ export default function AuthInitializer({ children }) {
                             bg-white text-black dark:bg-gray-800 dark:text-white
                             flex flex-col items-center justify-center gap-2 
                             z-[9999] select-none">
-                <FaSpinner className="animate-spin text-2xl md:text-3xl" />
-                <p className="text-xl md:text-2xl font-bold">
+                <FaSpinner className="animate-spin text-lg md:text-xl" />
+                <p className="text-base md:text-lg font-bold">
                     Verificando sesión...
                 </p>
             </div>

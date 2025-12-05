@@ -109,7 +109,7 @@ export default function Cabecera({ paginaPrincipal, paginaBusqueda,
                         <div>
                             <HiOutlineBookOpen className="text-2xl md:text-3xl text-black dark:text-white" />
                         </div>
-                        <p className="w-full text-center text-xl md:text-2xl 
+                        <p className="w-full text-center text-lg md:text-xl
                                     font-bold select-none truncate
                                     text-black dark:text-white" translate="no">
                             MisNotas360
@@ -136,22 +136,22 @@ export default function Cabecera({ paginaPrincipal, paginaBusqueda,
                 )}
 
                 {paginaBusqueda && (
-                    <p className="w-full text-center text-xl md:text-2xl select-none truncate
+                    <p className="w-full text-center text-lg md:text-xl select-none truncate
                     text-violet-800 dark:text-white">Buscar</p>
                 )}
 
                 {paginaPapelera && (
-                    <p className="w-full text-center text-xl md:text-2xl select-none truncate
+                    <p className="w-full text-center text-lg md:text-xl select-none truncate
                     text-red-600 dark:text-white">Papelera</p>
                 )}
 
                 {paginaEstado && (
-                    <p className="w-full text-center text-xl md:text-2xl select-none truncate
+                    <p className="w-full text-center text-lg md:text-xl select-none truncate
                     text-violet-800 dark:text-white">Estados</p>
                 )}
 
                 {paginaInfoUsuario && (
-                    <p className="w-full text-center text-xl md:text-2xl select-none truncate
+                    <p className="w-full text-center text-lg md:text-xl select-none truncate
                     text-violet-800 dark:text-white">Información usuario</p>
                 )}
 
@@ -160,7 +160,7 @@ export default function Cabecera({ paginaPrincipal, paginaBusqueda,
                                     flex flex-row items-center gap-2">
                         <HiOutlineBookOpen className="text-2xl md:text-3xl 
                                                 text-black dark:text-white" />
-                        <p className="w-full text-center text-xl md:text-2xl
+                        <p className="w-full text-center text-lg md:text-xl
                                     font-bold select-none truncate
                                 text-black dark:text-white" translate="no">
                             MisNotas360
@@ -178,7 +178,7 @@ export default function Cabecera({ paginaPrincipal, paginaBusqueda,
                                 <HiChevronLeft className="text-2xl md:text-3xl text-black dark:text-white cursor-pointer flex-shrink-0" />
                             </Link>
 
-                            <p className="w-full text-center text-xl md:text-2xl
+                            <p className="w-full text-center text-lg md:text-xl
                                     font-bold truncate
                                 text-black dark:text-white">
                                 {tituloTerminoPolitica}

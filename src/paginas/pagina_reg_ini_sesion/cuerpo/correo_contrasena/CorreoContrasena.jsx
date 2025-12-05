@@ -292,7 +292,7 @@ export default function CorreoContrasena({ textoContrasena, restablecer, noResta
                                 ${inputUsuarioFocused ? 'border-violet-800' : 'border-gray-300 dark:border-gray-700'}
                                 ${!cargando && 'active:bg-gray-200 dark:active:bg-gray-700'}`}>
                     <input
-                        className="w-full text-base md:text-xl p-2 pt-6 pb-2
+                        className="w-full text-base md:text-lg p-2 pt-6 pb-2
                                 focus:outline-none bg-transparent
                                 text-black dark:text-white"
                         type="text"
@@ -314,7 +314,7 @@ export default function CorreoContrasena({ textoContrasena, restablecer, noResta
                                     text-gray-500 dark:text-gray-400
                                     ${inputUsuarioFocused || nombreUsuario ?
                                 'text-xs top-1 font-semibold' :
-                                'text-base md:text-xl top-1/2 -translate-y-1/2'
+                                'text-base md:text-lg top-1/2 -translate-y-1/2'
                             }
                                     ${inputUsuarioFocused ? 'text-violet-800 dark:text-violet-400' : ''}`}>
                         Nombre de usuario
@@ -332,7 +332,7 @@ export default function CorreoContrasena({ textoContrasena, restablecer, noResta
                                     ${!cargando && 'active:bg-gray-200 dark:active:bg-gray-700'}`}>
 
                         <input
-                            className="w-full text-base md:text-xl p-2 pt-6 pb-2
+                            className="w-full text-base md:text-lg p-2 pt-6 pb-2
                                     focus:outline-none bg-transparent
                                     text-black dark:text-white"
                             type={verContrasena ? "text" : "password"}
@@ -360,7 +360,7 @@ export default function CorreoContrasena({ textoContrasena, restablecer, noResta
                                         text-gray-500 dark:text-gray-400
                                         ${inputContrasenaFocused || contrasena ?
                                     'text-xs top-1 font-semibold' :
-                                    'text-base md:text-xl top-1/2 -translate-y-1/2'
+                                    'text-base md:text-lg top-1/2 -translate-y-1/2'
                                 }
                                         ${inputContrasenaFocused ? 'text-violet-800 dark:text-violet-400' : ''}`}>
                             {textoContrasena}
@@ -368,7 +368,7 @@ export default function CorreoContrasena({ textoContrasena, restablecer, noResta
 
                         <button
                             type="button"
-                            className="text-base md:text-xl mr-2 p-2 -m-2
+                            className="text-base md:text-lg mr-2 p-2 -m-2
                                 text-black dark:text-white cursor-pointer z-10 
                                 touch-manipulation select-none"
                             onMouseDown={handleVerContrasena}
@@ -418,7 +418,7 @@ export default function CorreoContrasena({ textoContrasena, restablecer, noResta
                     <MiBoton
                         className={`bg-violet-800 text-white hover:bg-violet-800 active:bg-violet-800 
                         ${cargando ? 'opacity-50 cursor-not-allowed' : ''}`}
-                        accion={cargando ? <FaSpinner className="animate-spin text-2xl md:text-3xl text-white" /> : textoBoton}
+                        accion={cargando ? <FaSpinner className="animate-spin text-lg md:text-xl text-white" /> : textoBoton}
                         disabled={cargando}
                         whileTap={!cargando ? {
                             scale: 0.96,

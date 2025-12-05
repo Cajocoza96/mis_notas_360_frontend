@@ -128,7 +128,7 @@ export default function PaginaBuscar() {
                             <input
                                 value={inputValue}
                                 onChange={handleInputChange}
-                                className="w-full text-base md:text-xl 
+                                className="w-full text-base md:text-lg 
                                 border-0 focus:outline-none
                                 text-black dark:text-white bg-transparent"
                                 placeholder="Buscar contenido en anotacion..."

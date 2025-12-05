@@ -406,7 +406,7 @@ export default function ModalConfirmacion({ textoPregunta, restaurarTexto, elimi
 
                     <div className="mx-auto w-full flex flex-col gap-4 2xl:gap-5">
                         <div className="flex flex-col gap-2">
-                            <p className={`text-base md:text-xl
+                            <p className={`text-base md:text-lg
                                     ${restaurarTexto ? 'text-blue-600 dark:text-blue-500' :
                                     eliminarPregunta ? 'text-red-600 dark:text-red-500' : 'text-black dark:text-white'}`}>
                                 {textoPregunta}
@@ -421,7 +421,7 @@ export default function ModalConfirmacion({ textoPregunta, restaurarTexto, elimi
 
                         <div className="flex flex-row items-center justify-end gap-6 2xl:gap-7">
                             <p
-                                className={`text-base md:text-xl
+                                className={`text-base md:text-lg
                                         text-black dark:text-white 
                                         ${procesando ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
                                 onClick={() => {
@@ -449,7 +449,7 @@ export default function ModalConfirmacion({ textoPregunta, restaurarTexto, elimi
                             </p>
 
                             <p
-                                className={`text-base md:text-xl
+                                className={`text-base md:text-lg
                                         ${restaurarTexto ? 'text-blue-600 dark:text-blue-500' :
                                         eliminarAceptar ? 'text-red-600 dark:text-red-500' : 'text-violet-800 dark:text-violet-400'} 
                                         ${procesando ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer font-semibold'}`}

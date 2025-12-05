@@ -14,7 +14,7 @@ export default function ContIconoInfoUsua({ titulo, texto, iconoInfoUsua,
                 </div>
 
                 <div className="flex flex-col">
-                    <p className="text-base md:text-xl text-center 2xs:text-left">
+                    <p className="text-base md:text-lg text-center 2xs:text-left">
                         {titulo}
                     </p>
 

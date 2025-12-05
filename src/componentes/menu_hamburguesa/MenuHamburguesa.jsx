@@ -41,7 +41,7 @@ export default function MenuHamburguesa() {
                         <div>
                             <HiOutlineBookOpen className="text-2xl md:text-3xl  text-black dark:text-white" />
                         </div>
-                        <p className="w-full text-left text-base md:text-xl 
+                        <p className="w-full text-left text-base md:text-lg 
                                     font-bold select-none truncate
                                     text-black dark:text-white" translate="no">
                             MisNotas360

@@ -18,7 +18,7 @@ export default function Footer() {
 
     return (
         <div className="w-full p-3 bg-violet-800 dark:bg-black">
-            <p className="w-full truncate text-base md:text-xl text-white text-center">
+            <p className="w-full truncate text-base md:text-lg text-white text-center">
                 {textoPregunta} {""}
                 <Link to={rutaDestino} className="cursor-pointer underline hover:opacity-80">
                     {textoEnlace}
