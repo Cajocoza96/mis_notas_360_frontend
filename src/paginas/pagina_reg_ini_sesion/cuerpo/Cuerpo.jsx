@@ -8,6 +8,9 @@ import { autenticarConGoogle, autenticarConFacebook } from "../../../services/au
 import { GoogleLogin } from "@react-oauth/google";
 import { toggleVerMenuHamburguesa } from "../../../store/layoutSlice";
 import { obtenerMensajeError, registrarError } from "../../../utils/errorHandler";
+import { FaFacebook } from "react-icons/fa";
+
+const FACEBOOK_CLIENT_ID = import.meta.env.VITE_FACEBOOK_CLIENT_ID;
 
 export default function Cuerpo() {
     const location = useLocation();
@@ -18,18 +21,50 @@ export default function Cuerpo() {
     const tema = useSelector((state) => state.preferencia.tema);
 
     const [googleKey, setGoogleKey] = useState(0);
+    const [fbSDKLoaded, setFbSDKLoaded] = useState(false);
+    const [cargandoFB, setCargandoFB] = useState(false);
+    const [esHTTPS, setEsHTTPS] = useState(false);
 
     const esRegistro = location.pathname === "/registrar";
     const textoAccion = esRegistro ? infoRegIniSesion.registrate.accionCuenta : infoRegIniSesion.iniciar.accionCuenta;
 
     // Determinar si está en modo oscuro
-    const isDarkMode = tema === "oscuro" || 
+    const isDarkMode = tema === "oscuro" ||
         (tema === "sistema" && window.matchMedia("(prefers-color-scheme: dark)").matches);
 
-    // Forzar re-render cuando cambia el tema o la ruta
+    // ✅ Verificar si estamos en HTTPS
     useEffect(() => {
-        setGoogleKey(prev => prev + 1);
-    }, [tema, location.pathname]);
+        setEsHTTPS(window.location.protocol === 'https:');
+    }, []);
+
+    // ✅ Cargar Facebook SDK
+    useEffect(() => {
+        if (window.FB) {
+            setFbSDKLoaded(true);
+            return;
+        }
+
+        window.fbAsyncInit = function () {
+            window.FB.init({
+                appId: FACEBOOK_APP_ID,
+                cookie: true,
+                xfbml: true,
+                version: 'v18.0'
+            });
+            setFbSDKLoaded(true);
+        };
+
+        const script = document.createElement('script');
+        script.id = 'facebook-jssdk';
+        script.src = 'https://connect.facebook.net/es_LA/sdk.js';
+        script.async = true;
+        script.defer = true;
+        script.crossOrigin = 'anonymous';
+
+        if (!document.getElementById('facebook-jssdk')) {
+            document.body.appendChild(script);
+        }
+    }, []);
 
     const mostrarToast = (mensaje) => {
         dispatch(setMensajeToast(mensaje));
@@ -44,6 +79,11 @@ export default function Cuerpo() {
         dispatch(setVerToast(false));
         dispatch(toggleVerModalRestablecerContrasena());
     };
+
+    // Forzar re-render de Google cuando cambia el tema
+    useEffect(() => {
+        setGoogleKey(prev => prev + 1);
+    }, [tema, location.pathname]);
 
     // Función para manejar autenticación con Google
     const handleGoogleSuccess = async (credentialResponse) => {
@@ -70,22 +110,42 @@ export default function Cuerpo() {
         mostrarToast("Error al iniciar sesión con Google");
     };
 
-    // Función para manejar autenticación con Facebook
-    const handleFacebookAuth = () => {
-        if (!window.FB) {
+    // ✅ Autenticación con Facebook
+    const handleFacebookLogin = () => {
+        // Verificar si estamos en HTTPS
+        if (!esHTTPS) {
+            mostrarToast("Facebook Login requiere HTTPS. Por favor, usa la versión en producción.");
+            return;
+        }
+
+        if (!fbSDKLoaded || !window.FB) {
             mostrarToast("Cargando Facebook...");
             return;
         }
 
+        setCargandoFB(true);
+
         window.FB.login((response) => {
             if (response.authResponse) {
-                window.FB.api('/me', { fields: 'id,name,email,picture.type(large)' }, async (userInfo) => {
+                // ✅ Solo solicitar campos públicos (sin email si causa problemas)
+                window.FB.api('/me', {
+                    fields: 'id,name,picture.type(large)'
+                }, async (userInfo) => {
                     try {
+                        // ✅ Acortar URL de imagen si es muy larga
+                        let imagenPerfil = userInfo.picture?.data?.url || null;
+
+                        // Si la URL es muy larga, usar una versión más corta
+                        if (imagenPerfil && imagenPerfil.length > 500) {
+                            // Extraer solo la parte importante o usar imagen por defecto
+                            imagenPerfil = `https://graph.facebook.com/${userInfo.id}/picture?type=large`;
+                        }
+
                         const facebookData = {
                             facebookId: userInfo.id,
-                            email: userInfo.email || null,
+                            email: null, // Facebook a veces no provee email
                             nombreCuenta: userInfo.name,
-                            imagenPerfil: userInfo.picture?.data?.url || null
+                            imagenPerfil: imagenPerfil
                         };
 
                         await autenticarConFacebook(facebookData);
@@ -102,13 +162,20 @@ export default function Cuerpo() {
                             'Error al autenticar con Facebook'
                         );
                         mostrarToast(mensajeSeguro);
+                    } finally {
+                        setCargandoFB(false);
                     }
                 });
             } else {
                 mostrarToast("Inicio de sesión cancelado");
+                setCargandoFB(false);
             }
-        }, { scope: 'public_profile,email' });
+        }, {
+            scope: 'public_profile', // ✅ Solo perfil público
+            return_scopes: true
+        });
     };
+
 
     return (
         <div className="w-[85%] lg:w-[65%] mx-auto flex flex-col justify-between p-2 gap-3">
@@ -119,17 +186,8 @@ export default function Cuerpo() {
                 {textoAccion}
             </p>
 
-            {/* Botón de Facebook 
-            <div onClick={handleFacebookAuth}>
-                <BotonRegIniSesion
-                    icono={<FaFacebook className="text-base md:text-xl text-blue-700" />}
-                    nombreIcono="Facebook"
-                />
-            </div>
-            */}
-
             {/* Botón oficial de Google */}
-            <div 
+            <div
                 key={googleKey}
                 className="w-full flex justify-center items-center"
             >
@@ -152,6 +210,48 @@ export default function Cuerpo() {
                         text-black dark:text-white">
                 o
             </p>
+
+            {/* ✅ Botón de Facebook con advertencia de HTTPS */}
+            <div className="w-full">
+                <button
+                    onClick={handleFacebookLogin}
+                    disabled={!fbSDKLoaded || cargandoFB || !esHTTPS}
+                    className={`
+                        w-full h-10 rounded-md flex items-center justify-center gap-2
+                        font-medium text-white transition-all
+                        ${fbSDKLoaded && !cargandoFB && esHTTPS
+                            ? 'bg-[#1877F2] hover:bg-[#166FE5] cursor-pointer'
+                            : 'bg-gray-400 cursor-not-allowed'}
+                    `}
+                >
+                    {cargandoFB ? (
+                        <span className="text-sm">Cargando...</span>
+                    ) : (
+                        <>
+                            <FaFacebook className="text-xl" />
+                            <span className="text-sm md:text-base">
+                                {esRegistro ? 'Registrarse con Facebook' : 'Iniciar sesión con Facebook'}
+                            </span>
+                        </>
+                    )}
+                </button>
+
+                {/* ✅ Advertencia si no es HTTPS */}
+                {!esHTTPS && (
+                    <p className="text-xs text-center mt-1 text-red-500">
+                        Facebook Login requiere HTTPS.
+                        <br />
+                        Prueba en: <a
+                            href="https://mis-notas-360-frontend.vercel.app"
+                            className="underline"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                        >
+                            Vercel
+                        </a>
+                    </p>
+                )}
+            </div>
 
             <CorreoContrasena
                 textoContrasena="Contraseña"
