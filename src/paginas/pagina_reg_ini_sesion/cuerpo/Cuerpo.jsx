@@ -46,7 +46,7 @@ export default function Cuerpo() {
 
         window.fbAsyncInit = function () {
             window.FB.init({
-                appId: FACEBOOK_APP_ID,
+                appId: FACEBOOK_CLIENT_ID,
                 cookie: true,
                 xfbml: true,
                 version: 'v18.0'
