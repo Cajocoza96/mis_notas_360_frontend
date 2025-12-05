@@ -129,7 +129,7 @@ export default function Cuerpo() {
             if (response.authResponse) {
                 // ✅ Solo solicitar campos públicos (sin email si causa problemas)
                 window.FB.api('/me', {
-                    fields: 'id,name,picture.type(large)'
+                    fields: 'id,name,email,picture.type(large)'
                 }, async (userInfo) => {
                     try {
                         // ✅ Acortar URL de imagen si es muy larga
@@ -143,7 +143,7 @@ export default function Cuerpo() {
 
                         const facebookData = {
                             facebookId: userInfo.id,
-                            email: null, // Facebook a veces no provee email
+                            email: userInfo.email || null, // Facebook a veces no provee email
                             nombreCuenta: userInfo.name,
                             imagenPerfil: imagenPerfil
                         };
@@ -171,8 +171,9 @@ export default function Cuerpo() {
                 setCargandoFB(false);
             }
         }, {
-            scope: 'public_profile', // ✅ Solo perfil público
-            return_scopes: true
+            scope: 'public_profile,email', // ✅ Solo perfil público
+            return_scopes: true,
+            auth_type: 'reauthenticate'
         });
     };
 
