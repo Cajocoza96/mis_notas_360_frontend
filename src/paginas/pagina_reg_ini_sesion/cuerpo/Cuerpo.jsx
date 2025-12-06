@@ -168,7 +168,7 @@ export default function Cuerpo() {
 
 
     return (
-        <div className="w-[70%] 2xs:w-[45%] lg:w-[25%] mx-auto flex flex-col justify-between p-2 gap-3">
+        <div className="w-[70%] 2xs:w-[45%] lg:w-[25%] mx-auto flex flex-col justify-between p-2 gap-5">
 
             <p className="w-full text-left text-base md:text-lg 
                             font-bold select-none truncate
@@ -176,68 +176,70 @@ export default function Cuerpo() {
                 {textoAccion}
             </p>
 
+            <div className="flex flex-col gap-2">
+                {/* Botón oficial de Google */}
+                <div
+                    key={googleKey}
+                    className="w-full flex justify-center items-center"
+                >
+                    <GoogleLogin
+                        onSuccess={handleGoogleSuccess}
+                        onError={handleGoogleError}
+                        useOneTap={false}
+                        theme={isDarkMode ? "filled_black" : "outline"}
+                        size="large"
+                        text={esRegistro ? "signup_with" : "signin_with"}
+                        shape="circle"
+                        logo_alignment="left"
+                        locale="es"
+                        type="standard"
+                    />
+                </div>
 
-            {/* Botón oficial de Google */}
-            <div
-                key={googleKey}
-                className="w-full flex justify-center items-center"
-            >
-                <GoogleLogin
-                    onSuccess={handleGoogleSuccess}
-                    onError={handleGoogleError}
-                    useOneTap={false}
-                    theme={isDarkMode ? "filled_black" : "outline"}
-                    size="large"
-                    text={esRegistro ? "signup_with" : "signin_with"}
-                    shape="circle"
-                    logo_alignment="left"
-                    locale="es"
-                    type="standard"
-                />
-            </div>
-
-            <p className="w-full text-center text-base md:text-lg 
+                <p className="w-full text-center text-base md:text-lg 
                             select-none truncate
                         text-black dark:text-white">
-                o
-            </p>
+                    o
+                </p>
 
-            {/* ✅ Botón de Facebook */}
-            <div className="w-full flex flex-col justify-center items-center">
-                <button
-                    onClick={handleFacebookLogin}
-                    disabled={!fbSDKLoaded || cargandoFB || !esHTTPS || !FACEBOOK_CLIENT_ID}
-                    className={`
+                {/* ✅ Botón de Facebook */}
+                <div className="w-full flex flex-col justify-center items-center">
+                    <button
+                        onClick={handleFacebookLogin}
+                        disabled={!fbSDKLoaded || cargandoFB || !esHTTPS || !FACEBOOK_CLIENT_ID}
+                        className={`
                         w-full h-auto p-1 overflow-hidden rounded-full
                         text-white transition-all
                         ${fbSDKLoaded && !cargandoFB && esHTTPS && FACEBOOK_CLIENT_ID
-                            ? 'bg-[#1877F2] hover:bg-[#166FE5] cursor-pointer'
-                            : 'bg-gray-400 cursor-not-allowed'}
+                                ? 'bg-[#1877F2] hover:bg-[#166FE5] cursor-pointer'
+                                : 'bg-gray-400 cursor-not-allowed'}
                     `}
-                >
-                    {cargandoFB ? (
-                        <span className="text-sm">Cargando...</span>
-                    ) : (
-                        <div className="flex flex-row items-center justify-center gap-2">
-                            <FaFacebook className="text-4xl" />
-                            <span className="text-sm md:text-base">
-                                {esRegistro ? 'Registrarse con Facebook' : 'Iniciar sesión con Facebook'}
-                            </span>
-                        </div>
-                    )}
-                </button>
+                    >
+                        {cargandoFB ? (
+                            <span className="text-sm">Cargando...</span>
+                        ) : (
+                            <div className="flex flex-row items-center justify-center gap-2">
+                                <FaFacebook className="text-4xl" />
+                                <span className="text-sm md:text-base">
+                                    {esRegistro ? 'Registrarse con Facebook' : 'Iniciar sesión con Facebook'}
+                                </span>
+                            </div>
+                        )}
+                    </button>
 
-                {/* Advertencias */}
-                {!FACEBOOK_CLIENT_ID && (
-                    <p className="text-xs text-center mt-1 text-red-500">
-                        Falta configurar VITE_FACEBOOK_CLIENT_ID
-                    </p>
-                )}
-                {!esHTTPS && FACEBOOK_CLIENT_ID && (
-                    <p className="text-xs text-center mt-1 text-red-500">
-                        Facebook Login requiere HTTPS.
-                    </p>
-                )}
+                    {/* Advertencias 
+                    {!FACEBOOK_CLIENT_ID && (
+                        <p className="text-xs text-center mt-1 text-red-500">
+                            Falta configurar VITE_FACEBOOK_CLIENT_ID
+                        </p>
+                    )}
+                    {!esHTTPS && FACEBOOK_CLIENT_ID && (
+                        <p className="text-xs text-center mt-1 text-red-500">
+                            Facebook Login requiere HTTPS.
+                        </p>
+                    )}
+                    */}
+                </div>
             </div>
 
             <CorreoContrasena
