@@ -157,15 +157,18 @@ export const autenticarConGoogle = async (credential) => {
     }
 };
 
-// Autenticación con Facebook
+// ✅ AUTENTICACIÓN SEGURA CON FACEBOOK
 export const autenticarConFacebook = async (facebookData) => {
     try {
+        // ✅ CAMBIO CRÍTICO: Ahora enviamos solo el accessToken
         const response = await fetchConTimeout(`${API_URL}/auth/facebook`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify(facebookData),
+            body: JSON.stringify({
+                accessToken: facebookData.accessToken // ← Solo el token
+            }),
         });
 
         const data = await manejarRespuestaAuth(response);

@@ -44,14 +44,20 @@ export default function Cuerpo() {
             return;
         }
 
+        if (!FACEBOOK_APP_ID) {
+            console.error('❌ FACEBOOK_APP_ID no está definido');
+            return;
+        }
+
         window.fbAsyncInit = function () {
             window.FB.init({
-                appId: FACEBOOK_CLIENT_ID,
+                appId: FACEBOOK_APP_ID,
                 cookie: true,
                 xfbml: true,
                 version: 'v18.0'
             });
             setFbSDKLoaded(true);
+            console.log('✅ Facebook SDK cargado');
         };
 
         const script = document.createElement('script');
@@ -110,11 +116,10 @@ export default function Cuerpo() {
         mostrarToast("Error al iniciar sesión con Google");
     };
 
-    // ✅ Autenticación con Facebook
+    // ✅ AUTENTICACIÓN SEGURA CON FACEBOOK
     const handleFacebookLogin = () => {
-        // Verificar si estamos en HTTPS
         if (!esHTTPS) {
-            mostrarToast("Facebook Login requiere HTTPS. Por favor, usa la versión en producción.");
+            mostrarToast("Facebook Login requiere HTTPS.");
             return;
         }
 
@@ -127,51 +132,36 @@ export default function Cuerpo() {
 
         window.FB.login((response) => {
             if (response.authResponse) {
-                // ✅ Solo solicitar campos públicos (sin email si causa problemas)
-                window.FB.api('/me', {
-                    fields: 'id,name,email,picture.type(large)'
-                }, async (userInfo) => {
-                    try {
-                        // ✅ Acortar URL de imagen si es muy larga
-                        let imagenPerfil = userInfo.picture?.data?.url || null;
+                // ✅ CAMBIO CRÍTICO: Obtener el accessToken
+                const accessToken = response.authResponse.accessToken;
 
-                        // Si la URL es muy larga, usar una versión más corta
-                        if (imagenPerfil && imagenPerfil.length > 500) {
-                            // Extraer solo la parte importante o usar imagen por defecto
-                            imagenPerfil = `https://graph.facebook.com/${userInfo.id}/picture?type=large`;
-                        }
+                console.log('✅ Access Token obtenido de Facebook');
 
-                        const facebookData = {
-                            facebookId: userInfo.id,
-                            email: userInfo.email || null, // Facebook a veces no provee email
-                            nombreCuenta: userInfo.name,
-                            imagenPerfil: imagenPerfil
-                        };
-
-                        await autenticarConFacebook(facebookData);
-
+                // ✅ Enviar SOLO el accessToken al backend
+                autenticarConFacebook({ accessToken })
+                    .then(() => {
                         if (verMenuHamburguesa) {
                             dispatch(toggleVerMenuHamburguesa());
                         }
                         navigate("/panel-principal");
-
-                    } catch (error) {
+                    })
+                    .catch((error) => {
                         registrarError('Autenticar con Facebook', error);
                         const mensajeSeguro = obtenerMensajeError(
                             error,
                             'Error al autenticar con Facebook'
                         );
                         mostrarToast(mensajeSeguro);
-                    } finally {
+                    })
+                    .finally(() => {
                         setCargandoFB(false);
-                    }
-                });
+                    });
             } else {
                 mostrarToast("Inicio de sesión cancelado");
                 setCargandoFB(false);
             }
         }, {
-            scope: 'public_profile,email', // ✅ Solo perfil público
+            scope: 'public_profile,email',
             return_scopes: true,
             auth_type: 'reauthenticate'
         });
@@ -213,15 +203,15 @@ export default function Cuerpo() {
                 o
             </p>
 
-            {/* ✅ Botón de Facebook con advertencia de HTTPS */}
+            {/* ✅ Botón de Facebook */}
             <div className="w-full flex flex-col justify-center items-center">
                 <button
                     onClick={handleFacebookLogin}
-                    disabled={!fbSDKLoaded || cargandoFB || !esHTTPS}
+                    disabled={!fbSDKLoaded || cargandoFB || !esHTTPS || !FACEBOOK_APP_ID}
                     className={`
                         w-auto h-auto p-1 overflow-hidden rounded-full 
                         text-white transition-all
-                        ${fbSDKLoaded && !cargandoFB && esHTTPS
+                        ${fbSDKLoaded && !cargandoFB && esHTTPS && FACEBOOK_APP_ID
                             ? 'bg-[#1877F2] hover:bg-[#166FE5] cursor-pointer'
                             : 'bg-gray-400 cursor-not-allowed'}
                     `}
@@ -238,19 +228,15 @@ export default function Cuerpo() {
                     )}
                 </button>
 
-                {/* ✅ Advertencia si no es HTTPS */}
-                {!esHTTPS && (
+                {/* Advertencias */}
+                {!FACEBOOK_APP_ID && (
+                    <p className="text-xs text-center mt-1 text-red-500">
+                        Falta configurar VITE_FACEBOOK_APP_ID
+                    </p>
+                )}
+                {!esHTTPS && FACEBOOK_APP_ID && (
                     <p className="text-xs text-center mt-1 text-red-500">
                         Facebook Login requiere HTTPS.
-                        <br />
-                        Prueba en: <a
-                            href="https://mis-notas-360-frontend.vercel.app"
-                            className="underline"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                        >
-                            Vercel
-                        </a>
                     </p>
                 )}
             </div>
