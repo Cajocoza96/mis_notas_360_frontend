@@ -208,7 +208,7 @@ export default function Cuerpo() {
                     onClick={handleFacebookLogin}
                     disabled={!fbSDKLoaded || cargandoFB || !esHTTPS || !FACEBOOK_CLIENT_ID}
                     className={`
-                        w-auto h-auto p-1 overflow-hidden rounded-full 
+                        w-full h-auto p-1 overflow-hidden
                         text-white transition-all
                         ${fbSDKLoaded && !cargandoFB && esHTTPS && FACEBOOK_CLIENT_ID
                             ? 'bg-[#1877F2] hover:bg-[#166FE5] cursor-pointer'
