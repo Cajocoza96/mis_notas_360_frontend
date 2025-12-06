@@ -10,8 +10,6 @@ import { toggleVerMenuHamburguesa } from "../../../store/layoutSlice";
 import { obtenerMensajeError, registrarError, logDesarrollo, errorDesarrollo } from "../../../utils/errorHandler";
 import { FaFacebook } from "react-icons/fa";
 
-import '../../../styles/google-login.css';
-
 const FACEBOOK_CLIENT_ID = import.meta.env.VITE_FACEBOOK_CLIENT_ID;
 
 export default function Cuerpo() {
@@ -182,22 +180,20 @@ export default function Cuerpo() {
             {/* Botón oficial de Google */}
             <div
                 key={googleKey}
-                className="w-full"
+                className="w-full flex justify-center items-center"
             >
-                <div className="google-login-container">
-                    <GoogleLogin
-                        onSuccess={handleGoogleSuccess}
-                        onError={handleGoogleError}
-                        useOneTap={false}
-                        theme={isDarkMode ? "filled_black" : "outline"}
-                        size="large"
-                        text={esRegistro ? "signup_with" : "signin_with"}
-                        shape="circle"
-                        logo_alignment="center"
-                        locale="es"
-                        type="standard"
-                    />
-                </div>
+                <GoogleLogin
+                    onSuccess={handleGoogleSuccess}
+                    onError={handleGoogleError}
+                    useOneTap={false}
+                    theme={isDarkMode ? "filled_black" : "outline"}
+                    size="large"
+                    text={esRegistro ? "signup_with" : "signin_with"}
+                    shape="circle"
+                    logo_alignment="left"
+                    locale="es"
+                    type="standard"
+                />
             </div>
 
             <p className="w-full text-center text-base md:text-lg 
