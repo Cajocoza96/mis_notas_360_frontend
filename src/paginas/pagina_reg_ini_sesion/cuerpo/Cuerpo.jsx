@@ -168,7 +168,7 @@ export default function Cuerpo() {
 
 
     return (
-        <div className="border border-white w-[70%] 2xs:w-[45%] lg:w-[25%] mx-auto flex flex-col justify-between p-2 gap-3">
+        <div className="w-[70%] 2xs:w-[45%] lg:w-[25%] mx-auto flex flex-col justify-between p-2 gap-3">
 
             <p className="w-full text-left text-base md:text-lg 
                             font-bold select-none truncate
@@ -180,20 +180,27 @@ export default function Cuerpo() {
             {/* Botón oficial de Google */}
             <div
                 key={googleKey}
-                className="w-full flex justify-center items-center"
+                className="w-full"
+                style={{
+                    display: 'flex',
+                    justifyContent: 'stretch'
+                }}
             >
-                <GoogleLogin
-                    onSuccess={handleGoogleSuccess}
-                    onError={handleGoogleError}
-                    useOneTap={false}
-                    theme={isDarkMode ? "filled_black" : "outline"}
-                    size="large"
-                    text={esRegistro ? "signup_with" : "signin_with"}
-                    shape="circle"
-                    logo_alignment="left"
-                    locale="es"
-                    type="standard"
-                />
+                <div style={{ width: '100%'}}>
+                    <GoogleLogin
+                        onSuccess={handleGoogleSuccess}
+                        onError={handleGoogleError}
+                        useOneTap={false}
+                        theme={isDarkMode ? "filled_black" : "outline"}
+                        size="large"
+                        text={esRegistro ? "signup_with" : "signin_with"}
+                        shape="circle"
+                        logo_alignment="center"
+                        locale="es"
+                        type="standard"
+                        width="100%"
+                    />
+                </div>
             </div>
 
             <p className="w-full text-center text-base md:text-lg 
@@ -208,7 +215,7 @@ export default function Cuerpo() {
                     onClick={handleFacebookLogin}
                     disabled={!fbSDKLoaded || cargandoFB || !esHTTPS || !FACEBOOK_CLIENT_ID}
                     className={`
-                        w-full h-auto p-1 overflow-hidden
+                        w-full h-auto p-1 overflow-hidden rounded-full
                         text-white transition-all
                         ${fbSDKLoaded && !cargandoFB && esHTTPS && FACEBOOK_CLIENT_ID
                             ? 'bg-[#1877F2] hover:bg-[#166FE5] cursor-pointer'
