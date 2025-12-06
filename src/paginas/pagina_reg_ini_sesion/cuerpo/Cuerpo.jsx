@@ -7,7 +7,7 @@ import infoRegIniSesion from "../../../data/infoRegIniSesion.json";
 import { autenticarConGoogle, autenticarConFacebook } from "../../../services/authService";
 import { GoogleLogin } from "@react-oauth/google";
 import { toggleVerMenuHamburguesa } from "../../../store/layoutSlice";
-import { obtenerMensajeError, registrarError } from "../../../utils/errorHandler";
+import { obtenerMensajeError, registrarError, logDesarrollo, errorDesarrollo } from "../../../utils/errorHandler";
 import { FaFacebook } from "react-icons/fa";
 
 const FACEBOOK_CLIENT_ID = import.meta.env.VITE_FACEBOOK_CLIENT_ID;
@@ -45,7 +45,7 @@ export default function Cuerpo() {
         }
 
         if (!FACEBOOK_CLIENT_ID) {
-            console.error('❌ FACEBOOK_CLIENT_ID no está definido');
+            errorDesarrollo('❌ FACEBOOK_CLIENT_ID no está definido');
             return;
         }
 
@@ -57,7 +57,7 @@ export default function Cuerpo() {
                 version: 'v18.0'
             });
             setFbSDKLoaded(true);
-            console.log('✅ Facebook SDK cargado');
+            logDesarrollo('✅ Facebook SDK cargado');
         };
 
         const script = document.createElement('script');
@@ -116,7 +116,31 @@ export default function Cuerpo() {
         mostrarToast("Error al iniciar sesión con Google");
     };
 
-    // ✅ AUTENTICACIÓN SEGURA CON FACEBOOK
+    // ✅ Función auxiliar para procesar la autenticación
+    const procesarAutenticacionFacebook = async (accessToken) => {
+        try {
+            logDesarrollo('✅ Access Token obtenido:', accessToken.substring(0, 20) + '...');
+
+            await autenticarConFacebook({ accessToken });
+
+            if (verMenuHamburguesa) {
+                dispatch(toggleVerMenuHamburguesa());
+            }
+            navigate("/panel-principal");
+
+        } catch (error) {
+            registrarError('Autenticar con Facebook', error);
+            const mensajeSeguro = obtenerMensajeError(
+                error,
+                'Error al autenticar con Facebook'
+            );
+            mostrarToast(mensajeSeguro);
+        } finally {
+            setCargandoFB(false);
+        }
+    };
+
+    // ✅ AUTENTICACIÓN PROFESIONAL CON FACEBOOK
     const handleFacebookLogin = () => {
         if (!esHTTPS) {
             mostrarToast("Facebook Login requiere HTTPS.");
@@ -130,40 +154,34 @@ export default function Cuerpo() {
 
         setCargandoFB(true);
 
-        window.FB.login((response) => {
-            if (response.authResponse) {
-                // ✅ CAMBIO CRÍTICO: Obtener el accessToken
-                const accessToken = response.authResponse.accessToken;
+        // ✅ PASO 1: Verificar si ya hay una sesión activa (login automático)
+        window.FB.getLoginStatus((response) => {
+            logDesarrollo('Estado de login de Facebook:', response.status);
 
-                console.log('✅ Access Token obtenido de Facebook');
-
-                // ✅ Enviar SOLO el accessToken al backend
-                autenticarConFacebook({ accessToken })
-                    .then(() => {
-                        if (verMenuHamburguesa) {
-                            dispatch(toggleVerMenuHamburguesa());
-                        }
-                        navigate("/panel-principal");
-                    })
-                    .catch((error) => {
-                        registrarError('Autenticar con Facebook', error);
-                        const mensajeSeguro = obtenerMensajeError(
-                            error,
-                            'Error al autenticar con Facebook'
-                        );
-                        mostrarToast(mensajeSeguro);
-                    })
-                    .finally(() => {
-                        setCargandoFB(false);
-                    });
+            if (response.status === 'connected') {
+                // ✅ Ya está conectado - Login automático sin pedir contraseña
+                logDesarrollo('✅ Usuario ya conectado a Facebook');
+                procesarAutenticacionFacebook(response.authResponse.accessToken);
             } else {
-                mostrarToast("Inicio de sesión cancelado");
-                setCargandoFB(false);
+                // ✅ No está conectado - Mostrar popup de login
+                logDesarrollo('⚠️ Usuario no conectado, mostrando popup de login');
+                
+                window.FB.login((loginResponse) => {
+                    if (loginResponse.authResponse) {
+                        // ✅ Login exitoso
+                        procesarAutenticacionFacebook(loginResponse.authResponse.accessToken);
+                    } else {
+                        // ❌ Usuario canceló o cerró el popup
+                        logDesarrollo('❌ Login cancelado por el usuario');
+                        mostrarToast("Inicio de sesión cancelado");
+                        setCargandoFB(false);
+                    }
+                }, {
+                    scope: 'public_profile,email',
+                    return_scopes: true
+                    // ✅ NO usar auth_type: 'reauthenticate' para permitir login automático
+                });
             }
-        }, {
-            scope: 'public_profile,email',
-            return_scopes: true,
-            auth_type: 'reauthenticate'
         });
     };
 
@@ -203,38 +221,51 @@ export default function Cuerpo() {
                 o
             </p>
 
-            {/* ✅ Botón de Facebook */}
+            {/* ✅ Botón de Facebook con skeleton loader */}
             <div className="w-full flex flex-col justify-center items-center">
-                <button
-                    onClick={handleFacebookLogin}
-                    disabled={!fbSDKLoaded || cargandoFB || !esHTTPS || !FACEBOOK_CLIENT_ID}
-                    className={`
-                        w-auto h-auto p-1 overflow-hidden rounded-full 
-                        text-white transition-all
-                        ${fbSDKLoaded && !cargandoFB && esHTTPS && FACEBOOK_CLIENT_ID
-                            ? 'bg-[#1877F2] hover:bg-[#166FE5] cursor-pointer'
-                            : 'bg-gray-400 cursor-not-allowed'}
-                    `}
-                >
-                    {cargandoFB ? (
-                        <span className="text-sm">Cargando...</span>
-                    ) : (
-                        <div className="flex flex-row items-center gap-2">
-                            <FaFacebook className="text-4xl" />
-                            <span className="text-sm md:text-base mr-2">
-                                {esRegistro ? 'Registrarse con Facebook' : 'Iniciar sesión con Facebook'}
-                            </span>
-                        </div>
-                    )}
-                </button>
+                {!fbSDKLoaded ? (
+                    // ✅ Skeleton loader mientras carga el SDK
+                    <div className="w-full h-[42px] bg-gray-300 dark:bg-gray-600 rounded-full animate-pulse flex items-center justify-center">
+                        <span className="text-xs text-gray-500 dark:text-gray-400">
+                            Cargando Facebook...
+                        </span>
+                    </div>
+                ) : (
+                    <button
+                        onClick={handleFacebookLogin}
+                        disabled={cargandoFB || !esHTTPS || !FACEBOOK_CLIENT_ID}
+                        className={`
+                            w-auto h-auto p-1 overflow-hidden rounded-full 
+                            text-white transition-all
+                            ${!cargandoFB && esHTTPS && FACEBOOK_CLIENT_ID
+                                ? 'bg-[#1877F2] hover:bg-[#166FE5] cursor-pointer shadow-md hover:shadow-lg'
+                                : 'bg-gray-400 cursor-not-allowed'}
+                        `}
+                    >
+                        {cargandoFB ? (
+                            <div className="flex flex-row items-center gap-2 px-2">
+                                {/* Spinner de carga */}
+                                <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                                <span className="text-sm">Autenticando...</span>
+                            </div>
+                        ) : (
+                            <div className="flex flex-row items-center gap-2">
+                                <FaFacebook className="text-4xl" />
+                                <span className="text-sm md:text-base mr-2">
+                                    {esRegistro ? 'Registrarse con Facebook' : 'Iniciar sesión con Facebook'}
+                                </span>
+                            </div>
+                        )}
+                    </button>
+                )}
 
                 {/* Advertencias */}
-                {!FACEBOOK_CLIENT_ID && (
+                {!FACEBOOK_CLIENT_ID && fbSDKLoaded && (
                     <p className="text-xs text-center mt-1 text-red-500">
                         Falta configurar VITE_FACEBOOK_CLIENT_ID
                     </p>
                 )}
-                {!esHTTPS && FACEBOOK_CLIENT_ID && (
+                {!esHTTPS && FACEBOOK_CLIENT_ID && fbSDKLoaded && (
                     <p className="text-xs text-center mt-1 text-red-500">
                         Facebook Login requiere HTTPS.
                     </p>
