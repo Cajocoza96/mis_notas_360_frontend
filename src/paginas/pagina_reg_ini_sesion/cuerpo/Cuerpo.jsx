@@ -218,7 +218,7 @@ export default function Cuerpo() {
                     {cargandoFB ? (
                         <span className="text-sm">Cargando...</span>
                     ) : (
-                        <div className="flex flex-row items-center gap-2">
+                        <div className="flex flex-row items-center justify-center gap-2">
                             <FaFacebook className="text-4xl" />
                             <span className="text-sm md:text-base mr-2">
                                 {esRegistro ? 'Registrarse con Facebook' : 'Iniciar sesión con Facebook'}
