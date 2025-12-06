@@ -10,6 +10,8 @@ import { toggleVerMenuHamburguesa } from "../../../store/layoutSlice";
 import { obtenerMensajeError, registrarError, logDesarrollo, errorDesarrollo } from "../../../utils/errorHandler";
 import { FaFacebook } from "react-icons/fa";
 
+import '../../../styles/google-login.css';
+
 const FACEBOOK_CLIENT_ID = import.meta.env.VITE_FACEBOOK_CLIENT_ID;
 
 export default function Cuerpo() {
@@ -181,12 +183,8 @@ export default function Cuerpo() {
             <div
                 key={googleKey}
                 className="w-full"
-                style={{
-                    display: 'flex',
-                    justifyContent: 'stretch'
-                }}
             >
-                <div style={{ width: '100%'}}>
+                <div className="google-login-container">
                     <GoogleLogin
                         onSuccess={handleGoogleSuccess}
                         onError={handleGoogleError}
@@ -198,7 +196,6 @@ export default function Cuerpo() {
                         logo_alignment="center"
                         locale="es"
                         type="standard"
-                        width="100%"
                     />
                 </div>
             </div>
