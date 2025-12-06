@@ -44,14 +44,14 @@ export default function Cuerpo() {
             return;
         }
 
-        if (!FACEBOOK_APP_ID) {
-            console.error('❌ FACEBOOK_APP_ID no está definido');
+        if (!FACEBOOK_CLIENT_ID) {
+            console.error('❌ FACEBOOK_CLIENT_ID no está definido');
             return;
         }
 
         window.fbAsyncInit = function () {
             window.FB.init({
-                appId: FACEBOOK_APP_ID,
+                appId: FACEBOOK_CLIENT_ID,
                 cookie: true,
                 xfbml: true,
                 version: 'v18.0'
@@ -207,11 +207,11 @@ export default function Cuerpo() {
             <div className="w-full flex flex-col justify-center items-center">
                 <button
                     onClick={handleFacebookLogin}
-                    disabled={!fbSDKLoaded || cargandoFB || !esHTTPS || !FACEBOOK_APP_ID}
+                    disabled={!fbSDKLoaded || cargandoFB || !esHTTPS || !FACEBOOK_CLIENT_ID}
                     className={`
                         w-auto h-auto p-1 overflow-hidden rounded-full 
                         text-white transition-all
-                        ${fbSDKLoaded && !cargandoFB && esHTTPS && FACEBOOK_APP_ID
+                        ${fbSDKLoaded && !cargandoFB && esHTTPS && FACEBOOK_CLIENT_ID
                             ? 'bg-[#1877F2] hover:bg-[#166FE5] cursor-pointer'
                             : 'bg-gray-400 cursor-not-allowed'}
                     `}
@@ -229,12 +229,12 @@ export default function Cuerpo() {
                 </button>
 
                 {/* Advertencias */}
-                {!FACEBOOK_APP_ID && (
+                {!FACEBOOK_CLIENT_ID && (
                     <p className="text-xs text-center mt-1 text-red-500">
-                        Falta configurar VITE_FACEBOOK_APP_ID
+                        Falta configurar VITE_FACEBOOK_CLIENT_ID
                     </p>
                 )}
-                {!esHTTPS && FACEBOOK_APP_ID && (
+                {!esHTTPS && FACEBOOK_CLIENT_ID && (
                     <p className="text-xs text-center mt-1 text-red-500">
                         Facebook Login requiere HTTPS.
                     </p>
