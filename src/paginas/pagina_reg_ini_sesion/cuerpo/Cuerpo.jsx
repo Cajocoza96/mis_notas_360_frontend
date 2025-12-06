@@ -168,7 +168,7 @@ export default function Cuerpo() {
 
 
     return (
-        <div className="w-[70%] 2xs:w-[45%] lg:w-[25%] mx-auto flex flex-col justify-between p-2 gap-3">
+        <div className="border border-white w-[70%] 2xs:w-[45%] lg:w-[25%] mx-auto flex flex-col justify-between p-2 gap-3">
 
             <p className="w-full text-left text-base md:text-lg 
                             font-bold select-none truncate
@@ -220,7 +220,7 @@ export default function Cuerpo() {
                     ) : (
                         <div className="flex flex-row items-center justify-center gap-2">
                             <FaFacebook className="text-4xl" />
-                            <span className="text-sm md:text-base mr-2">
+                            <span className="text-sm md:text-base">
                                 {esRegistro ? 'Registrarse con Facebook' : 'Iniciar sesión con Facebook'}
                             </span>
                         </div>
