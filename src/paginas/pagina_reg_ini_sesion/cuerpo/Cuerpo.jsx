@@ -181,7 +181,7 @@ export default function Cuerpo() {
                 {textoAccion}
             </p>
 
-            <div className="flex flex-col gap-2">
+            <div className="w-full flex flex-col gap-2">
                 {/* ✅ Botón de Google con overlay de carga */}
                 <div className="w-full flex justify-center items-center relative">
                     {/* Contenedor del botón de Google */}
@@ -205,8 +205,8 @@ export default function Cuerpo() {
 
                     {/* ✅ Overlay de carga sobre el botón de Google */}
                     {cargandoGoogle && (
-                        <div className="absolute inset-0 flex items-center justify-center bg-white/80 dark:bg-gray-800/80 rounded-full">
-                            <div className="flex items-center gap-2">
+                        <div className="w-full absolute inset-0 flex items-center justify-center bg-white/80 dark:bg-gray-800/80 rounded-full">
+                            <div className="w-full flex items-center gap-2">
                                 {/* Spinner */}
                                 <CargandoNoHayNada iconoDeCarga={true} />
                                 <span className="text-sm font-medium text-gray-700 dark:text-gray-200">
