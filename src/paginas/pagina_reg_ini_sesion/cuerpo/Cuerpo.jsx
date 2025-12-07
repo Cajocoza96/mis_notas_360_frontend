@@ -237,7 +237,7 @@ export default function Cuerpo() {
                     `}
                     >
                         {cargandoFB ? (
-                            <div className="flex items-center gap-2">
+                            <div className="flex flex-row items-center justify-center gap-2">
                                 <CargandoNoHayNada iconoDeCarga={true} />
                                 <span className="text-sm">Autenticando...</span>
                             </div>
