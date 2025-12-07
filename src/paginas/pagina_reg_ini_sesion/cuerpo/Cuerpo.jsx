@@ -206,7 +206,7 @@ export default function Cuerpo() {
                     {/* ✅ Overlay de carga sobre el botón de Google */}
                     {cargandoGoogle && (
                         <div className="w-full absolute inset-0 flex items-center justify-center bg-white/80 dark:bg-gray-800/80 rounded-full">
-                            <div className="w-full flex items-center gap-2">
+                            <div className="w-full flex items-center justify-center gap-2">
                                 {/* Spinner */}
                                 <CargandoNoHayNada iconoDeCarga={true} />
                                 <span className="text-sm font-medium text-gray-700 dark:text-gray-200">
