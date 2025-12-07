@@ -7,6 +7,16 @@ import { logDesarrollo, errorDesarrollo, obtenerMensajeError } from "../utils/er
 const API_URL = import.meta.env.VITE_API_URL;
 
 // ===============================
+// ✅ CONFIGURACIÓN DE TIMEOUTS
+// ===============================
+const TIMEOUTS = {
+    AUTH: 45000,      // 45 segundos para login/registro (servidor puede estar dormido)
+    VERIFICAR: 30000, // 30 segundos para verificar token
+    NORMAL: 15000,    // 15 segundos para operaciones normales
+    CERRAR: 5000      // 5 segundos para cerrar sesión
+};
+
+// ===============================
 // ✅ FUNCIONES AUXILIARES
 // ===============================
 
@@ -23,13 +33,31 @@ const limpiarSesion = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('usuario');
     localStorage.removeItem('theme');
-
-    // Limpiar también el store Redux
     store.dispatch({ type: 'auth/cerrarSesionLocal' });
 };
 
-// Función helper para hacer fetch con timeout y manejo de errores
-const fetchConTimeout = async (url, options = {}, timeout = 15000) => {
+// ✅ NUEVO: Función para hacer warm-up del servidor
+const warmUpServer = async () => {
+    try {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 segundos de timeout
+        
+        await fetch(`${API_URL}/health`, {
+            method: 'GET',
+            signal: controller.signal
+        });
+        
+        clearTimeout(timeoutId);
+        logDesarrollo('✅ Servidor despierto');
+        return true;
+    } catch (error) {
+        logDesarrollo('⚠️ Servidor podría estar durmiendo:', error.message);
+        return false;
+    }
+};
+
+// ✅ MEJORADO: Fetch con timeout y reintentos inteligentes
+const fetchConTimeout = async (url, options = {}, timeout = TIMEOUTS.NORMAL, intentos = 1) => {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), timeout);
 
@@ -47,7 +75,17 @@ const fetchConTimeout = async (url, options = {}, timeout = 15000) => {
         clearTimeout(timeoutId);
 
         if (error.name === 'AbortError') {
-            throw new Error('La solicitud tardó demasiado tiempo. Por favor, intenta de nuevo.');
+            // Si es el primer intento y es una operación de auth, reintentar
+            if (intentos === 1 && (url.includes('/auth/iniciar-sesion') || 
+                                    url.includes('/auth/registrar') ||
+                                    url.includes('/auth/google') ||
+                                    url.includes('/auth/facebook'))) {
+                logDesarrollo('⏳ Servidor tardando en responder, reintentando con más tiempo...');
+                // Reintentar con el doble de timeout
+                return fetchConTimeout(url, options, timeout * 1.5, intentos + 1);
+            }
+
+            throw new Error('La solicitud tardó demasiado tiempo. El servidor podría estar iniciándose, intenta de nuevo en unos segundos.');
         }
 
         // Error de red
@@ -70,8 +108,6 @@ const manejarRespuestaAuth = async (response) => {
             throw new Error('Tu sesión ha expirado. Por favor, inicia sesión nuevamente.');
         }
 
-        // 🔥 CAMBIO: Lanzar el error con el mensaje específico del backend
-        // Si existe data.error o data.mensaje, lo usamos; si no, mensaje genérico
         throw new Error(data.error || data.mensaje || 'Error en la operación');
     }
 
@@ -82,24 +118,26 @@ const manejarRespuestaAuth = async (response) => {
 // ✅ FUNCIONES DE AUTENTICACIÓN
 // ===============================
 
-// Registrar usuario
+// ✅ MEJORADO: Registrar usuario con warm-up
 export const registrarUsuario = async (nombreUsuario, contrasena) => {
     try {
-        const response = await fetchConTimeout(`${API_URL}/auth/registrar`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
+        // Intentar despertar el servidor primero
+        await warmUpServer();
+
+        const response = await fetchConTimeout(
+            `${API_URL}/auth/registrar`, 
+            {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ nombreUsuario, contrasena }),
             },
-            body: JSON.stringify({ nombreUsuario, contrasena }),
-        });
+            TIMEOUTS.AUTH // 45 segundos
+        );
 
         const data = await manejarRespuestaAuth(response);
-
         logDesarrollo('✅ Usuario registrado:', data);
 
-        // Establecer sesión y cargar preferencias
         establecerSesionUsuario(data.token, data.usuario);
-
         return data;
     } catch (error) {
         errorDesarrollo('❌ Error al registrar:', error);
@@ -107,24 +145,26 @@ export const registrarUsuario = async (nombreUsuario, contrasena) => {
     }
 };
 
-// Iniciar sesión
+// ✅ MEJORADO: Iniciar sesión con warm-up
 export const iniciarSesion = async (nombreUsuario, contrasena) => {
     try {
-        const response = await fetchConTimeout(`${API_URL}/auth/iniciar-sesion`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
+        // Intentar despertar el servidor primero
+        await warmUpServer();
+
+        const response = await fetchConTimeout(
+            `${API_URL}/auth/iniciar-sesion`,
+            {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ nombreUsuario, contrasena }),
             },
-            body: JSON.stringify({ nombreUsuario, contrasena }),
-        });
+            TIMEOUTS.AUTH // 45 segundos
+        );
 
         const data = await manejarRespuestaAuth(response);
-
         logDesarrollo('✅ Usuario ha iniciado sesión:', data);
 
-        // Establecer sesión y cargar preferencias
         establecerSesionUsuario(data.token, data.usuario);
-
         return data;
     } catch (error) {
         errorDesarrollo('❌ Error al iniciar sesión:', error);
@@ -132,24 +172,25 @@ export const iniciarSesion = async (nombreUsuario, contrasena) => {
     }
 };
 
-// Autenticación con Google
+// ✅ MEJORADO: Autenticación con Google
 export const autenticarConGoogle = async (credential) => {
     try {
-        const response = await fetchConTimeout(`${API_URL}/auth/google`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
+        await warmUpServer();
+
+        const response = await fetchConTimeout(
+            `${API_URL}/auth/google`,
+            {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ credential }),
             },
-            body: JSON.stringify({ credential }),
-        });
+            TIMEOUTS.AUTH
+        );
 
         const data = await manejarRespuestaAuth(response);
-
         logDesarrollo('✅ Usuario autenticado con Google:', data);
 
-        // Establecer sesión y cargar preferencias
         establecerSesionUsuario(data.token, data.usuario);
-
         return data;
     } catch (error) {
         errorDesarrollo('❌ Error al autenticar con Google:', error);
@@ -157,27 +198,25 @@ export const autenticarConGoogle = async (credential) => {
     }
 };
 
-// ✅ AUTENTICACIÓN SEGURA CON FACEBOOK
+// ✅ MEJORADO: Autenticación con Facebook
 export const autenticarConFacebook = async (facebookData) => {
     try {
-        // ✅ CAMBIO CRÍTICO: Ahora enviamos solo el accessToken
-        const response = await fetchConTimeout(`${API_URL}/auth/facebook`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
+        await warmUpServer();
+
+        const response = await fetchConTimeout(
+            `${API_URL}/auth/facebook`,
+            {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ accessToken: facebookData.accessToken }),
             },
-            body: JSON.stringify({
-                accessToken: facebookData.accessToken // ← Solo el token
-            }),
-        });
+            TIMEOUTS.AUTH
+        );
 
         const data = await manejarRespuestaAuth(response);
-
         logDesarrollo('✅ Usuario autenticado con Facebook:', data);
 
-        // Establecer sesión y cargar preferencias
         establecerSesionUsuario(data.token, data.usuario);
-
         return data;
     } catch (error) {
         errorDesarrollo('❌ Error al autenticar con Facebook:', error);
@@ -185,7 +224,7 @@ export const autenticarConFacebook = async (facebookData) => {
     }
 };
 
-// Verificar token con reintentos
+// ✅ MEJORADO: Verificar token con reintentos
 export const verificarToken = async (reintentos = 2) => {
     try {
         const token = localStorage.getItem('token');
@@ -203,12 +242,10 @@ export const verificarToken = async (reintentos = 2) => {
                     'Content-Type': 'application/json',
                 },
             },
-            10000 // 10 segundos para verificación
+            TIMEOUTS.VERIFICAR // 30 segundos
         );
 
         const data = await manejarRespuestaAuth(response);
-
-        // Actualizar usuario en localStorage
         localStorage.setItem('usuario', JSON.stringify(data.usuario));
         
         return data;
@@ -217,11 +254,10 @@ export const verificarToken = async (reintentos = 2) => {
         // Si es un error de red y quedan reintentos
         if ((error.message.includes('tiempo') || error.message.includes('conectar')) && reintentos > 0) {
             logDesarrollo(`⚠️ Reintentando verificación... (${reintentos} intentos restantes)`);
-            await new Promise(resolve => setTimeout(resolve, 1500)); // Esperar 1.5 segundos
+            await new Promise(resolve => setTimeout(resolve, 2000)); // Esperar 2 segundos
             return verificarToken(reintentos - 1);
         }
 
-        // Si es error de sesión, limpiar
         if (error.message.includes('sesión') || error.message.includes('token')) {
             limpiarSesion();
         }
@@ -236,7 +272,6 @@ export const cerrarSesion = async () => {
         const token = localStorage.getItem('token');
 
         if (token) {
-            // Intentar cerrar sesión en el backend, pero no bloquear si falla
             await fetchConTimeout(
                 `${API_URL}/auth/cerrar-sesion`,
                 {
@@ -246,16 +281,14 @@ export const cerrarSesion = async () => {
                         'Content-Type': 'application/json',
                     },
                 },
-                5000 // 5 segundos para cerrar sesión
+                TIMEOUTS.CERRAR
             ).catch(error => {
                 errorDesarrollo('Error al cerrar sesión en backend:', error);
-                // No lanzar error, continuar con limpieza local
             });
         }
     } catch (error) {
         errorDesarrollo('Error al cerrar sesión:', error);
     } finally {
-        // Siempre limpiar el localStorage y store
         limpiarSesion();
     }
 };
@@ -269,17 +302,19 @@ export const eliminarCuenta = async () => {
             throw new Error('No hay sesión activa');
         }
 
-        const response = await fetchConTimeout(`${API_URL}/auth/eliminar-cuenta`, {
-            method: 'DELETE',
-            headers: {
-                'Authorization': `Bearer ${token}`,
-                'Content-Type': 'application/json',
+        const response = await fetchConTimeout(
+            `${API_URL}/auth/eliminar-cuenta`,
+            {
+                method: 'DELETE',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+                },
             },
-        });
+            TIMEOUTS.NORMAL
+        );
 
         const data = await manejarRespuestaAuth(response);
-
-        // Limpiar sesión después de eliminar cuenta
         limpiarSesion();
 
         return data;
@@ -292,16 +327,17 @@ export const eliminarCuenta = async () => {
 // Restablecer contraseña
 export const restablecerContrasena = async (nombreUsuario, nuevaContrasena) => {
     try {
-        const response = await fetchConTimeout(`${API_URL}/auth/restablecer-contrasena`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
+        const response = await fetchConTimeout(
+            `${API_URL}/auth/restablecer-contrasena`,
+            {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ nombreUsuario, nuevaContrasena }),
             },
-            body: JSON.stringify({ nombreUsuario, nuevaContrasena }),
-        });
+            TIMEOUTS.AUTH
+        );
 
         const data = await manejarRespuestaAuth(response);
-
         return data;
     } catch (error) {
         errorDesarrollo('❌ Error al restablecer contraseña:', error);
@@ -313,7 +349,6 @@ export const restablecerContrasena = async (nombreUsuario, nuevaContrasena) => {
 // ✅ FUNCIÓN PARA PETICIONES AUTENTICADAS
 // ===============================
 
-// Función mejorada para hacer peticiones autenticadas con manejo de sesión
 export const fetchConAuth = async (url, options = {}) => {
     const token = localStorage.getItem('token');
 
@@ -324,7 +359,7 @@ export const fetchConAuth = async (url, options = {}) => {
 
     try {
         const response = await fetchConTimeout(
-            url, // ✅ Ahora usa la URL tal cual viene
+            url,
             {
                 ...options,
                 headers: {
@@ -332,15 +367,14 @@ export const fetchConAuth = async (url, options = {}) => {
                     'Authorization': `Bearer ${token}`,
                     ...options.headers,
                 },
-            }
+            },
+            TIMEOUTS.NORMAL
         );
 
-        // Si la respuesta indica sesión inválida
         if (response.status === 401) {
             const data = await response.json();
             if (data.sesionInvalida || data.tokenInvalido) {
                 limpiarSesion();
-                // Redirigir a login
                 window.location.href = '/iniciar-sesion';
                 throw new Error('Sesión expirada');
             }
@@ -349,7 +383,6 @@ export const fetchConAuth = async (url, options = {}) => {
         return response;
 
     } catch (error) {
-        // Si es error de sesión, limpiar
         if (error.message.includes('sesión') || error.message.includes('Sesión')) {
             limpiarSesion();
         }
@@ -361,18 +394,15 @@ export const fetchConAuth = async (url, options = {}) => {
 // ✅ FUNCIONES AUXILIARES PÚBLICAS
 // ===============================
 
-// Obtener token
 export const obtenerToken = () => {
     return localStorage.getItem('token');
 };
 
-// Obtener usuario actual
 export const obtenerUsuarioActual = () => {
     const usuario = localStorage.getItem('usuario');
     return usuario ? JSON.parse(usuario) : null;
 };
 
-// Verificar si hay sesión activa
 export const haySesionActiva = () => {
     return !!localStorage.getItem('token');
 };
