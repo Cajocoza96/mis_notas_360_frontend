@@ -181,7 +181,7 @@ export default function Cuerpo() {
                 {textoAccion}
             </p>
 
-            <div className="w-full flex flex-col gap-2">
+            <div className="w-full flex flex-col justify-center items-center gap-2">
                 {/* ✅ Botón de Google con overlay de carga */}
                 <div className="w-full flex justify-center items-center relative">
                     {/* Contenedor del botón de Google */}
