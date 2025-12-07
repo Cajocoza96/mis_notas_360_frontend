@@ -9,6 +9,7 @@ import { GoogleLogin } from "@react-oauth/google";
 import { toggleVerMenuHamburguesa } from "../../../store/layoutSlice";
 import { obtenerMensajeError, registrarError, logDesarrollo, errorDesarrollo } from "../../../utils/errorHandler";
 import { FaFacebook } from "react-icons/fa";
+import CargandoNoHayNada from "../../../componentes/cargando_no_hay_nada/CargandoNoHayNada";
 
 const FACEBOOK_CLIENT_ID = import.meta.env.VITE_FACEBOOK_CLIENT_ID;
 
@@ -23,6 +24,7 @@ export default function Cuerpo() {
     const [googleKey, setGoogleKey] = useState(0);
     const [fbSDKLoaded, setFbSDKLoaded] = useState(false);
     const [cargandoFB, setCargandoFB] = useState(false);
+    const [cargandoGoogle, setCargandoGoogle] = useState(false);
     const [esHTTPS, setEsHTTPS] = useState(false);
 
     const esRegistro = location.pathname === "/registrar";
@@ -93,6 +95,7 @@ export default function Cuerpo() {
 
     // Función para manejar autenticación con Google
     const handleGoogleSuccess = async (credentialResponse) => {
+        setCargandoGoogle(true);
         try {
             // Enviamos el JWT token como tu backend espera
             await autenticarConGoogle(credentialResponse.credential);
@@ -109,11 +112,13 @@ export default function Cuerpo() {
                 'Error al autenticar con Google'
             );
             mostrarToast(mensajeSeguro);
+            setCargandoGoogle(false);
         }
     };
 
     const handleGoogleError = () => {
         mostrarToast("Error al iniciar sesión con Google");
+        setCargandoGoogle(false);
     };
 
     // ✅ AUTENTICACIÓN SEGURA CON FACEBOOK
@@ -177,23 +182,39 @@ export default function Cuerpo() {
             </p>
 
             <div className="flex flex-col gap-2">
-                {/* Botón oficial de Google */}
-                <div
-                    key={googleKey}
-                    className="w-full flex justify-center items-center"
-                >
-                    <GoogleLogin
-                        onSuccess={handleGoogleSuccess}
-                        onError={handleGoogleError}
-                        useOneTap={false}
-                        theme={isDarkMode ? "filled_black" : "outline"}
-                        size="large"
-                        text={esRegistro ? "signup_with" : "signin_with"}
-                        shape="circle"
-                        logo_alignment="left"
-                        locale="es"
-                        type="standard"
-                    />
+                {/* ✅ Botón de Google con overlay de carga */}
+                <div className="w-full flex justify-center items-center relative">
+                    {/* Contenedor del botón de Google */}
+                    <div
+                        key={googleKey}
+                        className={`${cargandoGoogle ? 'opacity-50 pointer-events-none' : ''}`}
+                    >
+                        <GoogleLogin
+                            onSuccess={handleGoogleSuccess}
+                            onError={handleGoogleError}
+                            useOneTap={false}
+                            theme={isDarkMode ? "filled_black" : "outline"}
+                            size="large"
+                            text={esRegistro ? "signup_with" : "signin_with"}
+                            shape="circle"
+                            logo_alignment="left"
+                            locale="es"
+                            type="standard"
+                        />
+                    </div>
+
+                    {/* ✅ Overlay de carga sobre el botón de Google */}
+                    {cargandoGoogle && (
+                        <div className="absolute inset-0 flex items-center justify-center bg-white/80 dark:bg-gray-800/80 rounded-full">
+                            <div className="flex items-center gap-2">
+                                {/* Spinner */}
+                                <CargandoNoHayNada iconoDeCarga={true} />
+                                <span className="text-sm font-medium text-gray-700 dark:text-gray-200">
+                                    Autenticando...
+                                </span>
+                            </div>
+                        </div>
+                    )}
                 </div>
 
                 <p className="w-full text-center text-base md:text-lg 
@@ -216,7 +237,10 @@ export default function Cuerpo() {
                     `}
                     >
                         {cargandoFB ? (
-                            <span className="text-sm">Cargando...</span>
+                            <div className="flex items-center gap-2">
+                                <CargandoNoHayNada iconoDeCarga={true} />
+                                <span className="text-sm">Autenticando...</span>
+                            </div>
                         ) : (
                             <div className="flex flex-row items-center justify-center gap-2">
                                 <FaFacebook className="text-4xl" />
