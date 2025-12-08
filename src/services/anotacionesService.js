@@ -14,34 +14,30 @@ const manejarErrorRespuesta = async (response, mensajeError) => {
         
         // ✅ Detectar específicamente el error 429 (Rate Limit)
         if (response.status === 429) {
+            let errorData = null;
+            
+            // ✅ Intentar parsear el JSON del backend
             try {
-                // Clonar la respuesta para poder leerla sin consumirla
                 const responseClone = response.clone();
-                const errorData = await responseClone.json();
-                
-                // ✅ Extraer detail para el usuario y error para la consola
-                const mensajeUsuario = errorData.detail;
-                const mensajeTecnico = errorData.error;
-                
-                // ✅ Mostrar error técnico en consola para debugging
-                console.error('🚫 Rate Limit:', mensajeTecnico);
-                logDesarrollo('📛 Detalles completos:', errorData);
-                
-                // ✅ Lanzar error con el mensaje amigable para el Toast
-                const error = new Error(mensajeUsuario);
-                error.code = 'RATE_LIMIT_EXCEEDED';
-                error.status = 429;
-                throw error;
-                
+                errorData = await responseClone.json();
             } catch (parseError) {
-                // ✅ Si falla el parsing JSON (muy raro), usar mensaje genérico
+                // ✅ Si falla el parsing, errorData queda null
                 console.error('⚠️ No se pudo parsear respuesta 429:', parseError);
-                
-                const error = new Error('Límite de solicitudes alcanzado. Por favor, espera un momento.');
-                error.code = 'RATE_LIMIT_EXCEEDED';
-                error.status = 429;
-                throw error;
             }
+            
+            // ✅ Extraer mensajes (fuera del try-catch)
+            const mensajeUsuario = errorData?.detail;
+            const mensajeTecnico = errorData?.error;
+            
+            // ✅ Mostrar error técnico en consola para debugging
+            console.error('🚫 Rate Limit:', mensajeTecnico);
+            logDesarrollo('📛 Detalles completos:', errorData);
+            
+            // ✅ Lanzar error con el mensaje amigable para el Toast
+            const error = new Error(mensajeUsuario);
+            error.code = 'RATE_LIMIT_EXCEEDED';
+            error.status = 429;
+            throw error;
         }
         
         // ✅ Para cualquier otro error, usar el mensaje proporcionado
@@ -154,7 +150,7 @@ export const actualizarFavorito = async (anotacionId, favorito) => {
             body: JSON.stringify({ favorito })
         });
 
-        manejarErrorRespuesta(response, 'Error al actualizar favorito');
+        await manejarErrorRespuesta(response, 'Error al actualizar favorito');
 
         const data = await response.json();
 
