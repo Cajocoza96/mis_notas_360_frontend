@@ -20,8 +20,8 @@ const manejarErrorRespuesta = async (response, mensajeError) => {
                 const errorData = await responseClone.json();
                 
                 // ✅ Extraer detail para el usuario y error para la consola
-                const mensajeUsuario = errorData.detail || 'Límite de solicitudes alcanzado. Por favor, espera un momento.';
-                const mensajeTecnico = errorData.error || 'Rate limit exceeded';
+                const mensajeUsuario = errorData.detail;
+                const mensajeTecnico = errorData.error;
                 
                 // ✅ Mostrar error técnico en consola para debugging
                 console.error('🚫 Rate Limit:', mensajeTecnico);
