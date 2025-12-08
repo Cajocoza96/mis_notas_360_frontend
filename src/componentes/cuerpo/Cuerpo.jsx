@@ -155,12 +155,16 @@ export default function Cuerpo({ notaNoEliminada,
     // Manejar clic en los estados
     const handleEstadoClick = async (nuevoEstado) => {
         try {
+            setProcesando(true);
             await dispatch(guardarVerAnotacEstado(nuevoEstado)).unwrap();
             // Las anotaciones se recargarán automáticamente gracias al useEffect
 
             navigate("/panel-principal");
+            setProcesando(false);
         } catch (error) {
+            setProcesando(true);
             errorDesarrollo('Error al cambiar filtro de estado:', error);
+            setProcesando(false)
         }
     };
 
