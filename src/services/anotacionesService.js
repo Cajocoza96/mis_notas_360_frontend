@@ -5,12 +5,46 @@ import { logDesarrollo, errorDesarrollo, registrarError } from "../utils/errorHa
 import { fetchConAuth } from "./authService";
 
 //Maneja errores de las peticiones HTTP
-const manejarErrorRespuesta = (response, mensajeError) => {
+const manejarErrorRespuesta = async (response, mensajeError) => {
     if (!response.ok) {
         // ✅ Solo mostrar URL en desarrollo
         if (import.meta.env.MODE === 'development') {
             console.error(`❌ Error en: ${response.url}`);
         }
+        
+        // ✅ Detectar específicamente el error 429 (Rate Limit)
+        if (response.status === 429) {
+            try {
+                // Clonar la respuesta para poder leerla sin consumirla
+                const responseClone = response.clone();
+                const errorData = await responseClone.json();
+                
+                // ✅ Extraer detail para el usuario y error para la consola
+                const mensajeUsuario = errorData.detail || 'Límite de solicitudes alcanzado. Por favor, espera un momento.';
+                const mensajeTecnico = errorData.error || 'Rate limit exceeded';
+                
+                // ✅ Mostrar error técnico en consola para debugging
+                console.error('🚫 Rate Limit:', mensajeTecnico);
+                logDesarrollo('📛 Detalles completos:', errorData);
+                
+                // ✅ Lanzar error con el mensaje amigable para el Toast
+                const error = new Error(mensajeUsuario);
+                error.code = 'RATE_LIMIT_EXCEEDED';
+                error.status = 429;
+                throw error;
+                
+            } catch (parseError) {
+                // ✅ Si falla el parsing JSON (muy raro), usar mensaje genérico
+                console.error('⚠️ No se pudo parsear respuesta 429:', parseError);
+                
+                const error = new Error('Límite de solicitudes alcanzado. Por favor, espera un momento.');
+                error.code = 'RATE_LIMIT_EXCEEDED';
+                error.status = 429;
+                throw error;
+            }
+        }
+        
+        // ✅ Para cualquier otro error, usar el mensaje proporcionado
         throw new Error(mensajeError);
     }
 };
@@ -321,7 +355,7 @@ export const crearAnotacion = async (datosAnotacion) => {
             body: JSON.stringify(datosAnotacion)
         });
 
-        manejarErrorRespuesta(response, 'Error al guardar la nota');
+        await manejarErrorRespuesta(response, 'Error al guardar la nota');
 
         const data = await response.json();
 
@@ -353,7 +387,7 @@ export const actualizarAnotacion = async (anotacionId, datosAnotacion) => {
             body: JSON.stringify(datosAnotacion)
         });
 
-        manejarErrorRespuesta(response, 'Error al actualizar la nota');
+        await manejarErrorRespuesta(response, 'Error al actualizar la nota');
 
         const data = await response.json();
 

@@ -12,8 +12,9 @@ function App() {
                 overflow: 'hidden' // Evita scrollbar durante transiciones
             }}
         >
+
             <ConexionMonitor>
-            <Rutas />
+                <Rutas />
             </ConexionMonitor>
         </div>
     );

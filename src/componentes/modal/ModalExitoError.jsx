@@ -56,18 +56,6 @@ export default function ModalExitoError() {
                                 {mensajeNotificacion}
                             </p>
 
-                            {/*
-                        <button
-                            onClick={handleCerrarModalExitoError}
-                            className={`w-fit text-center font-bold text-white py-2 px-4 rounded-md
-                                        text-base 2xs:text-base md:text-xl 2xl:text-3xl cursor-pointer
-                                        ${esErrorNotificacion ? 'bg-red-500 active:bg-red-400' 
-                                                                : 'bg-green-500 active:bg-green-400'}`}>
-                        Ok
-                        </button>
-                        */}
-
-
                         </div>
 
                     </div>

@@ -16,6 +16,8 @@ import { crearAnotacion, actualizarAnotacion } from "../../../services/anotacion
 
 import CargandoNoHayNada from "../../../componentes/cargando_no_hay_nada/CargandoNoHayNada";
 
+import { setVerToast, setMensajeToast } from "../../../store/accesoSlice";
+
 import { logDesarrollo, errorDesarrollo, registrarError } from "../../../utils/errorHandler";
 
 export default function Footer({ handleUndoClick, handleRedoClick, esModoEdicion, tituloRef, notaRef }) {
@@ -141,20 +143,30 @@ export default function Footer({ handleUndoClick, handleRedoClick, esModoEdicion
             }, 2000); // Esperar 3 segundos antes de redirigir
 
         } catch (error) {
-            setProcesando(true);
-            errorDesarrollo('Error al guardar y redirigir:', error);
             setProcesando(false);
+            errorDesarrollo('Error al guardar y redirigir:', error);
 
-            // ✅ Mostrar notificación de error
-            dispatch(mostrarNotificacion({
-                mensaje: '¡Error al guardar la nota!',
-                esError: true
-            }));
+            // ✅ DETECTAR ERROR DE RATE LIMIT
+            if (error.code === 'RATE_LIMIT_EXCEEDED') {
+                // ✅ Mostrar Toast con el mensaje del backend (detail)
+                // El mensaje ya viene en error.message desde anotacionesService
+                dispatch(setMensajeToast(error.message));
+                dispatch(setVerToast(true));
 
-            // Ocultar el modal automaticamente despues de 3 segundos
-            setTimeout(() => {
-                dispatch(ocultarNotificacion());
-            }, 2000);
+                setTimeout(() => {
+                    dispatch(setVerToast(false));
+                }, 3000);
+            } else {
+                // ✅ Para otros errores, mostrar notificación normal
+                dispatch(mostrarNotificacion({
+                    mensaje: '¡Error al guardar la nota!',
+                    esError: true
+                }));
+
+                setTimeout(() => {
+                    dispatch(ocultarNotificacion());
+                }, 2000);
+            }
         }
     }
 
