@@ -121,6 +121,14 @@ export default function Cuerpo({ notaNoEliminada,
         }
     }, [justReconnected]);
 
+    // Efecto que ayuda que procesando se quite en /panel-principal
+    useEffect(() => {
+        // Solo ejecutar cuando estamos en /panel-principal Y procesando es true
+        if (location.pathname === "/panel-principal" && procesando && verTodosEstados === false) {
+            // Esto significa que acabamos de navegar desde /estados
+            setProcesando(false);
+        }
+    }, [location.pathname, verTodosEstados]);
 
     //Cargar todas las anotaciones
     const cargarAnotaciones = async () => {
@@ -157,14 +165,20 @@ export default function Cuerpo({ notaNoEliminada,
         try {
             setProcesando(true);
             await dispatch(guardarVerAnotacEstado(nuevoEstado)).unwrap();
-            // Las anotaciones se recargarán automáticamente gracias al useEffect
-
-            setProcesando(false);
-            navigate("/panel-principal");
+            
+            // Verificar si ya estamos en /panel-principal
+            if (location.pathname === "/panel-principal") {
+                // Si ya estamos en la ruta, solo actualizamos el estado
+                setProcesando(false);
+            } else {
+                // Si no estamos en la ruta, navegamos y esperamos
+                navigate("/panel-principal");
+                // No ponemos setProcesando(false) aquí
+                // El siguiente useEffect lo manejará
+            }
         } catch (error) {
-            setProcesando(true);
             errorDesarrollo('Error al cambiar filtro de estado:', error);
-            setProcesando(false)
+            setProcesando(false);
         }
     };
 
