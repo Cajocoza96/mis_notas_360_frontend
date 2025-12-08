@@ -159,8 +159,8 @@ export default function Cuerpo({ notaNoEliminada,
             await dispatch(guardarVerAnotacEstado(nuevoEstado)).unwrap();
             // Las anotaciones se recargarán automáticamente gracias al useEffect
 
-            navigate("/panel-principal");
             setProcesando(false);
+            navigate("/panel-principal");
         } catch (error) {
             setProcesando(true);
             errorDesarrollo('Error al cambiar filtro de estado:', error);
