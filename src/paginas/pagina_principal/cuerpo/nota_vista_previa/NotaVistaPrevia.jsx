@@ -11,12 +11,16 @@ import { useNavigate, useLocation } from "react-router-dom";
 
 import { useDispatch, useSelector } from "react-redux";
 
-import { actualizarFavoritoLocal, 
-        setAnotaciones, toggleVerAdminAnotacion} from "../../../../store/anotacionesSlice";
+import {
+    actualizarFavoritoLocal,
+    setAnotaciones, toggleVerAdminAnotacion
+} from "../../../../store/anotacionesSlice";
 
 import { actualizarFavorito, obtenerAnotaciones } from "../../../../services/anotacionesService";
 
 import { setAnotacionId, toggleVerModalRestaurarNota, toggleVerModalEliminarNotaDefinitiva } from "../../../../store/tareasSlice";
+
+import { setVerToast, setMensajeToast } from "../../../../store/accesoSlice";
 
 import { logDesarrollo, errorDesarrollo, registrarError } from "../../../../utils/errorHandler";
 
@@ -94,9 +98,20 @@ export default function NotaVistaPrevia({ anotacionId, iconoFavorito, texto, no_
             }
 
         } catch (error) {
-            errorDesarrollo('Error al actualizar favorito:', error);
-            cargarAnotaciones();
+            // ✅ DETECTAR ERROR DE RATE LIMIT
+            if (error.code === 'RATE_LIMIT_EXCEEDED') {
+                // ✅ Mostrar Toast con el mensaje del backend (detail)
+                // El mensaje ya viene en error.message desde anotacionesService
+                dispatch(setMensajeToast(error.message));
+                dispatch(setVerToast(true));
 
+                setTimeout(() => {
+                    dispatch(setVerToast(false));
+                }, 3000);
+            } else {
+                errorDesarrollo('Error al actualizar favorito:', error);
+                cargarAnotaciones();
+            }
         } finally {
             setActualizandoFavorito(false);
         }

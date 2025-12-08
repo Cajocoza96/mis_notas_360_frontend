@@ -18,6 +18,8 @@ import { obtenerNombreEstado } from "../../../utils/estadoUtils";
 
 import { obtenerAnotacionPorId, actualizarFavorito } from "../../../services/anotacionesService";
 
+import { setVerToast, setMensajeToast } from "../../../store/accesoSlice";
+
 import { logDesarrollo, errorDesarrollo, registrarError } from "../../../utils/errorHandler";
 
 export default function Cabecera({ esModoVistaPrevia }) {
@@ -81,26 +83,39 @@ export default function Cabecera({ esModoVistaPrevia }) {
 
         try {
             setActualizandoFavorito(true);
-            
+
             const nuevoEstadoFavorito = !estadoFavoritoActual;
 
             // Actualizar en el backend
             await actualizarFavorito(id, nuevoEstadoFavorito);
-            
+
             // Actualizar localmente de inmediato (optimistic update)
-            dispatch(actualizarFavoritoLocal({ 
+            dispatch(actualizarFavoritoLocal({
                 anotacionId: parseInt(id),
-                favorito: nuevoEstadoFavorito 
+                favorito: nuevoEstadoFavorito
             }));
 
-            
+
         } catch (error) {
-            errorDesarrollo('Error al actualizar favorito:', error);
-            // Revertir el cambio local si falla
-            dispatch(actualizarFavoritoLocal({ 
-                anotacionId: parseInt(id),
-                favorito: estadoFavoritoActual 
-            }));
+            // ✅ DETECTAR ERROR DE RATE LIMIT
+            if (error.code === 'RATE_LIMIT_EXCEEDED') {
+                // ✅ Mostrar Toast con el mensaje del backend (detail)
+                // El mensaje ya viene en error.message desde anotacionesService
+                dispatch(setMensajeToast(error.message));
+                dispatch(setVerToast(true));
+
+                setTimeout(() => {
+                    dispatch(setVerToast(false));
+                }, 3000);
+            } else {
+                errorDesarrollo('Error al actualizar favorito:', error);
+                // Revertir el cambio local si falla
+                dispatch(actualizarFavoritoLocal({
+                    anotacionId: parseInt(id),
+                    favorito: estadoFavoritoActual
+                }));
+            }
+
         } finally {
             setActualizandoFavorito(false);
         }
@@ -127,9 +142,9 @@ export default function Cabecera({ esModoVistaPrevia }) {
                     </Link>
 
                     <div className="w-30 flex flex-row items-center justify-between">
-                    <HiOutlinePencil
-                        onClick={handleEditarNota}
-                        className="text-2xl md:text-3xl cursor-pointer text-violet-800 dark:text-white" />
+                        <HiOutlinePencil
+                            onClick={handleEditarNota}
+                            className="text-2xl md:text-3xl cursor-pointer text-violet-800 dark:text-white" />
 
 
                         <div
