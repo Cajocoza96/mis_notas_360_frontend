@@ -14,7 +14,10 @@ import {
 
 import { toggleVerModo, toggleVerOrden } from "../../../store/preferenciaSlice";
 
-import { toggleVerModalPapeleraNota, toggleVerModalEliminarNotaDefinitiva } from "../../../store/tareasSlice";
+import { toggleVerModalPapeleraNota, toggleVerModalEliminarNotaDefinitiva, 
+        toggleVerModalEliminarTodasLasNotasDefinitivo, setAnotacionId } from "../../../store/tareasSlice";
+
+import { toggleSeleccionarTodasAnotaciones, limpiarSeleccion } from "../../../store/anotacionesSlice";
 
 import OpcionesCabecera from "./OpcionesCabecera";
 
@@ -37,6 +40,11 @@ export default function ContOpSubCabecera() {
 
     const dispatch = useDispatch();
 
+    // ✅ Estados de selección
+    const seleccionar = useSelector((state) => state.anotaciones.seleccionar);
+    const seleccionarTodo = useSelector((state) => state.anotaciones.seleccionarTodo);
+    const anotacionesSeleccionadas = useSelector((state) => state.anotaciones.anotacionesSeleccionadas);
+
     const handleVerOpcionesCabecera = () => {
         dispatch(toggleVerOpcionesCabecera())
     }
@@ -45,9 +53,32 @@ export default function ContOpSubCabecera() {
         dispatch(toggleVerModo())
     }
 
+    // ✅ NUEVO: Manejar seleccionar todo / anular selección
     const handleSeleccionarTodo = () => {
-        dispatch(toggleVerOpcionesCabecera())
+        if(verOpcionesCabecera){
+            dispatch(toggleVerOpcionesCabecera());  
+        }
+        dispatch(toggleSeleccionarTodasAnotaciones());
     }
+
+    // ✅ NUEVO: Mover seleccionadas a papelera
+    const handleMoverSeleccionadasPapelera = () => {
+        // Aquí deberías implementar la lógica para mover múltiples anotaciones
+        // Por ahora cerraremos el modal
+        dispatch(toggleVerOpcionesCabecera());
+        // TODO: Implementar movimiento masivo a papelera
+    }
+
+    // ✅ NUEVO: Eliminar seleccionadas definitivamente
+    const handleEliminarSeleccionadasDefinitivo = () => {
+        // Aquí deberías implementar la lógica para eliminar múltiples anotaciones
+        if(verOpcionesCabecera){
+            dispatch(toggleVerOpcionesCabecera());  
+        }
+        dispatch(toggleVerModalEliminarTodasLasNotasDefinitivo());
+        // TODO: Implementar eliminación masiva
+    }
+
 
     const handleVerOrden = () => {
         dispatch(toggleVerOrden())
@@ -100,94 +131,133 @@ export default function ContOpSubCabecera() {
     return (
         <>
             {verOpcionesCabecera && (
-                <>
+                <motion.div
+                    className="fixed inset-0 z-20 bg-black/70"
+                    onClick={handleVerOpcionesCabecera}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.2 }}>
+
                     <motion.div
-                        className="fixed inset-0 z-20 bg-black/70"
-                        onClick={handleVerOpcionesCabecera}
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                        transition={{ duration: 0.2 }}>
+                        onClick={(e) => e.stopPropagation()}
+                        className="fixed bottom-0 z-20 w-full h-auto bg-white"
+                        initial={{ y: "100%" }}
+                        animate={{ y: 0 }}
+                        exit={{ y: "100%" }}
+                        transition={{ duration: 0.4, ease: "easeOut" }}>
 
-                        <motion.div
-                            onClick={(e) => e.stopPropagation()}
-                            className="fixed bottom-0 z-20 w-full h-auto bg-white"
-                            initial={{ y: "100%" }}
-                            animate={{ y: 0 }}
-                            exit={{ y: "100%" }}
-                            transition={{ duration: 0.4, ease: "easeOut" }}>
+                        {verOpcionesCabecera && !verModo && !verOrden && (
+                            <>
+                                {/* ✅ Opciones cuando NO está en modo selección */}
+                                {!seleccionar && (
+                                    <>
+                                        <div className="w-full p-1 border-b border-gray-400
+                                                    text-black dark:text-white 
+                                                    bg-white dark:bg-gray-800 cursor-pointer"
+                                            onClick={handleSeleccionarTodo}>
+                                            <OpcionesCabecera
+                                                className="justify-start"
+                                                iconoOpcion={<HiSelector className="text-2xl md:text-3xl" />}
+                                                nombreOpcion="Seleccionar todo"
+                                            />
+                                        </div>
 
-                            {verOpcionesCabecera && !verModo && !verOrden && (
-                                <>
-                                    {/*
-                                <div className="w-full p-1 border-b border-gray-400
+                                        {/*Cuando seleccionar sea true esto va a ocultarse*/}
+                                        <div className="w-full p-1 border-b border-gray-400
                                         text-black dark:text-white 
                                         bg-white dark:bg-gray-800 cursor-pointer"
-                                    onClick={handleSeleccionarTodo}>
-                                    <OpcionesCabecera
-                                        className="justify-start"
-                                        iconoOpcion={<HiSelector className="text-2xl md:text-3xl" />}
-                                        nombreOpcion="Seleccionar todo"
-                                    />
-                                </div>
-                                */}
+                                            onClick={handleVerOrden}>
+                                            <OpcionesCabecera
+                                                className="justify-start"
+                                                iconoOpcion={<HiMenuAlt3 className="text-2xl md:text-3xl" />}
+                                                nombreOpcion="Ordenar"
+                                            />
+                                        </div>
 
-                                    <div className="w-full p-1 border-b border-gray-400
+                                        {/*Cuando seleccionar sea true esto va a ocultarse*/}
+                                        <div className="w-full p-1 border-b border-gray-400
                                         text-black dark:text-white 
                                         bg-white dark:bg-gray-800 cursor-pointer"
-                                        onClick={handleVerOrden}>
-                                        <OpcionesCabecera
-                                            className="justify-start"
-                                            iconoOpcion={<HiMenuAlt3 className="text-2xl md:text-3xl" />}
-                                            nombreOpcion="Ordenar"
-                                        />
-                                    </div>
+                                            onClick={handleVerModo}>
+                                            <OpcionesCabecera
+                                                className="justify-start"
+                                                iconoOpcion={theme == "sistema" && (
+                                                    <HiOutlineDesktopComputer className="text-2xl md:text-3xl" />) ||
+                                                    theme == "claro" && (
+                                                        <HiOutlineSun className="text-2xl md:text-3xl" />) ||
+                                                    theme == "oscuro" && (
+                                                        <HiOutlineMoon className="text-2xl md:text-3xl" />)
+                                                }
+                                                nombreOpcion={theme == "sistema" && ("Sistema (predeterminado)") ||
+                                                    theme == "claro" && ("Claro") ||
+                                                    theme == "oscuro" && ("Oscuro")
+                                                }
+                                            />
+                                        </div>
 
-                                    <div className="w-full p-1 border-b border-gray-400
+                                        {/*Cuando seleccionar sea true esto va a ocultarse*/}
+                                        <div className="w-full p-1 border-b border-gray-400
                                         text-black dark:text-white 
                                         bg-white dark:bg-gray-800 cursor-pointer"
-                                        onClick={handleVerModo}>
-                                        <OpcionesCabecera
-                                            className="justify-start"
-                                            iconoOpcion={theme == "sistema" && (
-                                                <HiOutlineDesktopComputer className="text-2xl md:text-3xl" />) ||
-                                                theme == "claro" && (
-                                                    <HiOutlineSun className="text-2xl md:text-3xl" />) ||
-                                                theme == "oscuro" && (
-                                                    <HiOutlineMoon className="text-2xl md:text-3xl" />)
-                                            }
-                                            nombreOpcion={theme == "sistema" && ("Sistema (predeterminado)") ||
-                                                theme == "claro" && ("Claro") ||
-                                                theme == "oscuro" && ("Oscuro")
-                                            }
-                                        />
-                                    </div>
+                                            onClick={handleNavegarPapelera}>
+                                            <OpcionesCabecera
+                                                className="justify-start"
+                                                iconoOpcion={<HiOutlineTrash className="text-2xl md:text-3xl" />}
+                                                nombreOpcion="Papelera"
+                                            />
+                                        </div>
+                                    </>
+                                )}
 
-                                    <div className="w-full p-1 border-b border-gray-400
-                                        text-black dark:text-white 
-                                        bg-white dark:bg-gray-800 cursor-pointer"
-                                        onClick={handleNavegarPapelera}>
-                                        <OpcionesCabecera
-                                            className="justify-start"
-                                            iconoOpcion={<HiOutlineTrash className="text-2xl md:text-3xl" />}
-                                            nombreOpcion="Papelera"
-                                        />
-                                    </div>
-                                </>
-                            )}
 
-                            {verModo && (
-                                <VerModo />
-                            )}
+                                {/* ✅ Opciones cuando SÍ está en modo selección */}
+                                {seleccionar && (
+                                    <>
+                                        <div className="w-full p-1 border-b border-gray-400
+                                                        text-black dark:text-white 
+                                                        bg-white dark:bg-gray-800 cursor-pointer"
+                                            onClick={handleSeleccionarTodo}>
+                                            <OpcionesCabecera
+                                                className="justify-start"
+                                                iconoOpcion={<HiSelector className="text-2xl md:text-3xl" />}
+                                                nombreOpcion={seleccionarTodo ? "Anular selección" : "Seleccionar todo"}
+                                            />
+                                        </div>
 
-                            {verOrden && (
-                                <VerOrden />
-                            )}
+                                        <div className="w-full p-1 border-b border-gray-400
+                                            text-black dark:text-white 
+                                            bg-white dark:bg-gray-800 cursor-pointer"
+                                            onClick={handleMoverSeleccionadasPapelera}>
+                                            <OpcionesCabecera
+                                                className="justify-start"
+                                                iconoOpcion={<HiOutlineTrash className="text-2xl md:text-3xl" />}
+                                                nombreOpcion={`Mover a Papelera (${anotacionesSeleccionadas.length})`}
+                                            />
+                                        </div>
 
-                        </motion.div>
+                                        <div className="w-full p-1 border-b border-gray-400
+                                            text-red-700 dark:text-red-500 
+                                            bg-white dark:bg-gray-800 cursor-pointer"
+                                            onClick={handleEliminarSeleccionadasDefinitivo}>
+                                            <OpcionesCabecera
+                                                className="justify-start"
+                                                iconoOpcion={<MdDeleteForever className="text-3xl md:text-4xl" />}
+                                                nombreOpcion={`Eliminar definitivamente (${anotacionesSeleccionadas.length})`}
+                                            />
+                                        </div>
+                                    </>
+                                )}
+                            </>
+                        )}
+
+                        {verModo && <VerModo />}
+                        {verOrden && <VerOrden />}
 
                     </motion.div>
-                </>
+
+                </motion.div>
+
             )}
 
             {verOpcCabPagVisPrev && (

@@ -4,7 +4,8 @@ import { useDispatch, useSelector } from "react-redux";
 
 import { toggleVerModalPapeleraNota, toggleVerModalEliminarNotaDefinitiva, setAnotacionId } from "../../store/tareasSlice";
 
-import { toggleVerAdminAnotacion } from "../../store/anotacionesSlice";
+import { toggleVerAdminAnotacion, toggleSeleccionar,
+        toggleSeleccionAnotacion } from "../../store/anotacionesSlice";
 
 import { motion } from "framer-motion";
 
@@ -18,6 +19,18 @@ export default function AdminAnotacion() {
 
     const handleVerAdminAnotacion = () => {
         dispatch(toggleVerAdminAnotacion());
+    }
+
+    const handleSeleccionar = () => {
+        if(verAdminAnotacion) {
+            dispatch(toggleVerAdminAnotacion())
+        }
+
+        // ✅ Activar modo selección
+        dispatch(toggleSeleccionar());
+        
+        // ✅ Seleccionar automáticamente esta anotación
+        dispatch(toggleSeleccionAnotacion(anotacionId));
     }
 
     const handleVerPapeleraNota = () => {
@@ -58,11 +71,11 @@ export default function AdminAnotacion() {
                     <div className="text-base md:text-lg text-white
                             flex flex-col gap-4">
 
-                        {/*
-                    <p className="cursor-pointer whitespace-nowrap">
-                        Seleccionar
-                    </p>
-                    */}
+                        <p 
+                            onClick={handleSeleccionar}
+                            className="cursor-pointer whitespace-nowrap">
+                            Seleccionar
+                        </p>
 
                         <p
                             onClick={handleVerPapeleraNota}

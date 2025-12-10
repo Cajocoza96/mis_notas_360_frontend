@@ -42,6 +42,11 @@ const initialState = {
     mostrarModalNotificacion: false,
     mensajeNotificacion: '',
     esErrorNotificacion: false,
+
+    // ✅ Estados mejorados para selección
+    seleccionar: false,
+    seleccionarTodo: false,
+    anotacionesSeleccionadas: [] 
 }
 
 const anotacionesSlice = createSlice({
@@ -54,6 +59,73 @@ const anotacionesSlice = createSlice({
         },
         setVerAdminAnotacion: (state, action) => {
             state.verAdminAnotacion = action.payload
+        },
+
+        // ✅ NUEVO: Toggle selección de una anotación específica
+        toggleSeleccionAnotacion: (state, action) => {
+            const anotacionId = action.payload;
+            const index = state.anotacionesSeleccionadas.indexOf(anotacionId);
+            
+            if (index > -1) {
+                // Si ya está seleccionada, la removemos
+                state.anotacionesSeleccionadas.splice(index, 1);
+                
+                // Si no quedan anotaciones seleccionadas, desactivar modo selección
+                if (state.anotacionesSeleccionadas.length === 0) {
+                    state.seleccionar = false;
+                    state.seleccionarTodo = false;
+                }
+            } else {
+                // Si no está seleccionada, la agregamos
+                state.anotacionesSeleccionadas.push(anotacionId);
+            }
+            
+            // Verificar si todas están seleccionadas
+            if (state.anotacionesSeleccionadas.length === state.anotaciones.length) {
+                state.seleccionarTodo = true;
+            } else {
+                state.seleccionarTodo = false;
+            }
+        },
+
+        // ✅ NUEVO: Seleccionar/deseleccionar todas
+        toggleSeleccionarTodasAnotaciones: (state) => {
+            if (state.seleccionarTodo) {
+                // Deseleccionar todas
+                state.anotacionesSeleccionadas = [];
+                state.seleccionarTodo = false;
+                state.seleccionar = false;
+            } else {
+                // Seleccionar todas
+                state.anotacionesSeleccionadas = state.anotaciones.map(a => a.id);
+                state.seleccionarTodo = true;
+                state.seleccionar = true;
+            }
+        },
+
+        // ✅ NUEVO: Limpiar selección
+        limpiarSeleccion: (state) => {
+            state.anotacionesSeleccionadas = [];
+            state.seleccionar = false;
+            state.seleccionarTodo = false;
+        },
+
+        // Mantener los existentes y actualizar
+        toggleSeleccionar: (state) => {
+            state.seleccionar = !state.seleccionar;
+            if (!state.seleccionar) {
+                // Al desactivar, limpiar selecciones
+                state.anotacionesSeleccionadas = [];
+                state.seleccionarTodo = false;
+            }
+        },
+        
+        setSeleccionar: (state, action) => {
+            state.seleccionar = action.payload;
+            if (!action.payload) {
+                state.anotacionesSeleccionadas = [];
+                state.seleccionarTodo = false;
+            }
         },
 
         // ✅ Nuevas acciones para controlar la carga por componente
@@ -143,6 +215,17 @@ const anotacionesSlice = createSlice({
 export const {
     toggleVerAdminAnotacion,
     setVerAdminAnotacion,
+
+    toggleSeleccionar,
+    setSeleccionar,
+
+    toggleSeleccionarTodo,
+    setSeleccionarTodo,
+
+    // ✅ EXPORTAR NUEVAS ACCIONES
+    toggleSeleccionAnotacion,
+    toggleSeleccionarTodasAnotaciones,
+    limpiarSeleccion,
 
     // ✅ Exportar las nuevas acciones
     mostrarNotificacion,
