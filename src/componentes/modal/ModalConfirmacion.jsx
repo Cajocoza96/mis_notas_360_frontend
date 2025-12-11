@@ -7,12 +7,12 @@ import { motion } from "framer-motion";
 import { toggleVerMenuHamburguesa } from "../../store/layoutSlice";
 
 import {
-    restaurarAnotacion, papeleraAnotacion, eliminarAnotacion,
+    restaurarAnotacion, papeleraAnotacion, eliminarAnotacion, eliminarMultiplesAnotaciones,
     eliminarTodasAnotaciones, mostrarNotificacion, ocultarNotificacion
 } from "../../store/anotacionesSlice";
 
 import {
-    toggleVerModalCrearNota, toggleVerModalPapeleraNota,
+    toggleVerModalCrearNota, toggleVerModalPapeleraNota, toggleVerModalPapeleraTodasLasNotas,
     toggleVerModalRestaurarNota, toggleVerModalEliminarNotaDefinitiva,
     toggleVerModalEliminarTodasLasNotasDefinitivo
 } from "../../store/tareasSlice";
@@ -25,8 +25,10 @@ import { useAuth } from "../../hooks/useAuth";
 import { useContadores } from "../../hooks/useContadores";
 
 import {
-    moverAPapelera, restaurarDesdePapelera,
-    eliminarDefinitivamente, vaciarPapelera
+    moverAPapelera, moverTodasAPapelera,
+    restaurarDesdePapelera,
+    eliminarDefinitivamente, eliminarTodasDefinitivamente,
+    vaciarPapelera
 } from "../../services/anotacionesService";
 
 import { logDesarrollo, errorDesarrollo, registrarError } from "../../utils/errorHandler";
@@ -41,6 +43,8 @@ export default function ModalConfirmacion({ textoPregunta, restaurarTexto, elimi
     const dispatch = useDispatch();
     const { id } = useParams();
     const { cerrarSesion, eliminarCuenta } = useAuth();
+
+    const anotacionesSeleccionadas = useSelector((state) => state.anotaciones.anotacionesSeleccionadas);
 
     // Determinar si estamos en modo vista previa para ir a panel principal
     const esModoVistaPrevia = location.pathname.includes('/vista-previa/nota/');
@@ -113,6 +117,58 @@ export default function ModalConfirmacion({ textoPregunta, restaurarTexto, elimi
             }));
 
             // Ocultar el modal automaticamente despues de 2 segundos
+            setTimeout(() => {
+                dispatch(ocultarNotificacion());
+            }, 2000);
+
+        } finally {
+            setProcesando(false);
+        }
+    };
+
+    // Función para mover múltiples notas a papelera
+    const papeleraTodasLasNotas = async () => {
+        setProcesando(true);
+
+        try {
+            // Verificar que hay anotaciones seleccionadas
+            if (!anotacionesSeleccionadas || anotacionesSeleccionadas.length === 0) {
+                throw new Error('No hay anotaciones seleccionadas');
+            }
+
+            logDesarrollo('📤 IDs a mover a papelera:', anotacionesSeleccionadas);
+            
+            const data = await moverTodasAPapelera(anotacionesSeleccionadas, false);
+
+            await actualizarContadores();
+            logDesarrollo('✅ Notas movidas a papelera:', data);
+
+            // Eliminar las anotaciones de la vista
+            dispatch(eliminarMultiplesAnotaciones(anotacionesSeleccionadas));
+
+            // Cerrar el modal
+            dispatch(toggleVerModalPapeleraTodasLasNotas());
+
+            // Mostrar notificación de éxito
+            dispatch(mostrarNotificacion({
+                mensaje: `¡${anotacionesSeleccionadas.length} ${anotacionesSeleccionadas.length === 1 ? 'nota enviada a la papelera!' : 'notas enviadas a la papelera!'}`,
+                esError: false
+            }));
+
+            setTimeout(() => {
+                dispatch(ocultarNotificacion());
+            }, 2000);
+
+        } catch (error) {
+            errorDesarrollo('❌ Error al mover notas a papelera:', error);
+            
+            dispatch(toggleVerModalPapeleraTodasLasNotas());
+
+            dispatch(mostrarNotificacion({
+                mensaje: `${anotacionesSeleccionadas.length === 1 ? '¡Error al enviar la nota a la papelera!' : '¡Error al enviar las notas a la papelera!'}`,
+                esError: true
+            }));
+
             setTimeout(() => {
                 dispatch(ocultarNotificacion());
             }, 2000);
@@ -247,46 +303,67 @@ export default function ModalConfirmacion({ textoPregunta, restaurarTexto, elimi
     };
 
 
-    // Función para eliminar todas la nota definitiva desde la papelera
+    // Función que elimina definitivamente las anotaciones en papelera o pagina principal
     const eliminarTodasLasNotasDefinitiva = async () => {
-
         setProcesando(true);
 
         try {
-            const data = await vaciarPapelera();
+            let data;
+            let cantidadEliminadas = 0;
+            
+            // Si estamos en /papelera, vaciar papelera
+            if (location.pathname.includes('/papelera')) {
+                data = await vaciarPapelera();
+                cantidadEliminadas = data.cantidad || 0; // Asumiendo que el backend devuelve la cantidad
+                
+                logDesarrollo('✅ Han sido eliminadas definitivamente todas las notas desde la papelera:', data);
+                
+                // Actualizar Redux: limpiar todas las anotaciones
+                dispatch(eliminarTodasAnotaciones());
+                
+            } else {
+                // Si estamos en /panel-principal, eliminar las seleccionadas
+                if (!anotacionesSeleccionadas || anotacionesSeleccionadas.length === 0) {
+                    throw new Error('No hay anotaciones seleccionadas');
+                }
+                
+                cantidadEliminadas = anotacionesSeleccionadas.length;
+                
+                logDesarrollo('📤 IDs a eliminar definitivamente:', anotacionesSeleccionadas);
+                
+                data = await eliminarTodasDefinitivamente(anotacionesSeleccionadas, false);
+                
+                logDesarrollo('✅ Notas eliminadas definitivamente:', data);
+                
+                // Eliminar las anotaciones de la vista
+                dispatch(eliminarMultiplesAnotaciones(anotacionesSeleccionadas));
+            }
 
             await actualizarContadores();
-            logDesarrollo('Han sido eliminada definitivamente todas las notas desde la papelera:', data);
-
-            // Actualizar Redux: limpiar todas las anotaciones
-            dispatch(eliminarTodasAnotaciones());
 
             // Cerrar el modal
             dispatch(toggleVerModalEliminarTodasLasNotasDefinitivo());
 
-            // ✅ Mostrar notificación de éxito para eliminar todas definitivamente
+            // Mostrar notificación de éxito
             dispatch(mostrarNotificacion({
-                mensaje: '¡Todas las notas fueron eliminadas definitivamente!',
+                mensaje: `¡${cantidadEliminadas} ${cantidadEliminadas === 1 ? 'nota eliminada definitivamente!' : 'notas eliminadas definitivamente!'} `,
                 esError: false
             }));
 
-            // Ocultar el modal automaticamente despues de 2 segundos
             setTimeout(() => {
                 dispatch(ocultarNotificacion());
             }, 2000);
 
         } catch (error) {
-
-            // Cerrar el modal
+            errorDesarrollo('❌ Error al eliminar notas definitivamente:', error);
+            
             dispatch(toggleVerModalEliminarTodasLasNotasDefinitivo());
 
-            // ✅ Mostrar notificación de error
             dispatch(mostrarNotificacion({
-                mensaje: '¡Error al eliminar todas las notas definitivamente!',
+                mensaje: `${cantidadEliminadas === 1 ? '¡Error al eliminar la nota definitivamente!' : '¡Error al eliminar las notas definitivamente!'}`,
                 esError: true
             }));
 
-            // Ocultar el modal automaticamente despues de 2 segundos
             setTimeout(() => {
                 dispatch(ocultarNotificacion());
             }, 2000);
@@ -302,6 +379,10 @@ export default function ModalConfirmacion({ textoPregunta, restaurarTexto, elimi
 
     const handleVerModalPapeleraNota = () => {
         dispatch(toggleVerModalPapeleraNota());
+    }
+
+    const handleVerModalPapeleraTodasLasNotas = () => {
+        dispatch(toggleVerModalPapeleraTodasLasNotas());
     }
 
     const handleVerModalRestaurarNota = () => {
@@ -326,6 +407,7 @@ export default function ModalConfirmacion({ textoPregunta, restaurarTexto, elimi
 
     const verModalCrearNota = useSelector((state) => state.tareas.verModalCrearNota);
     const verModalPapeleraNota = useSelector((state) => state.tareas.verModalPapeleraNota);
+    const verModalPapeleraTodasLasNotas = useSelector((state) => state.tareas.verModalPapeleraTodasLasNotas);
     const verModalRestaurarNota = useSelector((state) => state.tareas.verModalRestaurarNota);
     const verModalEliminarNotaDefinitiva = useSelector((state) => state.tareas.verModalEliminarNotaDefinitiva);
     const verModalEliminarTodasLasNotasDefinitivo = useSelector((state) => state.tareas.verModalEliminarTodasLasNotasDefinitivo);
@@ -339,6 +421,8 @@ export default function ModalConfirmacion({ textoPregunta, restaurarTexto, elimi
             crearNota();
         } else if (verModalPapeleraNota) {
             papeleraNota();
+        } else if (verModalPapeleraTodasLasNotas) {
+            papeleraTodasLasNotas();
         } else if (verModalRestaurarNota) {
             restaurarNota();
         } else if (verModalEliminarNotaDefinitiva) {
@@ -385,6 +469,8 @@ export default function ModalConfirmacion({ textoPregunta, restaurarTexto, elimi
                         /*Esto tiene que ver para eso de la papelera */
                     } else if (verModalPapeleraNota) {
                         handleVerModalPapeleraNota();
+                    } else if (verModalPapeleraTodasLasNotas) {
+                        handleVerModalPapeleraTodasLasNotas();
                     } else if (verModalRestaurarNota) {
                         handleVerModalRestaurarNota();
                     } else if (verModalEliminarNotaDefinitiva) {
@@ -433,6 +519,8 @@ export default function ModalConfirmacion({ textoPregunta, restaurarTexto, elimi
                                         /*Esto tiene que ver para eso de la papelera */
                                     } else if (verModalPapeleraNota) {
                                         handleVerModalPapeleraNota();
+                                    } else if (verModalPapeleraTodasLasNotas) {
+                                        handleVerModalPapeleraTodasLasNotas();
                                     } else if (verModalRestaurarNota) {
                                         handleVerModalRestaurarNota();
                                     } else if (verModalEliminarNotaDefinitiva) {

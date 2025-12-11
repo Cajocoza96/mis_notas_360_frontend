@@ -13,10 +13,10 @@ export const cargarAnotaciones = createAsyncThunk(
         } catch (error) {
             // ✅ Registrar el error con contexto
             registrarError('Cargar anotaciones', error);
-            
+
             // ✅ Retornar mensaje de error seguro
             const mensajeSeguro = obtenerMensajeError(
-                error, 
+                error,
                 'Error al cargar las anotaciones.'
             );
             return rejectWithValue(mensajeSeguro);
@@ -46,7 +46,7 @@ const initialState = {
     // ✅ Estados mejorados para selección
     seleccionar: false,
     seleccionarTodo: false,
-    anotacionesSeleccionadas: [] 
+    anotacionesSeleccionadas: []
 }
 
 const anotacionesSlice = createSlice({
@@ -65,11 +65,11 @@ const anotacionesSlice = createSlice({
         toggleSeleccionAnotacion: (state, action) => {
             const anotacionId = action.payload;
             const index = state.anotacionesSeleccionadas.indexOf(anotacionId);
-            
+
             if (index > -1) {
                 // Si ya está seleccionada, la removemos
                 state.anotacionesSeleccionadas.splice(index, 1);
-                
+
                 // Si no quedan anotaciones seleccionadas, desactivar modo selección
                 if (state.anotacionesSeleccionadas.length === 0) {
                     state.seleccionar = false;
@@ -79,7 +79,7 @@ const anotacionesSlice = createSlice({
                 // Si no está seleccionada, la agregamos
                 state.anotacionesSeleccionadas.push(anotacionId);
             }
-            
+
             // Verificar si todas están seleccionadas
             if (state.anotacionesSeleccionadas.length === state.anotaciones.length) {
                 state.seleccionarTodo = true;
@@ -103,6 +103,17 @@ const anotacionesSlice = createSlice({
             }
         },
 
+        // Eliminar múltiples anotaciones de la vista
+        eliminarMultiplesAnotaciones: (state, action) => {
+            const idsAEliminar = action.payload;
+            state.anotaciones = state.anotaciones.filter(a => !idsAEliminar.includes(a.id));
+
+            // Limpiar selección
+            state.anotacionesSeleccionadas = [];
+            state.seleccionar = false;
+            state.seleccionarTodo = false;
+        },
+
         // ✅ NUEVO: Limpiar selección
         limpiarSeleccion: (state) => {
             state.anotacionesSeleccionadas = [];
@@ -119,7 +130,7 @@ const anotacionesSlice = createSlice({
                 state.seleccionarTodo = false;
             }
         },
-        
+
         setSeleccionar: (state, action) => {
             state.seleccionar = action.payload;
             if (!action.payload) {
@@ -226,6 +237,8 @@ export const {
     toggleSeleccionAnotacion,
     toggleSeleccionarTodasAnotaciones,
     limpiarSeleccion,
+
+    eliminarMultiplesAnotaciones,
 
     // ✅ Exportar las nuevas acciones
     mostrarNotificacion,

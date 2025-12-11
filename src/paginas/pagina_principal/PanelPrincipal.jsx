@@ -22,10 +22,14 @@ export default function PanelPrincipal() {
     const { anotaciones } = useSelector((state) => state.anotaciones);
     
     const verModalCrearNota = useSelector((state) => state.tareas.verModalCrearNota);
-    const verModalPapeleraNota = useSelector((state) => state.tareas.verModalPapeleraNota);
-    const verModalEliminarNotaDefinitiva = useSelector((state) => state.tareas.verModalEliminarNotaDefinitiva);
 
+    const verModalPapeleraNota = useSelector((state) => state.tareas.verModalPapeleraNota);
+    const verModalPapeleraTodasLasNotas = useSelector((state) => state.tareas.verModalPapeleraTodasLasNotas);
+
+    const verModalEliminarNotaDefinitiva = useSelector((state) => state.tareas.verModalEliminarNotaDefinitiva);
     const verModalEliminarTodasLasNotasDefinitivo = useSelector((state) => state.tareas.verModalEliminarTodasLasNotasDefinitivo);
+
+    const anotacionesSeleccionadas = useSelector((state) => state.anotaciones.anotacionesSeleccionadas);
 
     const verMenuHamburguesa = useSelector((state) => state.layout.verMenuHamburguesa);
 
@@ -87,6 +91,14 @@ export default function PanelPrincipal() {
                 </AnimatePresence>
 
                 <AnimatePresence>
+                    {verModalPapeleraTodasLasNotas && (
+                        <ModalConfirmacion
+                            textoPregunta={`¿Desea mover ${anotacionesSeleccionadas.length} ${anotacionesSeleccionadas.length === 1 ? 'nota' : 'notas'} a la papelera`}
+                            eliminarAceptar={true} />
+                    )}
+                </AnimatePresence>
+
+                <AnimatePresence>
                     {verModalEliminarNotaDefinitiva && (
                         <ModalConfirmacion
                             textoPregunta="¿Desea eliminar definitivamente la nota?"
@@ -99,7 +111,7 @@ export default function PanelPrincipal() {
                 <AnimatePresence>
                     {verModalEliminarTodasLasNotasDefinitivo && (
                         <ModalConfirmacion
-                            textoPregunta={`${anotaciones.length === 1 ? '¿Desea eliminar la nota definitivamente' : '¿Desea eliminar todas las notas definitivamente?'}`}
+                            textoPregunta={`¿Desea eliminar definitivamente ${anotacionesSeleccionadas.length} ${anotacionesSeleccionadas.length === 1 ? 'nota' : 'notas'}`}
                             eliminarPregunta={true}
                             eliminarAceptar={true}
                         />

@@ -10,6 +10,7 @@ const initialState = {
 
     verModalCrearNota: false,
     verModalPapeleraNota: false,
+    verModalPapeleraTodasLasNotas: false,
     verModalRestaurarNota: false,
     verModalEliminarNotaDefinitiva: false,
     verModalEliminarTodasLasNotasDefinitivo: false,
@@ -61,6 +62,13 @@ const tareasSlice = createSlice({
         },
         setVerModalPapeleraNota: (state, action) => {
             state.verModalPapeleraNota = action.payload
+        },
+
+        toggleVerModalPapeleraTodasLasNotas: (state) => {
+            state.verModalPapeleraTodasLasNotas = !state.verModalPapeleraTodasLasNotas
+        },
+        setVerModalPapeleraTodasLasNotas: (state, action) => {
+            state.verModalPapeleraTodasLasNotas = action.payload
         },
 
         toggleVerModalRestaurarNota: (state) => {
@@ -231,6 +239,8 @@ export const {
     setVerModalCrearNota,
     toggleVerModalPapeleraNota,
     setVerModalPapeleraNota,
+    toggleVerModalPapeleraTodasLasNotas,
+    setVerModalPapeleraTodasLasNotas,
     toggleVerModalRestaurarNota,
     setVerModalRestaurarNota,
     toggleVerModalEliminarNotaDefinitiva,

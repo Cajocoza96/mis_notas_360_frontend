@@ -14,8 +14,11 @@ import {
 
 import { toggleVerModo, toggleVerOrden } from "../../../store/preferenciaSlice";
 
-import { toggleVerModalPapeleraNota, toggleVerModalEliminarNotaDefinitiva, 
-        toggleVerModalEliminarTodasLasNotasDefinitivo, setAnotacionId } from "../../../store/tareasSlice";
+import {
+    toggleVerModalPapeleraNota, toggleVerModalPapeleraTodasLasNotas,
+    toggleVerModalEliminarNotaDefinitiva,
+    toggleVerModalEliminarTodasLasNotasDefinitivo, setAnotacionId
+} from "../../../store/tareasSlice";
 
 import { toggleSeleccionarTodasAnotaciones, limpiarSeleccion } from "../../../store/anotacionesSlice";
 
@@ -45,6 +48,8 @@ export default function ContOpSubCabecera() {
     const seleccionarTodo = useSelector((state) => state.anotaciones.seleccionarTodo);
     const anotacionesSeleccionadas = useSelector((state) => state.anotaciones.anotacionesSeleccionadas);
 
+    const { anotaciones } = useSelector((state) => state.anotaciones);
+
     const handleVerOpcionesCabecera = () => {
         dispatch(toggleVerOpcionesCabecera())
     }
@@ -53,30 +58,30 @@ export default function ContOpSubCabecera() {
         dispatch(toggleVerModo())
     }
 
-    // ✅ NUEVO: Manejar seleccionar todo / anular selección
+    // ✅ Manejar seleccionar todo / anular selección
     const handleSeleccionarTodo = () => {
-        if(verOpcionesCabecera){
-            dispatch(toggleVerOpcionesCabecera());  
+        if (verOpcionesCabecera) {
+            dispatch(toggleVerOpcionesCabecera());
         }
         dispatch(toggleSeleccionarTodasAnotaciones());
     }
 
-    // ✅ NUEVO: Mover seleccionadas a papelera
+    // Mover seleccionadas a papelera
     const handleMoverSeleccionadasPapelera = () => {
-        // Aquí deberías implementar la lógica para mover múltiples anotaciones
-        // Por ahora cerraremos el modal
-        dispatch(toggleVerOpcionesCabecera());
-        // TODO: Implementar movimiento masivo a papelera
+        if (verOpcionesCabecera) {
+            dispatch(toggleVerOpcionesCabecera());
+        }
+
+        // Mostrar modal de confirmación para mover a papelera
+        dispatch(toggleVerModalPapeleraTodasLasNotas());
     }
 
-    // ✅ NUEVO: Eliminar seleccionadas definitivamente
+    // Eliminar seleccionadas definitivamente
     const handleEliminarSeleccionadasDefinitivo = () => {
-        // Aquí deberías implementar la lógica para eliminar múltiples anotaciones
-        if(verOpcionesCabecera){
-            dispatch(toggleVerOpcionesCabecera());  
+        if (verOpcionesCabecera) {
+            dispatch(toggleVerOpcionesCabecera());
         }
         dispatch(toggleVerModalEliminarTodasLasNotasDefinitivo());
-        // TODO: Implementar eliminación masiva
     }
 
 
@@ -152,16 +157,18 @@ export default function ContOpSubCabecera() {
                                 {/* ✅ Opciones cuando NO está en modo selección */}
                                 {!seleccionar && (
                                     <>
-                                        <div className="w-full p-1 border-b border-gray-400
-                                                    text-black dark:text-white 
-                                                    bg-white dark:bg-gray-800 cursor-pointer"
-                                            onClick={handleSeleccionarTodo}>
-                                            <OpcionesCabecera
-                                                className="justify-start"
-                                                iconoOpcion={<HiSelector className="text-2xl md:text-3xl" />}
-                                                nombreOpcion="Seleccionar todo"
-                                            />
-                                        </div>
+                                        {anotaciones.length > 0 && (
+                                            <div className="w-full p-1 border-b border-gray-400
+                                            text-black dark:text-white 
+                                            bg-white dark:bg-gray-800 cursor-pointer"
+                                                onClick={handleSeleccionarTodo}>
+                                                <OpcionesCabecera
+                                                    className="justify-start"
+                                                    iconoOpcion={<HiSelector className="text-2xl md:text-3xl" />}
+                                                    nombreOpcion="Seleccionar todo"
+                                                />
+                                            </div>
+                                        )}
 
                                         {/*Cuando seleccionar sea true esto va a ocultarse*/}
                                         <div className="w-full p-1 border-b border-gray-400
@@ -232,7 +239,7 @@ export default function ContOpSubCabecera() {
                                             <OpcionesCabecera
                                                 className="justify-start"
                                                 iconoOpcion={<HiOutlineTrash className="text-2xl md:text-3xl" />}
-                                                nombreOpcion={`Mover a Papelera (${anotacionesSeleccionadas.length})`}
+                                                nombreOpcion={`Mover a papelera (${anotacionesSeleccionadas.length})`}
                                             />
                                         </div>
 
@@ -242,7 +249,7 @@ export default function ContOpSubCabecera() {
                                             onClick={handleEliminarSeleccionadasDefinitivo}>
                                             <OpcionesCabecera
                                                 className="justify-start"
-                                                iconoOpcion={<MdDeleteForever className="text-3xl md:text-4xl" />}
+                                                iconoOpcion={<MdDeleteForever className="text-2xl md:text-3xl" />}
                                                 nombreOpcion={`Eliminar definitivamente (${anotacionesSeleccionadas.length})`}
                                             />
                                         </div>

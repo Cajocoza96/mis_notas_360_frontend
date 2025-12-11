@@ -11,11 +11,11 @@ const manejarErrorRespuesta = async (response, mensajeError) => {
         if (import.meta.env.MODE === 'development') {
             console.error(`❌ Error en: ${response.url}`);
         }
-        
+
         // ✅ Detectar específicamente el error 429 (Rate Limit)
         if (response.status === 429) {
             let errorData = null;
-            
+
             // ✅ Intentar parsear el JSON del backend
             try {
                 const responseClone = response.clone();
@@ -24,22 +24,22 @@ const manejarErrorRespuesta = async (response, mensajeError) => {
                 // ✅ Si falla el parsing, errorData queda null
                 console.error('⚠️ No se pudo parsear respuesta 429:', parseError);
             }
-            
+
             // ✅ Extraer mensajes (fuera del try-catch)
             const mensajeUsuario = errorData?.detail;
             const mensajeTecnico = errorData?.error;
-            
+
             // ✅ Mostrar error técnico en consola para debugging
             console.error('🚫 Rate Limit:', mensajeTecnico);
             logDesarrollo('📛 Detalles completos:', errorData);
-            
+
             // ✅ Lanzar error con el mensaje amigable para el Toast
             const error = new Error(mensajeUsuario);
             error.code = 'RATE_LIMIT_EXCEEDED';
             error.status = 429;
             throw error;
         }
-        
+
         // ✅ Para cualquier otro error, usar el mensaje proporcionado
         throw new Error(mensajeError);
     }
@@ -191,6 +191,35 @@ export const moverAPapelera = async (id) => {
     }
 };
 
+// Mover múltiples anotaciones a papelera
+export const moverTodasAPapelera = async (anotacionesIds, aplicarFiltros = false) => {
+    try {
+        const token = obtenerToken();
+
+        logDesarrollo('📤 En proceso de mover notas a papelera:', { anotacionesIds, aplicarFiltros });
+
+        const response = await fetchConAuth(`${API_URL}/anotaciones/obtener/mover-todas-papelera`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({ anotacionesIds, aplicarFiltros })
+        });
+
+        manejarErrorRespuesta(response, 'Error al mover notas a papelera');
+
+        const data = await response.json();
+
+        logDesarrollo('✅ Notas movidas a papelera:', data);
+
+        return data;
+    } catch (error) {
+        registrarError('moverTodasAPapelera', error);
+        throw error;
+    }
+};
+
 //Restaura una anotación desde la papelera
 export const restaurarDesdePapelera = async (anotacionId) => {
     try {
@@ -243,6 +272,35 @@ export const eliminarDefinitivamente = async (anotacionId) => {
         return data;
     } catch (error) {
         registrarError('eliminarDefinitivamente', error);
+        throw error;
+    }
+};
+
+// Eliminar múltiples anotaciones definitivamente
+export const eliminarTodasDefinitivamente = async (anotacionesIds, aplicarFiltros = false) => {
+    try {
+        const token = obtenerToken();
+
+        logDesarrollo('📤 En proceso de eliminar definitivamente las notas:', { anotacionesIds, aplicarFiltros });
+
+        const response = await fetchConAuth(`${API_URL}/anotaciones/obtener/eliminar-todas-definitivamente`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({ anotacionesIds, aplicarFiltros })
+        });
+
+        manejarErrorRespuesta(response, 'Error al eliminar las notas definitivamente');
+
+        const data = await response.json();
+
+        logDesarrollo('✅ Notas eliminadas definitivamente:', data);
+
+        return data;
+    } catch (error) {
+        registrarError('eliminarTodasDefinitivamente', error);
         throw error;
     }
 };

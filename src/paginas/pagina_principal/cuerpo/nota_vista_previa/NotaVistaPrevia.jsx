@@ -157,8 +157,9 @@ export default function NotaVistaPrevia({ anotacionId, iconoFavorito, texto, no_
             <div className={`${estaSeleccionada ? 'w-[98%] bg-gray-300/90 dark:bg-gray-600/90 p-3 rounded-md select-none' : ''}
                         flex flex-col items-center justify-center`}>
 
-                <div className={`w-[98%] h-35 mt-2 p-2 rounded-md select-none
+                <div className={`w-[98%] h-35 mt-2 p-2 rounded-md select-none 
                         flex flex-col items-center gap-1 overflow-hidden
+                        ${seleccionar ? 'cursor-pointer' : ''}
                         ${no_asignado ? 'bg-blue-200 dark:bg-blue-950 hover:bg-blue-300 active:bg-blue-300 dark:hover:bg-blue-900 dark:active:bg-blue-900' :
                         pendiente ? 'bg-yellow-200 dark:bg-yellow-950 hover:bg-yellow-300 active:bg-yellow-300 dark:hover:bg-yellow-900 dark:active:bg-yellow-900' :
                             finalizado ? 'bg-green-200 dark:bg-green-950 hover:bg-green-300 active:bg-green-300 dark:hover:bg-green-900 dark:active:bg-green-900' : 'bg-gray-200 dark:bg-black'}`}
@@ -211,7 +212,7 @@ export default function NotaVistaPrevia({ anotacionId, iconoFavorito, texto, no_
 
                         {/* ✅ Mostrar círculo de selección cuando seleccionar = true */}
                         {seleccionar && (
-                            <div onClick={handleToggleSeleccion} className="cursor-pointer">
+                            <div onClick={handleToggleSeleccion}>
                                 {estaSeleccionada
                                     ? <FaCircle className="text-base md:text-lg text-black dark:text-white" />
                                     : <FaRegCircle className="text-base md:text-lg text-black dark:text-white" />
