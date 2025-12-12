@@ -99,7 +99,10 @@ export default function PaginaInfoUsuario() {
                             className="text-red-800 dark:text-red-400"
                             eliminarPregunta={true}
                             eliminarAceptar={true}
-                            textoPregunta="¿Desea eliminar la cuenta?" />
+                            textoPregunta="¿Desea eliminar la cuenta?"
+                            textoAccion="Eliminando cuenta..."
+                        />
+
                     )}
                 </AnimatePresence>
 
@@ -107,7 +110,9 @@ export default function PaginaInfoUsuario() {
                     {verModalCerrarSesion && (
                         <ModalConfirmacion
                             eliminarAceptar={true}
-                            textoPregunta="¿Desea cerrar sesión?" />
+                            textoPregunta="¿Desea cerrar sesión?"
+                            textoAccion="Cerrando sesión..."
+                        />
                     )}
                 </AnimatePresence>
 

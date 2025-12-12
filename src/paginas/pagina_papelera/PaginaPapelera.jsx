@@ -67,6 +67,7 @@ export default function PaginaPapelera() {
                         <ModalConfirmacion
                             textoPregunta="¿Desea restaurar la nota?"
                             restaurarTexto={true}
+                            textoAccion="Restaurando nota..."
                         />
                     )}
                 </AnimatePresence>
@@ -77,6 +78,7 @@ export default function PaginaPapelera() {
                             textoPregunta="¿Desea eliminar definitivamente la nota?"
                             eliminarPregunta={true}
                             eliminarAceptar={true}
+                            textoAccion="Eliminando definitivamente la nota.."
                         />
                     )}
                 </AnimatePresence>
@@ -84,9 +86,10 @@ export default function PaginaPapelera() {
                 <AnimatePresence>
                     {verModalEliminarTodasLasNotasDefinitivo && (
                         <ModalConfirmacion
-                            textoPregunta={`${anotaciones.length === 1 ? '¿Desea eliminar la nota definitivamente' : '¿Desea eliminar todas las notas definitivamente?'}`}
+                            textoPregunta={`${anotaciones.length === 1 ? '¿Desea eliminar la nota definitivamente?' : '¿Desea eliminar todas las notas definitivamente?'}`}
                             eliminarPregunta={true}
                             eliminarAceptar={true}
+                            textoAccion={`${anotaciones.length === 1 ? 'Eliminando la nota definitivamente...' : 'Eliminando las notas definitivamente...'}`}
                         />
                     )}
                 </AnimatePresence>

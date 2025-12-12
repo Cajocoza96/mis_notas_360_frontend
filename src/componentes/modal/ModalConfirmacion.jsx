@@ -33,18 +33,26 @@ import {
 
 import { logDesarrollo, errorDesarrollo, registrarError } from "../../utils/errorHandler";
 
-export default function ModalConfirmacion({ textoPregunta, restaurarTexto, eliminarPregunta, eliminarAceptar }) {
+export default function ModalConfirmacion({ textoPregunta, textoAccion, restaurarTexto, 
+                                            eliminarPregunta, eliminarAceptar }) {
     const location = useLocation();
 
     const { actualizarContadores } = useContadores();
 
     const [procesando, setProcesando] = useState(false);
+
+    // Estado para saber si el proceso ya comenzó
+    const [procesoIniciado, setProcesoIniciado] = useState(false);
+
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const { id } = useParams();
     const { cerrarSesion, eliminarCuenta } = useAuth();
 
     const anotacionesSeleccionadas = useSelector((state) => state.anotaciones.anotacionesSeleccionadas);
+    
+    // Guardar la cantidad inicial de anotaciones seleccionadas
+    const [cantidadInicial, setCantidadInicial] = useState(anotacionesSeleccionadas?.length || 0);                                     
 
     // Determinar si estamos en modo vista previa para ir a panel principal
     const esModoVistaPrevia = location.pathname.includes('/vista-previa/nota/');
@@ -53,6 +61,26 @@ export default function ModalConfirmacion({ textoPregunta, restaurarTexto, elimi
 
     //Obtener la ID de la anotacion desde Redux
     const anotacionIdRedux = useSelector((state) => state.tareas.anotacionId);
+
+    const verModalCrearNota = useSelector((state) => state.tareas.verModalCrearNota);
+    const verModalPapeleraNota = useSelector((state) => state.tareas.verModalPapeleraNota);
+    const verModalPapeleraTodasLasNotas = useSelector((state) => state.tareas.verModalPapeleraTodasLasNotas);
+    const verModalRestaurarNota = useSelector((state) => state.tareas.verModalRestaurarNota);
+    const verModalEliminarNotaDefinitiva = useSelector((state) => state.tareas.verModalEliminarNotaDefinitiva);
+    const verModalEliminarTodasLasNotasDefinitivo = useSelector((state) => state.tareas.verModalEliminarTodasLasNotasDefinitivo);
+
+    const verModalEliminarUsuario = useSelector((state) => state.acceso.verModalEliminarUsuario);
+    const verModalCerrarSesion = useSelector((state) => state.acceso.verModalCerrarSesion);
+
+    // ✅ Resetear estados cuando el modal se cierra/abre
+    useEffect(() => {
+        setProcesoIniciado(false);
+        setProcesando(false);
+        setCantidadInicial(anotacionesSeleccionadas?.length || 0);
+    }, [verModalCrearNota, verModalPapeleraNota, verModalPapeleraTodasLasNotas, 
+        verModalRestaurarNota, verModalEliminarNotaDefinitiva, 
+        verModalEliminarTodasLasNotasDefinitivo, verModalEliminarUsuario, 
+        verModalCerrarSesion]);
 
     const crearNota = () => {
         dispatch(toggleVerModalCrearNota());
@@ -405,18 +433,13 @@ export default function ModalConfirmacion({ textoPregunta, restaurarTexto, elimi
         dispatch(toggleVerModalCerrarSesion());
     };
 
-    const verModalCrearNota = useSelector((state) => state.tareas.verModalCrearNota);
-    const verModalPapeleraNota = useSelector((state) => state.tareas.verModalPapeleraNota);
-    const verModalPapeleraTodasLasNotas = useSelector((state) => state.tareas.verModalPapeleraTodasLasNotas);
-    const verModalRestaurarNota = useSelector((state) => state.tareas.verModalRestaurarNota);
-    const verModalEliminarNotaDefinitiva = useSelector((state) => state.tareas.verModalEliminarNotaDefinitiva);
-    const verModalEliminarTodasLasNotasDefinitivo = useSelector((state) => state.tareas.verModalEliminarTodasLasNotasDefinitivo);
-
-    const verModalEliminarUsuario = useSelector((state) => state.acceso.verModalEliminarUsuario);
-    const verModalCerrarSesion = useSelector((state) => state.acceso.verModalCerrarSesion);
+    
 
     // Función para manejar la acción de Aceptar
     const handleAceptar = async () => {
+        // ✅ Marcar que el proceso ha iniciado
+        setProcesoIniciado(true);
+
         if (verModalCrearNota) {
             crearNota();
         } else if (verModalPapeleraNota) {
@@ -495,7 +518,7 @@ export default function ModalConfirmacion({ textoPregunta, restaurarTexto, elimi
                             <p className={`text-base md:text-lg
                                     ${restaurarTexto ? 'text-blue-600 dark:text-blue-500' :
                                     eliminarPregunta ? 'text-red-600 dark:text-red-500' : 'text-black dark:text-white'}`}>
-                                {textoPregunta}
+                                {procesoIniciado ? textoAccion : textoPregunta}
                             </p>
 
                             {procesando && (
@@ -545,7 +568,7 @@ export default function ModalConfirmacion({ textoPregunta, restaurarTexto, elimi
                                     if (procesando) return;
                                     handleAceptar();
                                 }}>
-                                {procesando ? 'Procesando...' : 'Aceptar'}
+                                Aceptar
                             </p>
                         </div>
                     </div>

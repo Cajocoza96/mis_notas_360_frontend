@@ -20,7 +20,7 @@ export default function PanelPrincipal() {
     const verOpcionesCabecera = useSelector((state) => state.layout.verOpcionesCabecera);
 
     const { anotaciones } = useSelector((state) => state.anotaciones);
-    
+
     const verModalCrearNota = useSelector((state) => state.tareas.verModalCrearNota);
 
     const verModalPapeleraNota = useSelector((state) => state.tareas.verModalPapeleraNota);
@@ -86,15 +86,19 @@ export default function PanelPrincipal() {
                     {verModalPapeleraNota && (
                         <ModalConfirmacion
                             textoPregunta="¿Mover nota a la papelera?"
-                            eliminarAceptar={true} />
+                            eliminarAceptar={true}
+                            textoAccion="Moviendo la nota a la papelera..."
+                        />
                     )}
                 </AnimatePresence>
 
                 <AnimatePresence>
                     {verModalPapeleraTodasLasNotas && (
                         <ModalConfirmacion
-                            textoPregunta={`¿Desea mover ${anotacionesSeleccionadas.length} ${anotacionesSeleccionadas.length === 1 ? 'nota' : 'notas'} a la papelera`}
-                            eliminarAceptar={true} />
+                            textoPregunta={`¿Desea mover ${anotacionesSeleccionadas.length} ${anotacionesSeleccionadas.length === 1 ? 'nota' : 'notas'} a la papelera?`}
+                            eliminarAceptar={true}
+                            textoAccion={`Moviendo ${anotacionesSeleccionadas.length === 1 ? 'la nota' : 'las notas'} a la papelera...`}
+                        />
                     )}
                 </AnimatePresence>
 
@@ -103,7 +107,9 @@ export default function PanelPrincipal() {
                         <ModalConfirmacion
                             textoPregunta="¿Desea eliminar definitivamente la nota?"
                             eliminarPregunta={true}
-                            eliminarAceptar={true} />
+                            eliminarAceptar={true}
+                            textoAccion="Eliminando definitivamente la nota..."
+                        />
                     )}
                 </AnimatePresence>
 
@@ -111,9 +117,10 @@ export default function PanelPrincipal() {
                 <AnimatePresence>
                     {verModalEliminarTodasLasNotasDefinitivo && (
                         <ModalConfirmacion
-                            textoPregunta={`¿Desea eliminar definitivamente ${anotacionesSeleccionadas.length} ${anotacionesSeleccionadas.length === 1 ? 'nota' : 'notas'}`}
+                            textoPregunta={`¿Desea eliminar definitivamente ${anotacionesSeleccionadas.length} ${anotacionesSeleccionadas.length === 1 ? 'nota?' : 'notas?'}`}
                             eliminarPregunta={true}
                             eliminarAceptar={true}
+                            textoAccion={`Eliminando definitivamente ${anotacionesSeleccionadas.length === 1 ? 'la nota' : 'las notas'}...`}
                         />
                     )}
                 </AnimatePresence>

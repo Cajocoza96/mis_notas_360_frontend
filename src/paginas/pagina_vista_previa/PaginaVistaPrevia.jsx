@@ -101,7 +101,7 @@ export default function PaginaVistaPrevia() {
             setCargando(false);
         } catch (error) {
             errorDesarrollo('Error al cargar la anotación para vista previa:', error);
-            
+
             // ✅ Solo procesar error si hay conexión
             // Si perdió la conexión durante la carga, no redirigir
             if (isOnline) {
@@ -232,7 +232,9 @@ export default function PaginaVistaPrevia() {
                     {verModalPapeleraNota && (
                         <ModalConfirmacion
                             textoPregunta="¿Mover nota a la papelera?"
-                            eliminarAceptar={true} />
+                            eliminarAceptar={true}
+                            textoAccion="Moviendo nota a la papelera..."
+                        />
                     )}
                 </AnimatePresence>
 
@@ -241,7 +243,9 @@ export default function PaginaVistaPrevia() {
                         <ModalConfirmacion
                             textoPregunta="¿Desea eliminar definitivamente la nota?"
                             eliminarPregunta={true}
-                            eliminarAceptar={true} />
+                            eliminarAceptar={true}
+                            textoAccion="Eliminando definitivamente la nota..."
+                        />
                     )}
                 </AnimatePresence>
 

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useCallback } from "react";
 
 import {
     HiMinusCircle, HiClock, HiCheckCircle,
@@ -15,7 +15,7 @@ import { useDispatch, useSelector } from "react-redux";
 
 import {
     actualizarFavoritoLocal,
-    setAnotaciones, toggleVerAdminAnotacion, toggleSeleccionAnotacion
+    setAnotaciones, toggleVerAdminAnotacion, toggleSeleccionar, toggleSeleccionAnotacion
 } from "../../../../store/anotacionesSlice";
 
 import { actualizarFavorito, obtenerAnotaciones } from "../../../../services/anotacionesService";
@@ -37,6 +37,8 @@ export default function NotaVistaPrevia({ anotacionId, iconoFavorito, texto, no_
 
     const esVistaPapelera = location.pathname.includes('/papelera');
 
+    const esVistaBusqueda = location.pathname.includes('/buscar');
+
     const [cargando, setCargando] = useState(false);
 
     const [error, setError] = useState(null);
@@ -51,6 +53,92 @@ export default function NotaVistaPrevia({ anotacionId, iconoFavorito, texto, no_
     const anotacionesSeleccionadas = useSelector((state) => state.anotaciones.anotacionesSeleccionadas);
     const estaSeleccionada = anotacionesSeleccionadas.includes(anotacionId);
 
+    // ✅ Estados y refs para long press
+    const [isLongPressing, setIsLongPressing] = useState(false);
+    const longPressTimer = useRef(null);
+    const isLongPress = useRef(false);
+    const startPos = useRef({ x: 0, y: 0 });
+    
+    // Activar modo seleccion al presionar por dos segundos
+    const handleSeleccionar = () => {
+        // ✅ Solo activar si no estamos en papelera y no está ya en modo selección
+        if (esVistaPapelera || esVistaBusqueda || seleccionar) return;
+
+        // ✅ Activar modo selección
+        dispatch(toggleSeleccionar());
+
+        // ✅ Seleccionar automáticamente esta anotación
+        dispatch(toggleSeleccionAnotacion(anotacionId));
+    }
+
+    // ✅ Manejar inicio de long press (funciona para mouse y touch)
+    const handlePressStart = useCallback((e) => {
+        // No iniciar long press si ya estamos en modo selección, papelera o en busqueda
+        if (seleccionar || esVistaPapelera || esVistaBusqueda) return;
+
+        // Prevenir comportamiento por defecto solo para touch
+        if (e.type === 'touchstart') {
+            // No usar preventDefault aquí para permitir scroll
+        }
+
+        // Guardar posición inicial
+        const clientX = e.type === 'touchstart' ? e.touches[0].clientX : e.clientX;
+        const clientY = e.type === 'touchstart' ? e.touches[0].clientY : e.clientY;
+        startPos.current = { x: clientX, y: clientY };
+
+        isLongPress.current = false;
+        setIsLongPressing(true);
+
+        // Iniciar timer de 2 segundos
+        longPressTimer.current = setTimeout(() => {
+            isLongPress.current = true;
+            setIsLongPressing(false);
+            handleSeleccionar();
+            
+            // Vibración en móviles para feedback
+            if (navigator.vibrate) {
+                navigator.vibrate(50);
+            }
+        }, 2000);
+    }, [seleccionar, esVistaPapelera, esVistaBusqueda]);
+
+    // ✅ Manejar movimiento durante el press
+    const handlePressMove = useCallback((e) => {
+        if (!longPressTimer.current) return;
+
+        // Calcular distancia de movimiento
+        const clientX = e.type === 'touchmove' ? e.touches[0].clientX : e.clientX;
+        const clientY = e.type === 'touchmove' ? e.touches[0].clientY : e.clientY;
+        
+        const deltaX = Math.abs(clientX - startPos.current.x);
+        const deltaY = Math.abs(clientY - startPos.current.y);
+
+        // Si se mueve más de 10px, cancelar long press
+        if (deltaX > 10 || deltaY > 10) {
+            clearTimeout(longPressTimer.current);
+            longPressTimer.current = null;
+            setIsLongPressing(false);
+        }
+    }, []);
+
+    // ✅ Manejar fin de press
+    const handlePressEnd = useCallback(() => {
+        if (longPressTimer.current) {
+            clearTimeout(longPressTimer.current);
+            longPressTimer.current = null;
+        }
+        setIsLongPressing(false);
+    }, []);
+
+    // ✅ Cleanup al desmontar
+    React.useEffect(() => {
+        return () => {
+            if (longPressTimer.current) {
+                clearTimeout(longPressTimer.current);
+            }
+        };
+    }, []);
+
     // ✅ Manejar clic en el círculo de selección
     const handleToggleSeleccion = (e) => {
         e.stopPropagation();
@@ -63,6 +151,12 @@ export default function NotaVistaPrevia({ anotacionId, iconoFavorito, texto, no_
     }
 
     const handleVerVistaPrevia = (e) => {
+        // ✅ Si fue un long press, no hacer nada
+        if (isLongPress.current) {
+            isLongPress.current = false;
+            return;
+        }
+
         // ✅ Si está en modo selección, toggle la selección
         if (seleccionar && !esVistaPapelera) {
             e.stopPropagation();
@@ -154,16 +248,26 @@ export default function NotaVistaPrevia({ anotacionId, iconoFavorito, texto, no_
 
     return (
         <>
-            <div className={`${estaSeleccionada ? 'w-[98%] bg-gray-300/90 dark:bg-gray-600/90 p-3 rounded-md select-none' : ''}
-                        flex flex-col items-center justify-center`}>
-
+            <div className={`${estaSeleccionada ? 'bg-gray-300/90 dark:bg-gray-600/90' : ''}
+                            ${!esVistaBusqueda ? 'flex flex-col items-center justify-center' : ''}
+                            w-[98%] mb-3 p-3 rounded-md select-none`}>
+                
                 <div className={`w-[98%] h-35 mt-2 p-2 rounded-md select-none 
                         flex flex-col items-center gap-1 overflow-hidden
                         ${seleccionar ? 'cursor-pointer' : ''}
+                        ${isLongPressing ? 'opacity-80 scale-[0.98]' : ''}
                         ${no_asignado ? 'bg-blue-200 dark:bg-blue-950 hover:bg-blue-300 active:bg-blue-300 dark:hover:bg-blue-900 dark:active:bg-blue-900' :
                         pendiente ? 'bg-yellow-200 dark:bg-yellow-950 hover:bg-yellow-300 active:bg-yellow-300 dark:hover:bg-yellow-900 dark:active:bg-yellow-900' :
                             finalizado ? 'bg-green-200 dark:bg-green-950 hover:bg-green-300 active:bg-green-300 dark:hover:bg-green-900 dark:active:bg-green-900' : 'bg-gray-200 dark:bg-black'}`}
-                    onClick={handleVerVistaPrevia}>
+                    onClick={handleVerVistaPrevia}
+                    onMouseDown={handlePressStart}
+                    onMouseMove={handlePressMove}
+                    onMouseUp={handlePressEnd}
+                    onMouseLeave={handlePressEnd}
+                    onTouchStart={handlePressStart}
+                    onTouchMove={handlePressMove}
+                    onTouchEnd={handlePressEnd}
+                    onTouchCancel={handlePressEnd}>
 
                     <div className="w-full flex flex-row items-start justify-between">
 
