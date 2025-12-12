@@ -33,16 +33,13 @@ import {
 
 import { logDesarrollo, errorDesarrollo, registrarError } from "../../utils/errorHandler";
 
-export default function ModalConfirmacion({ textoPregunta, textoAccion, restaurarTexto, 
-                                            eliminarPregunta, eliminarAceptar }) {
+export default function ModalConfirmacion({ textoPregunta, textoAccion, restaurarTexto,
+    eliminarPregunta, eliminarAceptar }) {
     const location = useLocation();
 
     const { actualizarContadores } = useContadores();
 
     const [procesando, setProcesando] = useState(false);
-
-    // Estado para saber si el proceso ya comenzó
-    const [procesoIniciado, setProcesoIniciado] = useState(false);
 
     const navigate = useNavigate();
     const dispatch = useDispatch();
@@ -50,9 +47,9 @@ export default function ModalConfirmacion({ textoPregunta, textoAccion, restaura
     const { cerrarSesion, eliminarCuenta } = useAuth();
 
     const anotacionesSeleccionadas = useSelector((state) => state.anotaciones.anotacionesSeleccionadas);
-    
+
     // Guardar la cantidad inicial de anotaciones seleccionadas
-    const [cantidadInicial, setCantidadInicial] = useState(anotacionesSeleccionadas?.length || 0);                                     
+    const [cantidadInicial, setCantidadInicial] = useState(anotacionesSeleccionadas?.length || 0);
 
     // Determinar si estamos en modo vista previa para ir a panel principal
     const esModoVistaPrevia = location.pathname.includes('/vista-previa/nota/');
@@ -72,15 +69,26 @@ export default function ModalConfirmacion({ textoPregunta, textoAccion, restaura
     const verModalEliminarUsuario = useSelector((state) => state.acceso.verModalEliminarUsuario);
     const verModalCerrarSesion = useSelector((state) => state.acceso.verModalCerrarSesion);
 
-    // ✅ Resetear estados cuando el modal se cierra/abre
+
+    // ✅ Resetear estados cuando el modal se abre
     useEffect(() => {
-        setProcesoIniciado(false);
-        setProcesando(false);
-        setCantidadInicial(anotacionesSeleccionadas?.length || 0);
-    }, [verModalCrearNota, verModalPapeleraNota, verModalPapeleraTodasLasNotas, 
-        verModalRestaurarNota, verModalEliminarNotaDefinitiva, 
-        verModalEliminarTodasLasNotasDefinitivo, verModalEliminarUsuario, 
+        const algunModalAbierto = verModalCrearNota || verModalPapeleraNota ||
+            verModalPapeleraTodasLasNotas || verModalRestaurarNota ||
+            verModalEliminarNotaDefinitiva || verModalEliminarTodasLasNotasDefinitivo ||
+            verModalEliminarUsuario || verModalCerrarSesion;
+
+        if (algunModalAbierto) {
+            // Solo resetear si procesando está en true (evita resetear durante el cierre)
+            if (procesando) {
+                setProcesando(false);
+            }
+            setCantidadInicial(anotacionesSeleccionadas?.length || 0);
+        }
+    }, [verModalCrearNota, verModalPapeleraNota, verModalPapeleraTodasLasNotas,
+        verModalRestaurarNota, verModalEliminarNotaDefinitiva,
+        verModalEliminarTodasLasNotasDefinitivo, verModalEliminarUsuario,
         verModalCerrarSesion]);
+
 
     const crearNota = () => {
         dispatch(toggleVerModalCrearNota());
@@ -149,8 +157,6 @@ export default function ModalConfirmacion({ textoPregunta, textoAccion, restaura
                 dispatch(ocultarNotificacion());
             }, 2000);
 
-        } finally {
-            setProcesando(false);
         }
     };
 
@@ -165,7 +171,7 @@ export default function ModalConfirmacion({ textoPregunta, textoAccion, restaura
             }
 
             logDesarrollo('📤 IDs a mover a papelera:', anotacionesSeleccionadas);
-            
+
             const data = await moverTodasAPapelera(anotacionesSeleccionadas, false);
 
             await actualizarContadores();
@@ -189,7 +195,7 @@ export default function ModalConfirmacion({ textoPregunta, textoAccion, restaura
 
         } catch (error) {
             errorDesarrollo('❌ Error al mover notas a papelera:', error);
-            
+
             dispatch(toggleVerModalPapeleraTodasLasNotas());
 
             dispatch(mostrarNotificacion({
@@ -201,8 +207,6 @@ export default function ModalConfirmacion({ textoPregunta, textoAccion, restaura
                 dispatch(ocultarNotificacion());
             }, 2000);
 
-        } finally {
-            setProcesando(false);
         }
     };
 
@@ -259,8 +263,6 @@ export default function ModalConfirmacion({ textoPregunta, textoAccion, restaura
                 dispatch(ocultarNotificacion());
             }, 2000);
 
-        } finally {
-            setProcesando(false);
         }
     };
 
@@ -325,8 +327,6 @@ export default function ModalConfirmacion({ textoPregunta, textoAccion, restaura
                 dispatch(ocultarNotificacion());
             }, 2000);
 
-        } finally {
-            setProcesando(false);
         }
     };
 
@@ -338,31 +338,31 @@ export default function ModalConfirmacion({ textoPregunta, textoAccion, restaura
         try {
             let data;
             let cantidadEliminadas = 0;
-            
+
             // Si estamos en /papelera, vaciar papelera
             if (location.pathname.includes('/papelera')) {
                 data = await vaciarPapelera();
                 cantidadEliminadas = data.cantidad || 0; // Asumiendo que el backend devuelve la cantidad
-                
+
                 logDesarrollo('✅ Han sido eliminadas definitivamente todas las notas desde la papelera:', data);
-                
+
                 // Actualizar Redux: limpiar todas las anotaciones
                 dispatch(eliminarTodasAnotaciones());
-                
+
             } else {
                 // Si estamos en /panel-principal, eliminar las seleccionadas
                 if (!anotacionesSeleccionadas || anotacionesSeleccionadas.length === 0) {
                     throw new Error('No hay anotaciones seleccionadas');
                 }
-                
+
                 cantidadEliminadas = anotacionesSeleccionadas.length;
-                
+
                 logDesarrollo('📤 IDs a eliminar definitivamente:', anotacionesSeleccionadas);
-                
+
                 data = await eliminarTodasDefinitivamente(anotacionesSeleccionadas, false);
-                
+
                 logDesarrollo('✅ Notas eliminadas definitivamente:', data);
-                
+
                 // Eliminar las anotaciones de la vista
                 dispatch(eliminarMultiplesAnotaciones(anotacionesSeleccionadas));
             }
@@ -384,7 +384,7 @@ export default function ModalConfirmacion({ textoPregunta, textoAccion, restaura
 
         } catch (error) {
             errorDesarrollo('❌ Error al eliminar notas definitivamente:', error);
-            
+
             dispatch(toggleVerModalEliminarTodasLasNotasDefinitivo());
 
             dispatch(mostrarNotificacion({
@@ -396,8 +396,6 @@ export default function ModalConfirmacion({ textoPregunta, textoAccion, restaura
                 dispatch(ocultarNotificacion());
             }, 2000);
 
-        } finally {
-            setProcesando(false);
         }
     };
 
@@ -433,25 +431,24 @@ export default function ModalConfirmacion({ textoPregunta, textoAccion, restaura
         dispatch(toggleVerModalCerrarSesion());
     };
 
-    
 
     // Función para manejar la acción de Aceptar
     const handleAceptar = async () => {
         // ✅ Marcar que el proceso ha iniciado
-        setProcesoIniciado(true);
+        setProcesando(true);
 
         if (verModalCrearNota) {
             crearNota();
         } else if (verModalPapeleraNota) {
-            papeleraNota();
+            await papeleraNota();
         } else if (verModalPapeleraTodasLasNotas) {
-            papeleraTodasLasNotas();
+            await papeleraTodasLasNotas();
         } else if (verModalRestaurarNota) {
-            restaurarNota();
+            await restaurarNota();
         } else if (verModalEliminarNotaDefinitiva) {
-            eliminarNotaDefinitiva();
+            await eliminarNotaDefinitiva();
         } else if (verModalEliminarTodasLasNotasDefinitivo) {
-            eliminarTodasLasNotasDefinitiva();
+            await eliminarTodasLasNotasDefinitiva();
         } else if (verModalEliminarUsuario) {
             setProcesando(true);
             dispatch(toggleVerMenuHamburguesa());
@@ -518,7 +515,7 @@ export default function ModalConfirmacion({ textoPregunta, textoAccion, restaura
                             <p className={`text-base md:text-lg
                                     ${restaurarTexto ? 'text-blue-600 dark:text-blue-500' :
                                     eliminarPregunta ? 'text-red-600 dark:text-red-500' : 'text-black dark:text-white'}`}>
-                                {procesoIniciado ? textoAccion : textoPregunta}
+                                {procesando ? textoAccion : textoPregunta}
                             </p>
 
                             {procesando && (
