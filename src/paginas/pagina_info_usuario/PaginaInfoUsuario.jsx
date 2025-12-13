@@ -82,8 +82,8 @@ export default function PaginaInfoUsuario() {
     return (
         <AnimatePresence mode="wait">
             <motion.div
-                className="min-h-dvh bg-white dark:bg-gray-800 
-                            overflow-hidden
+                className="h-dvh bg-white dark:bg-gray-800 
+                            overflow-y-auto
                             flex flex-col justify-start"
                 variants={pageVariants}
                 initial="initial"
