@@ -69,7 +69,7 @@ export default function PanelPrincipal() {
                 )}
 
                 <AnimatePresence>
-                    <ModalExitoError />
+                    <ModalExitoError animado={true} />
                 </AnimatePresence>
 
                 {verOpcionesCabecera && (
@@ -78,7 +78,9 @@ export default function PanelPrincipal() {
 
                 <AnimatePresence>
                     {verModalCrearNota && (
-                        <ModalConfirmacion textoPregunta="¿Desea crear una nota?" />
+                        <ModalConfirmacion textoPregunta="¿Desea crear una nota?"
+                            animadoCrear={true}
+                        />
                     )}
                 </AnimatePresence>
 
@@ -88,6 +90,7 @@ export default function PanelPrincipal() {
                             textoPregunta="¿Mover nota a la papelera?"
                             eliminarAceptar={true}
                             textoAccion="Moviendo la nota a la papelera..."
+                            animadoPapelera={true}
                         />
                     )}
                 </AnimatePresence>
@@ -98,6 +101,7 @@ export default function PanelPrincipal() {
                             textoPregunta={`¿Desea mover ${anotacionesSeleccionadas.length} ${anotacionesSeleccionadas.length === 1 ? 'nota' : 'notas'} a la papelera?`}
                             eliminarAceptar={true}
                             textoAccion={`Moviendo ${anotacionesSeleccionadas.length === 1 ? 'la nota' : 'las notas'} a la papelera...`}
+                            animadoPapelera={true}
                         />
                     )}
                 </AnimatePresence>
@@ -109,6 +113,7 @@ export default function PanelPrincipal() {
                             eliminarPregunta={true}
                             eliminarAceptar={true}
                             textoAccion="Eliminando definitivamente la nota..."
+                            animadoEliminar={true}
                         />
                     )}
                 </AnimatePresence>
@@ -121,6 +126,7 @@ export default function PanelPrincipal() {
                             eliminarPregunta={true}
                             eliminarAceptar={true}
                             textoAccion={`Eliminando definitivamente ${anotacionesSeleccionadas.length === 1 ? 'la nota' : 'las notas'}...`}
+                            animadoEliminar={true}
                         />
                     )}
                 </AnimatePresence>

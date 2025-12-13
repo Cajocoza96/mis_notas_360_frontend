@@ -59,7 +59,7 @@ export default function PaginaPapelera() {
                 )}
 
                 <AnimatePresence>
-                    <ModalExitoError />
+                    <ModalExitoError animado={true}/>
                 </AnimatePresence>
 
                 <AnimatePresence>
@@ -68,6 +68,7 @@ export default function PaginaPapelera() {
                             textoPregunta="¿Desea restaurar la nota?"
                             restaurarTexto={true}
                             textoAccion="Restaurando nota..."
+                            animadoRestaurar={true}
                         />
                     )}
                 </AnimatePresence>
@@ -79,6 +80,7 @@ export default function PaginaPapelera() {
                             eliminarPregunta={true}
                             eliminarAceptar={true}
                             textoAccion="Eliminando definitivamente la nota.."
+                            animadoEliminar={true}
                         />
                     )}
                 </AnimatePresence>
@@ -90,6 +92,7 @@ export default function PaginaPapelera() {
                             eliminarPregunta={true}
                             eliminarAceptar={true}
                             textoAccion={`${anotaciones.length === 1 ? 'Eliminando la nota definitivamente...' : 'Eliminando las notas definitivamente...'}`}
+                            animadoEliminar={true}
                         />
                     )}
                 </AnimatePresence>

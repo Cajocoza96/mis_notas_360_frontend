@@ -101,6 +101,7 @@ export default function PaginaInfoUsuario() {
                             eliminarAceptar={true}
                             textoPregunta="¿Desea eliminar la cuenta?"
                             textoAccion="Eliminando cuenta..."
+                            animadoEliminarCuenta={true}
                         />
 
                     )}
@@ -112,6 +113,7 @@ export default function PaginaInfoUsuario() {
                             eliminarAceptar={true}
                             textoPregunta="¿Desea cerrar sesión?"
                             textoAccion="Cerrando sesión..."
+                            animadoCerrarSesion={true}
                         />
                     )}
                 </AnimatePresence>

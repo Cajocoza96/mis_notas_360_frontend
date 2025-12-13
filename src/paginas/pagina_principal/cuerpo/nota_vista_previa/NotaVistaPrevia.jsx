@@ -59,7 +59,7 @@ export default function NotaVistaPrevia({ anotacionId, iconoFavorito, texto, no_
     const isLongPress = useRef(false);
     const startPos = useRef({ x: 0, y: 0 });
     
-    // Activar modo seleccion al presionar por dos segundos
+    // Activar modo seleccion al presionar por 1.5 segundos
     const handleSeleccionar = () => {
         // ✅ Solo activar si no estamos en papelera y no está ya en modo selección
         if (esVistaPapelera || esVistaBusqueda || seleccionar) return;
@@ -89,7 +89,7 @@ export default function NotaVistaPrevia({ anotacionId, iconoFavorito, texto, no_
         isLongPress.current = false;
         setIsLongPressing(true);
 
-        // Iniciar timer de 2 segundos
+        // Iniciar timer de 1.5 segundos
         longPressTimer.current = setTimeout(() => {
             isLongPress.current = true;
             setIsLongPressing(false);
@@ -99,7 +99,7 @@ export default function NotaVistaPrevia({ anotacionId, iconoFavorito, texto, no_
             if (navigator.vibrate) {
                 navigator.vibrate(50);
             }
-        }, 2000);
+        }, 1500);
     }, [seleccionar, esVistaPapelera, esVistaBusqueda]);
 
     // ✅ Manejar movimiento durante el press
@@ -128,6 +128,15 @@ export default function NotaVistaPrevia({ anotacionId, iconoFavorito, texto, no_
             longPressTimer.current = null;
         }
         setIsLongPressing(false);
+
+        // ✅ SOLUCIÓN: Resetear isLongPress después de un breve delay
+        // Esto evita que el evento de click se procese inmediatamente después del long press
+        // pero permite que clics posteriores funcionen correctamente
+        if (isLongPress.current) {
+            setTimeout(() => {
+                isLongPress.current = false;
+            }, 100);
+        }
     }, []);
 
     // ✅ Cleanup al desmontar
@@ -151,9 +160,8 @@ export default function NotaVistaPrevia({ anotacionId, iconoFavorito, texto, no_
     }
 
     const handleVerVistaPrevia = (e) => {
-        // ✅ Si fue un long press, no hacer nada
+        // ✅ Si fue un long press, no hacer nada (solo en este evento)
         if (isLongPress.current) {
-            isLongPress.current = false;
             return;
         }
 
@@ -248,17 +256,17 @@ export default function NotaVistaPrevia({ anotacionId, iconoFavorito, texto, no_
 
     return (
         <>
-            <div className={`${estaSeleccionada ? 'bg-gray-300/90 dark:bg-gray-600/90' : ''}
+            <div className={`${estaSeleccionada ? 'bg-gray-300/90 dark:bg-gray-600/90 shadow-lg transform transition-all duration-300 ease-in-out' : ''}
                             ${!esVistaBusqueda ? 'flex flex-col items-center justify-center' : ''}
                             w-[98%] mb-3 p-3 rounded-md select-none`}>
                 
-                <div className={`w-[98%] h-35 mt-2 p-2 rounded-md select-none 
+                <div className={`w-[98%] h-35 mt-2 p-2 rounded-md border select-none 
                         flex flex-col items-center gap-1 overflow-hidden
                         ${seleccionar ? 'cursor-pointer' : ''}
                         ${isLongPressing ? 'opacity-80 scale-[0.98]' : ''}
-                        ${no_asignado ? 'bg-blue-200 dark:bg-blue-950 hover:bg-blue-300 active:bg-blue-300 dark:hover:bg-blue-900 dark:active:bg-blue-900' :
-                        pendiente ? 'bg-yellow-200 dark:bg-yellow-950 hover:bg-yellow-300 active:bg-yellow-300 dark:hover:bg-yellow-900 dark:active:bg-yellow-900' :
-                            finalizado ? 'bg-green-200 dark:bg-green-950 hover:bg-green-300 active:bg-green-300 dark:hover:bg-green-900 dark:active:bg-green-900' : 'bg-gray-200 dark:bg-black'}`}
+                        ${no_asignado ? 'border-blue-700 dark:border-blue-300 bg-blue-200 dark:bg-blue-950 hover:bg-blue-300 active:bg-blue-300 dark:hover:bg-blue-900 dark:active:bg-blue-900' :
+                        pendiente ? 'border-yellow-700 dark:border-yellow-300 bg-yellow-200 dark:bg-yellow-950 hover:bg-yellow-300 active:bg-yellow-300 dark:hover:bg-yellow-900 dark:active:bg-yellow-900' :
+                            finalizado ? 'border-green-700 dark:border-green-300 bg-green-200 dark:bg-green-950 hover:bg-green-300 active:bg-green-300 dark:hover:bg-green-900 dark:active:bg-green-900' : 'bg-gray-200 dark:bg-black'}`}
                     onClick={handleVerVistaPrevia}
                     onMouseDown={handlePressStart}
                     onMouseMove={handlePressMove}

@@ -2,9 +2,14 @@ import React from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { HiCheckCircle, HiXCircle } from "react-icons/hi";
 
+import iconoError from "../../assets/lottie/modal_exito_error/iconoError.json";
+import iconoExito from "../../assets/lottie/modal_exito_error/iconoExito.json";
+
 import { motion } from "framer-motion";
 
-export default function ModalExitoError() {
+import Lottie from "lottie-react";
+
+export default function ModalExitoError({ animado }) {
 
     const dispatch = useDispatch();
 
@@ -14,12 +19,6 @@ export default function ModalExitoError() {
         mensajeNotificacion,
         esErrorNotificacion
     } = useSelector((state) => state.anotaciones);
-
-    /*
-    const handleCerrarModalExitoError = () => {
-        dispatch(ocultarNotificacion());
-    }
-    */
 
     // ✅ Si no debe mostrarse, retornar null
     if (!mostrarModalNotificacion) {
@@ -46,9 +45,24 @@ export default function ModalExitoError() {
 
                             {/* Icono dinámico según el tipo de modal */}
                             {esErrorNotificacion ? (
-                                <HiXCircle className="text-8xl 2xl:text-10xl text-red-500" />
+                                animado ? (
+                                    <div className="w-[80%] lg:w-[60%] flex items-center justify-center">
+                                        <Lottie className="w-full object-cover"
+                                            animationData={iconoError} loop={true} />
+                                    </div>
+                                ) : (
+                                    < HiXCircle className="text-8xl 2xl:text-10xl text-red-500" />
+                                )
+
                             ) : (
-                                <HiCheckCircle className="text-8xl 2xl:text-10xl text-green-500" />
+                                animado ? (
+                                    <div className="w-[80%] lg:w-[60%] flex items-center justify-center">
+                                        <Lottie className="w-full object-cover"
+                                            animationData={iconoExito} loop={true} />
+                                    </div>
+                                ) : (
+                                    <HiCheckCircle className="text-8xl 2xl:text-10xl text-green-500" />
+                                )
                             )}
 
                             <p className="text-center text-base md:text-lg 

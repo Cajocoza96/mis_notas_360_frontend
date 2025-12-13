@@ -225,7 +225,7 @@ export default function PaginaVistaPrevia() {
                 )}
 
                 <AnimatePresence>
-                    <ModalExitoError />
+                    <ModalExitoError animado={true}/>
                 </AnimatePresence>
 
                 <AnimatePresence>
@@ -234,6 +234,7 @@ export default function PaginaVistaPrevia() {
                             textoPregunta="¿Mover nota a la papelera?"
                             eliminarAceptar={true}
                             textoAccion="Moviendo nota a la papelera..."
+                            animadoPapelera={true}
                         />
                     )}
                 </AnimatePresence>
@@ -245,6 +246,7 @@ export default function PaginaVistaPrevia() {
                             eliminarPregunta={true}
                             eliminarAceptar={true}
                             textoAccion="Eliminando definitivamente la nota..."
+                            animadoEliminar={true}
                         />
                     )}
                 </AnimatePresence>

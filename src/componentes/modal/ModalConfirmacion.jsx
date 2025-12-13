@@ -31,10 +31,24 @@ import {
     vaciarPapelera
 } from "../../services/anotacionesService";
 
+import CargandoNoHayNada from "../cargando_no_hay_nada/CargandoNoHayNada";
+
+import Lottie from "lottie-react";
+
+import iconoCrear from "../../assets/lottie/procesos_nota/iconoCrear.json";
+import iconoEliminar from "../../assets/lottie/procesos_nota/iconoEliminar.json";
+import iconoPapelera from "../../assets/lottie/procesos_nota/iconoPapelera.json";
+import iconoRestaurar from "../../assets/lottie/procesos_nota/iconoRestaurar.json";
+
+import iconoCerrarSesion from "../../assets/lottie/procesos_usuario/iconoCerrarSesion.json";
+import iconoEliminarCuenta from "../../assets/lottie/procesos_usuario/iconoEliminarCuenta.json";
+
+
 import { logDesarrollo, errorDesarrollo, registrarError } from "../../utils/errorHandler";
 
 export default function ModalConfirmacion({ textoPregunta, textoAccion, restaurarTexto,
-    eliminarPregunta, eliminarAceptar }) {
+    eliminarPregunta, eliminarAceptar, animadoCrear, animadoEliminar, 
+    animadoPapelera, animadoRestaurar, animadoCerrarSesion, animadoEliminarCuenta}) {
     const location = useLocation();
 
     const { actualizarContadores } = useContadores();
@@ -508,10 +522,23 @@ export default function ModalConfirmacion({ textoPregunta, textoAccion, restaura
                     onClick={(e) => e.stopPropagation()}
                     className="bg-white dark:bg-gray-800 select-none
                             z-50 p-3 overflow-hidden rounded-lg
-                            w-[90%] h-auto shadow-2xl">
+                            w-[90%] 2xs:w-[70%] h-auto shadow-2xl">
 
                     <div className="mx-auto w-full flex flex-col gap-4 2xl:gap-5">
-                        <div className="flex flex-col gap-2">
+                        <div className="flex flex-col justify-center items-center gap-2">
+
+                            {!procesando && (
+                                <div className="mx-auto w-[50%] 2xs:w-[35%] lg:w-[20%] flex items-center justify-center">
+                                    <Lottie className="w-full object-cover"
+                                        animationData={animadoCrear ? iconoCrear
+                                            : animadoEliminar ? iconoEliminar
+                                                : animadoPapelera ? iconoPapelera
+                                                    : animadoRestaurar ? iconoRestaurar
+                                                        : animadoCerrarSesion ? iconoCerrarSesion
+                                                            : animadoEliminarCuenta ? iconoEliminarCuenta : ''} loop={true} />
+                                </div>
+                            )}
+
                             <p className={`text-base md:text-lg
                                     ${restaurarTexto ? 'text-blue-600 dark:text-blue-500' :
                                     eliminarPregunta ? 'text-red-600 dark:text-red-500' : 'text-black dark:text-white'}`}>
@@ -519,9 +546,7 @@ export default function ModalConfirmacion({ textoPregunta, textoAccion, restaura
                             </p>
 
                             {procesando && (
-                                <p className="text-sm text-gray-500 dark:text-gray-400">
-                                    Procesando...
-                                </p>
+                                <CargandoNoHayNada iconoDeCarga={true} />
                             )}
                         </div>
 

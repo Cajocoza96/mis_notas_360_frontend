@@ -298,7 +298,7 @@ export default function PaginaCrearEditNota() {
                 )}
 
                 <AnimatePresence>
-                    <ModalExitoError />
+                    <ModalExitoError animado={true}/>
                 </AnimatePresence>
 
                 {mostrarSkeleton ? (
