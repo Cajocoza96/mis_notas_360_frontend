@@ -60,8 +60,10 @@ export default function ModalConfirmacion({ textoPregunta, textoAccion, restaura
     const { id } = useParams();
     const { cerrarSesion, eliminarCuenta } = useAuth();
 
-    const anotacionesSeleccionadas = useSelector((state) => state.anotaciones.anotacionesSeleccionadas);
+    const { anotaciones } = useSelector((state) => state.anotaciones);
 
+    const anotacionesSeleccionadas = useSelector((state) => state.anotaciones.anotacionesSeleccionadas);
+    
     // Guardar la cantidad inicial de anotaciones seleccionadas
     const [cantidadInicial, setCantidadInicial] = useState(anotacionesSeleccionadas?.length || 0);
 
@@ -69,6 +71,8 @@ export default function ModalConfirmacion({ textoPregunta, textoAccion, restaura
     const esModoVistaPrevia = location.pathname.includes('/vista-previa/nota/');
 
     const esPanelPrincipal = location.pathname.includes('/panel-principal');
+
+    const esPapelera = location.pathname.includes('/papelera');
 
     //Obtener la ID de la anotacion desde Redux
     const anotacionIdRedux = useSelector((state) => state.tareas.anotacionId);
@@ -199,7 +203,7 @@ export default function ModalConfirmacion({ textoPregunta, textoAccion, restaura
 
             // Mostrar notificación de éxito
             dispatch(mostrarNotificacion({
-                mensaje: `¡${anotacionesSeleccionadas.length} ${anotacionesSeleccionadas.length === 1 ? 'nota enviada a la papelera!' : 'notas enviadas a la papelera!'}`,
+                mensaje: `¡${anotacionesSeleccionadas.length} ${anotacionesSeleccionadas.length === 1 ? 'Nota enviada a la papelera!' : 'Notas enviadas a la papelera!'}`,
                 esError: false
             }));
 
@@ -350,13 +354,9 @@ export default function ModalConfirmacion({ textoPregunta, textoAccion, restaura
         setProcesando(true);
 
         try {
-            let data;
-            let cantidadEliminadas = 0;
-
             // Si estamos en /papelera, vaciar papelera
             if (location.pathname.includes('/papelera')) {
-                data = await vaciarPapelera();
-                cantidadEliminadas = data.cantidad || 0; // Asumiendo que el backend devuelve la cantidad
+                const data = await vaciarPapelera();
 
                 logDesarrollo('✅ Han sido eliminadas definitivamente todas las notas desde la papelera:', data);
 
@@ -369,11 +369,9 @@ export default function ModalConfirmacion({ textoPregunta, textoAccion, restaura
                     throw new Error('No hay anotaciones seleccionadas');
                 }
 
-                cantidadEliminadas = anotacionesSeleccionadas.length;
-
                 logDesarrollo('📤 IDs a eliminar definitivamente:', anotacionesSeleccionadas);
 
-                data = await eliminarTodasDefinitivamente(anotacionesSeleccionadas, false);
+                const data = await eliminarTodasDefinitivamente(anotacionesSeleccionadas, false);
 
                 logDesarrollo('✅ Notas eliminadas definitivamente:', data);
 
@@ -388,7 +386,7 @@ export default function ModalConfirmacion({ textoPregunta, textoAccion, restaura
 
             // Mostrar notificación de éxito
             dispatch(mostrarNotificacion({
-                mensaje: `¡${cantidadEliminadas} ${cantidadEliminadas === 1 ? 'nota eliminada definitivamente!' : 'notas eliminadas definitivamente!'} `,
+                mensaje: `¡${esPapelera ? (anotaciones.length === 1 ? 'Nota eliminada definitivamente!' : 'Notas eliminadas definitivamente!') : (anotacionesSeleccionadas === 1 ? 'nota eliminada definitivamente!' : 'notas eliminadas definitivamente!')}`,
                 esError: false
             }));
 
@@ -402,7 +400,7 @@ export default function ModalConfirmacion({ textoPregunta, textoAccion, restaura
             dispatch(toggleVerModalEliminarTodasLasNotasDefinitivo());
 
             dispatch(mostrarNotificacion({
-                mensaje: `${cantidadEliminadas === 1 ? '¡Error al eliminar la nota definitivamente!' : '¡Error al eliminar las notas definitivamente!'}`,
+                mensaje: `${esPapelera ? (anotaciones.length === 1 ? '¡Error al eliminar la nota definitivamente!' : '¡Error al eliminar las notas definitivamente!') : (anotacionesSeleccionadas === 1 ? '¡Error al eliminar la nota definitivamente!' : '¡Error al eliminar las notas definitivamente!')}`,
                 esError: true
             }));
 

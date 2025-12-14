@@ -19,8 +19,6 @@ import Toast from "../../componentes/toast/Toast";
 export default function PanelPrincipal() {
     const verOpcionesCabecera = useSelector((state) => state.layout.verOpcionesCabecera);
 
-    const { anotaciones } = useSelector((state) => state.anotaciones);
-
     const verModalCrearNota = useSelector((state) => state.tareas.verModalCrearNota);
 
     const verModalPapeleraNota = useSelector((state) => state.tareas.verModalPapeleraNota);
