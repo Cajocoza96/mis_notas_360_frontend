@@ -46,7 +46,7 @@ export default function ModalExitoError({ animado }) {
                             {/* Icono dinámico según el tipo de modal */}
                             {esErrorNotificacion ? (
                                 animado ? (
-                                    <div className="w-[80%] lg:w-[60%] flex items-center justify-center">
+                                    <div className="w-[40%] 2xs:w-[25%] lg:w-[35%] flex items-center justify-center">
                                         <Lottie className="w-full object-cover"
                                             animationData={iconoError} loop={true} />
                                     </div>
@@ -56,7 +56,7 @@ export default function ModalExitoError({ animado }) {
 
                             ) : (
                                 animado ? (
-                                    <div className="w-[80%] lg:w-[60%] flex items-center justify-center">
+                                    <div className="w-[75%] 2xs:w-[60%] lg:w-[65%] flex items-center justify-center">
                                         <Lottie className="w-full object-cover"
                                             animationData={iconoExito} loop={true} />
                                     </div>

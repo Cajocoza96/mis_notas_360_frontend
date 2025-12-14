@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -17,6 +17,7 @@ import ModalExitoError from "../../componentes/modal/ModalExitoError";
 import Toast from "../../componentes/toast/Toast";
 
 export default function PanelPrincipal() {
+
     const verOpcionesCabecera = useSelector((state) => state.layout.verOpcionesCabecera);
 
     const verModalCrearNota = useSelector((state) => state.tareas.verModalCrearNota);
@@ -123,7 +124,7 @@ export default function PanelPrincipal() {
                             textoPregunta={`¿Desea eliminar definitivamente ${anotacionesSeleccionadas.length} ${anotacionesSeleccionadas.length === 1 ? 'nota?' : 'notas?'}`}
                             eliminarPregunta={true}
                             eliminarAceptar={true}
-                            textoAccion={`Eliminando definitivamente ${anotacionesSeleccionadas.length === 1 ? 'la nota' : 'las notas'}...`}
+                            textoAccion="Eliminando definitivamente"
                             animadoEliminar={true}
                         />
                     )}

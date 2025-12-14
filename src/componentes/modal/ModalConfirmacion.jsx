@@ -47,8 +47,8 @@ import iconoEliminarCuenta from "../../assets/lottie/procesos_usuario/iconoElimi
 import { logDesarrollo, errorDesarrollo, registrarError } from "../../utils/errorHandler";
 
 export default function ModalConfirmacion({ textoPregunta, textoAccion, restaurarTexto,
-    eliminarPregunta, eliminarAceptar, animadoCrear, animadoEliminar, 
-    animadoPapelera, animadoRestaurar, animadoCerrarSesion, animadoEliminarCuenta}) {
+    eliminarPregunta, eliminarAceptar, animadoCrear, animadoEliminar,
+    animadoPapelera, animadoRestaurar, animadoCerrarSesion, animadoEliminarCuenta }) {
     const location = useLocation();
 
     const { actualizarContadores } = useContadores();
@@ -63,7 +63,7 @@ export default function ModalConfirmacion({ textoPregunta, textoAccion, restaura
     const { anotaciones } = useSelector((state) => state.anotaciones);
 
     const anotacionesSeleccionadas = useSelector((state) => state.anotaciones.anotacionesSeleccionadas);
-    
+
     // Guardar la cantidad inicial de anotaciones seleccionadas
     const [cantidadInicial, setCantidadInicial] = useState(anotacionesSeleccionadas?.length || 0);
 
@@ -203,7 +203,7 @@ export default function ModalConfirmacion({ textoPregunta, textoAccion, restaura
 
             // Mostrar notificación de éxito
             dispatch(mostrarNotificacion({
-                mensaje: `¡${anotacionesSeleccionadas.length} ${anotacionesSeleccionadas.length === 1 ? 'Nota enviada a la papelera!' : 'Notas enviadas a la papelera!'}`,
+                mensaje: `¡${anotacionesSeleccionadas.length} ${anotacionesSeleccionadas.length === 1 ? 'nota enviada a la papelera!' : 'notas enviadas a la papelera!'}`,
                 esError: false
             }));
 
@@ -385,10 +385,27 @@ export default function ModalConfirmacion({ textoPregunta, textoAccion, restaura
             dispatch(toggleVerModalEliminarTodasLasNotasDefinitivo());
 
             // Mostrar notificación de éxito
-            dispatch(mostrarNotificacion({
-                mensaje: `¡${esPapelera ? (anotaciones.length === 1 ? 'Nota eliminada definitivamente!' : 'Notas eliminadas definitivamente!') : (anotacionesSeleccionadas === 1 ? 'nota eliminada definitivamente!' : 'notas eliminadas definitivamente!')}`,
-                esError: false
-            }));
+            dispatch(
+                mostrarNotificacion({
+                    mensaje: `¡${esPapelera
+                        ? (
+                            anotaciones.length === 1
+                                ? 'Nota eliminada definitivamente!'
+                                : anotaciones.length > 1
+                                    ? 'Notas eliminadas definitivamente!'
+                                    : ''
+                        )
+                        : (
+                            anotacionesSeleccionadas.length === 1
+                                ? `${anotacionesSeleccionadas.length} nota eliminada definitivamente!`
+                                : anotacionesSeleccionadas.length > 1
+                                    ? `${anotacionesSeleccionadas.length} notas eliminadas definitivamente!`
+                                    : ''
+                        )
+                        }`,
+                    esError: false
+                })
+            );
 
             setTimeout(() => {
                 dispatch(ocultarNotificacion());
@@ -400,7 +417,17 @@ export default function ModalConfirmacion({ textoPregunta, textoAccion, restaura
             dispatch(toggleVerModalEliminarTodasLasNotasDefinitivo());
 
             dispatch(mostrarNotificacion({
-                mensaje: `${esPapelera ? (anotaciones.length === 1 ? '¡Error al eliminar la nota definitivamente!' : '¡Error al eliminar las notas definitivamente!') : (anotacionesSeleccionadas === 1 ? '¡Error al eliminar la nota definitivamente!' : '¡Error al eliminar las notas definitivamente!')}`,
+                mensaje: `${esPapelera
+                        ? (
+                        anotaciones.length === 1
+                            ? '¡Error al eliminar la nota definitivamente!'
+                            : anotaciones.length > 1
+                                ? '¡Error al eliminar las notas definitivamente!'
+                                : ''
+                    )
+                    : (
+                        anotacionesSeleccionadas.length === 1 ? '¡Error al eliminar la nota definitivamente!' 
+                        : anotacionesSeleccionadas.length > 1  ? '¡Error al eliminar las notas definitivamente!' : '')}`,
                 esError: true
             }));
 
@@ -520,13 +547,13 @@ export default function ModalConfirmacion({ textoPregunta, textoAccion, restaura
                     onClick={(e) => e.stopPropagation()}
                     className="bg-white dark:bg-gray-800 select-none
                             z-50 p-3 overflow-hidden rounded-lg
-                            w-[90%] 2xs:w-[70%] h-auto shadow-2xl">
+                            w-[75%] 2xs:w-[55%] h-auto shadow-2xl">
 
                     <div className="mx-auto w-full flex flex-col gap-4 2xl:gap-5">
                         <div className="flex flex-col justify-center items-center gap-2">
 
                             {!procesando && (
-                                <div className="mx-auto w-[50%] 2xs:w-[35%] lg:w-[20%] flex items-center justify-center">
+                                <div className="mx-auto w-[50%] 2xs:w-[35%] lg:w-[25%] flex items-center justify-center">
                                     <Lottie className="w-full object-cover"
                                         animationData={animadoCrear ? iconoCrear
                                             : animadoEliminar ? iconoEliminar

@@ -91,7 +91,7 @@ export default function PaginaPapelera() {
                             textoPregunta={`${anotaciones.length === 1 ? '¿Desea eliminar la nota definitivamente?' : '¿Desea eliminar todas las notas definitivamente?'}`}
                             eliminarPregunta={true}
                             eliminarAceptar={true}
-                            textoAccion={`${anotaciones.length === 1 ? 'Eliminando la nota definitivamente...' : 'Eliminando las notas definitivamente...'}`}
+                            textoAccion="Eliminando definitivamente"
                             animadoEliminar={true}
                         />
                     )}
