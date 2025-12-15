@@ -35,8 +35,8 @@ export default function ModalRestablecerContrasena() {
                 <div
                     onClick={(e) => e.stopPropagation()}
                     className="bg-white dark:bg-gray-800 select-none
-                            z-50 p-4 overflow-hidden rounded-lg
-                            w-[75%] 2xs:w-[60%] lg:w-[25%] max-w-md h-auto shadow-2xl
+                            z-50 p-4 overflow-y-auto rounded-lg
+                            w-[75%] 2xs:w-[45%] lg:w-[25%] max-w-md h-auto shadow-2xl
                             flex flex-col gap-3">
 
                     <div className="flex flex-row justify-between">
