@@ -6,21 +6,31 @@ import { HiSearch, HiPlus, HiMenuAlt3, HiArrowDown } from "react-icons/hi";
 
 import { useSelector, useDispatch } from "react-redux";
 
-import { toggleOrganizarPorColumna, toggleVerSoloFavoritos,
-        guardarOrgColumna, guardarVerSoloFavoritos } from "../../../store/preferenciaSlice"; 
-        
+import {
+    toggleOrganizarPorColumna, toggleVerSoloFavoritos,
+    guardarOrgColumna, guardarVerSoloFavoritos
+} from "../../../store/preferenciaSlice";
+
 import { toggleVerModalCrearNota } from "../../../store/tareasSlice";
 
 import { useNavigate } from "react-router-dom";
 
 import { logDesarrollo, errorDesarrollo, registrarError } from "../../../utils/errorHandler";
 
+import useConexionInternet from "../../../hooks/useConexionInternet";
+
 export default function Footer() {
+
+    const { isOnline } = useConexionInternet();
 
     const dispatch = useDispatch();
 
     const handleVerModalCrearNota = () => {
-        dispatch(toggleVerModalCrearNota())
+        if (!isOnline) {
+            return
+        } else {
+            dispatch(toggleVerModalCrearNota())
+        }
     }
 
     const navigate = useNavigate();
@@ -33,22 +43,29 @@ export default function Footer() {
     const verSoloFavoritos = useSelector((state) => state.preferencia.verSoloFavoritos);
 
     const handleOrganizacion = () => {
-        // Primero cambia el estado local
-        dispatch(toggleOrganizarPorColumna());
-        
-        // Luego guarda en el backend
-        const nuevoValor = !organizarPorColumna;
-        dispatch(guardarOrgColumna(nuevoValor));
+        if (!isOnline) {
+            return
+        } else {
+            // Primero cambia el estado local
+            dispatch(toggleOrganizarPorColumna());
+
+            // Luego guarda en el backend
+            const nuevoValor = !organizarPorColumna;
+            dispatch(guardarOrgColumna(nuevoValor));
+        }
     }
 
     // ✅ Simplificado: solo actualizar preferencia, Cuerpo.jsx se encarga de recargar
     const handleToggleFavoritos = async () => {
         const nuevoValor = !verSoloFavoritos;
-        
+
         try {
-            // Guardar en el backend primero
-            await dispatch(guardarVerSoloFavoritos(nuevoValor)).unwrap();
-            
+            if (!isOnline) {
+                return
+            } else {
+                // Guardar en el backend primero
+                await dispatch(guardarVerSoloFavoritos(nuevoValor)).unwrap();
+            }
             // ✅ El useEffect de Cuerpo.jsx detectará el cambio y recargará automáticamente
             // NO necesitas llamar a cargarAnotaciones() aquí
         } catch (error) {
@@ -78,9 +95,9 @@ export default function Footer() {
                     <HiSearch className="text-2xl md:text-3xl text-violet-800 dark:text-white" />
                 </div>
 
-                <div className="w-full h-full p-1 active:bg-gray-300 dark:active:bg-gray-600
-                                rounded-sm cursor-pointer
-                                flex items-center justify-center"
+                <div className={`w-full h-full p-1 active:bg-gray-300 dark:active:bg-gray-600
+                                rounded-sm  ${!isOnline ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
+                                flex items-center justify-center`}
                     onClick={handleVerModalCrearNota}>
                     <div className="bg-violet-800 rounded-[50%] p-2
                                 flex item-center justify-center">
@@ -88,19 +105,21 @@ export default function Footer() {
                     </div>
                 </div>
 
-                
-                <div 
+
+                <div
                     onClick={handleToggleFavoritos}
-                    className="w-full h-full p-1 active:bg-gray-300 dark:active:bg-gray-600
+                    className={`w-full h-full p-1 active:bg-gray-300 dark:active:bg-gray-600
                                 text-2xl md:text-3xl text-violet-800 dark:text-white
-                                rounded-sm cursor-pointer
-                                flex items-center justify-center">
+                                rounded-sm 
+                                ${!isOnline ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
+                                flex items-center justify-center`}>
                     {verSoloFavoritos ? <HiStar /> : <HiOutlineStar />}
                 </div>
 
-                <div className="w-full h-full p-1 active:bg-gray-300 dark:active:bg-gray-600
-                                rounded-sm cursor-pointer
-                                flex items-center justify-center"
+                <div className={`w-full h-full p-1 active:bg-gray-300 dark:active:bg-gray-600
+                                rounded-sm
+                                ${!isOnline ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
+                                flex items-center justify-center`}
                     onClick={handleOrganizacion}>
                     {organizarPorColumna && (
                         <HiMenuAlt3 className="text-2xl md:text-3xl text-violet-800 dark:text-white" />

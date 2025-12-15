@@ -125,9 +125,13 @@ export default function ModalTarea() {
                 <div
                     onClick={(e) => e.stopPropagation()}
                     className="bg-white dark:bg-gray-800 
-                                z-50  overflow-hidde
-                                w-[75%] 2xs:w-[55%] h-auto
-                                flex flex-col gap-5">
+                                z-50 overflow-hidden
+                                w-[75%] 2xs:w-[55%] max-h-[90dvh]
+                                flex flex-col ">
+
+                    <div className="flex flex-col flex-1 
+                                    min-h-0
+                                    overflow-x-hidden overflow-y-auto">
 
                     <div className="p-2 flex flex-col">
 
@@ -199,6 +203,8 @@ export default function ModalTarea() {
                                 {cantTarea}/500
                             </p>
                         </div>
+
+                    </div>
 
                     </div>
 

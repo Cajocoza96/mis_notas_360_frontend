@@ -35,9 +35,13 @@ import {
     HiMenuAlt3, HiOutlineTrash, HiOutlineInformationCircle, HiSelector
 } from "react-icons/hi";
 
+import useConexionInternet from "../../../hooks/useConexionInternet";
+
 import { MdDeleteForever } from "react-icons/md";
 
 export default function ContOpSubCabecera() {
+
+    const { isOnline } = useConexionInternet();
 
     const { theme } = useTheme();
 
@@ -55,7 +59,11 @@ export default function ContOpSubCabecera() {
     }
 
     const handleVerModo = () => {
-        dispatch(toggleVerModo())
+        if (!isOnline) {
+            return
+        } else {
+            dispatch(toggleVerModo())
+        }
     }
 
     // ✅ Manejar seleccionar todo / anular selección
@@ -86,7 +94,11 @@ export default function ContOpSubCabecera() {
 
 
     const handleVerOrden = () => {
-        dispatch(toggleVerOrden())
+        if (!isOnline) {
+            return
+        } else {
+            dispatch(toggleVerOrden())
+        }
     }
 
     const handleVerOpcCabPagVisPrev = () => {
@@ -171,9 +183,10 @@ export default function ContOpSubCabecera() {
                                         )}
 
                                         {/*Cuando seleccionar sea true esto va a ocultarse*/}
-                                        <div className="w-full p-1 border-b border-gray-400
+                                        <div className={`w-full p-1 border-b border-gray-400
                                         text-black dark:text-white 
-                                        bg-white dark:bg-gray-800 cursor-pointer"
+                                        ${!isOnline ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
+                                        bg-white dark:bg-gray-800`}
                                             onClick={handleVerOrden}>
                                             <OpcionesCabecera
                                                 className="justify-start"
@@ -183,9 +196,10 @@ export default function ContOpSubCabecera() {
                                         </div>
 
                                         {/*Cuando seleccionar sea true esto va a ocultarse*/}
-                                        <div className="w-full p-1 border-b border-gray-400
+                                        <div className={`w-full p-1 border-b border-gray-400
+                                        ${!isOnline ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
                                         text-black dark:text-white 
-                                        bg-white dark:bg-gray-800 cursor-pointer"
+                                        bg-white dark:bg-gray-800`}
                                             onClick={handleVerModo}>
                                             <OpcionesCabecera
                                                 className="justify-start"

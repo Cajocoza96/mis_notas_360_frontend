@@ -418,7 +418,7 @@ export default function ModalConfirmacion({ textoPregunta, textoAccion, restaura
 
             dispatch(mostrarNotificacion({
                 mensaje: `${esPapelera
-                        ? (
+                    ? (
                         anotaciones.length === 1
                             ? '¡Error al eliminar la nota definitivamente!'
                             : anotaciones.length > 1
@@ -426,8 +426,8 @@ export default function ModalConfirmacion({ textoPregunta, textoAccion, restaura
                                 : ''
                     )
                     : (
-                        anotacionesSeleccionadas.length === 1 ? '¡Error al eliminar la nota definitivamente!' 
-                        : anotacionesSeleccionadas.length > 1  ? '¡Error al eliminar las notas definitivamente!' : '')}`,
+                        anotacionesSeleccionadas.length === 1 ? '¡Error al eliminar la nota definitivamente!'
+                            : anotacionesSeleccionadas.length > 1 ? '¡Error al eliminar las notas definitivamente!' : '')}`,
                 esError: true
             }));
 
@@ -547,9 +547,13 @@ export default function ModalConfirmacion({ textoPregunta, textoAccion, restaura
                     onClick={(e) => e.stopPropagation()}
                     className="bg-white dark:bg-gray-800 select-none
                             z-50 p-3 overflow-hidden rounded-lg
-                            w-[75%] 2xs:w-[55%] h-auto shadow-2xl">
+                            w-[75%] 2xs:w-[55%] max-h-[90dvh] shadow-2xl 
+                            flex flex-col">
 
-                    <div className="mx-auto w-full flex flex-col gap-4 2xl:gap-5">
+                    <div className="mx-auto w-full 
+                                    p-2 min-h-0 
+                                    overflow-y-auto overflow-x-hidden
+                                    flex flex-col flex-1 gap-4 2xl:gap-5">
                         <div className="flex flex-col justify-center items-center gap-2">
 
                             {!procesando && (
@@ -624,5 +628,4 @@ export default function ModalConfirmacion({ textoPregunta, textoAccion, restaura
             </motion.div>
         </>
     );
-
 };

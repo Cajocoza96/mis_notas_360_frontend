@@ -163,18 +163,22 @@ export default function Cuerpo({ notaNoEliminada,
     // Manejar clic en los estados
     const handleEstadoClick = async (nuevoEstado) => {
         try {
-            setProcesando(true);
-            await dispatch(guardarVerAnotacEstado(nuevoEstado)).unwrap();
-
-            // Verificar si ya estamos en /panel-principal
-            if (location.pathname === "/panel-principal") {
-                // Si ya estamos en la ruta, solo actualizamos el estado
-                setProcesando(false);
+            if (!isOnline) {
+                return
             } else {
-                // Si no estamos en la ruta, navegamos y esperamos
-                navigate("/panel-principal");
-                // No ponemos setProcesando(false) aquí
-                // El siguiente useEffect lo manejará
+                setProcesando(true);
+                await dispatch(guardarVerAnotacEstado(nuevoEstado)).unwrap();
+
+                // Verificar si ya estamos en /panel-principal
+                if (location.pathname === "/panel-principal") {
+                    // Si ya estamos en la ruta, solo actualizamos el estado
+                    setProcesando(false);
+                } else {
+                    // Si no estamos en la ruta, navegamos y esperamos
+                    navigate("/panel-principal");
+                    // No ponemos setProcesando(false) aquí
+                    // El siguiente useEffect lo manejará
+                }
             }
         } catch (error) {
             errorDesarrollo('Error al cambiar filtro de estado:', error);

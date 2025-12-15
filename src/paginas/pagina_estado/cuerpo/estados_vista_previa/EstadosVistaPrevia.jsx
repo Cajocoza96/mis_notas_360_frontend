@@ -1,14 +1,20 @@
 import React from "react";
 
+import useConexionInternet from "../../../../hooks/useConexionInternet";
+
 export default function EstadosVistaPrevia({ iconoEstado, tipoEstado, cantidadEstado, 
                                             no_asignado, pendiente, finalizado, 
                                             seleccionado, onClick }) {
+
+    const { isOnline} = useConexionInternet();
+
     return (
         <div
             onClick={onClick}
-            className={`mx-auto mt-2 w-[98%] h-20 p-2 rounded-md border select-none cursor-pointer
+            className={`mx-auto mt-2 w-[98%] h-20 p-2 rounded-md border select-none
                         flex flex-row items-center justify-between gap-1 overflow-hidden
                         transition-all duration-200
+                        ${!isOnline ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
                         ${seleccionado ? 'outline-2 outline-black dark:outline-white' : ''}
                         ${no_asignado ? 'border-blue-700 dark:border-blue-300 bg-blue-200 dark:bg-blue-950 hover:bg-blue-300 active:bg-blue-300 dark:hover:bg-blue-900 dark:active:bg-blue-900':
                             pendiente ? 'border-yellow-700 dark:border-yellow-300 bg-yellow-200 dark:bg-yellow-950 hover:bg-yellow-300 active:bg-yellow-300 dark:hover:bg-yellow-900 dark:active:bg-yellow-900':

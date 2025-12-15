@@ -57,8 +57,12 @@ export default function ModalEstado() {
                 onClick={(e) => e.stopPropagation()}
                 className="bg-white dark:bg-gray-800 
                             z-50 p-3 overflow-hidden
-                            w-[75%] 2xs:w-[55%] h-auto ">
+                            w-[75%] 2xs:w-[55%]
+                            flex flex-col max-h-[90dvh] ">
 
+                <div className="flex flex-col flex-1 
+                                overflow-y-auto overflow-x-hidden min-h-0">
+                
                 <div className="flex flex-col gap-2">
 
                     {opcionesDisponibles.includes("no_asignado") && (
@@ -126,7 +130,9 @@ export default function ModalEstado() {
 
                 </div>
 
-                <div className="flex flex-row items-center justify-end gap-6 2xl:gap-7">
+                </div>
+
+                <div className="flex flex-row flex-shrink-0 items-center justify-end gap-6 2xl:gap-7">
                     <p
                         className="text-base md:text-lg
                                         text-black dark:text-white cursor-pointer"
