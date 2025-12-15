@@ -37,7 +37,7 @@ export default function ModalRestablecerContrasena() {
                 className="bg-white dark:bg-gray-800
                         z-50 rounded-lg shadow-2xl
                         w-[80%] 2xs:w-[45%] lg:w-[25%]
-                        max-h-[90vh] flex flex-col">
+                        max-h-[90dvh] flex flex-col">
 
                 {/* Header fijo (no hace scroll) */}
                 <div className="flex flex-row justify-between items-start
