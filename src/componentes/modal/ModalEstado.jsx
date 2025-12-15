@@ -57,7 +57,7 @@ export default function ModalEstado() {
                 onClick={(e) => e.stopPropagation()}
                 className="bg-white dark:bg-gray-800 
                             z-50 p-3 overflow-hidden
-                            w-[90%] h-auto ">
+                            w-[75%] 2xs:w-[55%] h-auto ">
 
                 <div className="flex flex-col gap-2">
 

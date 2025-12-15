@@ -60,7 +60,7 @@ export default function ModalConfirmacion({ textoPregunta, textoAccion, restaura
     const { id } = useParams();
     const { cerrarSesion, eliminarCuenta } = useAuth();
 
-    const { anotaciones } = useSelector((state) => state.anotaciones);
+    const { anotaciones = [] } = useSelector((state) => state.anotaciones);
 
     const anotacionesSeleccionadas = useSelector((state) => state.anotaciones.anotacionesSeleccionadas);
 

@@ -17,7 +17,7 @@ export default function CantidadTituloNota() {
 
     return (
         <div className="p-2 z-10 w-full bg-gray-300 dark:bg-gray-900 select-none
-                        flex flex-row justify-between">
+                        flex flex-row justify-around">
             
             <p className="text-sm md:text-base text-black dark:text-white">
                 Titulo <span className={limiteExcedidoTitulo ? "text-red-600" : ""}>

@@ -48,7 +48,7 @@ export default function ContOpSubCabecera() {
     const seleccionarTodo = useSelector((state) => state.anotaciones.seleccionarTodo);
     const anotacionesSeleccionadas = useSelector((state) => state.anotaciones.anotacionesSeleccionadas);
 
-    const { anotaciones } = useSelector((state) => state.anotaciones);
+    const { anotaciones = [] } = useSelector((state) => state.anotaciones);
 
     const handleVerOpcionesCabecera = () => {
         dispatch(toggleVerOpcionesCabecera())

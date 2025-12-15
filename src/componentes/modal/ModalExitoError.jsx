@@ -38,7 +38,7 @@ export default function ModalExitoError({ animado }) {
                 <div
                     className="bg-white dark:bg-gray-800 select-none
                                     z-50 p-3 overflow-hidden rounded-lg
-                                    w-[90%] max-w-md h-auto shadow-2xl">
+                                    w-[75%] 2xs:w-[55%] h-auto shadow-2xl">
 
                     <div className="mx-auto w-full flex flex-col items-center gap-4 2xl:gap-8">
                         <div className="flex flex-col items-center gap-2 2xl:gap-6">

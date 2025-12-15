@@ -126,7 +126,7 @@ export default function ModalTarea() {
                     onClick={(e) => e.stopPropagation()}
                     className="bg-white dark:bg-gray-800 
                                 z-50  overflow-hidde
-                                w-[70%] h-auto
+                                w-[75%] 2xs:w-[55%] h-auto
                                 flex flex-col gap-5">
 
                     <div className="p-2 flex flex-col">

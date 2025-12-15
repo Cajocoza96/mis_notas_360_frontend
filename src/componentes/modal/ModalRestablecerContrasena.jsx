@@ -36,22 +36,26 @@ export default function ModalRestablecerContrasena() {
                     onClick={(e) => e.stopPropagation()}
                     className="bg-white dark:bg-gray-800 select-none
                             z-50 p-4 overflow-hidden rounded-lg
-                            w-[90%] max-w-md h-auto shadow-2xl
+                            w-[75%] 2xs:w-[45%] lg:w-[25%] max-w-md h-auto shadow-2xl
                             flex flex-col gap-3">
 
-                    <div
-                        className="text-2xl md:text-3xl text-red-600 dark:text-red-500
-                                flex flex-col items-end">
-                        <HiX
-                            onClick={handleCerrarModal}
-                            className={`cursor-pointer ${cargando ? 'opacity-50 cursor-not-allowed' : ''}`}
-                        />
-                    </div>
+                    <div className="flex flex-row justify-between">
 
-                    <p className="text-base md:text-lg text-center
+                        <p className="text-base md:text-lg text-center
                             text-black dark:text-white font-semibold">
-                        Restablecer contraseña
-                    </p>
+                            Restablecer contraseña
+                        </p>
+
+                        <div
+                            className="text-2xl md:text-3xl text-red-600 dark:text-red-500
+                                flex flex-col items-end">
+                            <HiX
+                                onClick={handleCerrarModal}
+                                className={`cursor-pointer ${cargando ? 'opacity-50 cursor-not-allowed' : ''}`}
+                            />
+                        </div>
+
+                    </div>
 
                     <CorreoContrasena
                         textoContrasena="Nueva contraseña"

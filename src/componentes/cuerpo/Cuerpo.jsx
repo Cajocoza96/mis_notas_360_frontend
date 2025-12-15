@@ -52,7 +52,7 @@ export default function Cuerpo({ notaNoEliminada,
     const verAdminAnotacion = useSelector((state) => state.anotaciones.verAdminAnotacion);
 
     // ✅ Obtener también mostrandoResultados
-    const { anotaciones } = useSelector((state) => state.anotaciones);
+    const { anotaciones = [] } = useSelector((state) => state.anotaciones);
 
     const { terminoBusqueda, resultadosBusqueda, cargandoBusqueda } = useSelector((state) => state.busqueda);
 
@@ -165,7 +165,7 @@ export default function Cuerpo({ notaNoEliminada,
         try {
             setProcesando(true);
             await dispatch(guardarVerAnotacEstado(nuevoEstado)).unwrap();
-            
+
             // Verificar si ya estamos en /panel-principal
             if (location.pathname === "/panel-principal") {
                 // Si ya estamos en la ruta, solo actualizamos el estado
@@ -208,7 +208,7 @@ export default function Cuerpo({ notaNoEliminada,
             {notaNoEliminada && (
                 <div className={`w-[95%] h-full mx-auto overflow-y-auto 
                                 overflow-x-hidden min-h-0 min-w-0 pb-3
-                                grid
+                                ${(!isOnline && (verContenidoCuerpo || verNotaEliminada)) ? 'flex items-center justify-center' : 'grid'}
                 ${organizarPorColumna ? 'grid-cols-2 2xs:grid-cols-3 lg:grid-cols-5' : 'grid-cols-1'} gap-5 lg:gap-3
                 ${anotaciones.length === 0 || cargando ? 'auto-rows-auto' : 'auto-rows-[11rem]'}`}>
 
@@ -220,25 +220,28 @@ export default function Cuerpo({ notaNoEliminada,
 
                     {verContenidoCuerpo && (
                         <>
-                            {/* ✅ Mostrar spinner mientras carga O mientras no se deben mostrar resultados */}
-                            {cargando ? (
-                                <CargandoNoHayNada CargandoAnotaciones={true} />
+                            {!isOnline ? (
+                                <CargandoNoHayNada iconoSinConexion={false} />
+                            ) :
+                                /* ✅ Mostrar spinner mientras carga O mientras no se deben mostrar resultados */
+                                cargando ? (
+                                    <CargandoNoHayNada CargandoAnotaciones={true} />
 
-                            ) : anotaciones.length === 0 ? (
-                                <CargandoNoHayNada sinEstadoFavoritoNada={true} />
-                            ) : (
-                                anotaciones.map((anotacion) => (
-                                    <NotaVistaPrevia
-                                        iconoFavorito={true}
-                                        iconoAdministrar={true}
-                                        key={anotacion.id}
-                                        anotacionId={anotacion.id}
-                                        texto={obtenerTextoVistaPrevia(anotacion)}
-                                        esFavorito={Boolean(anotacion.favorito)}
-                                        {...obtenerEstadoProps(anotacion.estado)}
-                                    />
-                                ))
-                            )}
+                                ) : anotaciones.length === 0 ? (
+                                    <CargandoNoHayNada sinEstadoFavoritoNada={true} />
+                                ) : (
+                                    anotaciones.map((anotacion) => (
+                                        <NotaVistaPrevia
+                                            iconoFavorito={true}
+                                            iconoAdministrar={true}
+                                            key={anotacion.id}
+                                            anotacionId={anotacion.id}
+                                            texto={obtenerTextoVistaPrevia(anotacion)}
+                                            esFavorito={Boolean(anotacion.favorito)}
+                                            {...obtenerEstadoProps(anotacion.estado)}
+                                        />
+                                    ))
+                                )}
                         </>
                     )}
 
@@ -276,25 +279,28 @@ export default function Cuerpo({ notaNoEliminada,
 
                     {verNotaEliminada && (
                         <>
-                            {cargando ? (
-                                <CargandoNoHayNada
-                                    CargandoAnotaciones={true}
-                                />
-                            ) : anotaciones.length === 0 ? (
-                                <CargandoNoHayNada
-                                    noHayEliminadas={true}
-                                />
-                            ) : (
-                                anotaciones.map((anotacion) => (
-                                    <NotaVistaPrevia
-                                        key={anotacion.id}
-                                        anotacionId={anotacion.id}
-                                        iconoRestaurarEliminarDefinitivo={true}
-                                        texto={obtenerTextoVistaPrevia(anotacion)}
-                                        {...obtenerEstadoProps(anotacion.estado)}
+                            {!isOnline ? (
+                                <CargandoNoHayNada iconoSinConexion={false} />
+                            ) :
+                                cargando ? (
+                                    <CargandoNoHayNada
+                                        CargandoAnotaciones={true}
                                     />
-                                ))
-                            )}
+                                ) : anotaciones.length === 0 ? (
+                                    <CargandoNoHayNada
+                                        noHayEliminadas={true}
+                                    />
+                                ) : (
+                                    anotaciones.map((anotacion) => (
+                                        <NotaVistaPrevia
+                                            key={anotacion.id}
+                                            anotacionId={anotacion.id}
+                                            iconoRestaurarEliminarDefinitivo={true}
+                                            texto={obtenerTextoVistaPrevia(anotacion)}
+                                            {...obtenerEstadoProps(anotacion.estado)}
+                                        />
+                                    ))
+                                )}
                         </>
                     )}
                 </div>

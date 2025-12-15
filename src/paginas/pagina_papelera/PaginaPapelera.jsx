@@ -22,7 +22,7 @@ export default function PaginaPapelera() {
 
     const verModalEliminarTodasLasNotasDefinitivo = useSelector((state) => state.tareas.verModalEliminarTodasLasNotasDefinitivo);
 
-    const { anotaciones } = useSelector((state) => state.anotaciones);
+    const { anotaciones = [] } = useSelector((state) => state.anotaciones);
 
     const verToast = useSelector((state) => state.acceso.verToast);
 
@@ -110,7 +110,7 @@ export default function PaginaPapelera() {
 
                 {anotaciones.length === 0 ? '' :
                     <Footer
-                        textoCantElimi={`${anotaciones.length === 0 ? '' : anotaciones.length === 1 ? 'Eliminar nota' : 'Eliminar todas las notas'}`}
+                        textoCantElimi={`${anotaciones.length === 0 ? '' : anotaciones.length === 1 ? 'Eliminar nota' : anotaciones.length > 1 ? 'Eliminar todas las notas' : ''}`}
                     />
                 }
 
