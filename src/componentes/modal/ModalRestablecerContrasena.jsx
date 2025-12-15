@@ -24,38 +24,43 @@ export default function ModalRestablecerContrasena() {
     return (
         <>
             <motion.div
-                onClick={handleCerrarModal}
-                className="fixed inset-0 z-50 bg-black/70
-                            flex items-center justify-center"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.2 }}>
+            onClick={handleCerrarModal}
+            className="fixed inset-0 z-50 bg-black/70
+                        flex items-center justify-center p-4"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}>
 
-                <div
-                    onClick={(e) => e.stopPropagation()}
-                    className="bg-white dark:bg-gray-800 select-none
-                            z-50 p-4 overflow-y-auto rounded-lg
-                            w-[75%] 2xs:w-[45%] lg:w-[25%] max-w-md h-auto shadow-2xl
-                            flex flex-col gap-3">
+            <div
+                onClick={(e) => e.stopPropagation()}
+                className="bg-white dark:bg-gray-800
+                        z-50 rounded-lg shadow-2xl
+                        w-[80%] 2xs:w-[45%] lg:w-[25%]
+                        max-h-[90vh] flex flex-col">
 
-                    <div className="flex flex-row justify-between">
+                {/* Header fijo (no hace scroll) */}
+                <div className="flex flex-row justify-between items-start
+                                p-4 border-b border-gray-200 dark:border-gray-700
+                                flex-shrink-0">
 
-                        <p className="text-base md:text-lg text-center
-                            text-black dark:text-white font-semibold">
-                            Restablecer contraseña
-                        </p>
+                    <p className="text-base md:text-lg
+                                text-black dark:text-white font-semibold">
+                        Restablecer contraseña
+                    </p>
 
-                        <div
-                            className="text-2xl md:text-3xl text-red-600 dark:text-red-500
-                                flex flex-col items-end">
-                            <HiX
-                                onClick={handleCerrarModal}
-                                className={`cursor-pointer ${cargando ? 'opacity-50 cursor-not-allowed' : ''}`}
-                            />
-                        </div>
-
+                    <div className="text-2xl md:text-3xl text-red-600 dark:text-red-500">
+                        <HiX
+                            onClick={handleCerrarModal}
+                            className={`cursor-pointer ${cargando ? 'opacity-50 cursor-not-allowed' : ''}`}
+                        />
                     </div>
+
+                </div>
+
+                {/* Contenido con scroll */}
+                <div className="flex-1 overflow-y-auto overflow-x-hidden
+                                p-4 min-h-0">
 
                     <CorreoContrasena
                         textoContrasena="Nueva contraseña"
@@ -64,7 +69,9 @@ export default function ModalRestablecerContrasena() {
 
                 </div>
 
-            </motion.div>
+            </div>
+
+        </motion.div>
         </>
     );
 }
