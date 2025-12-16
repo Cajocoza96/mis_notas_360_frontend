@@ -26,9 +26,13 @@ import RutaProtegida from "./RutaProtegida";
 import RutaPublica from "./RutaPublica";
 import PageTransition from "./PageTransition";
 
+import useConexionInternet from "../hooks/useConexionInternet";
+
 export default function Rutas() {
     const location = useLocation();
     const dispatch = useDispatch();
+
+    const { isOnline } = useConexionInternet();
 
     useEffect(() => {
         // Resetear todos los estados cuando cambia la ruta
@@ -36,7 +40,7 @@ export default function Rutas() {
         dispatch(resetAllTareasState());
         dispatch(resetAllANotacionesState());
         dispatch(resetAllAccesoState());
-    }, [location.pathname, dispatch]);
+    }, [location.pathname, dispatch, !isOnline]);
 
     return (
         <Routes location={location} key={location.pathname}>

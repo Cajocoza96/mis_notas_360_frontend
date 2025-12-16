@@ -11,9 +11,12 @@ import { setAnotacionActual } from "../../store/anotacionesSlice";
 import Cabecera from "./cabecera/Cabecera";
 import CuerpoEdicion from "../../componentes/cuerpo/CuerpoEdicion";
 import Footer from "./footer/Footer";
+import OrdenarTareasPor from "./ordenar_tareas_por/OrdenarTareasPor";
 import CantidadTituloNota from "./cantidad_titulo_nota/CantidadTituloNota";
 
 import ModalEstado from "../../componentes/modal/ModalEstado";
+
+import ModalOrdenarTareas from "../../componentes/modal/ModalOrdenarTareas";
 
 import ModalExitoError from "../../componentes/modal/ModalExitoError";
 
@@ -52,6 +55,8 @@ export default function PaginaCrearEditNota() {
     const { isOnline, justReconnected, resetReconnectionState } = useConexionInternet();
 
     const verModalEstado = useSelector((state) => state.tareas.verModalEstado);
+
+    const verModalOrdenTareas = useSelector((state) => state.tareas.verModalOrdenTareas);
 
     // Determinar si estamos en modo edición
     const esModoEdicion = location.pathname.includes('/editar/nota/');
@@ -298,48 +303,60 @@ export default function PaginaCrearEditNota() {
                 )}
 
                 <AnimatePresence>
-                    <ModalExitoError animado={true}/>
+                    <ModalExitoError animado={true} />
                 </AnimatePresence>
 
                 {mostrarSkeleton ? (
                     <SkeletonCrearEditPrevia />
                 ) : mostrarSinConexion ? (
-                        <div className="flex-1 flex items-center justify-center">
-                            <CargandoNoHayNada />
-                        </div>
-                    ) : mostrarContenido ? (
-                        <>
-                            <AnimatePresence>
-                                {verModalEstado && (
-                                    <ModalEstado />
-                                )}
-                            </AnimatePresence>
 
-                            <Cabecera
-                                ref={tituloRef}
-                                handleTituloChange={handleTituloChangeAdapter}
-                                handleTituloKeyDown={handleTituloKeyDownAdapter}
-                            />
+                    <div className="flex-1 flex items-center justify-center">
+                        <CargandoNoHayNada advertenciaSinConexion={true} />
+                    </div>
+                ) : mostrarContenido ? (
+                    <>
 
-                            <CuerpoEdicion
-                                ref={notaRef}
-                                handleNotaChange={handleNotaChangeAdapter}
-                                handleNotaKeyDown={handleNotaKeyDownAdapter}
-                                esModoVistaPrevia={false}
-                            />
+                        <CargandoNoHayNada />
+                        <AnimatePresence>
+                            {verModalEstado && (
+                                <ModalEstado />
+                            )}
+                        </AnimatePresence>
 
-                            <CantidadTituloNota />
+                        <AnimatePresence>
+                            {verModalOrdenTareas && (
+                                <ModalOrdenarTareas />
+                            )}
+                        </AnimatePresence>
 
-                            <Footer
-                                handleUndoClick={handleUndoClickAdapter}
-                                handleRedoClick={handleRedoClickAdapter}
-                                esModoEdicion={esModoEdicion}
-                                tituloRef={tituloRef}
-                                notaRef={notaRef}
-                            />
-                        </>
-                        
-                    ): null}
+                        <Cabecera
+                            ref={tituloRef}
+                            handleTituloChange={handleTituloChangeAdapter}
+                            handleTituloKeyDown={handleTituloKeyDownAdapter}
+                        />
+
+                        <CuerpoEdicion
+                            ref={notaRef}
+                            handleNotaChange={handleNotaChangeAdapter}
+                            handleNotaKeyDown={handleNotaKeyDownAdapter}
+                            esModoVistaPrevia={false}
+                        />
+
+                        <OrdenarTareasPor />
+
+                        <CantidadTituloNota />
+
+                        <Footer
+                            handleUndoClick={handleUndoClickAdapter}
+                            handleRedoClick={handleRedoClickAdapter}
+                            esModoEdicion={esModoEdicion}
+                            tituloRef={tituloRef}
+                            notaRef={notaRef}
+                        />
+
+                    </>
+
+                ) : null}
 
             </motion.div>
         </AnimatePresence>

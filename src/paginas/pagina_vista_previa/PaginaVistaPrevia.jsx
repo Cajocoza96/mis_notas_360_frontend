@@ -177,7 +177,7 @@ export default function PaginaVistaPrevia() {
         if (!isOnline && (cargando || errorCarga)) {
             return (
                 <div className="flex-1 flex items-center justify-center">
-                    <CargandoNoHayNada />
+                    <CargandoNoHayNada advertenciaSinConexion={true}/>
                 </div>
             );
         }

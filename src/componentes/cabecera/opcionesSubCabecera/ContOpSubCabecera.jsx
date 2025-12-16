@@ -169,7 +169,7 @@ export default function ContOpSubCabecera() {
                                 {/* ✅ Opciones cuando NO está en modo selección */}
                                 {!seleccionar && (
                                     <>
-                                        {anotaciones.length > 0 && (
+                                        {anotaciones.length > 0 && isOnline && (
                                             <div className="w-full p-1 border-b border-gray-400
                                             text-black dark:text-white 
                                             bg-white dark:bg-gray-800 cursor-pointer"
@@ -235,16 +235,18 @@ export default function ContOpSubCabecera() {
                                 {/* ✅ Opciones cuando SÍ está en modo selección */}
                                 {seleccionar && (
                                     <>
-                                        <div className="w-full p-1 border-b border-gray-400
-                                                        text-black dark:text-white 
-                                                        bg-white dark:bg-gray-800 cursor-pointer"
-                                            onClick={handleSeleccionarTodo}>
-                                            <OpcionesCabecera
-                                                className="justify-start"
-                                                iconoOpcion={<HiSelector className="text-2xl md:text-3xl" />}
-                                                nombreOpcion={seleccionarTodo ? "Anular selección" : "Seleccionar todo"}
-                                            />
-                                        </div>
+                                        {isOnline && (
+                                            <div className="w-full p-1 border-b border-gray-400
+                                        text-black dark:text-white 
+                                        bg-white dark:bg-gray-800 cursor-pointer"
+                                                onClick={handleSeleccionarTodo}>
+                                                <OpcionesCabecera
+                                                    className="justify-start"
+                                                    iconoOpcion={<HiSelector className="text-2xl md:text-3xl" />}
+                                                    nombreOpcion={seleccionarTodo ? "Anular selección" : "Seleccionar todo"}
+                                                />
+                                            </div>
+                                        )}
 
                                         <div className="w-full p-1 border-b border-gray-400
                                             text-black dark:text-white 

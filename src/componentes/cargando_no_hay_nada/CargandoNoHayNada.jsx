@@ -10,6 +10,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import BotonAccion from "../botones/BotonAccion";
 
 export default function CargandoNoHayNada({
+    advertenciaSinConexion,
     pantallaCompletaCarga,
     iconoDeCarga,
     CargandoAnotaciones,
@@ -83,7 +84,7 @@ export default function CargandoNoHayNada({
             )}
 
             {/* Mensaje de conexión a internet */}
-            {!isOnline && !iconoSinConexion && !esPaginaEstado && (
+            {advertenciaSinConexion && !isOnline && !iconoSinConexion && !esPaginaEstado && (
                 <div className="col-span-full text-center p-4 select-none
                                 text-black dark:text-white
                                 flex flex-col items-center justify-center gap-3">

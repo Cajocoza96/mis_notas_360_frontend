@@ -20,6 +20,8 @@ const initialState = {
 
     verModalEstado: false,
 
+    verModalOrdenTareas: false,
+
     // Estados para CrearEditNota
     isTituloFocused: false,
     isNotaFocused: false,
@@ -111,6 +113,13 @@ const tareasSlice = createSlice({
         },
         setVerModalEstado: (state, action) => {
             state.verModalEstado = action.payload
+        },
+
+        toggleVerModalOrdenTareas : (state) => {
+            state.verModalOrdenTareas =!state.verModalOrdenTareas
+        },
+        setVerModalOrdenTareas: (state, action) => {
+            state.verModalOrdenTareas = action.payload
         },
 
         setTareas: (state, action) => {
@@ -253,6 +262,8 @@ export const {
     toggleVerModalTarea,
     setVerModalTarea,
     toggleVerModalEstado,
+    toggleVerModalOrdenTareas,
+    setVerModalOrdenTareas,
     setVerModalEstado,
     setTareas,
     agregarTarea,
