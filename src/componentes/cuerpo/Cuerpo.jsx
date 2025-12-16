@@ -64,7 +64,7 @@ export default function Cuerpo({ notaNoEliminada,
 
     // Cargar contadores al montar el componente
     useEffect(() => {
-        if (verTodosEstados && !cargando) {
+        if (verTodosEstados && !cargando && isOnline) {
             cargarContadores();
         }
     }, [verTodosEstados]);
@@ -93,9 +93,9 @@ export default function Cuerpo({ notaNoEliminada,
 
     // ✅ Cargar anotaciones usando el thunk cuando cambien los filtros
     useEffect(() => {
-        if (verContenidoCuerpo) {
+        if (verContenidoCuerpo  && isOnline) {
             cargarAnotaciones();
-        } else if (verNotaEliminada) {
+        } else if (verNotaEliminada  && isOnline) {
             cargarAnotacionesEliminadas();
         }
     }, [verContenidoCuerpo, verNotaEliminada, verSoloFavoritos, verAnotacEstado, ordenAnotaciones, location.pathname]);
