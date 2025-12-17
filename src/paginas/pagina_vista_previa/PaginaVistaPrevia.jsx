@@ -63,7 +63,8 @@ export default function PaginaVistaPrevia() {
     // ✅ NUEVO: Reintentar cargar cuando se recupere la conexión
     useEffect(() => {
         // Si estaba sin conexión y ahora hay conexión, reintentar carga
-        if (isOnline && cargando && id && esModoVistaPrevia) {
+        // También reintenta si hubo error previo
+        if (isOnline && (cargando || errorCarga) && id && esModoVistaPrevia) {
             cargarAnotacion();
         }
     }, [isOnline]);
@@ -80,13 +81,6 @@ export default function PaginaVistaPrevia() {
             setErrorCarga(false);
 
             const anotacion = await obtenerAnotacionPorId(id);
-
-            // ✅ VALIDACIÓN: Si no existe, redirigir ANTES de actualizar estados
-            if (!anotacion || !anotacion.id) {
-                errorDesarrollo('❌ Anotación no encontrada');
-                navigate('/nota-no-encontrada', { replace: true });
-                return;
-            }
 
             // ✅ Primero: Actualizar Redux con toda la información
             dispatch(setAnotacionActual(anotacion));
@@ -115,9 +109,6 @@ export default function PaginaVistaPrevia() {
                 setErrorCarga(true);
                 setCargando(false);
                 //navigate('/nota-no-encontrada', { replace: true });
-                return (
-                    <CargandoNoHayNada />
-                );
             } else {
                 // Sin conexión: mantener en estado de carga
                 setCargando(true);
@@ -202,10 +193,16 @@ export default function PaginaVistaPrevia() {
             return <SkeletonCrearEditPrevia />;
         }
 
-        // ✅ Si hubo error con conexión, no mostrar nada
-        // (ya se redirigió a /nota-no-encontrada en el catch)
+        // ✅ Si hubo error con conexión → mostrar mensaje de error
         if (errorCarga && isOnline) {
-            return null;
+            return (
+                <div className="flex-1 flex items-center justify-center">
+                    <CargandoNoHayNada
+                        mensaje="Error al cargar la nota"
+                        subMensaje="Intenta recargar la página"
+                    />
+                </div>
+            );
         }
 
         // Si no está cargando y no hay error, mostrar el contenido normal
