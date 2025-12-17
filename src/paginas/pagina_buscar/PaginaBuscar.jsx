@@ -114,7 +114,7 @@ export default function PaginaBuscar() {
 
                 {!isOnline ? (
                     <div className="flex-1 flex items-center justify-center">
-                        <CargandoNoHayNada advertenciaSinConexion={true}/>
+                        <CargandoNoHayNada />
                     </div>
                 ) : (
                     <>

@@ -156,7 +156,7 @@ const CuerpoEdicion = forwardRef(({ handleNotaChange, handleNotaKeyDown, esModoV
                     }}
                 />
 
-                {!tieneNota && !isNotaFocused && (
+                {!tieneNota && !isNotaFocused && justReconnected && (
                     <div className="absolute top-2 left-2 pointer-events-none
                                     text-base md:text-lg text-gray-500 dark:text-gray-400">
                         {esModoVistaPrevia ? 'Sin nota' : 'Colocar nota'}

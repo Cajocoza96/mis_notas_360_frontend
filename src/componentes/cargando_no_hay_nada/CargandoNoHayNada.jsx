@@ -84,7 +84,7 @@ export default function CargandoNoHayNada({
             )}
 
             {/* Mensaje de conexión a internet */}
-            {advertenciaSinConexion && !isOnline && !iconoSinConexion && !esPaginaEstado && (
+            {!isOnline && !iconoSinConexion && !esPaginaEstado && (
                 <div className="col-span-full text-center p-4 select-none
                                 text-black dark:text-white
                                 flex flex-col items-center justify-center gap-3">

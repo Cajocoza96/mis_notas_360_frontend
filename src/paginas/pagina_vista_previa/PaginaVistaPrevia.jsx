@@ -39,7 +39,7 @@ export default function PaginaVistaPrevia() {
 
     // ✅ Estado local simple para controlar la carga
     const [cargando, setCargando] = useState(true);
-    // ✅ NUEVO: Estado para controlar si hubo error
+    // ✅ Estado para controlar si hubo error
     const [errorCarga, setErrorCarga] = useState(false);
 
     const { isOnline, justReconnected, resetReconnectionState } = useConexionInternet();
@@ -81,6 +81,13 @@ export default function PaginaVistaPrevia() {
 
             const anotacion = await obtenerAnotacionPorId(id);
 
+            // ✅ VALIDACIÓN: Si no existe, redirigir ANTES de actualizar estados
+            if (!anotacion || !anotacion.id) {
+                errorDesarrollo('❌ Anotación no encontrada');
+                navigate('/nota-no-encontrada', { replace: true });
+                return;
+            }
+
             // ✅ Primero: Actualizar Redux con toda la información
             dispatch(setAnotacionActual(anotacion));
             dispatch(setNota(anotacion.nota || ""));
@@ -107,7 +114,10 @@ export default function PaginaVistaPrevia() {
             if (isOnline) {
                 setErrorCarga(true);
                 setCargando(false);
-                navigate('/nota-no-encontrada', { replace: true });
+                //navigate('/nota-no-encontrada', { replace: true });
+                return (
+                    <CargandoNoHayNada />
+                );
             } else {
                 // Sin conexión: mantener en estado de carga
                 setCargando(true);
@@ -130,22 +140,27 @@ export default function PaginaVistaPrevia() {
         };
     }, [dispatch]);
 
-    const [reload, setReload] = useState(false);
-
-    const recargarComponente = () => {
-        setReload(prev => !prev);
-    }
-
-    // Efecto para recargar pagina cuando se restablece la conexión
+    // ✅ SOLUCIÓN: Efecto para recargar cuando se restablece la conexión
     useEffect(() => {
-        if (justReconnected) {
+        if (justReconnected && id && esModoVistaPrevia) {
+            // ✅ CRÍTICO: Forzar estado de carga inmediatamente
+            // Esto evita el parpadeo de "sin título"
+            setCargando(true);
+            setErrorCarga(false);
 
-            recargarComponente();
+            // Limpiar Redux para evitar mostrar datos antiguos/vacíos
+            dispatch(resetNotaState());
 
-            // Esperar un momento antes de resetear el estado de reconexión
+            // Recargar los datos cuando se recupera la conexión
+            // Usar setTimeout para asegurar que el estado se actualice primero
+            setTimeout(() => {
+                cargarAnotacion();
+            }, 0);
+
+            // Resetear el estado de reconexión después de un momento
             const timer = setTimeout(() => {
                 resetReconnectionState();
-            }, 3000); // El mensaje desaparecerá después de 3 segundos
+            }, 3000);
 
             return () => clearTimeout(timer);
         }
@@ -171,13 +186,13 @@ export default function PaginaVistaPrevia() {
         }
     }
 
-    // ✅ SOLUCIÓN PROBLEMA 1 y 2: Determinar qué mostrar según el estado
+    // ✅ Determinar qué mostrar según el estado
     const renderContenido = () => {
-        // Si está cargando sin conexión O si hubo error sin conexión
-        if (!isOnline && (cargando || errorCarga)) {
+        // Sin conexión o recién reconectado (cargando datos) → mostrar skeleton
+        if (!isOnline || (justReconnected && cargando)) {
             return (
                 <div className="flex-1 flex items-center justify-center">
-                    <CargandoNoHayNada advertenciaSinConexion={true}/>
+                    {!isOnline ? <CargandoNoHayNada /> : <SkeletonCrearEditPrevia />}
                 </div>
             );
         }
@@ -187,7 +202,7 @@ export default function PaginaVistaPrevia() {
             return <SkeletonCrearEditPrevia />;
         }
 
-        // ✅ SOLUCIÓN PROBLEMA 2: Si hubo error con conexión, no mostrar nada
+        // ✅ Si hubo error con conexión, no mostrar nada
         // (ya se redirigió a /nota-no-encontrada en el catch)
         if (errorCarga && isOnline) {
             return null;
@@ -225,7 +240,7 @@ export default function PaginaVistaPrevia() {
                 )}
 
                 <AnimatePresence>
-                    <ModalExitoError animado={true}/>
+                    <ModalExitoError animado={true} />
                 </AnimatePresence>
 
                 <AnimatePresence>

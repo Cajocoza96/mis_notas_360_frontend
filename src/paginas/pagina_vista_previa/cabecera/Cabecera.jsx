@@ -20,6 +20,7 @@ import { obtenerAnotacionPorId, actualizarFavorito } from "../../../services/ano
 
 import { setVerToast, setMensajeToast } from "../../../store/accesoSlice";
 
+
 import { logDesarrollo, errorDesarrollo, registrarError } from "../../../utils/errorHandler";
 
 export default function Cabecera({ esModoVistaPrevia }) {
@@ -188,7 +189,7 @@ export default function Cabecera({ esModoVistaPrevia }) {
                             ${!anotacionActual.titulo ? 'text-gray-500 dark:text-gray-400' : ''}
                             ${esModoVistaPrevia ? 'cursor-default' : ''}`}>
                         {anotacionActual.titulo && anotacionActual.titulo.trim() !== ''
-                            ? anotacionActual.titulo
+                            ? anotacionActual.titulo 
                             : 'Sin título'}
                     </p>
                 </div>

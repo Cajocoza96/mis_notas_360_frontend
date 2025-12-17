@@ -225,7 +225,7 @@ export default function Cuerpo({ notaNoEliminada,
                     {verContenidoCuerpo && (
                         <>
                             {!isOnline ? (
-                                <CargandoNoHayNada advertenciaSinConexion={true} iconoSinConexion={false} />
+                                <CargandoNoHayNada iconoSinConexion={false} />
                             ) :
                                 /* ✅ Mostrar spinner mientras carga O mientras no se deben mostrar resultados */
                                 cargando ? (
@@ -284,7 +284,7 @@ export default function Cuerpo({ notaNoEliminada,
                     {verNotaEliminada && (
                         <>
                             {!isOnline ? (
-                                <CargandoNoHayNada advertenciaSinConexion={true} iconoSinConexion={false} />
+                                <CargandoNoHayNada iconoSinConexion={false} />
                             ) :
                                 cargando ? (
                                     <CargandoNoHayNada

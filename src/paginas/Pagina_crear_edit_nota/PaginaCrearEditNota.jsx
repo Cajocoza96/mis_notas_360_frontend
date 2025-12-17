@@ -311,12 +311,10 @@ export default function PaginaCrearEditNota() {
                 ) : mostrarSinConexion ? (
 
                     <div className="flex-1 flex items-center justify-center">
-                        <CargandoNoHayNada advertenciaSinConexion={true} />
+                        <CargandoNoHayNada />
                     </div>
                 ) : mostrarContenido ? (
                     <>
-
-                        <CargandoNoHayNada />
                         <AnimatePresence>
                             {verModalEstado && (
                                 <ModalEstado />
