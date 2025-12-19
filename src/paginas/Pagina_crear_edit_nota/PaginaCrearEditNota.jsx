@@ -151,7 +151,7 @@ export default function PaginaCrearEditNota() {
             } catch (error) {
                 errorDesarrollo('❌ Error al cargar la anotación:', error);
 
-                setErrorCarga(false);
+                setErrorCarga(true);
                 setCargando(false);
 
                 logDesarrollo('🔄 Reintentando en 3 segundos...');
@@ -162,7 +162,7 @@ export default function PaginaCrearEditNota() {
                 }, 3000);
             } finally {
                 // ✅ IMPORTANTE: Solo desactivar carga si hubo éxito
-                if (isOnline) {
+                if (isOnline ) {
                     setCargando(false);
                 }
             }
