@@ -156,21 +156,12 @@ const CuerpoEdicion = forwardRef(({ handleNotaChange, handleNotaKeyDown, esModoV
                     }}
                 />
 
-                {esModoVistaPrevia && !tieneNota && !isNotaFocused && justReconnected && (
+                {esModoVistaPrevia && !tieneNota && !isNotaFocused && (
                     <div className="absolute top-2 left-2 pointer-events-none
                                     text-base md:text-lg text-gray-500 dark:text-gray-400">
                         Sin nota
                     </div>
                 )}
-
-                {esModoVistaPrevia && !tieneNota && !isNotaFocused && !justReconnected && (
-                    <div className="absolute top-2 left-2 pointer-events-none
-                                    text-base md:text-lg text-gray-500 dark:text-gray-400">
-                        Sin nota
-                    </div>
-                )}
-
-
 
                 {!esModoVistaPrevia && !tieneNota && !isNotaFocused && (
                     <div className="absolute top-2 left-2 pointer-events-none
