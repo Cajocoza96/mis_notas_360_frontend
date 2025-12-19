@@ -108,10 +108,7 @@ export default function PaginaVistaPrevia() {
             if (isOnline) {
                 setErrorCarga(true);
                 setCargando(true);
-                //navigate('/nota-no-encontrada', { replace: true });
-                cargarAnotacion();
-                setErrorCarga(false);
-                setCargando(false);
+                navigate('/nota-no-encontrada', { replace: true });
             } else {
                 // Sin conexión: mantener en estado de carga
                 setCargando(true);

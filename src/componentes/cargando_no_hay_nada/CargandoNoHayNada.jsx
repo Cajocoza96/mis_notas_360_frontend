@@ -154,7 +154,7 @@ export default function CargandoNoHayNada({
 
                     <BiErrorAlt className="text-6xl md:text-7xl" />
 
-                    <div className="flex flex-col gap-1">
+                    <div className="flex flex-col items-center justify-center gap-1">
                         <p className="text-base md:text-lg">
                             Se reintentará de nuevo automáticamente...
                         </p>
