@@ -158,7 +158,10 @@ export default function CargandoNoHayNada({
                         <p className="text-base md:text-lg">
                             Se reintentará de nuevo automáticamente...
                         </p>
-                        <FaSpinner className="animate-spin text-xl md:text-2xl text-black dark:text-white" />
+                        <FaSpinner className="animate-spin text-xl md:text-2xl text-gray-700 dark:text-gray-300" />
+                        <span className="text-sm md:text-base">
+                            Pudo ser por conexión inestable o problemas temporales del servidor. 
+                        </span>
                     </div>
                 </div>
             )}

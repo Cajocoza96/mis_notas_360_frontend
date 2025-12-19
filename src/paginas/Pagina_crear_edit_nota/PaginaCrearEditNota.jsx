@@ -52,6 +52,9 @@ export default function PaginaCrearEditNota() {
     // ✅ Estado local simple para controlar la carga
     const [cargando, setCargando] = useState(true);
 
+    // ✅ NUEVO: Estado para controlar errores de carga
+    const [errorCarga, setErrorCarga] = useState(false);
+
     const { isOnline, justReconnected, resetReconnectionState } = useConexionInternet();
 
     const verModalEstado = useSelector((state) => state.tareas.verModalEstado);
@@ -86,6 +89,7 @@ export default function PaginaCrearEditNota() {
             if (!esModoEdicion) {
                 setAnotacionValidada(true);
                 setCargando(false);
+                setErrorCarga(false);
                 return;
             }
 
@@ -93,6 +97,7 @@ export default function PaginaCrearEditNota() {
             if (!id) {
                 errorDesarrollo('❌ Modo edición sin ID');
                 setCargando(false);
+                setErrorCarga(false);
                 navigate('/nota-no-encontrada', { replace: true });
                 return;
             }
@@ -101,12 +106,14 @@ export default function PaginaCrearEditNota() {
             if (!isOnline) {
                 logDesarrollo('⚠️ Sin conexión - manteniendo estado de carga');
                 setCargando(true);
+                setErrorCarga(false);
                 return;
             }
 
             // ✅ Cargar datos en modo edición
             try {
                 setCargando(true);
+                setErrorCarga(false);
                 logDesarrollo('🔄 Iniciando carga de anotación...');
                 const anotacion = await obtenerAnotacionPorId(id);
 
@@ -139,11 +146,20 @@ export default function PaginaCrearEditNota() {
                 setAnotacionCargada(anotacion);
                 setAnotacionValidada(true);
                 setCargando(false);
+                setErrorCarga(false);
 
             } catch (error) {
                 errorDesarrollo('❌ Error al cargar la anotación:', error);
+
+                setErrorCarga(false);
                 setCargando(false);
-                navigate('/nota-no-encontrada', { replace: true });
+
+                logDesarrollo('🔄 Reintentando en 3 segundos...');
+
+                // Reintentar después de 3 segundos indefinidamente
+                setTimeout(() => {
+                    cargarDatos();
+                }, 3000);
             } finally {
                 // ✅ IMPORTANTE: Solo desactivar carga si hubo éxito
                 if (isOnline) {
@@ -287,6 +303,7 @@ export default function PaginaCrearEditNota() {
     // ✅ Logica: Determinar qué mostrar
     const mostrarSkeleton = cargando && isOnline;
     const mostrarSinConexion = !isOnline && (cargando || esModoEdicion || esModoCrear);
+    const mostrarError = errorCarga && isOnline;
     const mostrarContenido = anotacionValidada && !mostrarSkeleton && !mostrarSinConexion;
 
     return (
@@ -312,6 +329,10 @@ export default function PaginaCrearEditNota() {
 
                     <div className="flex-1 flex items-center justify-center">
                         <CargandoNoHayNada />
+                    </div>
+                ) : mostrarError ? (
+                    <div className="flex-1 flex items-center justify-center">
+                        <CargandoNoHayNada errorCargaInformacion={true} />
                     </div>
                 ) : mostrarContenido ? (
                     <>
