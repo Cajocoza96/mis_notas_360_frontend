@@ -39,6 +39,9 @@ export default function ModalOrdenarTareas() {
 
                         <div className="flex flex-col gap-2">
 
+                            {/*Solo se puede seleccionar una de estas opciones a la vez */}
+
+                            {/*Quiero si aparece seleccionado Creación aparezca FaCircle activo */}
                             <div
                                 className="w-fit cursor-pointer
                                             flex flex-row items-center gap-4 select-none">
@@ -54,7 +57,8 @@ export default function ModalOrdenarTareas() {
                                     Creación
                                 </p>
                             </div>
-
+                            
+                            {/*Quiero si aparece seleccionado Ascendente aparezca FaCircle activo */}
                             <div
                                 className="w-fit cursor-pointer
                                             flex flex-row items-center gap-4 select-none">
@@ -70,7 +74,8 @@ export default function ModalOrdenarTareas() {
                                     Ascendente
                                 </p>
                             </div>
-
+                            
+                            {/*Quiero si aparece seleccionado Descendente aparezca FaCircle activo */}
                             <div
                                 className="w-fit cursor-pointer
                                             flex flex-row items-center gap-4 select-none">
@@ -97,7 +102,9 @@ export default function ModalOrdenarTareas() {
                             onClick={handleVerModalOrdenarTareas}>
                             Cancelar
                         </p>
-
+                        
+                        {/*Si se le da en Aceptar debe ordenar las tareas, si ya esta seleccionada
+                        no hace nada, solo cuando es distinta */}
                         <p
                             className="text-base md:text-lg
                                         text-violet-800 dark:text-white cursor-pointer">

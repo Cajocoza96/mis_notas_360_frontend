@@ -20,6 +20,16 @@ export default function OrdenarTareasPor() {
                         flex items-center justify-center">
 
             <div className="cursor-pointer">
+
+                {/*En este <span> quiero que aparezca el tipo de orden que se escogio,
+                pueden ser:
+                1. Creación (que corresponde a la columna fecha_creacion en ASC de la tabla tareas
+                2. Ascendiente (que corresponde al contenido que hay en la columna texto_tarea
+                de la tabla tareas, quiero que se ordene de manera ascendiente )
+                3. Descendiente (que corresponde al contenido que hay en la columna texto_tarea
+                de la tabla tareas, quiero que se ordene de manera descendiente)
+                */}
+                
                 <p>
                     Tareas en orden de: <span>Creación</span>
                 </p>

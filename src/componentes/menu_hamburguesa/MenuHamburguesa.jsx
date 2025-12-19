@@ -26,7 +26,7 @@ export default function MenuHamburguesa() {
                 onClick={handleVerMenuHamburguesa}></div>
 
             <motion.div
-                className="h-dvh w-[80%] lg:w-[40%] p-2
+                className="h-dvh w-[60%] lg:w-[40%] p-2
                                 fixed inset-0 z-40
                                 bg-white dark:bg-gray-800"
                 initial={{ x: "-100%" }}

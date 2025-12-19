@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { useSelector } from "react-redux";
 import { HiOutlineBookOpen } from "react-icons/hi";
 import { FaSpinner } from "react-icons/fa";
-import { BiWifiOff } from "react-icons/bi";
+import { BiWifiOff, BiErrorAlt } from "react-icons/bi";
 import useConexionInternet from "../../hooks/useConexionInternet";
 import { useLocation, useNavigate } from "react-router-dom";
 
@@ -11,12 +11,14 @@ import BotonAccion from "../botones/BotonAccion";
 
 export default function CargandoNoHayNada({
     advertenciaSinConexion,
+    errorCargaInformacion,
     pantallaCompletaCarga,
     iconoDeCarga,
     CargandoAnotaciones,
     sinEstadoFavoritoNada,
     noHayEliminadas,
-    iconoSinConexion
+    iconoSinConexion,
+    iconoError
 }) {
     const verSoloFavoritos = useSelector((state) => state.preferencia.verSoloFavoritos);
     const verAnotacEstado = useSelector((state) => state.preferencia.verAnotacEstado);
@@ -74,6 +76,10 @@ export default function CargandoNoHayNada({
 
             {iconoSinConexion && (
                 <BiWifiOff className="text-2xl md:text-3xl text-black dark:text-white" />
+            )}
+
+            {iconoError && (
+                <BiErrorAlt className="text-2xl md:text-3xl text-black dark:text-white" />
             )}
 
             {CargandoAnotaciones && isOnline && !inicializando && (
@@ -137,8 +143,28 @@ export default function CargandoNoHayNada({
                 </div>
             )}
 
+
+            {errorCargaInformacion && (
+                <div className="col-span-full text-center p-4 select-none
+                                text-black dark:text-white
+                                flex flex-col items-center justify-center gap-3">
+                    <p className="text-base md:text-lg font-semibold">
+                        ¡Error a cargar la información!
+                    </p>
+
+                    <BiErrorAlt className="text-6xl md:text-7xl" />
+
+                    <div className="flex flex-col gap-1">
+                        <p className="text-base md:text-lg">
+                            Se reintentará de nuevo automáticamente...
+                        </p>
+                        <FaSpinner className="animate-spin text-xl md:text-2xl text-black dark:text-white" />
+                    </div>
+                </div>
+            )}
+
             {/* Contenido normal cuando hay conexión y no está reconectando */}
-            {sinEstadoFavoritoNada && !cargando && isOnline && !justReconnected && !inicializando && (
+            {!errorCargaInformacion && sinEstadoFavoritoNada && !cargando && isOnline && !justReconnected && !inicializando && (
                 <div className="col-span-full text-center p-4 select-none
                                 flex flex-col items-center justify-center gap-3">
                     <p className="text-base md:text-lg text-black dark:text-white">

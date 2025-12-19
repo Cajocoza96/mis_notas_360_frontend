@@ -61,6 +61,7 @@ export default function Cuerpo({ notaNoEliminada,
 
     // ✅ useRef para controlar el timeout
     const timeoutRef = useRef(null);
+    const reintentoRef = useRef(null); // ✅ Nuevo ref para el reintento
 
     // Cargar contadores al montar el componente
     useEffect(() => {
@@ -73,7 +74,8 @@ export default function Cuerpo({ notaNoEliminada,
 
     const [procesando, setProcesando] = useState(false);
 
-    const [error, setError] = useState(null);
+    const [error, setError] = useState(false); // ✅ Cambiar a boolean
+    const [cargaInicial, setCargaInicial] = useState(true); // ✅ Controlar primera carga
 
     const cargarContadores = async () => {
         try {
@@ -81,21 +83,28 @@ export default function Cuerpo({ notaNoEliminada,
             setCargando(true);
             const datos = await obtenerContadores();
             dispatch(setContadores(datos));
+            setError(false); // ✅ Limpiar error si la carga fue exitosa
+            setCargaInicial(false); // ✅ Ya no es carga inicial
             setCargando(false);
             setProcesando(false);
         } catch (error) {
-            // El error ya se loguea en el servicio
+            setError(true); // ✅ Marcar error
             setProcesando(false);
             setCargando(false);
             errorDesarrollo('Error al cargar contadores en el componente:', error);
+
+            // ✅ Reintentar automáticamente si hay internet
+            if (isOnline) {
+                reintentoAutomatico(() => cargarContadores());
+            }
         }
     };
 
     // ✅ Cargar anotaciones usando el thunk cuando cambien los filtros
     useEffect(() => {
-        if (verContenidoCuerpo  && isOnline) {
+        if (verContenidoCuerpo && isOnline) {
             cargarAnotaciones();
-        } else if (verNotaEliminada  && isOnline) {
+        } else if (verNotaEliminada && isOnline) {
             cargarAnotacionesEliminadas();
         }
     }, [verContenidoCuerpo, verNotaEliminada, verSoloFavoritos, verAnotacEstado, ordenAnotaciones, location.pathname]);
@@ -103,6 +112,9 @@ export default function Cuerpo({ notaNoEliminada,
     // Efecto para recargar anotaciones cuando se restablece la conexión
     useEffect(() => {
         if (justReconnected) {
+            // ✅ Limpiar errores al reconectar
+            setError(false);
+
             // Recargar anotaciones según el contexto actual
             if (verContenidoCuerpo) {
                 cargarAnotaciones();
@@ -130,16 +142,48 @@ export default function Cuerpo({ notaNoEliminada,
         }
     }, [location.pathname, verTodosEstados]);
 
+    // ✅ Función de reintento automático
+    const reintentoAutomatico = (funcionReintento) => {
+        // Limpiar reintento anterior si existe
+        if (reintentoRef.current) {
+            clearTimeout(reintentoRef.current);
+        }
+
+        // Reintentar después de 3 segundos
+        reintentoRef.current = setTimeout(() => {
+            if (isOnline) {
+                errorDesarrollo('Reintentando cargar datos...');
+                funcionReintento();
+            }
+        }, 3000);
+    };
+
+    // ✅ Limpiar timeout al desmontar
+    useEffect(() => {
+        return () => {
+            if (reintentoRef.current) {
+                clearTimeout(reintentoRef.current);
+            }
+        };
+    }, []);
+
     //Cargar todas las anotaciones
     const cargarAnotaciones = async () => {
         try {
             setCargando(true);
             const anotacionesData = await obtenerAnotaciones();
             dispatch(setAnotaciones(anotacionesData));
+            setError(false); // ✅ Limpiar error si la carga fue exitosa
+            setCargaInicial(false); // ✅ Ya no es carga inicial
             setCargando(false);
         } catch (error) {
-            setError('Error al cargar las anotaciones eliminadas');
+            setError(true); // ✅ Marcar error
             setCargando(false);
+            errorDesarrollo('Error al cargar las anotaciones:', error);
+            // ✅ Reintentar automáticamente si hay internet
+            if (isOnline) {
+                reintentoAutomatico(() => cargarAnotaciones());
+            }
         } finally {
             setCargando(false);
         }
@@ -151,10 +195,18 @@ export default function Cuerpo({ notaNoEliminada,
             setCargando(true);
             const anotacionesData = await obtenerAnotacionesEliminadas();
             dispatch(setAnotaciones(anotacionesData));
+            setError(false); // ✅ Limpiar error si la carga fue exitosa
+            setCargaInicial(false); // ✅ Ya no es carga inicial
             setCargando(false);
         } catch (error) {
-            setError('Error al cargar las anotaciones eliminadas');
+            setError(true); // ✅ Marcar error
             setCargando(false);
+            errorDesarrollo('Error al cargar las anotaciones eliminadas:', error);
+
+            // ✅ Reintentar automáticamente si hay internet
+            if (isOnline) {
+                reintentoAutomatico(() => cargarAnotacionesEliminadas());
+            }
         } finally {
             setCargando(false);
         }
@@ -227,25 +279,30 @@ export default function Cuerpo({ notaNoEliminada,
                             {!isOnline ? (
                                 <CargandoNoHayNada iconoSinConexion={false} />
                             ) :
-                                /* ✅ Mostrar spinner mientras carga O mientras no se deben mostrar resultados */
-                                cargando ? (
-                                    <CargandoNoHayNada CargandoAnotaciones={true} />
+                                /*Mostrar panel de error */
+                                error ? (
+                                    <CargandoNoHayNada errorCargaInformacion={true} iconoSinConexion={false} />
+                                ) :
 
-                                ) : anotaciones.length === 0 ? (
-                                    <CargandoNoHayNada sinEstadoFavoritoNada={true} />
-                                ) : (
-                                    anotaciones.map((anotacion) => (
-                                        <NotaVistaPrevia
-                                            iconoFavorito={true}
-                                            iconoAdministrar={true}
-                                            key={anotacion.id}
-                                            anotacionId={anotacion.id}
-                                            texto={obtenerTextoVistaPrevia(anotacion)}
-                                            esFavorito={Boolean(anotacion.favorito)}
-                                            {...obtenerEstadoProps(anotacion.estado)}
-                                        />
-                                    ))
-                                )}
+                                    /* ✅ Mostrar spinner mientras carga O mientras no se deben mostrar resultados */
+                                    cargando ? (
+                                        <CargandoNoHayNada CargandoAnotaciones={true} />
+
+                                    ) : anotaciones.length === 0 ? (
+                                        <CargandoNoHayNada sinEstadoFavoritoNada={true} />
+                                    ) : (
+                                        anotaciones.map((anotacion) => (
+                                            <NotaVistaPrevia
+                                                iconoFavorito={true}
+                                                iconoAdministrar={true}
+                                                key={anotacion.id}
+                                                anotacionId={anotacion.id}
+                                                texto={obtenerTextoVistaPrevia(anotacion)}
+                                                esFavorito={Boolean(anotacion.favorito)}
+                                                {...obtenerEstadoProps(anotacion.estado)}
+                                            />
+                                        ))
+                                    )}
                         </>
                     )}
 
@@ -286,25 +343,28 @@ export default function Cuerpo({ notaNoEliminada,
                             {!isOnline ? (
                                 <CargandoNoHayNada iconoSinConexion={false} />
                             ) :
-                                cargando ? (
-                                    <CargandoNoHayNada
-                                        CargandoAnotaciones={true}
-                                    />
-                                ) : anotaciones.length === 0 ? (
-                                    <CargandoNoHayNada
-                                        noHayEliminadas={true}
-                                    />
-                                ) : (
-                                    anotaciones.map((anotacion) => (
-                                        <NotaVistaPrevia
-                                            key={anotacion.id}
-                                            anotacionId={anotacion.id}
-                                            iconoRestaurarEliminarDefinitivo={true}
-                                            texto={obtenerTextoVistaPrevia(anotacion)}
-                                            {...obtenerEstadoProps(anotacion.estado)}
+                                error ? (
+                                    <CargandoNoHayNada errorCargaInformacion={true} iconoSinConexion={false} />
+                                ) :
+                                    cargando ? (
+                                        <CargandoNoHayNada
+                                            CargandoAnotaciones={true}
                                         />
-                                    ))
-                                )}
+                                    ) : anotaciones.length === 0 ? (
+                                        <CargandoNoHayNada
+                                            noHayEliminadas={true}
+                                        />
+                                    ) : (
+                                        anotaciones.map((anotacion) => (
+                                            <NotaVistaPrevia
+                                                key={anotacion.id}
+                                                anotacionId={anotacion.id}
+                                                iconoRestaurarEliminarDefinitivo={true}
+                                                texto={obtenerTextoVistaPrevia(anotacion)}
+                                                {...obtenerEstadoProps(anotacion.estado)}
+                                            />
+                                        ))
+                                    )}
                         </>
                     )}
                 </div>
@@ -320,7 +380,7 @@ export default function Cuerpo({ notaNoEliminada,
                     <EstadosVistaPrevia
                         iconoEstado={<HiMinusCircle className="text-blue-700" />}
                         tipoEstado="No asignado"
-                        cantidadEstado={cargando && isOnline ? <CargandoNoHayNada iconoDeCarga={true} /> : !isOnline ? <CargandoNoHayNada iconoSinConexion={true} /> : contadores.cant_no_asignado}
+                        cantidadEstado={cargando && isOnline ? <CargandoNoHayNada iconoDeCarga={true} /> : !isOnline ? <CargandoNoHayNada iconoSinConexion={true} /> : error ? <CargandoNoHayNada iconoError={true} /> : contadores.cant_no_asignado}
                         no_asignado={true}
                         seleccionado={verAnotacEstado === 'ver_no_asignado'}
                         onClick={() => handleEstadoClick('ver_no_asignado')}
@@ -329,7 +389,7 @@ export default function Cuerpo({ notaNoEliminada,
                     <EstadosVistaPrevia
                         iconoEstado={<HiClock className="text-yellow-700" />}
                         tipoEstado="Pendiente"
-                        cantidadEstado={cargando && isOnline ? <CargandoNoHayNada iconoDeCarga={true} /> : !isOnline ? <CargandoNoHayNada iconoSinConexion={true} /> : contadores.cant_pendiente}
+                        cantidadEstado={cargando && isOnline ? <CargandoNoHayNada iconoDeCarga={true} /> : !isOnline ? <CargandoNoHayNada iconoSinConexion={true} /> : error ? <CargandoNoHayNada iconoError={true} /> : contadores.cant_pendiente}
                         pendiente={true}
                         seleccionado={verAnotacEstado === 'ver_pendiente'}
                         onClick={() => handleEstadoClick('ver_pendiente')}
@@ -338,7 +398,7 @@ export default function Cuerpo({ notaNoEliminada,
                     <EstadosVistaPrevia
                         iconoEstado={<HiCheckCircle className="text-green-700" />}
                         tipoEstado="Finalizado"
-                        cantidadEstado={cargando && isOnline ? <CargandoNoHayNada iconoDeCarga={true} /> : !isOnline ? <CargandoNoHayNada iconoSinConexion={true} /> : contadores.cant_finalizado}
+                        cantidadEstado={cargando && isOnline ? <CargandoNoHayNada iconoDeCarga={true} /> : !isOnline ? <CargandoNoHayNada iconoSinConexion={true} /> : error ? <CargandoNoHayNada iconoError={true} /> : contadores.cant_finalizado}
                         finalizado={true}
                         seleccionado={verAnotacEstado === 'ver_finalizado'}
                         onClick={() => handleEstadoClick('ver_finalizado')}
@@ -346,7 +406,7 @@ export default function Cuerpo({ notaNoEliminada,
 
                     <EstadosVistaPrevia
                         tipoEstado="Todos los estados"
-                        cantidadEstado={cargando && isOnline ? <CargandoNoHayNada iconoDeCarga={true} /> : !isOnline ? <CargandoNoHayNada iconoSinConexion={true} /> : contadores.cant_todos_estados}
+                        cantidadEstado={cargando && isOnline ? <CargandoNoHayNada iconoDeCarga={true} /> : !isOnline ? <CargandoNoHayNada iconoSinConexion={true} /> : error ? <CargandoNoHayNada iconoError={true} /> : contadores.cant_todos_estados}
                         seleccionado={verAnotacEstado === 'ver_todos_estados'}
                         onClick={() => handleEstadoClick('ver_todos_estados')}
                     />

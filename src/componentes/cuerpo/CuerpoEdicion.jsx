@@ -18,7 +18,7 @@ const CuerpoEdicion = forwardRef(({ handleNotaChange, handleNotaKeyDown, esModoV
     const tieneNota = nota && nota.trim() !== "";
     const isProcessingRef = useRef(false); // ✅ Prevenir loops infinitos
 
-    const {isOnline, justReconnected} = useConexionInternet();
+    const { isOnline, justReconnected } = useConexionInternet();
 
     // Efecto para actualizar el estado automáticamente cuando cambien las tareas
     useEffect(() => {
@@ -63,19 +63,19 @@ const CuerpoEdicion = forwardRef(({ handleNotaChange, handleNotaKeyDown, esModoV
             if (notaRef.current) {
                 // ✅ Obtener el texto limpio
                 let contenido = notaRef.current.innerText;
-                
+
                 // ✅ Si está vacío o solo tiene espacios/saltos de línea, limpiar completamente
                 if (!contenido || contenido.trim() === '') {
                     notaRef.current.innerText = '';
                     handleNotaChange(notaRef);
                     return;
                 }
-                
+
                 // ✅ Limitar a 50000 caracteres
                 if (contenido.length > 50000) {
                     const textoLimitado = contenido.substring(0, 50000);
                     notaRef.current.innerText = textoLimitado;
-                    
+
                     // Restaurar el cursor al final
                     const selection = window.getSelection();
                     const range = document.createRange();
@@ -85,7 +85,7 @@ const CuerpoEdicion = forwardRef(({ handleNotaChange, handleNotaKeyDown, esModoV
                     selection.addRange(range);
                 }
             }
-            
+
             handleNotaChange(notaRef);
         } finally {
             // ✅ Liberar el lock después de un pequeño delay
@@ -106,14 +106,14 @@ const CuerpoEdicion = forwardRef(({ handleNotaChange, handleNotaKeyDown, esModoV
 
         const contenidoActual = notaRef.current?.innerText || "";
         const selection = window.getSelection();
-        
+
         if (selection.rangeCount) {
             const range = selection.getRangeAt(0);
             const textoBorrado = range.toString().length;
-            
+
             const espacioDisponible = 50000 - (contenidoActual.length - textoBorrado);
             const textoAPegar = textoLimpio.substring(0, Math.max(0, espacioDisponible));
-            
+
             if (textoAPegar.length > 0) {
                 selection.deleteFromDocument();
                 selection.getRangeAt(0).insertNode(document.createTextNode(textoAPegar));
@@ -156,13 +156,30 @@ const CuerpoEdicion = forwardRef(({ handleNotaChange, handleNotaKeyDown, esModoV
                     }}
                 />
 
-                {!tieneNota && !isNotaFocused && justReconnected && (
+                {esModoVistaPrevia && !tieneNota && !isNotaFocused && justReconnected && (
                     <div className="absolute top-2 left-2 pointer-events-none
                                     text-base md:text-lg text-gray-500 dark:text-gray-400">
-                        {esModoVistaPrevia ? 'Sin nota' : 'Colocar nota'}
+                        Sin nota
                     </div>
                 )}
 
+                {esModoVistaPrevia && !tieneNota && !isNotaFocused && !justReconnected && (
+                    <div className="absolute top-2 left-2 pointer-events-none
+                                    text-base md:text-lg text-gray-500 dark:text-gray-400">
+                        Sin nota
+                    </div>
+                )}
+
+
+
+                {!esModoVistaPrevia && !tieneNota && !isNotaFocused && (
+                    <div className="absolute top-2 left-2 pointer-events-none
+                                    text-base md:text-lg text-gray-500 dark:text-gray-400">
+                        Colocar nota
+                    </div>
+                )}
+
+                {/*Aqui es donde se mapean las tareas */}
                 {tareas.map((tarea) => (
                     <Tarea
                         key={tarea.id}
