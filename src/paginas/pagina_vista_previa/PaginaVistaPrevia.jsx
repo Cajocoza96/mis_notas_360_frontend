@@ -107,8 +107,11 @@ export default function PaginaVistaPrevia() {
             // Si perdió la conexión durante la carga, no redirigir
             if (isOnline) {
                 setErrorCarga(true);
-                setCargando(false);
+                setCargando(true);
                 //navigate('/nota-no-encontrada', { replace: true });
+                cargarAnotacion();
+                setErrorCarga(false);
+                setCargando(false);
             } else {
                 // Sin conexión: mantener en estado de carga
                 setCargando(true);

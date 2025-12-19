@@ -142,8 +142,9 @@ export default function PaginaCrearEditNota() {
 
             } catch (error) {
                 errorDesarrollo('❌ Error al cargar la anotación:', error);
-                setCargando(false);
-                navigate('/nota-no-encontrada', { replace: true });
+                //setCargando(false);
+                setCargando(true);
+                //navigate('/nota-no-encontrada', { replace: true });
             } finally {
                 // ✅ IMPORTANTE: Solo desactivar carga si hubo éxito
                 if (isOnline) {
