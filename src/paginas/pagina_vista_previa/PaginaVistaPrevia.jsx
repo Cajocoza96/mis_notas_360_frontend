@@ -67,12 +67,13 @@ export default function PaginaVistaPrevia() {
         if (isOnline && (cargando || errorCarga) && id && esModoVistaPrevia) {
             cargarAnotacion();
         }
-    }, [isOnline]);
+    }, [isOnline, cargando, errorCarga, id, esModoVistaPrevia]);
 
     const cargarAnotacion = async () => {
         // ✅ CRÍTICO: Si no hay conexión, no intentar cargar
         if (!isOnline) {
             setCargando(true);
+            setErrorCarga(false);
             return;
         }
 
@@ -108,7 +109,7 @@ export default function PaginaVistaPrevia() {
             if (isOnline) {
                 setErrorCarga(true);
                 setCargando(true);
-                navigate('/nota-no-encontrada', { replace: true });
+                
             } else {
                 // Sin conexión: mantener en estado de carga
                 setCargando(true);
@@ -197,10 +198,7 @@ export default function PaginaVistaPrevia() {
         if (errorCarga && isOnline) {
             return (
                 <div className="flex-1 flex items-center justify-center">
-                    <CargandoNoHayNada
-                        mensaje="Error al cargar la nota"
-                        subMensaje="Intenta recargar la página"
-                    />
+                    <CargandoNoHayNada errorCargaInformacion={true} />
                 </div>
             );
         }

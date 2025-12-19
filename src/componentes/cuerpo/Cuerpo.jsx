@@ -377,6 +377,8 @@ export default function Cuerpo({ notaNoEliminada,
 
                     {procesando && (<CargandoNoHayNada pantallaCompletaCarga={true} />)}
 
+                    {error && (<CargandoNoHayNada pantallaCompletaCarga={true}/>)}
+
                     <EstadosVistaPrevia
                         iconoEstado={<HiMinusCircle className="text-blue-700" />}
                         tipoEstado="No asignado"
