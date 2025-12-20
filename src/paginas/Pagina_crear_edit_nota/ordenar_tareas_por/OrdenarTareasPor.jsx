@@ -1,6 +1,6 @@
 import React from "react";
 
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 import { toggleVerModalOrdenTareas } from "../../../store/tareasSlice";
 
@@ -8,30 +8,30 @@ export default function OrdenarTareasPor() {
 
     const dispatch = useDispatch();
 
+    const ordenTareasTemporal = useSelector((state) => state.tareas.ordenTareasTemporal);
+
     const handleVerModalOrdenarTareas = () => {
         dispatch(toggleVerModalOrdenTareas());
     }
 
+    // Mapeo de textos
+    const textoOrden = {
+        'creacion': 'Creación',
+        'ascendente': 'Ascendente (A-Z)',
+        'descendente': 'Descendente (Z-A)'
+    };
+
     return (
-        <div 
-            onClick={handleVerModalOrdenarTareas}
+        <div
             className="p-2 z-10 w-full bg-gray-400 dark:bg-gray-950 select-none
                         text-sm md:text-base text-black dark:text-white
                         flex items-center justify-center">
 
-            <div className="cursor-pointer">
-
-                {/*En este <span> quiero que aparezca el tipo de orden que se escogio,
-                pueden ser:
-                1. Creación (que corresponde a la columna fecha_creacion en ASC de la tabla tareas
-                2. Ascendiente (que corresponde al contenido que hay en la columna texto_tarea
-                de la tabla tareas, quiero que se ordene de manera ascendiente )
-                3. Descendiente (que corresponde al contenido que hay en la columna texto_tarea
-                de la tabla tareas, quiero que se ordene de manera descendiente)
-                */}
-                
+            <div
+                onClick={handleVerModalOrdenarTareas}
+                className="cursor-pointer">
                 <p>
-                    Tareas en orden de: <span>Creación</span>
+                    Tareas en orden de: <span>{textoOrden[ordenTareasTemporal]}</span>
                 </p>
             </div>
 

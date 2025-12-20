@@ -20,6 +20,9 @@ const initialState = {
 
     verModalEstado: false,
 
+    ordenTareasSeleccionado: 'creacion',
+    ordenTareasTemporal: 'creacion',
+
     verModalOrdenTareas: false,
 
     // Estados para CrearEditNota
@@ -38,6 +41,60 @@ const initialState = {
         cant_pendiente: 0,
         cant_finalizado: 0,
         cant_todos_estados: 0
+    }
+}
+
+// ✅ Función helper para reordenar tareas según el orden activo
+function reordenarTareasSegunOrden(state) {
+    const tipoOrden = state.ordenTareasSeleccionado;
+    
+    if (tipoOrden === 'creacion') {
+        // Ordenar por fecha de creación (id como proxy)
+        state.tareas = [...state.tareas].sort((a, b) => a.id - b.id);
+    } else if (tipoOrden === 'ascendente') {
+        state.tareas = [...state.tareas].sort((a, b) => {
+            // Extraer número al inicio si existe
+            const matchA = a.texto.match(/^(\d+)\./);
+            const matchB = b.texto.match(/^(\d+)\./);
+            
+            const numA = matchA ? parseInt(matchA[1]) : null;
+            const numB = matchB ? parseInt(matchB[1]) : null;
+            
+            // Si ambos tienen número, comparar numéricamente
+            if (numA !== null && numB !== null) {
+                if (numA !== numB) return numA - numB;
+                return a.texto.toLowerCase().localeCompare(b.texto.toLowerCase());
+            }
+            
+            // Si solo uno tiene número, el que tiene número va primero
+            if (numA !== null) return -1;
+            if (numB !== null) return 1;
+            
+            // Si ninguno tiene número, comparar alfabéticamente
+            return a.texto.toLowerCase().localeCompare(b.texto.toLowerCase());
+        });
+    } else if (tipoOrden === 'descendente') {
+        state.tareas = [...state.tareas].sort((a, b) => {
+            // Extraer número al inicio si existe
+            const matchA = a.texto.match(/^(\d+)\./);
+            const matchB = b.texto.match(/^(\d+)\./);
+            
+            const numA = matchA ? parseInt(matchA[1]) : null;
+            const numB = matchB ? parseInt(matchB[1]) : null;
+            
+            // Si ambos tienen número, comparar numéricamente (invertido)
+            if (numA !== null && numB !== null) {
+                if (numA !== numB) return numB - numA;
+                return b.texto.toLowerCase().localeCompare(a.texto.toLowerCase());
+            }
+            
+            // Si solo uno tiene número, el que tiene número va primero
+            if (numA !== null) return -1;
+            if (numB !== null) return 1;
+            
+            // Si ninguno tiene número, comparar alfabéticamente (invertido)
+            return b.texto.toLowerCase().localeCompare(a.texto.toLowerCase());
+        });
     }
 }
 
@@ -115,8 +172,73 @@ const tareasSlice = createSlice({
             state.verModalEstado = action.payload
         },
 
-        toggleVerModalOrdenTareas : (state) => {
-            state.verModalOrdenTareas =!state.verModalOrdenTareas
+        setOrdenTareasTemporal: (state, action) => {
+            state.ordenTareasTemporal = action.payload;
+        },
+
+        aplicarOrdenTareas: (state) => {
+            const tipoOrden = state.ordenTareasTemporal;
+            
+            if (tipoOrden === 'creacion') {
+                // Ordenar por fecha de creación (id como proxy)
+                state.tareas = [...state.tareas].sort((a, b) => a.id - b.id);
+            } else if (tipoOrden === 'ascendente') {
+                state.tareas = [...state.tareas].sort((a, b) => {
+                    // Extraer número al inicio si existe
+                    const matchA = a.texto.match(/^(\d+)\./);
+                    const matchB = b.texto.match(/^(\d+)\./);
+                    
+                    const numA = matchA ? parseInt(matchA[1]) : null;
+                    const numB = matchB ? parseInt(matchB[1]) : null;
+                    
+                    // Si ambos tienen número, comparar numéricamente
+                    if (numA !== null && numB !== null) {
+                        if (numA !== numB) return numA - numB;
+                        // Si los números son iguales, comparar el resto del texto
+                        return a.texto.toLowerCase().localeCompare(b.texto.toLowerCase());
+                    }
+                    
+                    // Si solo uno tiene número, el que tiene número va primero
+                    if (numA !== null) return -1;
+                    if (numB !== null) return 1;
+                    
+                    // Si ninguno tiene número, comparar alfabéticamente
+                    return a.texto.toLowerCase().localeCompare(b.texto.toLowerCase());
+                });
+            } else if (tipoOrden === 'descendente') {
+                state.tareas = [...state.tareas].sort((a, b) => {
+                    // Extraer número al inicio si existe
+                    const matchA = a.texto.match(/^(\d+)\./);
+                    const matchB = b.texto.match(/^(\d+)\./);
+                    
+                    const numA = matchA ? parseInt(matchA[1]) : null;
+                    const numB = matchB ? parseInt(matchB[1]) : null;
+                    
+                    // Si ambos tienen número, comparar numéricamente (invertido)
+                    if (numA !== null && numB !== null) {
+                        if (numA !== numB) return numB - numA;
+                        // Si los números son iguales, comparar el resto del texto (invertido)
+                        return b.texto.toLowerCase().localeCompare(a.texto.toLowerCase());
+                    }
+                    
+                    // Si solo uno tiene número, el que tiene número va primero
+                    if (numA !== null) return -1;
+                    if (numB !== null) return 1;
+                    
+                    // Si ninguno tiene número, comparar alfabéticamente (invertido)
+                    return b.texto.toLowerCase().localeCompare(a.texto.toLowerCase());
+                });
+            }
+            
+            state.ordenTareasSeleccionado = tipoOrden;
+        },
+        
+        cancelarOrdenTareas: (state) => {
+            state.ordenTareasTemporal = state.ordenTareasSeleccionado;
+        },
+
+        toggleVerModalOrdenTareas: (state) => {
+            state.verModalOrdenTareas = !state.verModalOrdenTareas
         },
         setVerModalOrdenTareas: (state, action) => {
             state.verModalOrdenTareas = action.payload
@@ -132,14 +254,20 @@ const tareasSlice = createSlice({
                 texto: action.payload,
                 completada: false
             }
-            state.tareas.push(nuevaTarea)
+            state.tareas.push(nuevaTarea);
+            
+            // ✅ Reordenar automáticamente según el orden activo
+            reordenarTareasSegunOrden(state);
         },
 
         editarTarea: (state, action) => {
-            const { id, texto } = action.payload
-            const tarea = state.tareas.find(t => t.id === id)
+            const { id, texto } = action.payload;
+            const tarea = state.tareas.find(t => t.id === id);
             if (tarea) {
-                tarea.texto = texto
+                tarea.texto = texto;
+                
+                // ✅ Reordenar automáticamente según el orden activo
+                reordenarTareasSegunOrden(state);
             }
         },
 
@@ -262,6 +390,11 @@ export const {
     toggleVerModalTarea,
     setVerModalTarea,
     toggleVerModalEstado,
+
+    setOrdenTareasTemporal,
+    aplicarOrdenTareas,
+    cancelarOrdenTareas,
+
     toggleVerModalOrdenTareas,
     setVerModalOrdenTareas,
     setVerModalEstado,
