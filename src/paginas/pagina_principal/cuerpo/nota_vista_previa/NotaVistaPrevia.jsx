@@ -27,7 +27,8 @@ import { setVerToast, setMensajeToast } from "../../../../store/accesoSlice";
 import { logDesarrollo, errorDesarrollo, registrarError } from "../../../../utils/errorHandler";
 
 export default function NotaVistaPrevia({ anotacionId, iconoFavorito, texto, no_asignado,
-    pendiente, finalizado, esFavorito = false, iconoAdministrar, iconoRestaurarEliminarDefinitivo }) {
+    pendiente, finalizado, esFavorito = false, iconoAdministrar, 
+    iconoRestaurarEliminarDefinitivo, tareaCompletada = false }) {
 
     const navigate = useNavigate();
 
@@ -350,8 +351,9 @@ export default function NotaVistaPrevia({ anotacionId, iconoFavorito, texto, no_
 
                     <div className="w-full h-25 text-center overflow-hidden 
                             flex flex-col items-center justify-center">
-                        <p className="text-base md:text-lg line-clamp-3 w-full px-1
-                            text-black dark:text-white">
+                        <p className={`text-base md:text-lg line-clamp-3 w-full px-1
+                            ${tareaCompletada ? 'line-through' : ''}
+                            text-black dark:text-white`}>
                             {texto}
                         </p>
                     </div>

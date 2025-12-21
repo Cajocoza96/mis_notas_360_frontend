@@ -47,29 +47,33 @@ const initialState = {
 // ✅ Función helper para reordenar tareas según el orden activo
 function reordenarTareasSegunOrden(state) {
     const tipoOrden = state.ordenTareasSeleccionado;
-    
+
     if (tipoOrden === 'creacion') {
-        // Ordenar por fecha de creación (id como proxy)
-        state.tareas = [...state.tareas].sort((a, b) => a.id - b.id);
+        // ✅ Ordenar por orden_creacion (viene de la BD)
+        state.tareas = [...state.tareas].sort((a, b) => {
+            const ordenA = a.orden_creacion !== undefined ? a.orden_creacion : 999999;
+            const ordenB = b.orden_creacion !== undefined ? b.orden_creacion : 999999;
+            return ordenA - ordenB;
+        });
     } else if (tipoOrden === 'ascendente') {
         state.tareas = [...state.tareas].sort((a, b) => {
             // Extraer número al inicio si existe
             const matchA = a.texto.match(/^(\d+)\./);
             const matchB = b.texto.match(/^(\d+)\./);
-            
+
             const numA = matchA ? parseInt(matchA[1]) : null;
             const numB = matchB ? parseInt(matchB[1]) : null;
-            
+
             // Si ambos tienen número, comparar numéricamente
             if (numA !== null && numB !== null) {
                 if (numA !== numB) return numA - numB;
                 return a.texto.toLowerCase().localeCompare(b.texto.toLowerCase());
             }
-            
+
             // Si solo uno tiene número, el que tiene número va primero
             if (numA !== null) return -1;
             if (numB !== null) return 1;
-            
+
             // Si ninguno tiene número, comparar alfabéticamente
             return a.texto.toLowerCase().localeCompare(b.texto.toLowerCase());
         });
@@ -78,20 +82,20 @@ function reordenarTareasSegunOrden(state) {
             // Extraer número al inicio si existe
             const matchA = a.texto.match(/^(\d+)\./);
             const matchB = b.texto.match(/^(\d+)\./);
-            
+
             const numA = matchA ? parseInt(matchA[1]) : null;
             const numB = matchB ? parseInt(matchB[1]) : null;
-            
+
             // Si ambos tienen número, comparar numéricamente (invertido)
             if (numA !== null && numB !== null) {
                 if (numA !== numB) return numB - numA;
                 return b.texto.toLowerCase().localeCompare(a.texto.toLowerCase());
             }
-            
+
             // Si solo uno tiene número, el que tiene número va primero
             if (numA !== null) return -1;
             if (numB !== null) return 1;
-            
+
             // Si ninguno tiene número, comparar alfabéticamente (invertido)
             return b.texto.toLowerCase().localeCompare(a.texto.toLowerCase());
         });
@@ -176,63 +180,18 @@ const tareasSlice = createSlice({
             state.ordenTareasTemporal = action.payload;
         },
 
-        aplicarOrdenTareas: (state) => {
-            const tipoOrden = state.ordenTareasTemporal;
-            
-            if (tipoOrden === 'creacion') {
-                // Ordenar por fecha de creación (id como proxy)
-                state.tareas = [...state.tareas].sort((a, b) => a.id - b.id);
-            } else if (tipoOrden === 'ascendente') {
-                state.tareas = [...state.tareas].sort((a, b) => {
-                    // Extraer número al inicio si existe
-                    const matchA = a.texto.match(/^(\d+)\./);
-                    const matchB = b.texto.match(/^(\d+)\./);
-                    
-                    const numA = matchA ? parseInt(matchA[1]) : null;
-                    const numB = matchB ? parseInt(matchB[1]) : null;
-                    
-                    // Si ambos tienen número, comparar numéricamente
-                    if (numA !== null && numB !== null) {
-                        if (numA !== numB) return numA - numB;
-                        // Si los números son iguales, comparar el resto del texto
-                        return a.texto.toLowerCase().localeCompare(b.texto.toLowerCase());
-                    }
-                    
-                    // Si solo uno tiene número, el que tiene número va primero
-                    if (numA !== null) return -1;
-                    if (numB !== null) return 1;
-                    
-                    // Si ninguno tiene número, comparar alfabéticamente
-                    return a.texto.toLowerCase().localeCompare(b.texto.toLowerCase());
-                });
-            } else if (tipoOrden === 'descendente') {
-                state.tareas = [...state.tareas].sort((a, b) => {
-                    // Extraer número al inicio si existe
-                    const matchA = a.texto.match(/^(\d+)\./);
-                    const matchB = b.texto.match(/^(\d+)\./);
-                    
-                    const numA = matchA ? parseInt(matchA[1]) : null;
-                    const numB = matchB ? parseInt(matchB[1]) : null;
-                    
-                    // Si ambos tienen número, comparar numéricamente (invertido)
-                    if (numA !== null && numB !== null) {
-                        if (numA !== numB) return numB - numA;
-                        // Si los números son iguales, comparar el resto del texto (invertido)
-                        return b.texto.toLowerCase().localeCompare(a.texto.toLowerCase());
-                    }
-                    
-                    // Si solo uno tiene número, el que tiene número va primero
-                    if (numA !== null) return -1;
-                    if (numB !== null) return 1;
-                    
-                    // Si ninguno tiene número, comparar alfabéticamente (invertido)
-                    return b.texto.toLowerCase().localeCompare(a.texto.toLowerCase());
-                });
-            }
-            
-            state.ordenTareasSeleccionado = tipoOrden;
+        // ✅ Establecer orden al cargar anotación
+        setOrdenTareasSeleccionado: (state, action) => {
+            state.ordenTareasSeleccionado = action.payload;
+            state.ordenTareasTemporal = action.payload;
         },
-        
+
+        // ✅ CORREGIDO: Solo usa la función helper
+        aplicarOrdenTareas: (state) => {
+            state.ordenTareasSeleccionado = state.ordenTareasTemporal;
+            reordenarTareasSegunOrden(state);
+        },
+
         cancelarOrdenTareas: (state) => {
             state.ordenTareasTemporal = state.ordenTareasSeleccionado;
         },
@@ -246,16 +205,23 @@ const tareasSlice = createSlice({
 
         setTareas: (state, action) => {
             state.tareas = action.payload
+            // ✅ Aplicar ordenamiento según el orden seleccionado
+            reordenarTareasSegunOrden(state);
         },
 
         agregarTarea: (state, action) => {
+
+            // ✅ Calcular el siguiente orden_creacion
+            const siguienteOrdenCreacion = state.tareas.length > 0 ? Math.max(...state.tareas.map(t => t.orden_creacion ?? -1)) + 1 : 0;
+
             const nuevaTarea = {
                 id: Date.now(),
                 texto: action.payload,
-                completada: false
+                completada: false,
+                orden_creacion: siguienteOrdenCreacion
             }
             state.tareas.push(nuevaTarea);
-            
+
             // ✅ Reordenar automáticamente según el orden activo
             reordenarTareasSegunOrden(state);
         },
@@ -265,7 +231,7 @@ const tareasSlice = createSlice({
             const tarea = state.tareas.find(t => t.id === id);
             if (tarea) {
                 tarea.texto = texto;
-                
+
                 // ✅ Reordenar automáticamente según el orden activo
                 reordenarTareasSegunOrden(state);
             }
@@ -392,6 +358,7 @@ export const {
     toggleVerModalEstado,
 
     setOrdenTareasTemporal,
+    setOrdenTareasSeleccionado,
     aplicarOrdenTareas,
     cancelarOrdenTareas,
 

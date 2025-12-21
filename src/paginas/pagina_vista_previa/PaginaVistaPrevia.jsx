@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 
 import { useDispatch, useSelector } from "react-redux";
 import { useParams, useLocation, useNavigate } from "react-router-dom";
-import { resetNotaState, setNota, setTareas } from "../../store/tareasSlice";
+import { resetNotaState, setNota, setTareas, setOrdenTareasSeleccionado } from "../../store/tareasSlice";
 
 import { setAnotacionActual } from "../../store/anotacionesSlice";
 
@@ -87,11 +87,15 @@ export default function PaginaVistaPrevia() {
             dispatch(setAnotacionActual(anotacion));
             dispatch(setNota(anotacion.nota || ""));
 
+            // ✅ IMPORTANTE: Establecer el orden ANTES de cargar las tareas
+            dispatch(setOrdenTareasSeleccionado(anotacion.orden_tareas || 'creacion'));
+
             // Mapear las tareas de la BD al formato del frontend
             const tareasFormateadas = anotacion.tareas.map(t => ({
                 id: t.id,
                 texto: t.texto_tarea,
-                completada: t.tarea_completada === true || t.tarea_completada === 1
+                completada: t.tarea_completada === true || t.tarea_completada === 1,
+                orden_creacion: t.orden_creacion // ✅ Agregar orden_creacion
             }));
 
             dispatch(setTareas(tareasFormateadas));

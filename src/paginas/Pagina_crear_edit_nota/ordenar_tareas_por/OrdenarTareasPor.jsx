@@ -8,7 +8,9 @@ export default function OrdenarTareasPor() {
 
     const dispatch = useDispatch();
 
-    const ordenTareasTemporal = useSelector((state) => state.tareas.ordenTareasTemporal);
+    ///const ordenTareasTemporal = useSelector((state) => state.tareas.ordenTareasTemporal);
+
+    const ordenTareasSeleccionado = useSelector((state) => state.tareas.ordenTareasSeleccionado);
 
     const handleVerModalOrdenarTareas = () => {
         dispatch(toggleVerModalOrdenTareas());
@@ -26,12 +28,12 @@ export default function OrdenarTareasPor() {
             className="p-2 z-10 w-full bg-gray-400 dark:bg-gray-950 select-none
                         text-sm md:text-base text-black dark:text-white
                         flex items-center justify-center">
-
+            
             <div
                 onClick={handleVerModalOrdenarTareas}
                 className="cursor-pointer">
                 <p>
-                    Tareas en orden de: <span>{textoOrden[ordenTareasTemporal]}</span>
+                    Tareas en orden de: <span>{textoOrden[ordenTareasSeleccionado]}</span>
                 </p>
             </div>
 

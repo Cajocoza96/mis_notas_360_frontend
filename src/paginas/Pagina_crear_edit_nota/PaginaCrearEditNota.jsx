@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useParams, useLocation, useNavigate } from "react-router-dom";
 import { useUndoRedo } from "../../hooks/useUndoRedo";
 import { useContentEditable } from "../../hooks/useContentEditable";
-import { resetNotaState, setCanUndo, setCanRedo, setTitulo, setNota, setTareas, setAnotacionId, setEstadoSeleccionado } from "../../store/tareasSlice";
+import { resetNotaState, setCanUndo, setCanRedo, setTitulo, setNota, setTareas, setAnotacionId, setEstadoSeleccionado, setOrdenTareasSeleccionado } from "../../store/tareasSlice";
 import { setAnotacionActual } from "../../store/anotacionesSlice";
 import Cabecera from "./cabecera/Cabecera";
 import CuerpoEdicion from "../../componentes/cuerpo/CuerpoEdicion";
@@ -134,12 +134,19 @@ export default function PaginaCrearEditNota() {
                 const estadoMapeado = mapearEstadoDesdeBD(anotacion.estado);
                 dispatch(setEstadoSeleccionado(estadoMapeado));
 
+                //Aqui lo puse
+                dispatch(setOrdenTareasSeleccionado(anotacion.orden_tareas || 'creacion'));
+
                 // Mapear las tareas
                 const tareasFormateadas = anotacion.tareas.map(t => ({
                     id: t.id,
                     texto: t.texto_tarea,
-                    completada: t.tarea_completada === true || t.tarea_completada === 1
+                    completada: t.tarea_completada === true || t.tarea_completada === 1,
+                    orden_creacion: t.orden_creacion // ✅ Agregar orden_creacion
                 }));
+
+                logDesarrollo('Tareas formateadas con orden_creacion:', tareasFormateadas);
+
                 dispatch(setTareas(tareasFormateadas));
 
                 // ✅ Guardar la anotación en estado local

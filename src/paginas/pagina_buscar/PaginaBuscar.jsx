@@ -103,7 +103,7 @@ export default function PaginaBuscar() {
             <motion.div
                 className="h-dvh bg-white dark:bg-gray-800 
                         overflow-hidden
-                        flex flex-col justify-between"
+                        flex flex-col justify-start"
                 variants={pageVariants}
                 initial="initial"
                 animate="animate">

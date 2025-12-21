@@ -44,6 +44,8 @@ export default function Cuerpo({ notaNoEliminada,
 
     const dispatch = useDispatch();
 
+    const esPaginaBuscar = location.pathname.includes('/buscar');
+
     const organizarPorColumna = useSelector((state) => state.preferencia.organizarPorColumna);
     const verSoloFavoritos = useSelector((state) => state.preferencia.verSoloFavoritos);
     const verAnotacEstado = useSelector((state) => state.preferencia.verAnotacEstado);
@@ -76,6 +78,64 @@ export default function Cuerpo({ notaNoEliminada,
 
     const [error, setError] = useState(false); // ✅ Cambiar a boolean
     const [cargaInicial, setCargaInicial] = useState(true); // ✅ Controlar primera carga
+
+    // ✅ NUEVA FUNCIÓN: Reordenar tareas según el tipo de orden
+    const reordenarTareasPorOrden = (tareas, tipoOrden) => {
+        if (!tareas || tareas.length === 0) return [];
+
+        // Mapear tareas al formato correcto
+        const tareasFormateadas = tareas.map(t => ({
+            texto: t.texto_tarea,
+            orden_creacion: t.orden_creacion,
+            completada: t.tarea_completada === true || t.tarea_completada === 1
+        }));
+
+        if (tipoOrden === 'creacion') {
+            return [...tareasFormateadas].sort((a, b) => {
+                const ordenA = a.orden_creacion !== undefined ? a.orden_creacion : 999999;
+                const ordenB = b.orden_creacion !== undefined ? b.orden_creacion : 999999;
+                return ordenA - ordenB;
+            });
+        } else if (tipoOrden === 'ascendente') {
+            return [...tareasFormateadas].sort((a, b) => {
+                const matchA = a.texto.match(/^(\d+)\./);
+                const matchB = b.texto.match(/^(\d+)\./);
+
+                const numA = matchA ? parseInt(matchA[1]) : null;
+                const numB = matchB ? parseInt(matchB[1]) : null;
+
+                if (numA !== null && numB !== null) {
+                    if (numA !== numB) return numA - numB;
+                    return a.texto.toLowerCase().localeCompare(b.texto.toLowerCase());
+                }
+
+                if (numA !== null) return -1;
+                if (numB !== null) return 1;
+
+                return a.texto.toLowerCase().localeCompare(b.texto.toLowerCase());
+            });
+        } else if (tipoOrden === 'descendente') {
+            return [...tareasFormateadas].sort((a, b) => {
+                const matchA = a.texto.match(/^(\d+)\./);
+                const matchB = b.texto.match(/^(\d+)\./);
+
+                const numA = matchA ? parseInt(matchA[1]) : null;
+                const numB = matchB ? parseInt(matchB[1]) : null;
+
+                if (numA !== null && numB !== null) {
+                    if (numA !== numB) return numB - numA;
+                    return b.texto.toLowerCase().localeCompare(a.texto.toLowerCase());
+                }
+
+                if (numA !== null) return -1;
+                if (numB !== null) return 1;
+
+                return b.texto.toLowerCase().localeCompare(a.texto.toLowerCase());
+            });
+        }
+
+        return tareasFormateadas;
+    };
 
     const cargarContadores = async () => {
         try {
@@ -172,7 +232,13 @@ export default function Cuerpo({ notaNoEliminada,
         try {
             setCargando(true);
             const anotacionesData = await obtenerAnotaciones();
-            dispatch(setAnotaciones(anotacionesData));
+
+            const anotacionesConOrden = anotacionesData.map(anotacion => ({
+                ...anotacion,
+                orden_tareas: anotacion.orden_tareas || 'creacion'
+            }));
+
+            dispatch(setAnotaciones(anotacionesConOrden));
             setError(false); // ✅ Limpiar error si la carga fue exitosa
             setCargaInicial(false); // ✅ Ya no es carga inicial
             setCargando(false);
@@ -194,7 +260,13 @@ export default function Cuerpo({ notaNoEliminada,
         try {
             setCargando(true);
             const anotacionesData = await obtenerAnotacionesEliminadas();
-            dispatch(setAnotaciones(anotacionesData));
+
+            const anotacionesConOrden = anotacionesData.map(anotacion => ({
+                ...anotacion,
+                orden_tareas: anotacion.orden_tareas || 'creacion'
+            }));
+
+            dispatch(setAnotaciones(anotacionesConOrden));
             setError(false); // ✅ Limpiar error si la carga fue exitosa
             setCargaInicial(false); // ✅ Ya no es carga inicial
             setCargando(false);
@@ -242,27 +314,37 @@ export default function Cuerpo({ notaNoEliminada,
     const obtenerTextoVistaPrevia = (anotacion) => {
         // 1. Si tiene título, mostrar título
         if (anotacion.titulo && anotacion.titulo.trim() !== '') {
-            return anotacion.titulo;
+            return { texto: anotacion.titulo, completada: false }
         }
 
         // 2. Si no tiene título pero tiene nota, mostrar nota
         if (anotacion.nota && anotacion.nota.trim() !== '') {
-            return anotacion.nota;
+            return { texto: anotacion.nota, completada: false }
         }
 
         // 3. Si no tiene título ni nota, mostrar la primera tarea
         if (anotacion.tareas && anotacion.tareas.length > 0) {
-            return anotacion.tareas[0].texto_tarea;
+            // ✅ Reordenar las tareas según el orden_tareas de la anotación
+            const tareasOrdenadas = reordenarTareasPorOrden(
+                anotacion.tareas,
+                anotacion.orden_tareas || 'creacion'
+            );
+
+            // ✅ Devolver la primera tarea del orden correcto
+            return {
+                texto: tareasOrdenadas[0]?.texto || '',
+                completada: tareasOrdenadas[0]?.completada || false
+            }
         }
 
         // 4. Si no hay nada, mostrar texto por defecto
-        return '';
+        return { texto: '', completada: false };
     }
 
     return (
         <>
             {notaNoEliminada && (
-                <div className={`w-[95%] h-full mx-auto overflow-y-auto 
+                <div className={`w-[95%] ${!esPaginaBuscar ? 'h-full' : 'col-span-full'}  mx-auto overflow-y-auto
                                 overflow-x-hidden min-h-0 min-w-0 pb-3
                                 ${(!isOnline && (verContenidoCuerpo || verNotaEliminada)) ? 'flex items-center justify-center' : 'grid'}
                 ${organizarPorColumna ? 'grid-cols-2 2xs:grid-cols-3 lg:grid-cols-5' : 'grid-cols-1'} gap-5 lg:gap-3
@@ -291,17 +373,21 @@ export default function Cuerpo({ notaNoEliminada,
                                     ) : anotaciones.length === 0 ? (
                                         <CargandoNoHayNada sinEstadoFavoritoNada={true} />
                                     ) : (
-                                        anotaciones.map((anotacion) => (
-                                            <NotaVistaPrevia
-                                                iconoFavorito={true}
-                                                iconoAdministrar={true}
-                                                key={anotacion.id}
-                                                anotacionId={anotacion.id}
-                                                texto={obtenerTextoVistaPrevia(anotacion)}
-                                                esFavorito={Boolean(anotacion.favorito)}
-                                                {...obtenerEstadoProps(anotacion.estado)}
-                                            />
-                                        ))
+                                        anotaciones.map((anotacion) => {
+                                            const { texto, completada } = obtenerTextoVistaPrevia(anotacion);
+                                            return (
+                                                <NotaVistaPrevia
+                                                    iconoFavorito={true}
+                                                    iconoAdministrar={true}
+                                                    key={anotacion.id}
+                                                    anotacionId={anotacion.id}
+                                                    texto={texto}
+                                                    tareaCompletada={completada}
+                                                    esFavorito={Boolean(anotacion.favorito)}
+                                                    {...obtenerEstadoProps(anotacion.estado)}
+                                                />
+                                            );
+                                        })
                                     )}
                         </>
                     )}
@@ -326,14 +412,19 @@ export default function Cuerpo({ notaNoEliminada,
                                     </div>
                                 </div>
                             ) : (
-                                isOnline && resultadosBusqueda.map((anotacion) => (
-                                    <NotaVistaPrevia
-                                        key={anotacion.id}
-                                        anotacionId={anotacion.id}
-                                        texto={obtenerTextoVistaPrevia(anotacion)}
-                                        {...obtenerEstadoProps(anotacion.estado)}
-                                    />
-                                ))
+                                isOnline && resultadosBusqueda.map((anotacion) => {
+                                    const { texto, completada } = obtenerTextoVistaPrevia(anotacion);
+                                    return (
+                                        <NotaVistaPrevia
+                                            key={anotacion.id}
+                                            anotacionId={anotacion.id}
+                                            texto={texto}
+                                            tareaCompletada={completada}
+                                            {...obtenerEstadoProps(anotacion.estado)}
+                                        />
+                                    )
+
+                                })
                             )}
                         </>
                     )}
@@ -355,15 +446,19 @@ export default function Cuerpo({ notaNoEliminada,
                                             noHayEliminadas={true}
                                         />
                                     ) : (
-                                        anotaciones.map((anotacion) => (
-                                            <NotaVistaPrevia
-                                                key={anotacion.id}
-                                                anotacionId={anotacion.id}
-                                                iconoRestaurarEliminarDefinitivo={true}
-                                                texto={obtenerTextoVistaPrevia(anotacion)}
-                                                {...obtenerEstadoProps(anotacion.estado)}
-                                            />
-                                        ))
+                                        anotaciones.map((anotacion) => {
+                                            const { texto, completada } = obtenerTextoVistaPrevia(anotacion);
+                                            return (
+                                                <NotaVistaPrevia
+                                                    key={anotacion.id}
+                                                    anotacionId={anotacion.id}
+                                                    iconoRestaurarEliminarDefinitivo={true}
+                                                    texto={texto}
+                                                    tareaCompletada={completada}
+                                                    {...obtenerEstadoProps(anotacion.estado)}
+                                                />
+                                            )
+                                        })
                                     )}
                         </>
                     )}
@@ -377,7 +472,7 @@ export default function Cuerpo({ notaNoEliminada,
 
                     {procesando && (<CargandoNoHayNada pantallaCompletaCarga={true} />)}
 
-                    {error && (<CargandoNoHayNada pantallaCompletaCarga={true}/>)}
+                    {error && (<CargandoNoHayNada pantallaCompletaCarga={true} />)}
 
                     <EstadosVistaPrevia
                         iconoEstado={<HiMinusCircle className="text-blue-700" />}

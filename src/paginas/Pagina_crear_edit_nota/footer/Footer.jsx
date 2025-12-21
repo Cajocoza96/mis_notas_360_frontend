@@ -43,6 +43,8 @@ export default function Footer({ handleUndoClick, handleRedoClick, esModoEdicion
         dispatch(toggleVerModalTarea());
     }
 
+    const ordenTareasSeleccionado = useSelector((state) => state.tareas.ordenTareasSeleccionado);
+
     const handleGuardarYRedirigir = async () => {
         try {
             // IMPORTANTE: Obtener los valores actuales directamente de los refs
@@ -80,18 +82,39 @@ export default function Footer({ handleUndoClick, handleRedoClick, esModoEdicion
             logDesarrollo('Tareas:', tareas);
             logDesarrollo('==================');
 
+            /*
             // Preparar el array de tareas con su estado de completado
             const tareasParaGuardar = tareas.map(tarea => ({
                 texto: tarea.texto,
                 completada: tarea.completada  // true o false
             }));
+            */
+
+            // ✅ IMPORTANTE: Ordenar tareas por orden_creacion antes de guardar
+            const tareasParaGuardar = [...tareas]
+                .sort((a, b) => {
+                    const ordenA = a.orden_creacion !== undefined ? a.orden_creacion : 999999;
+                    const ordenB = b.orden_creacion !== undefined ? b.orden_creacion : 999999;
+                    return ordenA - ordenB;
+                })
+                .map(tarea => ({
+                    texto: tarea.texto,
+                    completada: tarea.completada  // true o false
+                }));
+
+                logDesarrollo('Tareas ANTES de ordenar:', tareas);
+                logDesarrollo('Tareas DESPUES de ordenar por creacion', tareasParaGuardar);
+
+            // ✅ Obtener el orden de tareas seleccionado
+            const ordenTareasActual = ordenTareasSeleccionado; // Desde Redux
 
             // Preparar el payload
             const payload = {
                 titulo: tituloActual,
                 nota: notaActual,
                 estado: estadoSeleccionado,
-                tareas: tareasParaGuardar
+                tareas: tareasParaGuardar,
+                ordenTareas: ordenTareasActual // ✅ Agregar orden de tareas
             };
 
             logDesarrollo('Payload a enviar:', payload);
@@ -117,7 +140,7 @@ export default function Footer({ handleUndoClick, handleRedoClick, esModoEdicion
                 data = await crearAnotacion(payload);
                 setProcesando(false);
                 logDesarrollo('Guardado exitoso:', data);
-                
+
                 // ✅ Mostrar notificación de éxito para creación
                 dispatch(mostrarNotificacion({
                     mensaje: '¡Nota guardada!',
@@ -174,7 +197,7 @@ export default function Footer({ handleUndoClick, handleRedoClick, esModoEdicion
         <div className="p-2 z-10 w-full
                         bg-violet-300 dark:bg-black
                         grid grid-cols-3">
-                            
+
             {procesando && (<CargandoNoHayNada pantallaCompletaCarga={true} />)}
 
             <div className="flex flex-col items-center select-none">
