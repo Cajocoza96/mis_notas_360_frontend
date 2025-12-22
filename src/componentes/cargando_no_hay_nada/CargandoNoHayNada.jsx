@@ -52,11 +52,18 @@ export default function CargandoNoHayNada({
     if (inicializando && CargandoAnotaciones) {
         return (
             <div className="col-span-full text-center p-4 select-none
+                            bg-white dark:bg-gray-800 text-black  dark:text-white
                             flex flex-col items-center justify-center gap-3">
-                <FaSpinner className="animate-spin text-xl md:text-2xl text-black dark:text-white" />
-                <p className="text-base md:text-lg text-black dark:text-white">
-                    Verificando sesión...
-                </p>
+                <FaSpinner className="animate-spin text-lg md:text-xl" />
+                <div className="flex flex-col items-center justify-center gap-2 ">
+                    <div>
+                        <HiOutlineBookOpen className="text-2xl md:text-3xl" />
+                    </div>
+                    <p className="w-full text-center text-lg md:text-xl
+                                            font-bold select-none truncate" translate="no">
+                        MisNotas360
+                    </p>
+                </div>
             </div>
         );
     }
@@ -160,7 +167,7 @@ export default function CargandoNoHayNada({
                         </p>
                         <FaSpinner className="animate-spin text-xl md:text-2xl text-gray-700 dark:text-gray-300" />
                         <span className="text-sm md:text-base">
-                            Pudo ser por conexión inestable o problemas temporales del servidor. 
+                            Pudo ser por conexión inestable o problemas temporales del servidor.
                         </span>
                     </div>
                 </div>

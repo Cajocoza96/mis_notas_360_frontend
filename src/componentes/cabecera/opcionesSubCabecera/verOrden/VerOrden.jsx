@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 import { useDispatch, useSelector } from "react-redux";
 
@@ -30,7 +30,7 @@ export default function VerOrden() {
 
     const [error, setError] = useState(null);
 
-    const {isOnline}  = useConexionInternet();
+    const { isOnline } = useConexionInternet();
 
     const [procesando, setProcesando] = useState(false);
 
@@ -38,14 +38,18 @@ export default function VerOrden() {
     const cargarAnotaciones = async () => {
         try {
             setCargando(true);
+            setErrorCarga(false);
             const anotacionesData = await obtenerAnotaciones();
             dispatch(setAnotaciones(anotacionesData));
             setCargando(false);
         } catch (error) {
-            setError('Error al cargar las anotaciones');
-            setCargando(false);
+            setError(true);
+            setCargando(true);
         } finally {
-            setCargando(false);
+            // ✅ IMPORTANTE: Solo desactivar carga si hubo éxito
+            if (isOnline) {
+                setCargando(false);
+            }
         }
     }
 
@@ -68,10 +72,18 @@ export default function VerOrden() {
         }
     };
 
+    useEffect(() => {
+        if(error && isOnline) {
+            setTimeout(() => {
+                cargarAnotaciones();
+            }, 3000); 
+        }
+    })
+
     return (
         <>
             {procesando && isOnline && (<CargandoNoHayNada pantallaCompletaCarga={true} />)}
-            
+
             <div className="w-full p-1 border-b border-gray-400 select-none
                                                 text-black dark:text-white
                                                 bg-white dark:bg-gray-800 cursor-pointer">

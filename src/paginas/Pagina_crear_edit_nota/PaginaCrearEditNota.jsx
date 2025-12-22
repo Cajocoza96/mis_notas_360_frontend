@@ -164,12 +164,16 @@ export default function PaginaCrearEditNota() {
                 logDesarrollo('🔄 Reintentando en 3 segundos...');
 
                 // Reintentar después de 3 segundos indefinidamente
-                setTimeout(() => {
-                    cargarDatos();
-                }, 3000);
+
+                if (isOnline) {
+                    setTimeout(() => {
+                        cargarDatos();
+                    }, 3000);
+                }
+
             } finally {
                 // ✅ IMPORTANTE: Solo desactivar carga si hubo éxito
-                if (isOnline ) {
+                if (isOnline) {
                     setCargando(false);
                 }
             }

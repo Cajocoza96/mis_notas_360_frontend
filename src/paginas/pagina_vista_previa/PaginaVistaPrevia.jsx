@@ -83,6 +83,13 @@ export default function PaginaVistaPrevia() {
 
             const anotacion = await obtenerAnotacionPorId(id);
 
+            // ✅ VALIDACIÓN: Si no existe, redirigir ANTES de actualizar estados
+            if (!anotacion || !anotacion.id) {
+                errorDesarrollo('❌ Anotación no encontrada');
+                navigate('/nota-no-encontrada', { replace: true });
+                return;
+            }
+
             // ✅ Primero: Actualizar Redux con toda la información
             dispatch(setAnotacionActual(anotacion));
             dispatch(setNota(anotacion.nota || ""));
@@ -107,17 +114,12 @@ export default function PaginaVistaPrevia() {
             setCargando(false);
         } catch (error) {
             errorDesarrollo('Error al cargar la anotación para vista previa:', error);
-
-            // ✅ Solo procesar error si hay conexión
-            // Si perdió la conexión durante la carga, no redirigir
+            setErrorCarga(true);
+            setCargando(false);
+        } finally {
+            // ✅ IMPORTANTE: Solo desactivar carga si hubo éxito
             if (isOnline) {
-                setErrorCarga(true);
-                setCargando(true);
-                
-            } else {
-                // Sin conexión: mantener en estado de carga
-                setCargando(true);
-                setErrorCarga(false);
+                setCargando(false);
             }
         }
     }
@@ -135,6 +137,15 @@ export default function PaginaVistaPrevia() {
             dispatch(resetNotaState());
         };
     }, [dispatch]);
+
+    // En caso de error y online volver a cargar cada 3 segundos
+    useEffect(() => {
+        if(errorCarga && isOnline) {
+            setTimeout(() => {
+                cargarAnotacion();
+            }, 3000);
+        }
+    })
 
     // ✅ SOLUCIÓN: Efecto para recargar cuando se restablece la conexión
     useEffect(() => {

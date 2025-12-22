@@ -3,6 +3,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { inicializarAuth } from '../../store/authSlice';
 import { cargarPreferencia } from '../../store/preferenciaSlice';
 
+import { HiOutlineBookOpen } from 'react-icons/hi';
+
 import { FaSpinner } from 'react-icons/fa';
 
 export default function AuthInitializer({ children }) {
@@ -13,13 +15,13 @@ export default function AuthInitializer({ children }) {
         // ✅ Verificar token solo una vez al montar la aplicación
         const inicializar = async () => {
             const result = await dispatch(inicializarAuth());
-            
+
             // Si está autenticado, cargar preferencias
             if (result.payload?.autenticado) {
                 await dispatch(cargarPreferencia());
             }
         };
-        
+
         inicializar();
     }, [dispatch]); // ✅ Solo se ejecuta una vez
 
@@ -27,13 +29,19 @@ export default function AuthInitializer({ children }) {
     if (inicializando) {
         return (
             <div className="fixed inset-0 bg-opacity-50 text-center
-                            bg-white text-black dark:bg-gray-800 dark:text-white
-                            flex flex-col items-center justify-center gap-2 
+                            bg-white dark:bg-gray-800 text-black dark:text-white
+                            flex flex-col items-center justify-center gap-3 
                             z-[9999] select-none">
                 <FaSpinner className="animate-spin text-lg md:text-xl" />
-                <p className="text-base md:text-lg font-bold">
-                    Verificando sesión...
-                </p>
+                <div className="flex flex-col items-center justify-center gap-2 ">
+                    <div>
+                        <HiOutlineBookOpen className="text-2xl md:text-3xl" />
+                    </div>
+                    <p className="w-full text-center text-lg md:text-xl
+                                            font-bold select-none truncate" translate="no">
+                        MisNotas360
+                    </p>
+                </div>
             </div>
         );
     }
