@@ -2,6 +2,7 @@ import { store } from "../store/store";
 import { cargarPreferencia } from "../store/preferenciaSlice";
 import { cerrarSesionLocal } from "../store/authSlice";
 import { establecerSesion } from "../store/authSlice";
+import { setVerToast, setMensajeToast } from "../store/accesoSlice";
 import { logDesarrollo, errorDesarrollo, obtenerMensajeError } from "../utils/errorHandler";
 
 const API_URL = import.meta.env.VITE_API_URL;
@@ -36,6 +37,24 @@ const limpiarSesion = () => {
     store.dispatch({ type: 'auth/cerrarSesionLocal' });
 };
 
+// ✅ NUEVO: Manejar cierre de sesión por rate limit
+const manejarRateLimitExcedido = (mensaje = 'Demasiadas solicitudes, intenta más tarde') => {
+    limpiarSesion();
+    
+    // Mostrar mensaje toast
+    store.dispatch(setMensajeToast(mensaje));
+    store.dispatch(setVerToast(true));
+    
+    setTimeout(() => {
+        store.dispatch(setVerToast(false));
+    }, 4000);
+    
+    // Redirigir a panel principal
+    setTimeout(() => {
+        window.location.href = '/panel-principal';
+    }, 500);
+};
+
 // ✅ NUEVO: Función para hacer warm-up del servidor
 const warmUpServer = async () => {
     try {
@@ -56,7 +75,7 @@ const warmUpServer = async () => {
     }
 };
 
-// ✅ MEJORADO: Fetch con timeout y reintentos inteligentes
+// ✅ MEJORADO: Fetch con timeout y manejo de rate limit
 const fetchConTimeout = async (url, options = {}, timeout = TIMEOUTS.NORMAL, intentos = 1) => {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), timeout);
@@ -69,33 +88,55 @@ const fetchConTimeout = async (url, options = {}, timeout = TIMEOUTS.NORMAL, int
         });
 
         clearTimeout(timeoutId);
+        
+        // ✅ CRÍTICO: Verificar si es error 429 (Rate Limit Exceeded)
+        if (response.status === 429) {
+            const data = await response.json();
+            
+            // Si el backend indica que debe cerrar sesión
+            if (data.sesionExpirada || data.debeRenovarSesion) {
+                manejarRateLimitExcedido(data.error || 'Demasiadas solicitudes, intenta más tarde');
+                
+                // Lanzar error para que no continúe el proceso
+                throw new Error('RATE_LIMIT_SESSION_CLOSED');
+            }
+            
+            // Si es rate limit pero sin cierre de sesión (rutas públicas)
+            throw new Error(data.error || 'Demasiadas solicitudes, intenta más tarde');
+        }
+        
         return response;
 
     } catch (error) {
         clearTimeout(timeoutId);
 
+        // Si ya se manejó el rate limit, no hacer nada más
+        if (error.message === 'RATE_LIMIT_SESSION_CLOSED') {
+            throw error;
+        }
+
         if (error.name === 'AbortError') {
-            // Si es el primer intento y es una operación de auth, reintentar
             if (intentos === 1 && (url.includes('/auth/iniciar-sesion') || 
                                     url.includes('/auth/registrar') ||
                                     url.includes('/auth/google') ||
                                     url.includes('/auth/facebook'))) {
-                logDesarrollo('⏳ Servidor tardando en responder, reintentando con más tiempo...');
-                // Reintentar con el doble de timeout
+                logDesarrollo('⏳ Servidor tardando en responder, reintentando...');
                 return fetchConTimeout(url, options, timeout * 1.5, intentos + 1);
             }
 
             throw new Error('La solicitud tardó demasiado tiempo. El servidor podría estar iniciándose, intenta de nuevo en unos segundos.');
         }
 
-        // Error de red
-        if (error.message.includes('Failed to fetch') || error.message.includes('NetworkError')) {
-            throw new Error('No se pudo conectar con el servidor. Verifica tu conexión a internet.');
+        if (error.message.includes('Failed to fetch')) {
+            throw new Error('No se pudo conectar con el servidor. Inténtalo nuevamente más tarde.');
+        }else if(error.message.includes('NetworkError')) {
+            throw new Error('¡Ups! No podemos conectarnos en este momento. Verifica tu conexión a internet e intenta nuevamente.');
         }
 
         throw error;
     }
 };
+
 
 // Función helper para manejar respuestas de autenticación
 const manejarRespuestaAuth = async (response) => {
@@ -224,7 +265,7 @@ export const autenticarConFacebook = async (facebookData) => {
     }
 };
 
-// ✅ MEJORADO: Verificar token con reintentos
+// ✅ Verificar token con reintentos
 export const verificarToken = async (reintentos = 2) => {
     try {
         const token = localStorage.getItem('token');
@@ -242,7 +283,7 @@ export const verificarToken = async (reintentos = 2) => {
                     'Content-Type': 'application/json',
                 },
             },
-            TIMEOUTS.VERIFICAR // 30 segundos
+            TIMEOUTS.VERIFICAR
         );
 
         const data = await manejarRespuestaAuth(response);
@@ -251,10 +292,14 @@ export const verificarToken = async (reintentos = 2) => {
         return data;
 
     } catch (error) {
-        // Si es un error de red y quedan reintentos
+        // Si fue cerrado por rate limit, no reintentar
+        if (error.message === 'RATE_LIMIT_SESSION_CLOSED') {
+            throw error;
+        }
+
         if ((error.message.includes('tiempo') || error.message.includes('conectar')) && reintentos > 0) {
             logDesarrollo(`⚠️ Reintentando verificación... (${reintentos} intentos restantes)`);
-            await new Promise(resolve => setTimeout(resolve, 2000)); // Esperar 2 segundos
+            await new Promise(resolve => setTimeout(resolve, 2000));
             return verificarToken(reintentos - 1);
         }
 
@@ -371,21 +416,40 @@ export const fetchConAuth = async (url, options = {}) => {
             TIMEOUTS.NORMAL
         );
 
-        if (response.status === 401) {
+        // ✅ Verificar respuestas de error que requieren acción
+        if (!response.ok) {
             const data = await response.json();
-            if (data.sesionInvalida || data.tokenInvalido) {
+            
+            // 401: Sesión inválida/expirada
+            if (response.status === 401 && (data.sesionInvalida || data.tokenInvalido)) {
                 limpiarSesion();
                 window.location.href = '/iniciar-sesion';
-                throw new Error('Sesión expirada');
+                throw new Error(data.error || 'Sesión expirada');
             }
+            
+            // 429: Rate limit (ya manejado en fetchConTimeout, pero por si acaso)
+            if (response.status === 429 && (data.sesionExpirada || data.debeRenovarSesion)) {
+                // Ya fue manejado por fetchConTimeout, solo lanzar error
+                throw new Error('RATE_LIMIT_SESSION_CLOSED');
+            }
+            
+            // Otros errores
+            throw new Error(data.error || data.mensaje || `Error ${response.status}`);
         }
 
         return response;
 
     } catch (error) {
+        // No cerrar sesión si fue por rate limit (ya se manejó)
+        if (error.message === 'RATE_LIMIT_SESSION_CLOSED') {
+            throw error;
+        }
+        
+        // Para otros errores de sesión, limpiar
         if (error.message.includes('sesión') || error.message.includes('Sesión')) {
             limpiarSesion();
         }
+        
         throw error;
     }
 };
