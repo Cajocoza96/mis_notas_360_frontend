@@ -55,7 +55,7 @@ export default function CargandoNoHayNada({
                             bg-white dark:bg-gray-800 text-black  dark:text-white
                             flex flex-col items-center justify-center gap-3">
                 <FaSpinner className="animate-spin text-lg md:text-xl" />
-                <div className="flex flex-col items-center justify-center gap-2 ">
+                <div className="flex flex-row items-center gap-2 ">
                     <div>
                         <HiOutlineBookOpen className="text-2xl md:text-3xl" />
                     </div>
