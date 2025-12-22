@@ -3,9 +3,12 @@ import { cargarPreferencia } from "../store/preferenciaSlice";
 import { cerrarSesionLocal } from "../store/authSlice";
 import { establecerSesion } from "../store/authSlice";
 import { setVerToast, setMensajeToast } from "../store/accesoSlice";
+import useConexionInternet from "../hooks/useConexionInternet";
 import { logDesarrollo, errorDesarrollo, obtenerMensajeError } from "../utils/errorHandler";
 
 const API_URL = import.meta.env.VITE_API_URL;
+
+const { isOnline } = useConexionInternet();
 
 // ===============================
 // ✅ CONFIGURACIÓN DE TIMEOUTS
@@ -129,7 +132,7 @@ const fetchConTimeout = async (url, options = {}, timeout = TIMEOUTS.NORMAL, int
 
         if (error.message.includes('Failed to fetch')) {
             throw new Error('No se pudo conectar con el servidor. Inténtalo nuevamente más tarde.');
-        }else if(error.message.includes('NetworkError')) {
+        }else if(!isOnline) {
             throw new Error('¡Ups! No podemos conectarnos en este momento. Verifica tu conexión a internet e intenta nuevamente.');
         }
 
