@@ -72,14 +72,6 @@ export default function VerOrden() {
         }
     };
 
-    useEffect(() => {
-        if(error && isOnline) {
-            setTimeout(() => {
-                cargarAnotaciones();
-            }, 3000); 
-        }
-    })
-
     return (
         <>
             {procesando && isOnline && (<CargandoNoHayNada pantallaCompletaCarga={true} />)}

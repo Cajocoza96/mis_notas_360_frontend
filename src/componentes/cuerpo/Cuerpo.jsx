@@ -31,10 +31,23 @@ import { AnimatePresence } from "framer-motion";
 
 import { logDesarrollo, errorDesarrollo, registrarError } from "../../utils/errorHandler";
 
+import useReintentoInteligente from "../../hooks/useReintentoInteligente";
+
 import useConexionInternet from "../../hooks/useConexionInternet";
 
 export default function Cuerpo({ notaNoEliminada,
     verContenidoCuerpo, verNotaBusqueda, verNotaEliminada, verTodosEstados }) {
+
+    // ✅ Hook de reintento inteligente
+    const {
+        ejecutarConReintento,
+        resetearIntentos,
+        limpiar,
+        obtenerIntentos,
+        obtenerIntentosRestantes,
+        intentosActuales,
+        intentosAgotados
+    } = useReintentoInteligente();
 
     const { isOnline, justReconnected, resetReconnectionState } = useConexionInternet();
 
@@ -62,8 +75,9 @@ export default function Cuerpo({ notaNoEliminada,
     const contadores = useSelector(state => state.tareas.contadores);
 
     // ✅ useRef para controlar el timeout
-    const timeoutRef = useRef(null);
-    const reintentoRef = useRef(null); // ✅ Nuevo ref para el reintento
+    //const timeoutRef = useRef(null);
+    
+    //const reintentoRef = useRef(null); // ✅ Nuevo ref para el reintento
 
     // Cargar contadores al montar el componente
     useEffect(() => {
@@ -137,26 +151,36 @@ export default function Cuerpo({ notaNoEliminada,
         return tareasFormateadas;
     };
 
+    // ✅ Cargar contadores con manejo de errores mejorado
     const cargarContadores = async () => {
         try {
             setProcesando(true);
             setCargando(true);
             const datos = await obtenerContadores();
             dispatch(setContadores(datos));
-            setError(false); // ✅ Limpiar error si la carga fue exitosa
-            setCargaInicial(false); // ✅ Ya no es carga inicial
+            setError(false);
+            setCargaInicial(false);
+            resetearIntentos(); // ✅ Resetear intentos en éxito
             setCargando(false);
             setProcesando(false);
         } catch (error) {
-            setError(true); // ✅ Marcar error
-            setProcesando(false);
+            errorDesarrollo('Error al cargar contadores:', error);
             setCargando(false);
-            errorDesarrollo('Error al cargar contadores en el componente:', error);
+            setProcesando(false);
 
-            // ✅ Reintentar automáticamente si hay internet
-            if (isOnline) {
-                reintentoAutomatico(() => cargarContadores());
-            }
+            // ✅ Solo mostrar error si hay intentos (ya sea en proceso o agotados)
+            setError(true);
+
+            // ✅ Ejecutar reintento inteligente
+            ejecutarConReintento(
+                cargarContadores,
+                isOnline,
+                (mensaje) => {
+                    // Callback cuando se agotan los reintentos
+                    setError(true);
+                    errorDesarrollo(mensaje);
+                }
+            );
         }
     };
 
@@ -169,13 +193,13 @@ export default function Cuerpo({ notaNoEliminada,
         }
     }, [verContenidoCuerpo, verNotaEliminada, verSoloFavoritos, verAnotacEstado, ordenAnotaciones, location.pathname]);
 
-    // Efecto para recargar anotaciones cuando se restablece la conexión
+    // ✅ Efecto para resetear intentos cuando se recupera la conexión
     useEffect(() => {
         if (justReconnected) {
-            // ✅ Limpiar errores al reconectar
             setError(false);
+            resetearIntentos(); // ✅ Resetear intentos al reconectar
 
-            // Recargar anotaciones según el contexto actual
+            // Recargar datos según contexto
             if (verContenidoCuerpo) {
                 cargarAnotaciones();
             } else if (verNotaEliminada) {
@@ -184,14 +208,25 @@ export default function Cuerpo({ notaNoEliminada,
                 cargarContadores();
             }
 
-            // Esperar un momento antes de resetear el estado de reconexión
             const timer = setTimeout(() => {
                 resetReconnectionState();
-            }, 3000); // El mensaje desaparecerá después de 3 segundos
+            }, 3000);
 
             return () => clearTimeout(timer);
         }
     }, [justReconnected]);
+
+    // ✅ Efecto para resetear intentos al cambiar de ruta
+    useEffect(() => {
+        resetearIntentos();
+    }, [location.pathname]);
+
+    // ✅ Limpiar timeouts al desmontar
+    useEffect(() => {
+        return () => {
+            limpiar();
+        };
+    }, []);
 
     // Efecto que ayuda que procesando se quite en /panel-principal
     useEffect(() => {
@@ -202,6 +237,7 @@ export default function Cuerpo({ notaNoEliminada,
         }
     }, [location.pathname, verTodosEstados]);
 
+    /*
     // ✅ Función de reintento automático
     const reintentoAutomatico = (funcionReintento) => {
         // Limpiar reintento anterior si existe
@@ -217,6 +253,7 @@ export default function Cuerpo({ notaNoEliminada,
             }
         }, 3000);
     };
+    
 
     // ✅ Limpiar timeout al desmontar
     useEffect(() => {
@@ -226,8 +263,9 @@ export default function Cuerpo({ notaNoEliminada,
             }
         };
     }, []);
+    */
 
-    //Cargar todas las anotaciones
+    // ✅ Cargar anotaciones con manejo de errores mejorado
     const cargarAnotaciones = async () => {
         try {
             setCargando(true);
@@ -239,23 +277,30 @@ export default function Cuerpo({ notaNoEliminada,
             }));
 
             dispatch(setAnotaciones(anotacionesConOrden));
-            setError(false); // ✅ Limpiar error si la carga fue exitosa
-            setCargaInicial(false); // ✅ Ya no es carga inicial
+            setError(false);
+            setCargaInicial(false);
+            resetearIntentos(); // ✅ Resetear intentos en éxito
             setCargando(false);
         } catch (error) {
-            setError(true); // ✅ Marcar error
-            setCargando(false);
             errorDesarrollo('Error al cargar las anotaciones:', error);
-            // ✅ Reintentar automáticamente si hay internet
-            if (isOnline) {
-                reintentoAutomatico(() => cargarAnotaciones());
-            }
-        } finally {
             setCargando(false);
+
+            // ✅ Mostrar error
+            setError(true);
+
+            // ✅ Ejecutar reintento inteligente
+            ejecutarConReintento(
+                cargarAnotaciones,
+                isOnline,
+                (mensaje) => {
+                    setError(true);
+                    errorDesarrollo(mensaje);
+                }
+            );
         }
     }
 
-    //Cargar anotaciones eliminadas
+    // ✅ Cargar anotaciones eliminadas con manejo de errores mejorado
     const cargarAnotacionesEliminadas = async () => {
         try {
             setCargando(true);
@@ -267,20 +312,26 @@ export default function Cuerpo({ notaNoEliminada,
             }));
 
             dispatch(setAnotaciones(anotacionesConOrden));
-            setError(false); // ✅ Limpiar error si la carga fue exitosa
-            setCargaInicial(false); // ✅ Ya no es carga inicial
+            setError(false);
+            setCargaInicial(false);
+            resetearIntentos(); // ✅ Resetear intentos en éxito
             setCargando(false);
         } catch (error) {
-            setError(true); // ✅ Marcar error
-            setCargando(false);
             errorDesarrollo('Error al cargar las anotaciones eliminadas:', error);
-
-            // ✅ Reintentar automáticamente si hay internet
-            if (isOnline) {
-                reintentoAutomatico(() => cargarAnotacionesEliminadas());
-            }
-        } finally {
             setCargando(false);
+
+            // ✅ Mostrar error
+            setError(true);
+
+            // ✅ Ejecutar reintento inteligente
+            ejecutarConReintento(
+                cargarAnotacionesEliminadas,
+                isOnline,
+                (mensaje) => {
+                    setError(true);
+                    errorDesarrollo(mensaje);
+                }
+            );
         }
     }
 
@@ -363,7 +414,11 @@ export default function Cuerpo({ notaNoEliminada,
                             ) :
                                 /*Mostrar panel de error */
                                 error ? (
-                                    <CargandoNoHayNada errorCargaInformacion={true} iconoSinConexion={false} />
+                                    <CargandoNoHayNada 
+                                        errorCargaInformacion={true} 
+                                        iconoSinConexion={false}
+                                        intentosRestantes={obtenerIntentosRestantes()}
+                                        intentosAgotados={intentosAgotados} />
                                 ) :
 
                                     /* ✅ Mostrar spinner mientras carga O mientras no se deben mostrar resultados */
@@ -435,7 +490,12 @@ export default function Cuerpo({ notaNoEliminada,
                                 <CargandoNoHayNada iconoSinConexion={false} />
                             ) :
                                 error ? (
-                                    <CargandoNoHayNada errorCargaInformacion={true} iconoSinConexion={false} />
+                                    <CargandoNoHayNada 
+                                        errorCargaInformacion={true} 
+                                        iconoSinConexion={false} 
+                                        intentosRestantes={obtenerIntentosRestantes()}
+                                        intentosAgotados={intentosAgotados}
+                                        />
                                 ) :
                                     cargando ? (
                                         <CargandoNoHayNada

@@ -24,11 +24,25 @@ import { logDesarrollo, errorDesarrollo, registrarError } from "../../utils/erro
 
 import Toast from "../../componentes/toast/Toast";
 
+import useReintentoInteligente from "../../hooks/useReintentoInteligente";
+
 import useConexionInternet from "../../hooks/useConexionInternet";
 
 import CargandoNoHayNada from "../../componentes/cargando_no_hay_nada/CargandoNoHayNada";
 
 export default function PaginaVistaPrevia() {
+
+    // ✅ Hook de reintento inteligente
+    const {
+        ejecutarConReintento,
+        resetearIntentos,
+        limpiar,
+        obtenerIntentos,
+        obtenerIntentosRestantes,
+        intentosActuales,
+        intentosAgotados
+    } = useReintentoInteligente();
+
     const { id } = useParams();
 
     const location = useLocation();
@@ -79,9 +93,12 @@ export default function PaginaVistaPrevia() {
 
         try {
             setCargando(true);
-            setErrorCarga(false);
 
             const anotacion = await obtenerAnotacionPorId(id);
+
+            setErrorCarga(false);
+
+            resetearIntentos(); // ✅ Resetear intentos en éxito
 
             // ✅ VALIDACIÓN: Si no existe, redirigir ANTES de actualizar estados
             if (!anotacion || !anotacion.id) {
@@ -114,8 +131,8 @@ export default function PaginaVistaPrevia() {
             setCargando(false);
         } catch (error) {
             errorDesarrollo('Error al cargar la anotación para vista previa:', error);
-            setErrorCarga(true);
             setCargando(false);
+            setErrorCarga(true);
         } finally {
             // ✅ IMPORTANTE: Solo desactivar carga si hubo éxito
             if (isOnline) {
@@ -138,14 +155,23 @@ export default function PaginaVistaPrevia() {
         };
     }, [dispatch]);
 
-    // En caso de error y online volver a cargar cada 3 segundos
+
+    // En caso de error y online volver a cargar
     useEffect(() => {
-        if(errorCarga && isOnline) {
-            setTimeout(() => {
-                cargarAnotacion();
-            }, 3000);
+        if (errorCarga && isOnline) {
+            // ✅ Ejecutar reintento inteligente
+            ejecutarConReintento(
+                cargarAnotacion,
+                isOnline,
+                (mensaje) => {
+                    // Callback cuando se agotan los reintentos
+                    setErrorCarga(true);
+                    errorDesarrollo(mensaje);
+                }
+            );
         }
     })
+
 
     // ✅ SOLUCIÓN: Efecto para recargar cuando se restablece la conexión
     useEffect(() => {
@@ -170,6 +196,25 @@ export default function PaginaVistaPrevia() {
             }, 3000);
 
             return () => clearTimeout(timer);
+        }
+    }, [justReconnected]);
+
+    // ✅ Efecto para resetear intentos al cambiar de ruta
+    useEffect(() => {
+        resetearIntentos();
+    }, [location.pathname]);
+
+    // ✅ Limpiar timeouts al desmontar
+    useEffect(() => {
+        return () => {
+            limpiar();
+        };
+    }, []);
+
+    useEffect(() => {
+        if (justReconnected) {
+            setErrorCarga(false);
+            resetearIntentos(); // ✅ Resetear intentos al reconectar
         }
     }, [justReconnected]);
 

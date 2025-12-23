@@ -10,7 +10,6 @@ import { useLocation, useNavigate } from "react-router-dom";
 import BotonAccion from "../botones/BotonAccion";
 
 export default function CargandoNoHayNada({
-    advertenciaSinConexion,
     errorCargaInformacion,
     pantallaCompletaCarga,
     iconoDeCarga,
@@ -18,7 +17,9 @@ export default function CargandoNoHayNada({
     sinEstadoFavoritoNada,
     noHayEliminadas,
     iconoSinConexion,
-    iconoError
+    iconoError,
+    intentosRestantes = 0,
+    intentosAgotados = false
 }) {
     const verSoloFavoritos = useSelector((state) => state.preferencia.verSoloFavoritos);
     const verAnotacEstado = useSelector((state) => state.preferencia.verAnotacEstado);
@@ -47,6 +48,11 @@ export default function CargandoNoHayNada({
     const esModoEdicion = location.pathname.includes('/editar/nota/');
 
     const ModosCrearEdicion = esModoCrear || esModoEdicion;
+
+    // ✅ Función para refrescar la página
+    const handleRefrescarPagina = () => {
+        window.location.reload();
+    };
 
     // ✅ Si está inicializando auth, mostrar loader
     if (inicializando && CargandoAnotaciones) {
@@ -161,15 +167,48 @@ export default function CargandoNoHayNada({
 
                     <BiErrorAlt className="text-6xl md:text-7xl" />
 
-                    <div className="flex flex-col items-center justify-center gap-1">
-                        <p className="text-base md:text-lg">
-                            Se reintentará de nuevo automáticamente...
-                        </p>
-                        <FaSpinner className="animate-spin text-xl md:text-2xl text-gray-700 dark:text-gray-300" />
-                        <span className="text-sm md:text-base">
-                            Pudo ser por conexión inestable o problemas temporales del servidor.
-                        </span>
-                    </div>
+                    {/* ✅ Mostrar diferentes mensajes según el estado de los intentos */}
+                    {!intentosAgotados ? (
+                        <div className="flex flex-col items-center justify-center gap-1">
+                            <p className="text-base md:text-lg">
+                                Reintentando automáticamente...
+                            </p>
+                            <FaSpinner className="animate-spin text-xl md:text-2xl text-gray-700 dark:text-gray-300" />
+                            <span className="text-sm md:text-base">
+                                Puede deberse a conexión inestable o problemas del servidor.
+                            </span>
+                            <span className="text-xs md:text-sm text-gray-500 dark:text-gray-500 mt-2">
+                                Intentos restantes: {intentosRestantes} de 3
+                            </span>
+                        </div>
+
+                    ) : (
+                        <div className="flex flex-col items-center justify-center gap-3">
+                            <p className="text-base md:text-lg text-red-600 dark:text-red-400 font-semibold">
+                                Los intentos automáticos se acabaron
+                            </p>
+                            <span className="text-sm md:text-base text-gray-600 dark:text-gray-400">
+                                Por favor, refresque la página para intentar nuevamente
+                            </span>
+
+                            {/* ✅ Botón para refrescar la página */}
+                            <button
+                                onClick={handleRefrescarPagina}
+                                className="mt-2 px-6 py-2 bg-blue-600 hover:bg-blue-700 
+                                            text-white rounded-lg transition-colors duration-200
+                                            font-medium text-sm md:text-base
+                                            active:scale-95 transform"
+                            >
+                                Refrescar Página
+                            </button>
+
+                            <span className="text-xs text-gray-500 dark:text-gray-500 mt-1">
+                                O presione F5 / Ctrl+R
+                            </span>
+                        </div>
+                    )}
+
+
                 </div>
             )}
 

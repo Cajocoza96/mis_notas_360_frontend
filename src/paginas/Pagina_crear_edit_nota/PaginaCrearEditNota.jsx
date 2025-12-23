@@ -30,11 +30,25 @@ import { logDesarrollo, errorDesarrollo, registrarError } from "../../utils/erro
 
 import Toast from "../../componentes/toast/Toast";
 
+import useReintentoInteligente from "../../hooks/useReintentoInteligente";
+
 import useConexionInternet from "../../hooks/useConexionInternet";
 
 import CargandoNoHayNada from "../../componentes/cargando_no_hay_nada/CargandoNoHayNada";
 
 export default function PaginaCrearEditNota() {
+
+    // ✅ Hook de reintento inteligente
+    const {
+        ejecutarConReintento,
+        resetearIntentos,
+        limpiar,
+        obtenerIntentos,
+        obtenerIntentosRestantes,
+        intentosActuales,
+        intentosAgotados
+    } = useReintentoInteligente();
+
     const { id } = useParams();
     const location = useLocation();
     const dispatch = useDispatch();
@@ -152,24 +166,23 @@ export default function PaginaCrearEditNota() {
                 // ✅ Guardar la anotación en estado local
                 setAnotacionCargada(anotacion);
                 setAnotacionValidada(true);
-                setCargando(false);
                 setErrorCarga(false);
-
+                resetearIntentos(); // ✅ Resetear intentos en éxito
+                setCargando(false);
             } catch (error) {
                 errorDesarrollo('❌ Error al cargar la anotación:', error);
-
-                setErrorCarga(true);
                 setCargando(false);
+                setErrorCarga(true);
 
-                logDesarrollo('🔄 Reintentando en 3 segundos...');
-
-                // Reintentar después de 3 segundos indefinidamente
-
-                if (isOnline) {
-                    setTimeout(() => {
-                        cargarDatos();
-                    }, 3000);
-                }
+                // ✅ Ejecutar reintento inteligente
+                ejecutarConReintento(
+                    cargarDatos,
+                    isOnline,
+                    (mensaje) => {
+                        setErrorCarga(true);
+                        errorDesarrollo(mensaje);
+                    }
+                );
 
             } finally {
                 // ✅ IMPORTANTE: Solo desactivar carga si hubo éxito
@@ -218,6 +231,25 @@ export default function PaginaCrearEditNota() {
             }, 0);
         }
     }, [anotacionValidada, anotacionCargada, dispatch]);
+
+    // ✅ Efecto para resetear intentos al cambiar de ruta
+    useEffect(() => {
+        resetearIntentos();
+    }, [location.pathname]);
+
+    // ✅ Limpiar timeouts al desmontar
+    useEffect(() => {
+        return () => {
+            limpiar();
+        };
+    }, []);
+
+    useEffect(() => {
+        if (justReconnected) {
+            setErrorCarga(false);
+            resetearIntentos(); // ✅ Resetear intentos al reconectar
+        }
+    }, [justReconnected]);
 
     // Limpiar el historial cuando entramos en modo edición
     useEffect(() => {
