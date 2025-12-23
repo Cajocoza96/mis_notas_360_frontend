@@ -40,17 +40,15 @@ const limpiarSesion = () => {
 // ✅ NUEVO: Manejar cierre de sesión por rate limit
 const manejarRateLimitExcedido = (mensaje = 'Demasiadas solicitudes, intenta más tarde') => {
     limpiarSesion();
-    
-    /*
+
     // Mostrar mensaje toast
     store.dispatch(setMensajeToast(mensaje));
     store.dispatch(setVerToast(true));
-    
+
     setTimeout(() => {
         store.dispatch(setVerToast(false));
     }, 4000);
-    */
-    
+
     // Redirigir a panel principal
     setTimeout(() => {
         window.location.href = '/panel-principal';
@@ -62,12 +60,12 @@ const warmUpServer = async () => {
     try {
         const controller = new AbortController();
         const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 segundos de timeout
-        
+
         await fetch(`${API_URL}/health`, {
             method: 'GET',
             signal: controller.signal
         });
-        
+
         clearTimeout(timeoutId);
         logDesarrollo('✅ Servidor despierto');
         return true;
@@ -90,23 +88,23 @@ const fetchConTimeout = async (url, options = {}, timeout = TIMEOUTS.NORMAL, int
         });
 
         clearTimeout(timeoutId);
-        
+
         // ✅ CRÍTICO: Verificar si es error 429 (Rate Limit Exceeded)
         if (response.status === 429) {
             const data = await response.json();
-            
+
             // Si el backend indica que debe cerrar sesión
             if (data.sesionExpirada || data.debeRenovarSesion) {
                 manejarRateLimitExcedido(data.error || 'Demasiadas solicitudes, intenta más tarde');
-                
+
                 // Lanzar error para que no continúe el proceso
                 throw new Error('RATE_LIMIT_SESSION_CLOSED');
             }
-            
+
             // Si es rate limit pero sin cierre de sesión (rutas públicas)
             throw new Error(data.error || 'Demasiadas solicitudes, intenta más tarde');
         }
-        
+
         return response;
 
     } catch (error) {
@@ -118,18 +116,18 @@ const fetchConTimeout = async (url, options = {}, timeout = TIMEOUTS.NORMAL, int
         }
 
         if (error.name === 'AbortError') {
-            if (intentos === 1 && (url.includes('/auth/iniciar-sesion') || 
-                                    url.includes('/auth/registrar') ||
-                                    url.includes('/auth/google') ||
-                                    url.includes('/auth/facebook'))) {
+            if (intentos === 1 && (url.includes('/auth/iniciar-sesion') ||
+                url.includes('/auth/registrar') ||
+                url.includes('/auth/google') ||
+                url.includes('/auth/facebook'))) {
                 logDesarrollo('⏳ Servidor tardando en responder, reintentando...');
                 return fetchConTimeout(url, options, timeout * 1.5, intentos + 1);
             }
 
             throw new Error('La solicitud tardó demasiado tiempo. El servidor podría estar iniciándose, intenta de nuevo en unos segundos.');
         }
-        
-        if(!navigator.onLine) {
+
+        if (!navigator.onLine) {
             throw new Error('¡Ups! No podemos conectarnos en este momento. Verifica tu conexión a internet e intenta nuevamente.');
         }
 
@@ -170,7 +168,7 @@ export const registrarUsuario = async (nombreUsuario, contrasena) => {
         await warmUpServer();
 
         const response = await fetchConTimeout(
-            `${API_URL}/auth/registrar`, 
+            `${API_URL}/auth/registrar`,
             {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -292,7 +290,7 @@ export const verificarToken = async (reintentos = 2) => {
 
         const data = await manejarRespuestaAuth(response);
         localStorage.setItem('usuario', JSON.stringify(data.usuario));
-        
+
         return data;
 
     } catch (error) {
@@ -423,22 +421,29 @@ export const fetchConAuth = async (url, options = {}) => {
         // ✅ Verificar respuestas de error que requieren acción
         if (!response.ok) {
             const data = await response.json();
-            
+
             // 401: Sesión inválida/expirada
             if (response.status === 401 && (data.sesionInvalida || data.tokenInvalido)) {
                 limpiarSesion();
                 window.location.href = '/iniciar-sesion';
                 throw new Error(data.error || 'Sesión expirada');
             }
-            
+
             // 429: Rate limit (ya manejado en fetchConTimeout, pero por si acaso)
-            if (response.status === 429 && (data.sesionExpirada || data.debeRenovarSesion)) {
-                // Ya fue manejado por fetchConTimeout, solo lanzar error
-                throw new Error('RATE_LIMIT_SESSION_CLOSED');
+            if (response.status === 429) {
+                // Si tiene sesionExpirada, ya fue manejado
+                if (data.sesionExpirada || data.debeRenovarSesion) {
+                    throw new Error('RATE_LIMIT_SESSION_CLOSED');
+                }
+
+                // ✅ Rate limit específico (favoritos, crear, editar)
+                // Usar el mensaje "detail" si existe, sino "error"
+                const mensaje = data.detail || data.error || 'Demasiadas solicitudes, intenta más tarde';
+                throw new Error(mensaje);
             }
-            
-            // Otros errores
-            throw new Error(data.error || data.mensaje || `Error ${response.status}`);
+
+            // Otros errores - usar detail si existe, sino error
+            throw new Error(data.detail || data.error || data.mensaje || `Error ${response.status}`);
         }
 
         return response;
@@ -448,12 +453,12 @@ export const fetchConAuth = async (url, options = {}) => {
         if (error.message === 'RATE_LIMIT_SESSION_CLOSED') {
             throw error;
         }
-        
+
         // Para otros errores de sesión, limpiar
         if (error.message.includes('sesión') || error.message.includes('Sesión')) {
             limpiarSesion();
         }
-        
+
         throw error;
     }
 };

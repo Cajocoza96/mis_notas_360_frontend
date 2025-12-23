@@ -4,6 +4,57 @@ import { logDesarrollo, errorDesarrollo, registrarError } from "../utils/errorHa
 
 import { fetchConAuth } from "./authService";
 
+// ===============================
+// ✅ HELPER: Maneja errores de las peticiones HTTP
+// Esta versión trabaja con errores que ya vienen de fetchConAuth
+// ===============================
+const procesarError = (error, mensajeGenerico) => {
+    // 1️⃣ Si es rate limit de sesión (429 general - 200 req/15min)
+    // Este ya fue manejado en authService (cerró sesión automáticamente)
+    if (error.message === 'RATE_LIMIT_SESSION_CLOSED') {
+        throw error; // Propagar sin modificar
+    }
+    
+    // 2️⃣ Si es rate limit específico (favoritos, crear, editar)
+    // El error ya tiene el mensaje del backend desde fetchConAuth
+    if (error.message && (
+        error.message.includes('Límite') || 
+        error.message.includes('límite') ||
+        error.message.includes('Rate limit')
+    )) {
+        // ✅ Mostrar en consola para debugging
+        console.error('🚫 Rate Limit:', error.message);
+        logDesarrollo('📛 Error de rate limit detectado');
+        
+        // ✅ Crear error con código para que Cabecera lo detecte
+        const rateLimitError = new Error(error.message);
+        rateLimitError.code = 'RATE_LIMIT_EXCEEDED';
+        rateLimitError.status = 429;
+        throw rateLimitError;
+    }
+    
+    // 3️⃣ Para otros errores de sesión
+    if (error.message && (
+        error.message.includes('sesión') || 
+        error.message.includes('Sesión')
+    )) {
+        throw error; // Ya manejado en authService
+    }
+    
+    // 4️⃣ Otros errores - usar mensaje genérico
+    if (import.meta.env.MODE === 'development') {
+        console.error(`❌ Error: ${error.message}`);
+    }
+    
+    // Si el error no tiene un mensaje útil, usar el genérico
+    if (!error.message || error.message === 'Failed to fetch') {
+        error.message = mensajeGenerico;
+    }
+    
+    throw error;
+};
+
+/*
 //Maneja errores de las peticiones HTTP
 const manejarErrorRespuesta = async (response, mensajeError) => {
     if (!response.ok) {
@@ -44,6 +95,7 @@ const manejarErrorRespuesta = async (response, mensajeError) => {
         throw new Error(mensajeError);
     }
 };
+*/
 
 //Obtiene el token de autenticación del localStorage
 const obtenerToken = () => {
@@ -65,8 +117,7 @@ export const obtenerContadores = async () => {
             }
         });
 
-        manejarErrorRespuesta(response, 'Error al cargar contadores');
-
+        // ✅ fetchConAuth ya verificó que response.ok === true
         const data = await response.json();
 
         logDesarrollo('✅ Contadores obtenidos:', data);
@@ -74,7 +125,8 @@ export const obtenerContadores = async () => {
         return data;
     } catch (error) {
         registrarError('obtenerContadores', error);
-        throw error;
+        procesarError(error, 'Error al obtener contadores');
+        //throw error;
     }
 };
 
@@ -93,8 +145,7 @@ export const obtenerAnotaciones = async () => {
             }
         });
 
-        manejarErrorRespuesta(response, 'Error al cargar notas');
-
+        // ✅ fetchConAuth ya verificó que response.ok === true
         const data = await response.json();
 
         logDesarrollo('✅ Notas obtenidas:', data);
@@ -102,7 +153,7 @@ export const obtenerAnotaciones = async () => {
         return data.anotaciones;
     } catch (error) {
         registrarError('obtenerAnotaciones', error);
-        throw error;
+        procesarError(error, 'Error al obtener notas');
     }
 };
 
@@ -121,8 +172,7 @@ export const obtenerAnotacionesEliminadas = async () => {
             }
         });
 
-        manejarErrorRespuesta(response, 'Error al cargar notas eliminadas');
-
+        // ✅ fetchConAuth ya verificó que response.ok === true
         const data = await response.json();
 
         logDesarrollo('✅ Notas eliminadas obtenidas:', data);
@@ -130,7 +180,7 @@ export const obtenerAnotacionesEliminadas = async () => {
         return data.anotaciones;
     } catch (error) {
         registrarError('obtenerAnotacionesEliminadas', error);
-        throw error;
+        procesarError(error, 'Error al obtener notas eliminadas');
     }
 };
 
@@ -150,8 +200,7 @@ export const actualizarFavorito = async (anotacionId, favorito) => {
             body: JSON.stringify({ favorito })
         });
 
-        await manejarErrorRespuesta(response, 'Error al actualizar favorito');
-
+        // ✅ fetchConAuth ya verificó que response.ok === true
         const data = await response.json();
 
         logDesarrollo('✅ Nota asignada como favorita:', data);
@@ -159,7 +208,7 @@ export const actualizarFavorito = async (anotacionId, favorito) => {
         return data;
     } catch (error) {
         registrarError('actualizarFavorito', error);
-        throw error;
+        procesarError(error, 'Error al actualizar favorito');
     }
 };
 
@@ -178,8 +227,7 @@ export const moverAPapelera = async (id) => {
             }
         });
 
-        manejarErrorRespuesta(response, 'Error al mover a papelera');
-
+        // ✅ fetchConAuth ya verificó que response.ok === true
         const data = await response.json();
 
         logDesarrollo('✅ Nota movida a papelera:', data);
@@ -187,7 +235,7 @@ export const moverAPapelera = async (id) => {
         return data;
     } catch (error) {
         registrarError('moverAPapelera', error);
-        throw error;
+        procesarError(error, 'Error al mover a papelera');
     }
 };
 
@@ -207,8 +255,7 @@ export const moverTodasAPapelera = async (anotacionesIds, aplicarFiltros = false
             body: JSON.stringify({ anotacionesIds, aplicarFiltros })
         });
 
-        manejarErrorRespuesta(response, 'Error al mover notas a papelera');
-
+        // ✅ fetchConAuth ya verificó que response.ok === true
         const data = await response.json();
 
         logDesarrollo('✅ Notas movidas a papelera:', data);
@@ -216,7 +263,7 @@ export const moverTodasAPapelera = async (anotacionesIds, aplicarFiltros = false
         return data;
     } catch (error) {
         registrarError('moverTodasAPapelera', error);
-        throw error;
+        procesarError(error, 'Error al mover todas a papelera');
     }
 };
 
@@ -235,8 +282,7 @@ export const restaurarDesdePapelera = async (anotacionId) => {
             }
         });
 
-        manejarErrorRespuesta(response, 'Error al restaurar nota desde la papelera');
-
+        // ✅ fetchConAuth ya verificó que response.ok === true
         const data = await response.json();
 
         logDesarrollo('✅ Nota restaurada desde la papelera:', data);
@@ -244,7 +290,7 @@ export const restaurarDesdePapelera = async (anotacionId) => {
         return data;
     } catch (error) {
         registrarError('restaurarDesdePapelera', error);
-        throw error;
+        procesarError(error, 'Error al restaurar desde papelera');
     }
 };
 
@@ -263,8 +309,7 @@ export const eliminarDefinitivamente = async (anotacionId) => {
             }
         });
 
-        manejarErrorRespuesta(response, 'Error al eliminar la nota definitivamente');
-
+        // ✅ fetchConAuth ya verificó que response.ok === true
         const data = await response.json();
 
         logDesarrollo('✅ Nota eliminada definitivamente:', data);
@@ -272,7 +317,7 @@ export const eliminarDefinitivamente = async (anotacionId) => {
         return data;
     } catch (error) {
         registrarError('eliminarDefinitivamente', error);
-        throw error;
+        procesarError(error, 'Error al eliminar definitivamente');
     }
 };
 
@@ -292,8 +337,7 @@ export const eliminarTodasDefinitivamente = async (anotacionesIds, aplicarFiltro
             body: JSON.stringify({ anotacionesIds, aplicarFiltros })
         });
 
-        manejarErrorRespuesta(response, 'Error al eliminar las notas definitivamente');
-
+        // ✅ fetchConAuth ya verificó que response.ok === true
         const data = await response.json();
 
         logDesarrollo('✅ Notas eliminadas definitivamente:', data);
@@ -301,7 +345,7 @@ export const eliminarTodasDefinitivamente = async (anotacionesIds, aplicarFiltro
         return data;
     } catch (error) {
         registrarError('eliminarTodasDefinitivamente', error);
-        throw error;
+        procesarError(error, 'Error al eliminar todas definitivamente');
     }
 };
 
@@ -320,8 +364,7 @@ export const vaciarPapelera = async () => {
             }
         });
 
-        manejarErrorRespuesta(response, 'Error al vaciar la papelera');
-
+        // ✅ fetchConAuth ya verificó que response.ok === true
         const data = await response.json();
 
         logDesarrollo('✅ Papelera vaciada:', data);
@@ -329,7 +372,7 @@ export const vaciarPapelera = async () => {
         return data;
     } catch (error) {
         registrarError('vaciarPapelera', error);
-        throw error;
+        procesarError(error, 'Error al vaciar papelera');
     }
 };
 
@@ -351,8 +394,7 @@ export const buscarAnotaciones = async (termino) => {
             }
         );
 
-        manejarErrorRespuesta(response, 'Error al buscar anotaciones');
-
+        // ✅ fetchConAuth ya verificó que response.ok === true
         const data = await response.json();
 
         logDesarrollo('✅ Nota buscada:', data);
@@ -360,7 +402,7 @@ export const buscarAnotaciones = async (termino) => {
         return data.anotaciones;
     } catch (error) {
         registrarError('buscarAnotaciones', error);
-        throw error;
+        procesarError(error, 'Error al buscar notas');
     }
 };
 
@@ -379,8 +421,7 @@ export const obtenerAnotacionPorId = async (id) => {
             }
         });
 
-        manejarErrorRespuesta(response, 'Error al cargar la anotación');
-
+        // ✅ fetchConAuth ya verificó que response.ok === true
         const data = await response.json();
 
         logDesarrollo('✅ Obtenida id de nota:', data);
@@ -388,7 +429,7 @@ export const obtenerAnotacionPorId = async (id) => {
         return data.anotacion;
     } catch (error) {
         registrarError('obtenerAnotacionPorId', error);
-        throw error;
+        procesarError(error, 'Error al obtener notas por id');
     }
 };
 
@@ -409,8 +450,7 @@ export const crearAnotacion = async (datosAnotacion) => {
             body: JSON.stringify(datosAnotacion)
         });
 
-        await manejarErrorRespuesta(response, 'Error al guardar la nota');
-
+        // ✅ fetchConAuth ya verificó que response.ok === true
         const data = await response.json();
 
         // ✅ Log solo en desarrollo
@@ -420,7 +460,7 @@ export const crearAnotacion = async (datosAnotacion) => {
     } catch (error) {
         // ✅ Registrar error de forma segura
         registrarError('crearAnotacion', error);
-        throw error;
+        procesarError(error, 'Error al crear nota');
     }
 };
 
@@ -441,8 +481,7 @@ export const actualizarAnotacion = async (anotacionId, datosAnotacion) => {
             body: JSON.stringify(datosAnotacion)
         });
 
-        await manejarErrorRespuesta(response, 'Error al actualizar la nota');
-
+        // ✅ fetchConAuth ya verificó que response.ok === true
         const data = await response.json();
 
         logDesarrollo('✅ Nota actualizada:', data);
@@ -450,7 +489,7 @@ export const actualizarAnotacion = async (anotacionId, datosAnotacion) => {
         return data;
     } catch (error) {
         registrarError('actualizarAnotacion', error);
-        throw error;
+        procesarError(error, 'Error al actualizar nota');
     }
 };
 
