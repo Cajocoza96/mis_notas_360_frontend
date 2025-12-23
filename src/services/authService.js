@@ -41,6 +41,7 @@ const limpiarSesion = () => {
 const manejarRateLimitExcedido = (mensaje = 'Demasiadas solicitudes, intenta más tarde') => {
     limpiarSesion();
     
+    /*
     // Mostrar mensaje toast
     store.dispatch(setMensajeToast(mensaje));
     store.dispatch(setVerToast(true));
@@ -48,6 +49,7 @@ const manejarRateLimitExcedido = (mensaje = 'Demasiadas solicitudes, intenta má
     setTimeout(() => {
         store.dispatch(setVerToast(false));
     }, 4000);
+    */
     
     // Redirigir a panel principal
     setTimeout(() => {
