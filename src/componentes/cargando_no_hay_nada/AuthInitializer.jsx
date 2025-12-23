@@ -32,7 +32,6 @@ export default function AuthInitializer({ children }) {
                             bg-white dark:bg-gray-800 text-black dark:text-white
                             flex flex-col items-center justify-center gap-3 
                             z-[9999] select-none">
-                <FaSpinner className="animate-spin text-lg md:text-xl" />
                 <div className="flex flex-row items-center gap-2">
                     <div>
                         <HiOutlineBookOpen className="text-2xl md:text-3xl" />
@@ -42,6 +41,7 @@ export default function AuthInitializer({ children }) {
                         MisNotas360
                     </p>
                 </div>
+                <FaSpinner className="animate-spin text-lg md:text-xl" />
             </div>
         );
     }

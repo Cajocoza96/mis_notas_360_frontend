@@ -60,7 +60,6 @@ export default function CargandoNoHayNada({
             <div className="col-span-full text-center p-4 select-none
                             bg-white dark:bg-gray-800 text-black  dark:text-white
                             flex flex-col items-center justify-center gap-3">
-                <FaSpinner className="animate-spin text-lg md:text-xl" />
                 <div className="flex flex-row items-center gap-2 ">
                     <div>
                         <HiOutlineBookOpen className="text-2xl md:text-3xl" />
@@ -70,6 +69,7 @@ export default function CargandoNoHayNada({
                         MisNotas360
                     </p>
                 </div>
+                <FaSpinner className="animate-spin text-lg md:text-xl" />
             </div>
         );
     }
