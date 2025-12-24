@@ -49,9 +49,9 @@ const manejarRateLimitExcedido = (mensaje = 'Demasiadas solicitudes, intenta má
         store.dispatch(setVerToast(false));
     }, 4000);
 
-    // Redirigir a panel principal
+    // Redirigir a iniciar sesión
     setTimeout(() => {
-        window.location.href = '/panel-principal';
+        window.location.href = '/iniciar-sesion';
     }, 500);
 };
 
