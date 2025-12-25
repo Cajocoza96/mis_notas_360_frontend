@@ -20,6 +20,7 @@ import { obtenerAnotacionPorId, actualizarFavorito } from "../../../services/ano
 
 import { setVerToast, setMensajeToast } from "../../../store/accesoSlice";
 
+import BuscarContenido from "../../../componentes/buscar_contenido/BuscarContenido";
 
 import { logDesarrollo, errorDesarrollo, registrarError } from "../../../utils/errorHandler";
 
@@ -29,6 +30,8 @@ export default function Cabecera({ esModoVistaPrevia }) {
     const dispatch = useDispatch();
 
     const navigate = useNavigate();
+
+    const verInputBusqueda = useSelector((state) => state.tareas.verInputBusqueda);
 
     // ✅ Obtener anotación actual
     const { anotacionActual } = useSelector((state) => state.anotaciones);
@@ -142,23 +145,33 @@ export default function Cabecera({ esModoVistaPrevia }) {
                         <HiChevronLeft className="text-2xl md:text-3xl text-black dark:text-white cursor-pointer flex-shrink-0" />
                     </Link>
 
-                    <div className="w-30 flex flex-row items-center justify-between">
-                        <HiOutlinePencil
-                            onClick={handleEditarNota}
-                            className="text-2xl md:text-3xl cursor-pointer text-violet-800 dark:text-white" />
+                    <div className={`${verInputBusqueda ? 'w-full' : ''} flex flex-row items-center gap-5 lg:gap-4`}>
 
+                        {/*
+                        <BuscarContenido />
+                        */}
 
-                        <div
-                            onClick={handleToggleFavorito}
-                            className={`text-2xl md:text-3xl text-violet-800 dark:text-white cursor-pointer
+                        {!verInputBusqueda && (
+                            <div className="w-30 flex flex-row items-center justify-between">
+
+                                <HiOutlinePencil
+                                    onClick={handleEditarNota}
+                                    className="text-2xl md:text-3xl cursor-pointer text-violet-800 dark:text-white" />
+
+                                <div
+                                    onClick={handleToggleFavorito}
+                                    className={`text-2xl md:text-3xl text-violet-800 dark:text-white cursor-pointer
                                         transition-transform hover:scale-110
                                         ${actualizandoFavorito ? 'opacity-50 pointer-events-none' : ''}`}>
-                            {anotacionActual.favorito ? <HiStar /> : <HiOutlineStar />}
-                        </div>
+                                    {anotacionActual.favorito ? <HiStar /> : <HiOutlineStar />}
+                                </div>
 
-                        <HiDotsVertical
-                            className="text-2xl md:text-3xl text-black dark:text-white cursor-pointer"
-                            onClick={handleVerOpcCabPagVisPrev} />
+                                <HiDotsVertical
+                                    className="text-2xl md:text-3xl text-black dark:text-white cursor-pointer"
+                                    onClick={handleVerOpcCabPagVisPrev} />
+                            </div>
+                        )}
+
                     </div>
                 </div>
 
@@ -184,12 +197,13 @@ export default function Cabecera({ esModoVistaPrevia }) {
                 </div>
 
                 <div className="w-full p-1 flex flex-row items-center justify-between">
-                    <p className={`text-base md:text-lg truncate
+                    <p
+                        className={`text-base md:text-lg truncate
                             text-black dark:text-white font-semibold
                             ${!anotacionActual.titulo ? 'text-gray-500 dark:text-gray-400' : ''}
                             ${esModoVistaPrevia ? 'cursor-default' : ''}`}>
                         {anotacionActual.titulo && anotacionActual.titulo.trim() !== ''
-                            ? anotacionActual.titulo 
+                            ? anotacionActual.titulo
                             : 'Sin título'}
                     </p>
                 </div>

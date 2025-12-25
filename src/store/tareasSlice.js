@@ -20,6 +20,11 @@ const initialState = {
 
     verModalEstado: false,
 
+    verInputBusqueda : false,
+    terminoBusqueda: "",
+    coincidenciaActual: 0,
+    totalCoincidencias: 0,
+
     ordenTareasSeleccionado: 'creacion',
     ordenTareasTemporal: 'creacion',
 
@@ -176,6 +181,22 @@ const tareasSlice = createSlice({
             state.verModalEstado = action.payload
         },
 
+        toggleVerInputBusqueda: (state) => {
+            state.verInputBusqueda = !state.verInputBusqueda
+        },
+        setVerInputBusqueda: (state, action) => {
+            state.verInputBusqueda = action.payload
+        },
+        setTerminoBusqueda: (state, action) => {
+            state.terminoBusqueda = action.payload
+        },
+        setCoincidenciaActual: (state, action) => {
+            state.coincidenciaActual = action.payload
+        },
+        setTotalCoincidencias: (state, action) => {
+            state.totalCoincidencias = action.payload
+        },
+
         setOrdenTareasTemporal: (state, action) => {
             state.ordenTareasTemporal = action.payload;
         },
@@ -325,6 +346,12 @@ const tareasSlice = createSlice({
             state.tareas = []
             state.tareaActual = null
             state.modoModal = 'crear'
+
+            // Limpiar buscador
+            state.verInputBusqueda = false
+            state.terminoBusqueda = ""
+            state.coincidenciaActual = 0
+            state.totalCoincidencias = 0
         },
 
         //Para resetear todo
@@ -356,6 +383,13 @@ export const {
     toggleVerModalTarea,
     setVerModalTarea,
     toggleVerModalEstado,
+    setVerModalEstado,
+
+    toggleVerInputBusqueda,
+    setVerInputBusqueda,
+    setCoincidenciaActual,
+    setTerminoBusqueda,
+    setTotalCoincidencias,
 
     setOrdenTareasTemporal,
     setOrdenTareasSeleccionado,
@@ -364,7 +398,6 @@ export const {
 
     toggleVerModalOrdenTareas,
     setVerModalOrdenTareas,
-    setVerModalEstado,
     setTareas,
     agregarTarea,
     editarTarea,

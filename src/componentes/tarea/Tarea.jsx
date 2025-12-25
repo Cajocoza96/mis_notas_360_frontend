@@ -47,7 +47,10 @@ export default function Tarea({ tarea, esModoVistaPrevia }) {
 
                 </div>
 
-                <p className={`text-base md:text-lg text-black dark:text-white break-words
+                <p 
+                    data-tarea-id={tarea.id}
+                    data-tarea-texto="true"
+                    className={`text-base md:text-lg text-black dark:text-white break-words
                                 ${tarea.completada ? 'line-through' : ''} 
                                 ${esModoVistaPrevia ? 'cursor-default' : ''}`}>
                     {tarea.texto}

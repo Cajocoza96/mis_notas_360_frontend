@@ -3,13 +3,16 @@ import { useSelector, useDispatch } from "react-redux";
 import { HiChevronLeft } from "react-icons/hi";
 import { Link } from "react-router-dom";
 import { setIsTituloFocused } from "../../../store/tareasSlice";
-
+import BuscarContenido from "../../../componentes/buscar_contenido/BuscarContenido";
 import AgregarEstado from "../../../componentes/agregar_estado/AgregarEstado";
 
 const Cabecera = forwardRef(({ handleTituloChange, handleTituloKeyDown,
     esModoVistaPrevia }, tituloRef) => {
 
     const dispatch = useDispatch();
+
+    const verInputBusqueda = useSelector((state) => state.tareas.verInputBusqueda);
+
     const { isTituloFocused, titulo } = useSelector((state) => state.tareas);
 
     // ✅ Usar el estado de Redux en lugar de verificar el ref
@@ -110,14 +113,22 @@ const Cabecera = forwardRef(({ handleTituloChange, handleTituloKeyDown,
 
             <div className="w-full flex flex-col gap-2 items-center py-2 ">
 
-                    <div className="w-[95%] flex flex-row justify-between">
-                        <Link
-                            to="/panel-principal">
-                            <HiChevronLeft className="text-2xl md:text-3xl text-black dark:text-white cursor-pointer flex-shrink-0" />
-                        </Link>
+                <div className="w-[95%] flex flex-row items-center justify-between">
+                    <Link
+                        to="/panel-principal">
+                        <HiChevronLeft className="text-2xl md:text-3xl text-black dark:text-white cursor-pointer flex-shrink-0" />
+                    </Link>
 
-                        <AgregarEstado />
+                    <div className={`${verInputBusqueda ? 'w-full' : ''} 
+                                    flex flex-row items-center ${!verInputBusqueda ? 'justify-center' : ''}  gap-4`}>
+                        <BuscarContenido />
+
+                        {!verInputBusqueda && (
+                            <AgregarEstado />
+                        )}
                     </div>
+                </div>
+
 
                 <div className="w-[95%] mx-auto overflow-y-auto overflow-x-hidden h-11 lg:h-14 min-w-0">
                     <div className="relative p-2">
@@ -125,6 +136,7 @@ const Cabecera = forwardRef(({ handleTituloChange, handleTituloKeyDown,
                             ref={tituloRef}
                             contentEditable={!esModoVistaPrevia}
                             suppressContentEditableWarning={true}
+                            data-campo="titulo"
                             onInput={handleInputLocal}
                             onFocus={handleFocus}
                             onBlur={handleBlur}

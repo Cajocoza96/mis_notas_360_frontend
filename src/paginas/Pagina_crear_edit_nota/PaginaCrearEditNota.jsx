@@ -378,6 +378,7 @@ export default function PaginaCrearEditNota() {
                         <CargandoNoHayNada errorCargaInformacion={true} />
                     </div>
                 ) : mostrarContenido ? (
+
                     <>
                         <AnimatePresence>
                             {verModalEstado && (
@@ -417,7 +418,7 @@ export default function PaginaCrearEditNota() {
                         />
 
                     </>
-
+                
                 ) : null}
 
             </motion.div>

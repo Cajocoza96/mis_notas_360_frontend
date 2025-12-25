@@ -138,6 +138,7 @@ const CuerpoEdicion = forwardRef(({ handleNotaChange, handleNotaKeyDown, esModoV
                     ref={setRefWithContent}
                     contentEditable={!esModoVistaPrevia}
                     suppressContentEditableWarning={true}
+                    data-campo="nota"
                     onInput={handleInputLocal}
                     onFocus={handleFocus}
                     onBlur={handleBlur}
