@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { 
-    toggleVerInputBusqueda, 
+import {
+    toggleVerInputBusqueda,
     setTerminoBusqueda,
     setCoincidenciaActual,
     setTotalCoincidencias
@@ -73,28 +73,28 @@ export default function BuscarContenido() {
     const guardarPosicionCursor = (elemento) => {
         const selection = window.getSelection();
         if (!selection.rangeCount) return null;
-        
+
         const range = selection.getRangeAt(0);
         const preCaretRange = range.cloneRange();
         preCaretRange.selectNodeContents(elemento);
         preCaretRange.setEnd(range.endContainer, range.endOffset);
         const offset = preCaretRange.toString().length;
-        
+
         return offset;
     };
 
     // ✅ Función para restaurar la posición del cursor
     const restaurarPosicionCursor = (elemento, offset) => {
         if (offset === null || offset === undefined) return;
-        
+
         const selection = window.getSelection();
         const range = document.createRange();
-        
+
         let charCount = 0;
         let nodeStack = [elemento];
         let node;
         let foundStart = false;
-        
+
         while (!foundStart && (node = nodeStack.pop())) {
             if (node.nodeType === Node.TEXT_NODE) {
                 const nextCharCount = charCount + node.length;
@@ -111,7 +111,7 @@ export default function BuscarContenido() {
                 }
             }
         }
-        
+
         if (foundStart) {
             range.collapse(true);
             selection.removeAllRanges();
@@ -211,11 +211,11 @@ export default function BuscarContenido() {
 
         // Actualizar totales
         dispatch(setTotalCoincidencias(nuevasCoincidencias.length));
-        
+
         if (nuevasCoincidencias.length > 0) {
             // Mantener la coincidencia actual si es válida, sino ir a la primera
-            const nuevaCoincidenciaActual = coincidenciaActual > 0 && coincidenciaActual <= nuevasCoincidencias.length 
-                ? coincidenciaActual 
+            const nuevaCoincidenciaActual = coincidenciaActual > 0 && coincidenciaActual <= nuevasCoincidencias.length
+                ? coincidenciaActual
                 : 1;
             dispatch(setCoincidenciaActual(nuevaCoincidenciaActual));
             scrollACoincidencia(nuevaCoincidenciaActual - 1);
@@ -234,24 +234,24 @@ export default function BuscarContenido() {
         const coincidencia = coincidenciasRef.current[indice];
         if (coincidencia && coincidencia.elemento) {
             coincidencia.elemento.classList.add('busqueda-highlight-active');
-            
+
             // ✅ Hacer scroll solo dentro del contenedor, no de toda la página
             // Buscar el contenedor con scroll (CuerpoEdicion o Cabecera)
             let contenedor = coincidencia.elemento.closest('.overflow-y-auto');
-            
+
             if (contenedor) {
                 // Obtener posiciones
                 const elementoRect = coincidencia.elemento.getBoundingClientRect();
                 const contenedorRect = contenedor.getBoundingClientRect();
-                
+
                 // Calcular el offset relativo al contenedor
                 const offsetTop = coincidencia.elemento.offsetTop;
                 const contenedorHeight = contenedor.clientHeight;
                 const elementoHeight = coincidencia.elemento.offsetHeight;
-                
+
                 // Calcular la posición para centrar el elemento
                 const scrollTop = offsetTop - (contenedorHeight / 2) + (elementoHeight / 2);
-                
+
                 // Hacer scroll suave solo dentro del contenedor
                 contenedor.scrollTo({
                     top: Math.max(0, scrollTop),
@@ -294,12 +294,12 @@ export default function BuscarContenido() {
     useEffect(() => {
         const handleInput = () => {
             setIsUserTyping(true);
-            
+
             // Limpiar timeout anterior
             if (actualizacionTimeoutRef.current) {
                 clearTimeout(actualizacionTimeoutRef.current);
             }
-            
+
             // Esperar 1 segundo después de que el usuario deje de escribir
             actualizacionTimeoutRef.current = setTimeout(() => {
                 setIsUserTyping(false);
@@ -377,7 +377,7 @@ export default function BuscarContenido() {
                 )}
 
                 {verInputBusqueda && (
-                    <div className="flex flex-row items-center justify-end gap-3">
+                    <div className="ml-3 flex flex-row items-center justify-end gap-3">
                         <div className="w-full border-b-2 border-violet-500">
                             <input
                                 ref={inputRef}
@@ -392,20 +392,28 @@ export default function BuscarContenido() {
                             />
                         </div>
 
-                        {totalCoincidencias > 0 && (
-                            <p className="text-sm md:text-base text-black dark:text-white select-none">
-                                {coincidenciaActual}/{totalCoincidencias}
-                            </p>
-                        )}
+                        <div className="border border-red-600 text-center w-50 lg:w-40">
+                            {totalCoincidencias > 0 ?
+                                (
+                                    <p className="text-sm md:text-base text-black dark:text-white select-none">
+                                        {coincidenciaActual}/{totalCoincidencias}
+                                    </p>
+                                ) : (
+                                    <p className="text-sm md:text-base text-black dark:text-white select-none">
+                                        0/0
+                                    </p>
+                                )
+                            }
+                        </div>
 
                         <div className="flex flex-row items-center">
-                            <div 
+                            <div
                                 className={`p-1 rounded-sm ${totalCoincidencias > 0 ? 'active:bg-gray-300 dark:active:bg-gray-600 cursor-pointer' : 'opacity-50 cursor-not-allowed'}`}
                                 onClick={irAAnterior}>
                                 <HiChevronUp className="text-2xl md:text-3xl text-violet-800 dark:text-white" />
                             </div>
-                            
-                            <div 
+
+                            <div
                                 className={`p-1 rounded-sm ${totalCoincidencias > 0 ? 'active:bg-gray-300 dark:active:bg-gray-600 cursor-pointer' : 'opacity-50 cursor-not-allowed'}`}
                                 onClick={irASiguiente}>
                                 <HiChevronDown className="text-2xl md:text-3xl text-violet-800 dark:text-white" />
