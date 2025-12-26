@@ -16,6 +16,7 @@ export default function BuscarContenido() {
     const titulo = useSelector((state) => state.tareas.titulo);
     const nota = useSelector((state) => state.tareas.nota);
     const tareas = useSelector((state) => state.tareas.tareas);
+    const { anotacionActual } = useSelector((state) => state.anotaciones);
 
     const dispatch = useDispatch();
     const inputRef = useRef(null);
@@ -43,11 +44,18 @@ export default function BuscarContenido() {
 
     const limpiarResaltados = () => {
         // Limpiar resaltados en título
-        const tituloElement = document.querySelector('[contenteditable="true"][data-campo="titulo"]');
+        const tituloElement = document.querySelector('[data-campo="titulo"]');
         if (tituloElement) {
             const textoOriginal = tituloElement.innerText;
             tituloElement.innerHTML = "";
             tituloElement.innerText = textoOriginal;
+        }
+
+        const tituloElement2 = document.querySelector('[data-campo="titulo-2"]');
+        if (tituloElement2) {
+            const textoOriginal = tituloElement2.innerText;
+            tituloElement2.innerHTML = "";
+            tituloElement2.innerText = textoOriginal;
         }
 
         // Limpiar resaltados en nota
@@ -188,9 +196,15 @@ export default function BuscarContenido() {
         };
 
         // Buscar en título
-        const tituloElement = document.querySelector('[contenteditable="true"][data-campo="titulo"]');
+        const tituloElement = document.querySelector('[data-campo="titulo"]');
         if (tituloElement && titulo) {
             resaltarTexto(tituloElement, titulo, 'titulo');
+        }
+
+        // Buscar en título 2
+        const tituloElement2 = document.querySelector('[data-campo="titulo-2"]');
+        if (tituloElement2 && anotacionActual.titulo) {
+            resaltarTexto(tituloElement2, anotacionActual.titulo, 'titulo-2');
         }
 
         // Buscar en nota
@@ -306,12 +320,17 @@ export default function BuscarContenido() {
             }, 1000);
         };
 
-        const tituloElement = document.querySelector('[contenteditable="true"][data-campo="titulo"]');
+        const tituloElement = document.querySelector('[data-campo="titulo"]');
+
+        const tituloElement2 = document.querySelector('[data-campo="titulo-2"]');
         
         const notaElement = document.querySelector('[data-campo="nota"]');
 
         if (tituloElement) {
             tituloElement.addEventListener('input', handleInput);
+        }
+        if (tituloElement2) {
+            tituloElement2.addEventListener('input', handleInput);
         }
         if (notaElement) {
             notaElement.addEventListener('input', handleInput);
@@ -320,6 +339,9 @@ export default function BuscarContenido() {
         return () => {
             if (tituloElement) {
                 tituloElement.removeEventListener('input', handleInput);
+            }
+            if (tituloElement2) {
+                tituloElement2.removeEventListener('input', handleInput);
             }
             if (notaElement) {
                 notaElement.removeEventListener('input', handleInput);

@@ -84,12 +84,14 @@ export default function PaginaVistaPrevia() {
     }, [isOnline, cargando, errorCarga, id, esModoVistaPrevia]);
 
     const cargarAnotacion = async () => {
+        /*
         // ✅ CRÍTICO: Si no hay conexión, no intentar cargar
         if (!isOnline) {
             setCargando(true);
             setErrorCarga(false);
             return;
         }
+        */
 
         try {
             setCargando(true);
@@ -133,12 +135,12 @@ export default function PaginaVistaPrevia() {
             errorDesarrollo('Error al cargar la anotación para vista previa:', error);
             setCargando(false);
             setErrorCarga(true);
-        } finally {
+        } /*finally {
             // ✅ IMPORTANTE: Solo desactivar carga si hubo éxito
             if (isOnline) {
                 setCargando(false);
             }
-        }
+        }*/
     }
 
     // Sincronizar estados con Redux (solo si NO estamos en modo vista previa)

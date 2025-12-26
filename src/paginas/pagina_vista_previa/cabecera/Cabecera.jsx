@@ -194,8 +194,11 @@ export default function Cabecera({ esModoVistaPrevia }) {
                     </div>
                 </div>
 
-                <div className="w-full p-1 flex flex-row items-center justify-between">
+                <div className="w-full p-1 overflow-y-auto 
+                                flex flex-row items-center justify-between">
+                    {/*Esto corresponde al titulo*/}
                     <p
+                        data-campo="titulo-2"
                         className={`text-base md:text-lg truncate
                             text-black dark:text-white font-semibold
                             ${!anotacionActual.titulo ? 'text-gray-500 dark:text-gray-400' : ''}
