@@ -235,11 +235,36 @@ export default function BuscarContenido() {
         if (coincidencia && coincidencia.elemento) {
             coincidencia.elemento.classList.add('busqueda-highlight-active');
             
-            // Hacer scroll al elemento
-            coincidencia.elemento.scrollIntoView({
-                behavior: 'smooth',
-                block: 'center'
-            });
+            // ✅ Hacer scroll solo dentro del contenedor, no de toda la página
+            // Buscar el contenedor con scroll (CuerpoEdicion o Cabecera)
+            let contenedor = coincidencia.elemento.closest('.overflow-y-auto');
+            
+            if (contenedor) {
+                // Obtener posiciones
+                const elementoRect = coincidencia.elemento.getBoundingClientRect();
+                const contenedorRect = contenedor.getBoundingClientRect();
+                
+                // Calcular el offset relativo al contenedor
+                const offsetTop = coincidencia.elemento.offsetTop;
+                const contenedorHeight = contenedor.clientHeight;
+                const elementoHeight = coincidencia.elemento.offsetHeight;
+                
+                // Calcular la posición para centrar el elemento
+                const scrollTop = offsetTop - (contenedorHeight / 2) + (elementoHeight / 2);
+                
+                // Hacer scroll suave solo dentro del contenedor
+                contenedor.scrollTo({
+                    top: Math.max(0, scrollTop),
+                    behavior: 'smooth'
+                });
+            } else {
+                // Fallback: si no encontramos el contenedor, usar scrollIntoView pero con block: 'nearest'
+                coincidencia.elemento.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'nearest',
+                    inline: 'nearest'
+                });
+            }
         }
     };
 
@@ -265,7 +290,6 @@ export default function BuscarContenido() {
         scrollACoincidencia(anterior - 1);
     };
 
-    
     // ✅ Detectar cuando el usuario está escribiendo
     useEffect(() => {
         const handleInput = () => {
@@ -276,10 +300,10 @@ export default function BuscarContenido() {
                 clearTimeout(actualizacionTimeoutRef.current);
             }
             
-            // Esperar 1 segundo después de que el usuario deje de escribir
+            // Esperar 300ms después de que el usuario deje de escribir
             actualizacionTimeoutRef.current = setTimeout(() => {
                 setIsUserTyping(false);
-            }, 1000);
+            }, 300);
         };
 
         const tituloElement = document.querySelector('[contenteditable="true"][data-campo="titulo"]');
