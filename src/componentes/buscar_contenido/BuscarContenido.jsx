@@ -392,14 +392,16 @@ export default function BuscarContenido() {
                             />
                         </div>
 
-                        <div className="border border-red-600 text-center w-50 lg:w-40">
+                        <div className="text-center w-50 lg:w-40
+                                        text-sm md:text-base 
+                                        text-black dark:text-white select-none">
                             {totalCoincidencias > 0 ?
                                 (
-                                    <p className="text-sm md:text-base text-black dark:text-white select-none">
+                                    <p>
                                         {coincidenciaActual}/{totalCoincidencias}
                                     </p>
                                 ) : (
-                                    <p className="text-sm md:text-base text-black dark:text-white select-none">
+                                    <p>
                                         0/0
                                     </p>
                                 )
