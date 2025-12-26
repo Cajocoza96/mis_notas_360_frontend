@@ -147,9 +147,7 @@ export default function Cabecera({ esModoVistaPrevia }) {
 
                     <div className={`${verInputBusqueda ? 'w-full' : ''} flex flex-row items-center gap-5 lg:gap-4`}>
 
-                        {/*
                         <BuscarContenido />
-                        */}
 
                         {!verInputBusqueda && (
                             <div className="w-30 flex flex-row items-center justify-between">

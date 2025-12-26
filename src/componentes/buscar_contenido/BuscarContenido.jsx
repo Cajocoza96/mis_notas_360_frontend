@@ -51,7 +51,7 @@ export default function BuscarContenido() {
         }
 
         // Limpiar resaltados en nota
-        const notaElement = document.querySelector('[contenteditable="true"][data-campo="nota"]');
+        const notaElement = document.querySelector('[data-campo="nota"]');
         if (notaElement) {
             const textoOriginal = notaElement.innerText;
             notaElement.innerHTML = "";
@@ -194,7 +194,7 @@ export default function BuscarContenido() {
         }
 
         // Buscar en nota
-        const notaElement = document.querySelector('[contenteditable="true"][data-campo="nota"]');
+        const notaElement = document.querySelector('[data-campo="nota"]');
         if (notaElement && nota) {
             resaltarTexto(notaElement, nota, 'nota');
         }
@@ -307,7 +307,8 @@ export default function BuscarContenido() {
         };
 
         const tituloElement = document.querySelector('[contenteditable="true"][data-campo="titulo"]');
-        const notaElement = document.querySelector('[contenteditable="true"][data-campo="nota"]');
+        
+        const notaElement = document.querySelector('[data-campo="nota"]');
 
         if (tituloElement) {
             tituloElement.addEventListener('input', handleInput);
