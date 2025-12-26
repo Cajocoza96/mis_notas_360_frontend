@@ -300,10 +300,10 @@ export default function BuscarContenido() {
                 clearTimeout(actualizacionTimeoutRef.current);
             }
             
-            // Esperar 300ms después de que el usuario deje de escribir
+            // Esperar 1 segundo después de que el usuario deje de escribir
             actualizacionTimeoutRef.current = setTimeout(() => {
                 setIsUserTyping(false);
-            }, 300);
+            }, 1000);
         };
 
         const tituloElement = document.querySelector('[contenteditable="true"][data-campo="titulo"]');
