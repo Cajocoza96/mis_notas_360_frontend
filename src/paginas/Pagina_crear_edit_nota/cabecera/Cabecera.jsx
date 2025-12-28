@@ -3,6 +3,8 @@ import { useSelector, useDispatch } from "react-redux";
 import { HiChevronLeft } from "react-icons/hi";
 import { Link } from "react-router-dom";
 import { setIsTituloFocused } from "../../../store/tareasSlice";
+
+import UsarIA from "../../../componentes/usar_ia/UsarIA";
 import BuscarContenido from "../../../componentes/buscar_contenido/BuscarContenido";
 import AgregarEstado from "../../../componentes/agregar_estado/AgregarEstado";
 
@@ -121,11 +123,17 @@ const Cabecera = forwardRef(({ handleTituloChange, handleTituloKeyDown,
 
                     <div className={`${verInputBusqueda ? 'w-full' : ''} 
                                     flex flex-row items-center ${!verInputBusqueda ? 'justify-center' : ''}  gap-4`}>
+
+                        {!verInputBusqueda && (
+                            <UsarIA />
+                        )}
+
                         <BuscarContenido />
 
                         {!verInputBusqueda && (
                             <AgregarEstado />
                         )}
+
                     </div>
                 </div>
 

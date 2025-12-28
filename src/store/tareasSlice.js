@@ -25,6 +25,8 @@ const initialState = {
     coincidenciaActual: 0,
     totalCoincidencias: 0,
 
+    verModalModosIA: false,
+
     ordenTareasSeleccionado: 'creacion',
     ordenTareasTemporal: 'creacion',
 
@@ -195,6 +197,13 @@ const tareasSlice = createSlice({
         },
         setTotalCoincidencias: (state, action) => {
             state.totalCoincidencias = action.payload
+        },
+
+        toggleVerModalModosIA: (state) => {
+            state.verModalModosIA = !state.verModalModosIA
+        },
+        setVerModalModosIA: (state, action) => {
+            state.verModalModosIA = action.payload
         },
 
         setOrdenTareasTemporal: (state, action) => {
@@ -390,6 +399,9 @@ export const {
     setCoincidenciaActual,
     setTerminoBusqueda,
     setTotalCoincidencias,
+
+    toggleVerModalModosIA,
+    setVerModalModosIA,
 
     setOrdenTareasTemporal,
     setOrdenTareasSeleccionado,

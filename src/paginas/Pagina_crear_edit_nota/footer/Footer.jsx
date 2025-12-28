@@ -102,8 +102,8 @@ export default function Footer({ handleUndoClick, handleRedoClick, esModoEdicion
                     completada: tarea.completada  // true o false
                 }));
 
-                logDesarrollo('Tareas ANTES de ordenar:', tareas);
-                logDesarrollo('Tareas DESPUES de ordenar por creacion', tareasParaGuardar);
+            logDesarrollo('Tareas ANTES de ordenar:', tareas);
+            logDesarrollo('Tareas DESPUES de ordenar por creacion', tareasParaGuardar);
 
             // ✅ Obtener el orden de tareas seleccionado
             const ordenTareasActual = ordenTareasSeleccionado; // Desde Redux
@@ -212,28 +212,33 @@ export default function Footer({ handleUndoClick, handleRedoClick, esModoEdicion
                 </div>
             </div>
 
-            <div className="flex flex-row items-center justify-center gap-5">
-                {/* Botón Deshacer */}
-                <HiReply
-                    className={`text-2xl md:text-3xl cursor-pointer transition-opacity
+            <div className="flex flex-col items-center justify-center gap-1 select-none">
+                <p className="text-black dark:text-white text-sm text-center">
+                    Solo para título y nota
+                </p>
+                <div className="flex flex-row items-center justify-center gap-5">
+                    {/* Botón Deshacer */}
+                    <HiReply
+                        className={`text-2xl md:text-3xl cursor-pointer transition-opacity
                                 ${canUndo
-                            ? 'text-black dark:text-white hover:opacity-80'
-                            : 'text-gray-600 dark:text-gray-500 cursor-not-allowed opacity-50'
-                        }`}
-                    onClick={canUndo ? handleUndoClick : undefined}
-                    title="Deshacer (Ctrl+Z)"
-                />
+                                ? 'text-black dark:text-white hover:opacity-80'
+                                : 'text-gray-600 dark:text-gray-500 cursor-not-allowed opacity-50'
+                            }`}
+                        onClick={canUndo ? handleUndoClick : undefined}
+                        title="Deshacer (Ctrl+Z)"
+                    />
 
-                {/* Botón Rehacer */}
-                <HiReply
-                    className={`transform -scale-x-100 text-2xl md:text-3xl cursor-pointer transition-opacity
+                    {/* Botón Rehacer */}
+                    <HiReply
+                        className={`transform -scale-x-100 text-2xl md:text-3xl cursor-pointer transition-opacity
                                 ${canRedo
-                            ? 'text-black dark:text-white hover:opacity-80'
-                            : 'text-gray-600 dark:text-gray-500 cursor-not-allowed opacity-50'
-                        }`}
-                    onClick={canRedo ? handleRedoClick : undefined}
-                    title="Rehacer (Ctrl+Y)"
-                />
+                                ? 'text-black dark:text-white hover:opacity-80'
+                                : 'text-gray-600 dark:text-gray-500 cursor-not-allowed opacity-50'
+                            }`}
+                        onClick={canRedo ? handleRedoClick : undefined}
+                        title="Rehacer (Ctrl+Y)"
+                    />
+                </div>
             </div>
 
             {/* Al dar clic aquí se manda la información a la base de datos */}
