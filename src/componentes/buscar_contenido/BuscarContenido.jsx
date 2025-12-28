@@ -352,7 +352,7 @@ export default function BuscarContenido() {
         };
     }, []);
 
-    // ✅ Efecto para actualizar búsqueda cuando cambia el contenido (pero NO cuando el usuario está escribiendo)
+    // ✅ Efecto que tiene objetivo de actualizar búsqueda cuando cambia el contenido (pero NO cuando el usuario está escribiendo)
     useEffect(() => {
         if (verInputBusqueda && terminoBusqueda && !isUserTyping) {
             buscarCoincidencias(terminoBusqueda);
