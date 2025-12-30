@@ -20,12 +20,15 @@ const initialState = {
 
     verModalEstado: false,
 
-    verInputBusqueda : false,
+    verInputBusqueda: false,
     terminoBusqueda: "",
     coincidenciaActual: 0,
     totalCoincidencias: 0,
 
     verModalModosIA: false,
+    modoIASeleccionado: null, // 'correct', 'improve', 'summarize', 'text-to-tasks'
+    procesandoIA: false,
+    errorIA: null,
 
     ordenTareasSeleccionado: 'creacion',
     ordenTareasTemporal: 'creacion',
@@ -204,6 +207,46 @@ const tareasSlice = createSlice({
         },
         setVerModalModosIA: (state, action) => {
             state.verModalModosIA = action.payload
+        },
+
+
+        // IA - Seleccionar modo
+        setModoIASeleccionado: (state, action) => {
+            state.modoIASeleccionado = action.payload;
+        },
+
+        // IA - Estado de procesamiento
+        setProcesandoIA: (state, action) => {
+            state.procesandoIA = action.payload;
+        },
+
+        // IA - Error
+        setErrorIA: (state, action) => {
+            state.errorIA = action.payload;
+        },
+
+        // IA - Reemplazar tareas con las generadas por IA
+        reemplazarTareasConIA: (state, action) => {
+            const tareasGeneradas = action.payload;
+
+            // Calcular el siguiente orden_creacion
+            const siguienteOrdenCreacion = state.tareas.length > 0
+                ? Math.max(...state.tareas.map(t => t.orden_creacion ?? -1)) + 1
+                : 0;
+
+            // Crear nuevas tareas con la estructura correcta
+            const nuevasTareas = tareasGeneradas.map((textoTarea, index) => ({
+                id: Date.now() + index, // ID único temporal
+                texto: textoTarea,
+                completada: false,
+                orden_creacion: siguienteOrdenCreacion + index
+            }));
+
+            // Agregar al array existente
+            state.tareas = [...state.tareas, ...nuevasTareas];
+
+            // Reordenar según orden activo
+            reordenarTareasSegunOrden(state);
         },
 
         setOrdenTareasTemporal: (state, action) => {
@@ -402,6 +445,10 @@ export const {
 
     toggleVerModalModosIA,
     setVerModalModosIA,
+    setModoIASeleccionado,
+    setProcesandoIA,
+    setErrorIA,
+    reemplazarTareasConIA,
 
     setOrdenTareasTemporal,
     setOrdenTareasSeleccionado,

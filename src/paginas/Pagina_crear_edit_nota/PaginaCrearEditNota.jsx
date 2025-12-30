@@ -397,7 +397,10 @@ export default function PaginaCrearEditNota() {
 
                         <AnimatePresence>
                             {verModalModosIA && (
-                                <ModalModosIA />
+                                <ModalModosIA
+                                    tituloRef={tituloRef}
+                                    notaRef={notaRef}
+                                />
                             )}
                         </AnimatePresence>
 
@@ -426,7 +429,7 @@ export default function PaginaCrearEditNota() {
                             notaRef={notaRef}
                         />
                     </>
-                    
+
                 ) : null}
 
             </motion.div>

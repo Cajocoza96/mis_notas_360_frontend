@@ -54,49 +54,6 @@ const procesarError = (error, mensajeGenerico) => {
     throw error;
 };
 
-/*
-//Maneja errores de las peticiones HTTP
-const manejarErrorRespuesta = async (response, mensajeError) => {
-    if (!response.ok) {
-        // ✅ Solo mostrar URL en desarrollo
-        if (import.meta.env.MODE === 'development') {
-            console.error(`❌ Error en: ${response.url}`);
-        }
-
-        // ✅ Detectar específicamente el error 429 (Rate Limit)
-        if (response.status === 429) {
-            let errorData = null;
-
-            // ✅ Intentar parsear el JSON del backend
-            try {
-                const responseClone = response.clone();
-                errorData = await responseClone.json();
-            } catch (parseError) {
-                // ✅ Si falla el parsing, errorData queda null
-                console.error('⚠️ No se pudo parsear respuesta 429:', parseError);
-            }
-
-            // ✅ Extraer mensajes (fuera del try-catch)
-            const mensajeUsuario = errorData?.detail;
-            const mensajeTecnico = errorData?.error;
-
-            // ✅ Mostrar error técnico en consola para debugging
-            console.error('🚫 Rate Limit:', mensajeTecnico);
-            logDesarrollo('📛 Detalles completos:', errorData);
-
-            // ✅ Lanzar error con el mensaje amigable para el Toast
-            const error = new Error(mensajeUsuario);
-            error.code = 'RATE_LIMIT_EXCEEDED';
-            error.status = 429;
-            throw error;
-        }
-
-        // ✅ Para cualquier otro error, usar el mensaje proporcionado
-        throw new Error(mensajeError);
-    }
-};
-*/
-
 //Obtiene el token de autenticación del localStorage
 const obtenerToken = () => {
     return localStorage.getItem('token');
