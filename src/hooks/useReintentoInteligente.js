@@ -1,5 +1,7 @@
 import { useRef, useCallback, useState } from 'react';
 
+import { logDesarrollo, errorDesarrollo, registrarError } from "../utils/errorHandler";
+
 /**
  * Hook personalizado para manejar reintentos inteligentes con backoff exponencial
  * Evita la acumulación de peticiones y respeta el rate limiting
@@ -56,7 +58,7 @@ export default function useReintentoInteligente() {
         
         const delay = calcularDelay(intentoActual);
 
-        console.log(`Reintento ${intentoActual}/${maxIntentosRef.current} programado en ${delay/1000}s`);
+        logDesarrollo(`Reintento ${intentoActual}/${maxIntentosRef.current} programado en ${delay/1000}s`);
 
         // Programar reintento
         reintentoRef.current = setTimeout(async () => {
@@ -68,7 +70,7 @@ export default function useReintentoInteligente() {
                     setIntentosActuales(0);
                     setIntentosAgotados(false);
                 } catch (error) {
-                    console.error(`Reintento ${intentoActual} falló:`, error);
+                    errorDesarrollo(`Reintento ${intentoActual} falló:`, error);
                     // Si falló, intentar de nuevo (recursivo)
                     ejecutarConReintento(funcionReintento, isOnline, onError);
                 }

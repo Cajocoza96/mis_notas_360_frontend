@@ -26,7 +26,16 @@ const initialState = {
     totalCoincidencias: 0,
 
     verModalModosIA: false,
+    verModalTiNoTa: false,
     modoIASeleccionado: null, // 'correct', 'improve', 'summarize', 'text-to-tasks'
+
+    // ✅ Nuevos estados para las secciones seleccionadas
+    seccionesSeleccionadas: {
+        titulo: false,
+        nota: false,
+        tareas: false
+    },
+
     procesandoIA: false,
     errorIA: null,
 
@@ -209,10 +218,36 @@ const tareasSlice = createSlice({
             state.verModalModosIA = action.payload
         },
 
+        toggleVerModalTiNoTa: (state) => {
+            state.verModalTiNoTa = !state.verModalTiNoTa
+        },
+        setVerModalTiNoTa: (state, action) => {
+            state.verModalTiNoTa = action.payload
+        },
 
         // IA - Seleccionar modo
         setModoIASeleccionado: (state, action) => {
             state.modoIASeleccionado = action.payload;
+        },
+
+        // ✅ IA - Toggle secciones individuales
+        toggleSeccionTitulo: (state) => {
+            state.seccionesSeleccionadas.titulo = !state.seccionesSeleccionadas.titulo;
+        },
+        toggleSeccionNota: (state) => {
+            state.seccionesSeleccionadas.nota = !state.seccionesSeleccionadas.nota;
+        },
+        toggleSeccionTareas: (state) => {
+            state.seccionesSeleccionadas.tareas = !state.seccionesSeleccionadas.tareas;
+        },
+
+        // ✅ IA - Resetear secciones
+        resetSeccionesSeleccionadas: (state) => {
+            state.seccionesSeleccionadas = {
+                titulo: false,
+                nota: false,
+                tareas: false
+            };
         },
 
         // IA - Estado de procesamiento
@@ -445,7 +480,13 @@ export const {
 
     toggleVerModalModosIA,
     setVerModalModosIA,
+    toggleVerModalTiNoTa,
+    setVerModalTiNoTa,
     setModoIASeleccionado,
+    toggleSeccionTitulo,
+    toggleSeccionNota,
+    toggleSeccionTareas,
+    resetSeccionesSeleccionadas,
     setProcesandoIA,
     setErrorIA,
     reemplazarTareasConIA,

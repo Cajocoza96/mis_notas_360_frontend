@@ -23,7 +23,7 @@ const procesarError = (error, mensajeGenerico) => {
         error.message.includes('Rate limit')
     )) {
         // ✅ Mostrar en consola para debugging
-        console.error('🚫 Rate Limit:', error.message);
+        errorDesarrollo('🚫 Rate Limit:', error.message);
         logDesarrollo('📛 Error de rate limit detectado');
         
         // ✅ Crear error con código para que Cabecera lo detecte
@@ -43,7 +43,7 @@ const procesarError = (error, mensajeGenerico) => {
     
     // 4️⃣ Otros errores - usar mensaje genérico
     if (import.meta.env.MODE === 'development') {
-        console.error(`❌ Error: ${error.message}`);
+        errorDesarrollo(`❌ Error: ${error.message}`);
     }
     
     // Si el error no tiene un mensaje útil, usar el genérico

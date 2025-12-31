@@ -20,6 +20,8 @@ import ModalOrdenarTareas from "../../componentes/modal/ModalOrdenarTareas";
 
 import ModalModosIA from "../../componentes/modal/ModalModosIA";
 
+import ModalTiNoTa from "../../componentes/modal/ModalTiNoTa";
+
 import ModalExitoError from "../../componentes/modal/ModalExitoError";
 
 import { mapearEstadoDesdeBD } from "../../utils/estadoUtils";
@@ -78,6 +80,8 @@ export default function PaginaCrearEditNota() {
     const verModalOrdenTareas = useSelector((state) => state.tareas.verModalOrdenTareas);
 
     const verModalModosIA = useSelector((state) => state.tareas.verModalModosIA);
+    const verModalTiNoTa = useSelector((state) => state.tareas.verModalTiNoTa);
+
 
     // Determinar si estamos en modo edición
     const esModoEdicion = location.pathname.includes('/editar/nota/');
@@ -382,6 +386,7 @@ export default function PaginaCrearEditNota() {
                         <CargandoNoHayNada errorCargaInformacion={true} />
                     </div>
                 ) : mostrarContenido ? (
+
                     <>
                         <AnimatePresence>
                             {verModalEstado && (
@@ -397,7 +402,13 @@ export default function PaginaCrearEditNota() {
 
                         <AnimatePresence>
                             {verModalModosIA && (
-                                <ModalModosIA
+                                <ModalModosIA />
+                            )}
+                        </AnimatePresence>
+
+                        <AnimatePresence>
+                            {verModalTiNoTa && (
+                                <ModalTiNoTa
                                     tituloRef={tituloRef}
                                     notaRef={notaRef}
                                 />

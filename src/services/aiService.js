@@ -19,7 +19,7 @@ const procesarError = (error, mensajeGenerico) => {
         error.message.includes('Rate limit') ||
         error.message.includes('IA')
     )) {
-        console.error('🚫 Rate Limit IA:', error.message);
+        errorDesarrollo('🚫 Rate Limit IA:', error.message);
         logDesarrollo('📛 Error de rate limit IA detectado');
         
         const rateLimitError = new Error(error.message);
@@ -38,7 +38,7 @@ const procesarError = (error, mensajeGenerico) => {
     
     // 4️⃣ Otros errores
     if (import.meta.env.MODE === 'development') {
-        console.error(`❌ Error IA: ${error.message}`);
+        errorDesarrollo(`❌ Error IA: ${error.message}`);
     }
     
     if (!error.message || error.message === 'Failed to fetch') {
@@ -58,11 +58,11 @@ const obtenerToken = () => {
 // ===============================
 
 // Corregir ortografía y gramática
-export const corregirTexto = async (texto) => {
+export const corregirTexto = async (titulo, nota, tareas) => {
     try {
         const token = obtenerToken();
 
-        logDesarrollo('🤖 Enviando texto a IA para corrección:', texto.substring(0, 100) + '...');
+        logDesarrollo('🤖 Enviando a IA para corrección');
 
         const response = await fetchConAuth(`${API_URL}/ai/correct`, {
             method: 'POST',
@@ -70,13 +70,11 @@ export const corregirTexto = async (texto) => {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${token}`
             },
-            body: JSON.stringify({ text: texto })
+            body: JSON.stringify({ titulo, nota, tareas })
         });
 
         const data = await response.json();
-
-        logDesarrollo('✅ Texto corregido:', data.result?.substring(0, 100) + '...');
-
+        logDesarrollo('✅ Texto corregido');
         return data;
     } catch (error) {
         registrarError('corregirTexto', error);
@@ -85,11 +83,11 @@ export const corregirTexto = async (texto) => {
 };
 
 // Mejorar redacción
-export const mejorarRedaccion = async (texto) => {
+export const mejorarRedaccion = async (titulo, nota, tareas) => {
     try {
         const token = obtenerToken();
 
-        logDesarrollo('🤖 Enviando texto a IA para mejorar:', texto.substring(0, 100) + '...');
+        logDesarrollo('🤖 Enviando a IA para mejorar');
 
         const response = await fetchConAuth(`${API_URL}/ai/improve`, {
             method: 'POST',
@@ -97,13 +95,11 @@ export const mejorarRedaccion = async (texto) => {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${token}`
             },
-            body: JSON.stringify({ text: texto })
+            body: JSON.stringify({ titulo, nota, tareas })
         });
 
         const data = await response.json();
-
-        logDesarrollo('✅ Redacción mejorada:', data.result?.substring(0, 100) + '...');
-
+        logDesarrollo('✅ Redacción mejorada');
         return data;
     } catch (error) {
         registrarError('mejorarRedaccion', error);
@@ -112,11 +108,11 @@ export const mejorarRedaccion = async (texto) => {
 };
 
 // Resumir texto
-export const resumirTexto = async (texto) => {
+export const resumirTexto = async (titulo, nota, tareas) => {
     try {
         const token = obtenerToken();
 
-        logDesarrollo('🤖 Enviando texto a IA para resumir:', texto.substring(0, 100) + '...');
+        logDesarrollo('🤖 Enviando a IA para resumir');
 
         const response = await fetchConAuth(`${API_URL}/ai/summarize`, {
             method: 'POST',
@@ -124,13 +120,11 @@ export const resumirTexto = async (texto) => {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${token}`
             },
-            body: JSON.stringify({ text: texto })
+            body: JSON.stringify({ titulo, nota, tareas })
         });
 
         const data = await response.json();
-
-        logDesarrollo('✅ Texto resumido:', data.result);
-
+        logDesarrollo('✅ Texto resumido');
         return data;
     } catch (error) {
         registrarError('resumirTexto', error);
@@ -139,11 +133,11 @@ export const resumirTexto = async (texto) => {
 };
 
 // Convertir texto a tareas
-export const convertirTextoATareas = async (texto) => {
+export const convertirTextoATareas = async (titulo, nota, tareas) => {
     try {
         const token = obtenerToken();
 
-        logDesarrollo('🤖 Enviando texto a IA para convertir a tareas:', texto.substring(0, 100) + '...');
+        logDesarrollo('🤖 Enviando a IA para convertir a tareas');
 
         const response = await fetchConAuth(`${API_URL}/ai/text-to-tasks`, {
             method: 'POST',
@@ -151,13 +145,11 @@ export const convertirTextoATareas = async (texto) => {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${token}`
             },
-            body: JSON.stringify({ text: texto })
+            body: JSON.stringify({ titulo, nota, tareas })
         });
 
         const data = await response.json();
-
-        logDesarrollo('✅ Tareas generadas:', data.tasks);
-
+        logDesarrollo('✅ Tareas generadas');
         return data;
     } catch (error) {
         registrarError('convertirTextoATareas', error);
