@@ -75,9 +75,13 @@ export default function ModalTiNoTa({ tituloRef, notaRef }) {
         if (modoIASeleccionado === 'text-to-tasks' && seccion === 'tareas') {
             return;
 
-        } else if (modoIASeleccionado === 'summarize' && seccion === 'tareas') {
+        } 
+        
+        /*
+        else if (modoIASeleccionado === 'summarize' && seccion === 'tareas') {
             return;
         }
+        */
 
         switch (seccion) {
             case 'titulo':
@@ -268,9 +272,13 @@ export default function ModalTiNoTa({ tituloRef, notaRef }) {
         // ✅ Si es 'text-to-tasks', deshabilitar la sección de tareas
         if (modoIASeleccionado === 'text-to-tasks' && seccion === 'tareas') {
             return false;
-        } else if (modoIASeleccionado === 'summarize' && seccion === 'tareas') {
+        } 
+        
+        /*
+        else if (modoIASeleccionado === 'summarize' && seccion === 'tareas') {
             return;
         }
+        */
 
         switch (seccion) {
             case 'titulo':

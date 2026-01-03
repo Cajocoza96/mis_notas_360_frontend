@@ -174,8 +174,33 @@ export const resumirTexto = async (titulo, nota, tareas) => {
         });
 
         const data = await response.json();
-        logDesarrollo('✅ Texto resumido');
-        return data;
+        
+        // ✅ Manejo de código 207 (Multi-Status): Éxito parcial con advertencias
+        if (response.status === 207) {
+            logDesarrollo('⚠️ Texto resumido con advertencias:', data.mensaje);
+            
+            // Devolver datos con indicador de advertencia
+            return {
+                ...data,
+                success: true,
+                hasWarnings: true,
+                warningMessage: data.mensaje
+            };
+        }
+
+        // ✅ Éxito completo (código 200)
+        if (response.ok) {
+            logDesarrollo('✅ Texto resumido exitosamente');
+            return {
+                ...data,
+                success: true,
+                hasWarnings: false
+            };
+        }
+
+        // ❌ Si llegamos aquí, hubo un error
+        throw new Error(data.mensaje || 'Error al resumir el texto');
+
     } catch (error) {
         registrarError('resumirTexto', error);
         procesarError(error, 'Error al resumir el texto');
