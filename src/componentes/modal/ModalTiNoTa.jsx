@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 import { FaCircle, FaRegCircle } from "react-icons/fa";
 import { MdTitle, MdNote, MdList } from "react-icons/md";
 
-import { logDesarrollo, errorDesarrollo, registrarError } from "../../utils/errorHandler"; 
+import { logDesarrollo, errorDesarrollo, registrarError } from "../../utils/errorHandler";
 
 import {
     toggleVerModalTiNoTa,
@@ -34,13 +34,13 @@ export default function ModalTiNoTa({ tituloRef, notaRef }) {
 
     const dispatch = useDispatch();
 
-    const { 
-        titulo, 
-        nota, 
-        tareas, 
-        procesandoIA, 
+    const {
+        titulo,
+        nota,
+        tareas,
+        procesandoIA,
         modoIASeleccionado,
-        seccionesSeleccionadas 
+        seccionesSeleccionadas
     } = useSelector((state) => state.tareas);
 
     // ✅ Obtener el nombre legible del método de IA
@@ -75,7 +75,7 @@ export default function ModalTiNoTa({ tituloRef, notaRef }) {
         if (modoIASeleccionado === 'text-to-tasks' && seccion === 'tareas') {
             return;
 
-        } else if (modoIASeleccionado === 'summarize' && seccion === 'tareas'){
+        } else if (modoIASeleccionado === 'summarize' && seccion === 'tareas') {
             return;
         }
 
@@ -100,21 +100,21 @@ export default function ModalTiNoTa({ tituloRef, notaRef }) {
 
     const handleCancelar = () => {
         if (procesandoIA) return;
-        
+
         dispatch(resetSeccionesSeleccionadas());
         dispatch(setModoIASeleccionado(null));
         dispatch(toggleVerModalTiNoTa());
     };
 
     const hayAlgunaSeccionSeleccionada = () => {
-        return seccionesSeleccionadas.titulo || 
-               seccionesSeleccionadas.nota || 
-               seccionesSeleccionadas.tareas;
+        return seccionesSeleccionadas.titulo ||
+            seccionesSeleccionadas.nota ||
+            seccionesSeleccionadas.tareas;
     };
 
     // ✅ Función mejorada para aplicar resultados
     const aplicarResultado = (resultado, esConversionATareas = false) => {
-        
+
         // ✅ CASO ESPECIAL: Convertir texto a tareas
         if (esConversionATareas) {
             // Actualizar título si fue seleccionado
@@ -145,7 +145,7 @@ export default function ModalTiNoTa({ tituloRef, notaRef }) {
                 }));
                 dispatch(setTareas(tareasObjeto));
             }
-            
+
             return;
         }
 
@@ -198,22 +198,42 @@ export default function ModalTiNoTa({ tituloRef, notaRef }) {
                 case 'correct':
                     resultado = await corregirTexto(tituloParaEnviar, notaParaEnviar, tareasParaEnviar);
                     aplicarResultado(resultado.result, false);
+
+                    // ✅ Mostrar advertencia si hay tareas con problemas
+                    if (resultado.hasWarnings) {
+                        mostrarToast(resultado.warningMessage);
+                    }
                     break;
 
                 case 'improve':
                     resultado = await mejorarRedaccion(tituloParaEnviar, notaParaEnviar, tareasParaEnviar);
                     aplicarResultado(resultado.result, false);
+
+                    // ✅ Mostrar advertencia si hay tareas con problemas
+                    if (resultado.hasWarnings) {
+                        mostrarToast(resultado.warningMessage);
+                    }
                     break;
 
                 case 'summarize':
                     resultado = await resumirTexto(tituloParaEnviar, notaParaEnviar, tareasParaEnviar);
                     aplicarResultado(resultado.result, false);
+
+                    // ✅ Mostrar advertencia si hay tareas con problemas
+                    if (resultado.hasWarnings) {
+                        mostrarToast(resultado.warningMessage);
+                    }
                     break;
 
                 case 'text-to-tasks':
                     resultado = await convertirTextoATareas(tituloParaEnviar, notaParaEnviar, tareasParaEnviar);
                     // ✅ Pasar true para indicar que es conversión a tareas
                     aplicarResultado(resultado.result, true);
+
+                    // ✅ Mostrar advertencia si hay tareas con problemas
+                    if (resultado.hasWarnings) {
+                        mostrarToast(resultado.warningMessage);
+                    }
                     break;
 
                 default:
@@ -228,10 +248,10 @@ export default function ModalTiNoTa({ tituloRef, notaRef }) {
 
         } catch (error) {
             errorDesarrollo('Error en IA:', error);
-            
+
             // ✅ Mostrar error en Toast
             mostrarToast(error.message || 'Error al procesar con IA');
-            
+
             dispatch(setProcesandoIA(false));
 
             // Si es rate limit, cerrar modal después de mostrar el toast
@@ -248,7 +268,7 @@ export default function ModalTiNoTa({ tituloRef, notaRef }) {
         // ✅ Si es 'text-to-tasks', deshabilitar la sección de tareas
         if (modoIASeleccionado === 'text-to-tasks' && seccion === 'tareas') {
             return false;
-        } else if (modoIASeleccionado === 'summarize' && seccion === 'tareas'){
+        } else if (modoIASeleccionado === 'summarize' && seccion === 'tareas') {
             return;
         }
 
@@ -305,8 +325,8 @@ export default function ModalTiNoTa({ tituloRef, notaRef }) {
                             <div
                                 onClick={() => handleToggleSeccion('titulo')}
                                 className={`w-fit flex flex-row items-center gap-4
-                                    ${seccionDisponible('titulo') && !procesandoIA 
-                                        ? 'cursor-pointer' 
+                                    ${seccionDisponible('titulo') && !procesandoIA
+                                        ? 'cursor-pointer'
                                         : 'cursor-not-allowed opacity-50'}`}>
 
                                 <div>
@@ -329,8 +349,8 @@ export default function ModalTiNoTa({ tituloRef, notaRef }) {
                             <div
                                 onClick={() => handleToggleSeccion('nota')}
                                 className={`w-fit flex flex-row items-center gap-4
-                                    ${seccionDisponible('nota') && !procesandoIA 
-                                        ? 'cursor-pointer' 
+                                    ${seccionDisponible('nota') && !procesandoIA
+                                        ? 'cursor-pointer'
                                         : 'cursor-not-allowed opacity-50'}`}>
 
                                 <div>
@@ -353,8 +373,8 @@ export default function ModalTiNoTa({ tituloRef, notaRef }) {
                             <div
                                 onClick={() => handleToggleSeccion('tareas')}
                                 className={`w-fit flex flex-row items-center gap-4
-                                    ${seccionDisponible('tareas') && !procesandoIA 
-                                        ? 'cursor-pointer' 
+                                    ${seccionDisponible('tareas') && !procesandoIA
+                                        ? 'cursor-pointer'
                                         : 'cursor-not-allowed opacity-50'}`}>
 
                                 <div>
@@ -397,9 +417,9 @@ export default function ModalTiNoTa({ tituloRef, notaRef }) {
                         <p
                             onClick={handleAceptar}
                             className={`text-base md:text-lg
-                                        ${!procesandoIA && hayAlgunaSeccionSeleccionada() 
-                                            ? 'cursor-pointer text-violet-800 dark:text-violet-400' 
-                                            : 'cursor-not-allowed opacity-50 text-gray-400'}
+                                        ${!procesandoIA && hayAlgunaSeccionSeleccionada()
+                                    ? 'cursor-pointer text-violet-800 dark:text-violet-400'
+                                    : 'cursor-not-allowed opacity-50 text-gray-400'}
                                         `}>
                             {procesandoIA ? 'Procesando...' : 'Aceptar'}
                         </p>

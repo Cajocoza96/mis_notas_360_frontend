@@ -74,8 +74,33 @@ export const corregirTexto = async (titulo, nota, tareas) => {
         });
 
         const data = await response.json();
-        logDesarrollo('✅ Texto corregido');
-        return data;
+
+        // ✅ Manejo de código 207 (Multi-Status): Éxito parcial con advertencias
+        if (response.status === 207) {
+            logDesarrollo('⚠️ Texto corregido con advertencias:', data.mensaje);
+            
+            // Devolver datos con indicador de advertencia
+            return {
+                ...data,
+                success: true,
+                hasWarnings: true,
+                warningMessage: data.mensaje
+            };
+        }
+
+        // ✅ Éxito completo (código 200)
+        if (response.ok) {
+            logDesarrollo('✅ Texto corregido exitosamente');
+            return {
+                ...data,
+                success: true,
+                hasWarnings: false
+            };
+        }
+
+        // ❌ Si llegamos aquí, hubo un error
+        throw new Error(data.mensaje || 'Error al corregir el texto');
+
     } catch (error) {
         registrarError('corregirTexto', error);
         procesarError(error, 'Error al corregir el texto');
@@ -99,8 +124,33 @@ export const mejorarRedaccion = async (titulo, nota, tareas) => {
         });
 
         const data = await response.json();
-        logDesarrollo('✅ Redacción mejorada');
-        return data;
+
+        // ✅ Manejo de código 207 (Multi-Status): Éxito parcial con advertencias
+        if (response.status === 207) {
+            logDesarrollo('⚠️ Texto mejorado con advertencias:', data.mensaje);
+            
+            // Devolver datos con indicador de advertencia
+            return {
+                ...data,
+                success: true,
+                hasWarnings: true,
+                warningMessage: data.mensaje
+            };
+        }
+
+        // ✅ Éxito completo (código 200)
+        if (response.ok) {
+            logDesarrollo('✅ Texto mejorado exitosamente');
+            return {
+                ...data,
+                success: true,
+                hasWarnings: false
+            };
+        }
+
+        // ❌ Si llegamos aquí, hubo un error
+        throw new Error(data.mensaje || 'Error al mejorar el texto');
+
     } catch (error) {
         registrarError('mejorarRedaccion', error);
         procesarError(error, 'Error al mejorar la redacción');
