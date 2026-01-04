@@ -440,7 +440,7 @@ export default function PaginaCrearEditNota() {
                             notaRef={notaRef}
                         />
                     </>
-
+                
                 ) : null}
 
             </motion.div>

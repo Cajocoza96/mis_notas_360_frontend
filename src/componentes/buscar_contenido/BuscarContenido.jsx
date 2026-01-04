@@ -415,7 +415,7 @@ export default function BuscarContenido() {
                             />
                         </div>
 
-                        <div className="text-center w-50 lg:w-40
+                        <div className="text-center
                                         text-sm md:text-base 
                                         text-black dark:text-white select-none">
                             {totalCoincidencias > 0 ?
