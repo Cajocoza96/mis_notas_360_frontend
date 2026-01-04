@@ -224,11 +224,35 @@ export const convertirTextoATareas = async (titulo, nota, tareas) => {
         });
 
         const data = await response.json();
-        logDesarrollo('✅ Tareas generadas');
-        return data;
+
+        // ✅ Manejo de código 207 (Multi-Status): Éxito parcial con advertencias
+        if (response.status === 207) {
+            logDesarrollo('⚠️ Tareas extraidas con advertencias:', data.mensaje);
+            
+            // Devolver datos con indicador de advertencia
+            return {
+                ...data,
+                success: true,
+                hasWarnings: true,
+                warningMessage: data.mensaje
+            };
+        }
+
+        // ✅ Éxito completo (código 200)
+        if (response.ok) {
+            logDesarrollo('✅ Tareas extraidas exitosamente');
+            return {
+                ...data,
+                success: true,
+                hasWarnings: false
+            };
+        }
+
+        // ❌ Si llegamos aquí, hubo un error
+        throw new Error(data.mensaje || 'Error al extraer tareas');
     } catch (error) {
         registrarError('convertirTextoATareas', error);
-        procesarError(error, 'Error al convertir texto a tareas');
+        procesarError(error, 'Error al extraer tareas');
     }
 };
 
