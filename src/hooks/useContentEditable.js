@@ -1,14 +1,14 @@
 import { useState, useRef, useEffect } from "react";
-
 import { logDesarrollo, errorDesarrollo, registrarError } from "../utils/errorHandler";
 
-export const useContentEditable = (initialState, undoRedoHook) => {
+export const useContentEditable = (initialState, undoRedoHook, tareasActuales = []) => {
     const [titulo, setTitulo] = useState(initialState.titulo || "");
     const [nota, setNota] = useState(initialState.nota || "");
 
     // ✅ Referencias para acceder siempre a los valores más recientes
     const tituloRefValue = useRef(titulo);
     const notaRefValue = useRef(nota);
+    const tareasRefValue = useRef(tareasActuales);
     
     // ✅ Referencias a los elementos DOM
     const elementRefsCache = useRef({ titulo: null, nota: null });
@@ -33,6 +33,11 @@ export const useContentEditable = (initialState, undoRedoHook) => {
         notaRefValue.current = nota;
     }, [nota]);
 
+    // ✅ NUEVO: Actualizar la referencia de tareas
+    useEffect(() => {
+        tareasRefValue.current = tareasActuales;
+    }, [tareasActuales]);
+
     const updateContentEditable = (state, tituloRef, notaRef) => {
         logDesarrollo('🔄 Actualizando contentEditable con:', state);
         
@@ -49,12 +54,17 @@ export const useContentEditable = (initialState, undoRedoHook) => {
         setNota(state.nota || "");
     };
 
-    // ✅ CAMBIO CRÍTICO: Obtener valores actuales de los elementos DOM
+    // ✅ Obtener valores actuales incluyendo tareas
     const getValoresActuales = () => {
         const tituloActual = elementRefsCache.current.titulo?.innerText || tituloRefValue.current || "";
         const notaActual = elementRefsCache.current.nota?.innerText || notaRefValue.current || "";
+        const tareasActual = tareasRefValue.current || [];
         
-        return { titulo: tituloActual, nota: notaActual };
+        return { 
+            titulo: tituloActual, 
+            nota: notaActual,
+            tareas: tareasActual
+        };
     };
 
     const handleTituloChange = (tituloRef) => {
@@ -62,13 +72,13 @@ export const useContentEditable = (initialState, undoRedoHook) => {
             const newTitulo = tituloRef.current.innerText || "";
             elementRefsCache.current.titulo = tituloRef.current;
             
-            // ✅ Obtener la nota actual del DOM
             const notaActual = elementRefsCache.current.nota?.innerText || notaRefValue.current || "";
+            const tareasActual = tareasRefValue.current || [];
             
-            logDesarrollo('✏️ Título cambiado:', { titulo: newTitulo, nota: notaActual });
+            logDesarrollo('✏️ Título cambiado:', { titulo: newTitulo, nota: notaActual, tareas: tareasActual });
             
             setTitulo(newTitulo);
-            addToHistory({ titulo: newTitulo, nota: notaActual });
+            addToHistory({ titulo: newTitulo, nota: notaActual, tareas: tareasActual });
         }
     };
 
@@ -77,25 +87,24 @@ export const useContentEditable = (initialState, undoRedoHook) => {
             const newNota = notaRef.current.innerText || "";
             elementRefsCache.current.nota = notaRef.current;
             
-            // ✅ Obtener el título actual del DOM
             const tituloActual = elementRefsCache.current.titulo?.innerText || tituloRefValue.current || "";
+            const tareasActual = tareasRefValue.current || [];
             
-            logDesarrollo('📝 Nota cambiada:', { titulo: tituloActual, nota: newNota });
+            logDesarrollo('📝 Nota cambiada:', { titulo: tituloActual, nota: newNota, tareas: tareasActual });
             
             setNota(newNota);
-            addToHistory({ titulo: tituloActual, nota: newNota });
+            addToHistory({ titulo: tituloActual, nota: newNota, tareas: tareasActual });
         }
     };
 
     const handleTituloKeyDown = (e, tituloRef, notaRef) => {
-        // Guardar referencias
         elementRefsCache.current.titulo = tituloRef?.current;
         elementRefsCache.current.nota = notaRef?.current;
         
         const undoRedoResult = handleUndoRedoKeys(e);
         if (undoRedoResult) {
             updateContentEditable(undoRedoResult, tituloRef, notaRef);
-            return;
+            return undoRedoResult; // ✅ Retornar el estado para que PaginaCrearEditNota actualice tareas
         }
 
         if (e.key === 'Enter') {
@@ -116,24 +125,24 @@ export const useContentEditable = (initialState, undoRedoHook) => {
                 sel.addRange(range);
             }
         }
+        return null;
     };
 
     const handleNotaKeyDown = (e, tituloRef, notaRef) => {
-        // Guardar referencias
         elementRefsCache.current.titulo = tituloRef?.current;
         elementRefsCache.current.nota = notaRef?.current;
         
         const undoRedoResult = handleUndoRedoKeys(e);
         if (undoRedoResult) {
             updateContentEditable(undoRedoResult, tituloRef, notaRef);
-            return;
+            return undoRedoResult; // ✅ Retornar el estado para que PaginaCrearEditNota actualice tareas
         }
+        return null;
     };
 
     const handleUndoClick = (tituloRef, notaRef) => {
         logDesarrollo('⬅️ Undo click');
         
-        // Guardar referencias antes del undo
         elementRefsCache.current.titulo = tituloRef?.current;
         elementRefsCache.current.nota = notaRef?.current;
         
@@ -141,13 +150,14 @@ export const useContentEditable = (initialState, undoRedoHook) => {
         if (prevState) {
             logDesarrollo('Restaurando estado previo:', prevState);
             updateContentEditable(prevState, tituloRef, notaRef);
+            return prevState; // ✅ Retornar el estado completo incluyendo tareas
         }
+        return null;
     };
 
     const handleRedoClick = (tituloRef, notaRef) => {
         logDesarrollo('➡️ Redo click');
         
-        // Guardar referencias antes del redo
         elementRefsCache.current.titulo = tituloRef?.current;
         elementRefsCache.current.nota = notaRef?.current;
         
@@ -155,7 +165,9 @@ export const useContentEditable = (initialState, undoRedoHook) => {
         if (nextState) {
             logDesarrollo('Restaurando estado siguiente:', nextState);
             updateContentEditable(nextState, tituloRef, notaRef);
+            return nextState; // ✅ Retornar el estado completo incluyendo tareas
         }
+        return null;
     };
 
     return {
@@ -169,6 +181,7 @@ export const useContentEditable = (initialState, undoRedoHook) => {
         handleNotaKeyDown,
         handleUndoClick,
         handleRedoClick,
-        updateContentEditable
+        updateContentEditable,
+        getValoresActuales // ✅ Exportar para uso externo
     };
 };

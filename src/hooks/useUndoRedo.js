@@ -1,5 +1,4 @@
 import { useState, useCallback, useRef, useEffect } from "react";
-
 import { logDesarrollo, errorDesarrollo, registrarError } from "../utils/errorHandler";
 
 export const useUndoRedo = (initialState = {}) => {
@@ -10,7 +9,7 @@ export const useUndoRedo = (initialState = {}) => {
     
     const timeoutRef = useRef(null);
 
-    // ✅ NUEVO: Función para obtener el estado actual del historial
+    // ✅ Función para obtener el estado actual del historial
     const getCurrentState = useCallback(() => {
         return history[currentIndex];
     }, [history, currentIndex]);
@@ -27,7 +26,8 @@ export const useUndoRedo = (initialState = {}) => {
             const lastState = newHistory[newHistory.length - 1];
             if (lastState && 
                 lastState.titulo === newState.titulo && 
-                lastState.nota === newState.nota) {
+                lastState.nota === newState.nota &&
+                JSON.stringify(lastState.tareas) === JSON.stringify(newState.tareas)) {
                 return prevHistory; // No agregar estados duplicados
             }
             
@@ -37,7 +37,6 @@ export const useUndoRedo = (initialState = {}) => {
             // Limitar el historial a 100 estados para evitar problemas de memoria
             if (updatedHistory.length > 100) {
                 const sliced = updatedHistory.slice(-100);
-                // Ajustar el índice también
                 setCurrentIndex(sliced.length - 1);
                 return sliced;
             }
@@ -152,6 +151,6 @@ export const useUndoRedo = (initialState = {}) => {
         redo,
         handleKeyDown,
         resetHistory,
-        getCurrentState // ✅ NUEVO
+        getCurrentState
     };
 };

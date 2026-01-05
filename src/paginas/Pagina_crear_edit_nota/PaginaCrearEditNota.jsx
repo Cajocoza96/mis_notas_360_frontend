@@ -79,6 +79,8 @@ export default function PaginaCrearEditNota() {
 
     const verModalOrdenTareas = useSelector((state) => state.tareas.verModalOrdenTareas);
 
+    const tareas = useSelector((state) => state.tareas.tareas);
+
     const verModalModosIA = useSelector((state) => state.tareas.verModalModosIA);
     const verModalTiNoTa = useSelector((state) => state.tareas.verModalTiNoTa);
 
@@ -88,7 +90,7 @@ export default function PaginaCrearEditNota() {
     const esModoCrear = location.pathname.includes('/agregar-nota');
 
     // Usar el hook de deshacer/rehacer con estado inicial vacío
-    const undoRedoHook = useUndoRedo({ titulo: "", nota: "" });
+    const undoRedoHook = useUndoRedo({ titulo: "", nota: "", tareas: [] });
 
     // Usar el hook de contentEditable
     const {
@@ -102,7 +104,7 @@ export default function PaginaCrearEditNota() {
         handleNotaKeyDown,
         handleUndoClick,
         handleRedoClick
-    } = useContentEditable({ titulo: "", nota: "" }, undoRedoHook);
+    } = useContentEditable({ titulo: "", nota: "" }, undoRedoHook, tareas);
 
     // ✅ Cargar la anotación SOLO UNA VEZ al montar
     useEffect(() => {
@@ -216,11 +218,23 @@ export default function PaginaCrearEditNota() {
             const tituloInicial = anotacionCargada.titulo || "";
             const notaInicial = anotacionCargada.nota || "";
 
+            // ✅ Obtener tareas iniciales
+            const tareasIniciales = anotacionCargada.tareas?.map(t => ({
+                id: t.id,
+                texto: t.texto_tarea,
+                completada: t.tarea_completada === true || t.tarea_completada === 1,
+                orden_creacion: t.orden_creacion
+            })) || [];
+
             // Actualizar los DOM elements PRIMERO
             tituloRef.current.innerText = tituloInicial;
             notaRef.current.innerText = notaInicial;
 
-            logDesarrollo('📋 Valores iniciales:', { titulo: tituloInicial, nota: notaInicial });
+            logDesarrollo('📋 Valores iniciales:', {
+                titulo: tituloInicial,
+                nota: notaInicial,
+                tareas: tareasIniciales
+            });
 
             // Actualizar Redux
             dispatch(setTitulo(tituloInicial));
@@ -232,9 +246,10 @@ export default function PaginaCrearEditNota() {
                 if (undoRedoHook?.resetHistory) {
                     undoRedoHook.resetHistory({
                         titulo: tituloInicial,
-                        nota: notaInicial
+                        nota: notaInicial,
+                        tareas: tareasIniciales // ✅ Incluir tareas en el historial inicial
                     });
-                    logDesarrollo('✅ Historial reiniciado con valores iniciales');
+                    logDesarrollo('✅ Historial reiniciado con valores iniciales incluyendo tareas');
                 }
             }, 0);
         }
@@ -295,19 +310,37 @@ export default function PaginaCrearEditNota() {
     };
 
     const handleTituloKeyDownAdapter = (e, ref) => {
-        handleTituloKeyDown(e, ref, notaRef);
+        const result = handleTituloKeyDown(e, ref, notaRef);
+        if (result && result.tareas !== undefined) {
+            // ✅ Actualizar tareas en Redux si hay cambios
+            dispatch(setTareas(result.tareas));
+        }
     };
 
     const handleNotaKeyDownAdapter = (e, ref) => {
-        handleNotaKeyDown(e, tituloRef, ref);
+        const result = handleNotaKeyDown(e, tituloRef, ref);
+        if (result && result.tareas !== undefined) {
+            // ✅ Actualizar tareas en Redux si hay cambios
+            dispatch(setTareas(result.tareas));
+        }
     };
 
     const handleUndoClickAdapter = () => {
-        handleUndoClick(tituloRef, notaRef);
+        const prevState = handleUndoClick(tituloRef, notaRef);
+        if (prevState && prevState.tareas !== undefined) {
+            logDesarrollo('🔄 Restaurando tareas desde undo:', prevState.tareas);
+            // ✅ Actualizar tareas en Redux
+            dispatch(setTareas(prevState.tareas));
+        }
     };
 
     const handleRedoClickAdapter = () => {
-        handleRedoClick(tituloRef, notaRef);
+        const nextState = handleRedoClick(tituloRef, notaRef);
+        if (nextState && nextState.tareas !== undefined) {
+            logDesarrollo('🔄 Restaurando tareas desde redo:', nextState.tareas);
+            // ✅ Actualizar tareas en Redux
+            dispatch(setTareas(nextState.tareas));
+        }
     };
 
     const [reload, setReload] = useState(false);
@@ -426,6 +459,8 @@ export default function PaginaCrearEditNota() {
                             handleNotaChange={handleNotaChangeAdapter}
                             handleNotaKeyDown={handleNotaKeyDownAdapter}
                             esModoVistaPrevia={false}
+                            addToHistoryImmediate={undoRedoHook.addToHistoryImmediate}
+                            tituloRef={tituloRef}
                         />
 
                         <OrdenarTareasPor />
@@ -440,7 +475,7 @@ export default function PaginaCrearEditNota() {
                             notaRef={notaRef}
                         />
                     </>
-                
+
                 ) : null}
 
             </motion.div>

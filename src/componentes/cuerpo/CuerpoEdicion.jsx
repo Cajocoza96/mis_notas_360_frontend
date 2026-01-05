@@ -8,7 +8,9 @@ import ModalTarea from "../modal/ModalTarea";
 
 import useConexionInternet from "../../hooks/useConexionInternet";
 
-const CuerpoEdicion = forwardRef(({ handleNotaChange, handleNotaKeyDown, esModoVistaPrevia }, notaRef) => {
+const CuerpoEdicion = forwardRef(({ handleNotaChange, handleNotaKeyDown,
+    esModoVistaPrevia, addToHistoryImmediate,
+    tituloRef }, notaRef) => {
 
     const dispatch = useDispatch();
     const { isNotaFocused, nota, tareas } = useSelector((state) => state.tareas);
@@ -129,7 +131,11 @@ const CuerpoEdicion = forwardRef(({ handleNotaChange, handleNotaKeyDown, esModoV
 
             <AnimatePresence>
                 {verModalTarea && !esModoVistaPrevia && (
-                    <ModalTarea />
+                    <ModalTarea
+                        addToHistoryImmediate={addToHistoryImmediate}
+                        tituloRef={tituloRef}
+                        notaRef={notaRef}
+                    />
                 )}
             </AnimatePresence>
 

@@ -1,20 +1,17 @@
 import React, { useState, useEffect, useRef } from "react";
-
 import { HiX } from "react-icons/hi";
-
 import { useDispatch, useSelector } from "react-redux";
-
 import { agregarTarea, editarTarea, eliminarTarea, toggleVerModalTarea } from "../../store/tareasSlice";
-
 import useIsMobile from "../../hooks/useIsMobile";
-
 import { motion } from "framer-motion";
 
-export default function ModalTarea() {
-
+// ✅ NUEVO: Recibir addToHistoryImmediate como prop
+export default function ModalTarea({ addToHistoryImmediate, tituloRef, notaRef }) {
     const dispatch = useDispatch();
 
-    const { modoModal, tareaActual } = useSelector((state) => state.tareas);
+    const { modoModal, tareaActual, tareas } = useSelector((state) => state.tareas);
+    const titulo = useSelector((state) => state.tareas.titulo);
+    const nota = useSelector((state) => state.tareas.nota);
 
     const [textoTarea, setTextoTarea] = useState("");
     const inputRef = useRef(null);
@@ -22,7 +19,6 @@ export default function ModalTarea() {
     const initialSetupDoneRef = useRef(false);
     const isMobile = useIsMobile();
 
-    // ✅ Calcular cantidad de caracteres en tiempo real
     const cantTarea = textoTarea ? textoTarea.length : 0;
     const limiteExcedido = cantTarea >= 500;
 
@@ -45,9 +41,8 @@ export default function ModalTarea() {
         }
     }, [textoTarea]);
 
-    // Solo registrar el listener de orientación en móviles
     useEffect(() => {
-        if (!isMobile) return; // Si no es móvil, no hacer nada
+        if (!isMobile) return;
 
         const handleOrientationChange = () => {
             if (inputRef.current && textoTarea && !hasInteractedRef.current) {
@@ -59,7 +54,6 @@ export default function ModalTarea() {
         };
 
         window.addEventListener('orientationchange', handleOrientationChange);
-
         return () => {
             window.removeEventListener('orientationchange', handleOrientationChange);
         };
@@ -72,25 +66,77 @@ export default function ModalTarea() {
         initialSetupDoneRef.current = false;
     }
 
+    // ✅ Función auxiliar para guardar en el historial
+    const guardarEnHistorial = (nuevasTareas) => {
+        if (addToHistoryImmediate && tituloRef && notaRef) {
+            const tituloActual = tituloRef.current?.innerText || titulo || "";
+            const notaActual = notaRef.current?.innerText || nota || "";
+            
+            addToHistoryImmediate({
+                titulo: tituloActual,
+                nota: notaActual,
+                tareas: nuevasTareas
+            });
+        }
+    };
+
     const handleAgregar = () => {
         if (textoTarea.trim()) {
-            // ✅ Validar límite antes de agregar/editar
             if (textoTarea.length > 500) {
                 alert('La tarea solo permite 500 caracteres');
                 return;
             }
 
             if (modoModal === 'crear') {
+                // ✅ Calcular el siguiente orden_creacion
+                const siguienteOrdenCreacion = tareas.length > 0 
+                    ? Math.max(...tareas.map(t => t.orden_creacion ?? -1)) + 1 
+                    : 0;
+
+                const nuevaTarea = {
+                    id: Date.now(),
+                    texto: textoTarea,
+                    completada: false,
+                    orden_creacion: siguienteOrdenCreacion
+                };
+
+                // ✅ Crear nuevo array de tareas con la nueva tarea
+                const nuevasTareas = [...tareas, nuevaTarea];
+                
+                // ✅ Guardar en historial ANTES de despachar
+                guardarEnHistorial(nuevasTareas);
+                
+                // Despachar acción
                 dispatch(agregarTarea(textoTarea));
+                
             } else if (modoModal === 'editar' && tareaActual) {
+                // ✅ Crear nuevo array con la tarea editada
+                const nuevasTareas = tareas.map(t => 
+                    t.id === tareaActual.id 
+                        ? { ...t, texto: textoTarea }
+                        : t
+                );
+                
+                // ✅ Guardar en historial ANTES de despachar
+                guardarEnHistorial(nuevasTareas);
+                
+                // Despachar acción
                 dispatch(editarTarea({ id: tareaActual.id, texto: textoTarea }));
             }
+            
             handleverModalTarea();
         }
     }
 
     const handleEliminar = () => {
         if (tareaActual) {
+            // ✅ Crear nuevo array sin la tarea eliminada
+            const nuevasTareas = tareas.filter(t => t.id !== tareaActual.id);
+            
+            // ✅ Guardar en historial ANTES de despachar
+            guardarEnHistorial(nuevasTareas);
+            
+            // Despachar acción
             dispatch(eliminarTarea(tareaActual.id));
             handleverModalTarea();
         }
@@ -99,7 +145,6 @@ export default function ModalTarea() {
     const handleInputChange = (e) => {
         const nuevoTexto = e.target.value;
         
-        // ✅ Limitar a 500 caracteres máximo
         if (nuevoTexto.length <= 500) {
             setTextoTarea(nuevoTexto);
         }
@@ -193,7 +238,6 @@ export default function ModalTarea() {
 
                         </div>
 
-                        {/* ✅ Contador de tarea en tiempo real */}
                         <div className="flex flex-col items-center">
                             <p className={`text-center text-base md:text-lg ${
                                 limiteExcedido 
