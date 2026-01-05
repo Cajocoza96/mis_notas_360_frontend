@@ -18,7 +18,8 @@ import {
     setNota,
     setTareas,
     resetSeccionesSeleccionadas,
-    setModoIASeleccionado
+    setModoIASeleccionado,
+    reemplazarTareasConIA
 } from "../../store/tareasSlice";
 
 import { setVerToast, setMensajeToast } from "../../store/accesoSlice";
@@ -141,6 +142,12 @@ export default function ModalTiNoTa({ tituloRef, notaRef }) {
 
             // ✅ SIEMPRE actualizar tareas cuando hay tareas en el resultado
             if (resultado.tareas !== undefined && Array.isArray(resultado.tareas) && resultado.tareas.length > 0) {
+                
+                // Solo enviar los textos, el reducer se encarga de crear los objetos
+                const textosTareas = resultado.tareas.map(texto => texto.substring(0, 500));
+                dispatch(reemplazarTareasConIA(textosTareas)); // Agregar en lugar de setTareas
+
+                {/*
                 const tareasObjeto = resultado.tareas.map((texto, index) => ({
                     id: Date.now() + index,
                     texto: texto.substring(0, 500),
@@ -148,6 +155,7 @@ export default function ModalTiNoTa({ tituloRef, notaRef }) {
                     orden_creacion: index
                 }));
                 dispatch(setTareas(tareasObjeto));
+                */}
             }
 
             return;
@@ -194,7 +202,12 @@ export default function ModalTiNoTa({ tituloRef, notaRef }) {
             // Preparar datos según las secciones seleccionadas
             const tituloParaEnviar = seccionesSeleccionadas.titulo ? titulo : "";
             const notaParaEnviar = seccionesSeleccionadas.nota ? nota : "";
-            const tareasParaEnviar = seccionesSeleccionadas.tareas ? tareas : [];
+
+            // Cambio: Siempre enviar las tareas existentes para 'text-to-tasks'
+            //const tareasParaEnviar = seccionesSeleccionadas.tareas ? tareas : [];
+            const tareasParaEnviar = modoIASeleccionado === 'text-to-tasks' 
+            ? tareas.map(t => t.texto) // Enviar todas las tareas como array de strings
+            : (seccionesSeleccionadas.tareas ? tareas : []);
 
             let resultado;
 
@@ -273,12 +286,6 @@ export default function ModalTiNoTa({ tituloRef, notaRef }) {
         if (modoIASeleccionado === 'text-to-tasks' && seccion === 'tareas') {
             return false;
         } 
-        
-        /*
-        else if (modoIASeleccionado === 'summarize' && seccion === 'tareas') {
-            return;
-        }
-        */
 
         switch (seccion) {
             case 'titulo':
