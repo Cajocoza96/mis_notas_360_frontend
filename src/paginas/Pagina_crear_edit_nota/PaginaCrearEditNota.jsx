@@ -349,6 +349,7 @@ export default function PaginaCrearEditNota() {
         setReload(prev => !prev);
     }
 
+    /*
     // Efecto para recargar pagina cuando se restablece la conexión
     useEffect(() => {
         if (justReconnected) {
@@ -363,6 +364,44 @@ export default function PaginaCrearEditNota() {
             return () => clearTimeout(timer);
         }
     }, [justReconnected]);
+    */
+
+    // Efecto para recargar pagina cuando se restablece la conexión
+    useEffect(() => {
+        if (justReconnected) {
+            logDesarrollo('🔄 Reconexión detectada - Restaurando historial');
+
+            // ✅ Capturar el estado actual ANTES de resetear
+            const estadoActual = {
+                titulo: tituloRef.current?.innerText || "",
+                nota: notaRef.current?.innerText || "",
+                tareas: tareas || []
+            };
+
+            logDesarrollo('📸 Estado capturado tras reconexión:', estadoActual);
+
+            // ✅ Reiniciar el historial con el estado actual
+            if (undoRedoHook?.resetHistory) {
+                undoRedoHook.resetHistory(estadoActual);
+                logDesarrollo('✅ Historial reiniciado con estado actual');
+            }
+
+            // Actualizar Redux para sincronizar
+            dispatch(setTitulo(estadoActual.titulo));
+            dispatch(setNota(estadoActual.nota));
+            dispatch(setTareas(estadoActual.tareas));
+
+            // Recargar el componente visualmente
+            recargarComponente();
+
+            // Esperar un momento antes de resetear el estado de reconexión
+            const timer = setTimeout(() => {
+                resetReconnectionState();
+            }, 3000);
+
+            return () => clearTimeout(timer);
+        }
+    }, [justReconnected, tareas, dispatch]);
 
     const verToast = useSelector((state) => state.acceso.verToast);
 
@@ -406,7 +445,7 @@ export default function PaginaCrearEditNota() {
                 <AnimatePresence>
                     <ModalExitoError animado={true} />
                 </AnimatePresence>
- 
+
                 {mostrarSkeleton ? (
                     <SkeletonCrearEditPrevia />
                 ) : mostrarSinConexion ? (
