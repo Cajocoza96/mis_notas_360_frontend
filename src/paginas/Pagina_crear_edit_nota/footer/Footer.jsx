@@ -213,9 +213,6 @@ export default function Footer({ handleUndoClick, handleRedoClick, esModoEdicion
             </div>
 
             <div className="flex flex-col items-center justify-center gap-1 select-none">
-                <p className="text-black dark:text-white text-sm text-center">
-                    No funciona en IA
-                </p>
                 <div className="flex flex-row items-center justify-center gap-5">
                     {/* Botón Deshacer */}
                     <HiReply

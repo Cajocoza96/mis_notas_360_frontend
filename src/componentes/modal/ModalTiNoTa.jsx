@@ -31,7 +31,7 @@ import {
     convertirTextoATareas
 } from "../../services/aiService";
 
-export default function ModalTiNoTa({ tituloRef, notaRef }) {
+export default function ModalTiNoTa({ tituloRef, notaRef, addToHistoryImmediate }) {
 
     const dispatch = useDispatch();
 
@@ -76,8 +76,8 @@ export default function ModalTiNoTa({ tituloRef, notaRef }) {
         if (modoIASeleccionado === 'text-to-tasks' && seccion === 'tareas') {
             return;
 
-        } 
-        
+        }
+
         /*
         else if (modoIASeleccionado === 'summarize' && seccion === 'tareas') {
             return;
@@ -120,11 +120,24 @@ export default function ModalTiNoTa({ tituloRef, notaRef }) {
     // ✅ Función mejorada para aplicar resultados
     const aplicarResultado = (resultado, esConversionATareas = false) => {
 
+        // Guardar estados previos para el historial
+        const estadoPrevio = {
+            titulo: titulo || "",
+            nota: nota || "",
+            tareas: tareas || []
+        };
+
         // ✅ CASO ESPECIAL: Convertir texto a tareas
         if (esConversionATareas) {
+
+            // Variables para el nuevo estado
+            let nuevoTitulo = titulo;
+            let nuevaNota = nota;
+            let nuevasTareas = tareas;
+
             // Actualizar título si fue seleccionado
             if (seccionesSeleccionadas.titulo && resultado.titulo !== undefined) {
-                const nuevoTitulo = resultado.titulo.substring(0, 255);
+                nuevoTitulo = resultado.titulo.substring(0, 255);
                 dispatch(setTitulo(nuevoTitulo));
                 if (tituloRef?.current) {
                     tituloRef.current.innerText = nuevoTitulo;
@@ -133,7 +146,7 @@ export default function ModalTiNoTa({ tituloRef, notaRef }) {
 
             // Actualizar nota si fue seleccionada
             if (seccionesSeleccionadas.nota && resultado.nota !== undefined) {
-                const nuevaNota = resultado.nota.substring(0, 50000);
+                nuevaNota = resultado.nota.substring(0, 50000);
                 dispatch(setNota(nuevaNota));
                 if (notaRef?.current) {
                     notaRef.current.innerText = nuevaNota;
@@ -142,29 +155,49 @@ export default function ModalTiNoTa({ tituloRef, notaRef }) {
 
             // ✅ SIEMPRE actualizar tareas cuando hay tareas en el resultado
             if (resultado.tareas !== undefined && Array.isArray(resultado.tareas) && resultado.tareas.length > 0) {
-                
+
                 // Solo enviar los textos, el reducer se encarga de crear los objetos
                 const textosTareas = resultado.tareas.map(texto => texto.substring(0, 500));
                 dispatch(reemplazarTareasConIA(textosTareas)); // Agregar en lugar de setTareas
 
-                {/*
-                const tareasObjeto = resultado.tareas.map((texto, index) => ({
+                // Obtener las nuevas tareas para el historial
+                nuevasTareas = resultado.tareas.map((texto, index) => ({
                     id: Date.now() + index,
                     texto: texto.substring(0, 500),
                     completada: false,
                     orden_creacion: index
                 }));
-                dispatch(setTareas(tareasObjeto));
-                */}
+            }
+
+            // ✅ Agregar al historial DESPUÉS de aplicar todos los cambios
+            if (addToHistoryImmediate) {
+                const nuevoEstado = {
+                    titulo: nuevoTitulo,
+                    nota: nuevaNota,
+                    tareas: nuevasTareas
+                };
+
+                logDesarrollo('📝 Agregando al historial (text-to-tasks):', {
+                    previo: estadoPrevio,
+                    nuevo: nuevoEstado
+                });
+
+                addToHistoryImmediate(nuevoEstado);
             }
 
             return;
         }
 
         // ✅ OTROS CASOS: Corregir, Mejorar, Resumir
+        // Variables para el nuevo estado
+        let nuevoTitulo = titulo;
+        let nuevaNota = nota;
+        let nuevasTareas = tareas;
+
+        // ✅ OTROS CASOS: Corregir, Mejorar, Resumir
         // Actualizar título si fue seleccionado
         if (seccionesSeleccionadas.titulo && resultado.titulo !== undefined) {
-            const nuevoTitulo = resultado.titulo.substring(0, 255);
+            nuevoTitulo = resultado.titulo.substring(0, 255);
             dispatch(setTitulo(nuevoTitulo));
             if (tituloRef?.current) {
                 tituloRef.current.innerText = nuevoTitulo;
@@ -173,7 +206,7 @@ export default function ModalTiNoTa({ tituloRef, notaRef }) {
 
         // Actualizar nota si fue seleccionada
         if (seccionesSeleccionadas.nota && resultado.nota !== undefined) {
-            const nuevaNota = resultado.nota.substring(0, 50000);
+            nuevaNota = resultado.nota.substring(0, 50000);
             dispatch(setNota(nuevaNota));
             if (notaRef?.current) {
                 notaRef.current.innerText = nuevaNota;
@@ -189,6 +222,23 @@ export default function ModalTiNoTa({ tituloRef, notaRef }) {
                 orden_creacion: index
             }));
             dispatch(setTareas(tareasObjeto));
+            nuevasTareas = tareasObjeto;
+        }
+
+        // ✅ Agregar al historial DESPUÉS de aplicar todos los cambios
+        if (addToHistoryImmediate) {
+            const nuevoEstado = {
+                titulo: nuevoTitulo,
+                nota: nuevaNota,
+                tareas: nuevasTareas
+            };
+
+            logDesarrollo('📝 Agregando al historial (otros métodos IA):', {
+                previo: estadoPrevio,
+                nuevo: nuevoEstado
+            });
+
+            addToHistoryImmediate(nuevoEstado);
         }
     };
 
@@ -205,9 +255,9 @@ export default function ModalTiNoTa({ tituloRef, notaRef }) {
 
             // Cambio: Siempre enviar las tareas existentes para 'text-to-tasks'
             //const tareasParaEnviar = seccionesSeleccionadas.tareas ? tareas : [];
-            const tareasParaEnviar = modoIASeleccionado === 'text-to-tasks' 
-            ? tareas.map(t => t.texto) // Enviar todas las tareas como array de strings
-            : (seccionesSeleccionadas.tareas ? tareas : []);
+            const tareasParaEnviar = modoIASeleccionado === 'text-to-tasks'
+                ? tareas.map(t => t.texto) // Enviar todas las tareas como array de strings
+                : (seccionesSeleccionadas.tareas ? tareas : []);
 
             let resultado;
 
@@ -285,7 +335,7 @@ export default function ModalTiNoTa({ tituloRef, notaRef }) {
         // ✅ Si es 'text-to-tasks', deshabilitar la sección de tareas
         if (modoIASeleccionado === 'text-to-tasks' && seccion === 'tareas') {
             return false;
-        } 
+        }
 
         switch (seccion) {
             case 'titulo':

@@ -110,22 +110,7 @@ export const useUndoRedo = (initialState = {}) => {
         return null;
     }, [undo, redo]);
 
-    /*
-    // Nueva función para reiniciar el historial (necesaria para modo edición)
-    const resetHistory = useCallback((newInitialState) => {
-        // Limpiar cualquier timeout pendiente
-        if (timeoutRef.current) {
-            clearTimeout(timeoutRef.current);
-        }
-        
-        logDesarrollo('🔄 Reiniciando historial con:', newInitialState);
-        
-        setHistory([newInitialState]);
-        setCurrentIndex(0);
-        setIsUndoRedoAction(false);
-    }, []);
-    */
-
+    //Nueva función para reiniciar el historial (necesaria para modo edición)
     const resetHistory = useCallback((newInitialState) => {
         // Limpiar cualquier timeout pendiente
         if (timeoutRef.current) {

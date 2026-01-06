@@ -349,23 +349,6 @@ export default function PaginaCrearEditNota() {
         setReload(prev => !prev);
     }
 
-    /*
-    // Efecto para recargar pagina cuando se restablece la conexión
-    useEffect(() => {
-        if (justReconnected) {
-
-            recargarComponente();
-
-            // Esperar un momento antes de resetear el estado de reconexión
-            const timer = setTimeout(() => {
-                resetReconnectionState();
-            }, 3000); // El mensaje desaparecerá después de 3 segundos
-
-            return () => clearTimeout(timer);
-        }
-    }, [justReconnected]);
-    */
-
     // Efecto para recargar pagina cuando se restablece la conexión
     useEffect(() => {
         if (justReconnected) {
@@ -483,6 +466,7 @@ export default function PaginaCrearEditNota() {
                                 <ModalTiNoTa
                                     tituloRef={tituloRef}
                                     notaRef={notaRef}
+                                    addToHistoryImmediate={undoRedoHook.addToHistoryImmediate}
                                 />
                             )}
                         </AnimatePresence>
