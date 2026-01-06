@@ -133,7 +133,7 @@ export default function ModalTiNoTa({ tituloRef, notaRef, addToHistoryImmediate 
             // Variables para el nuevo estado
             let nuevoTitulo = titulo;
             let nuevaNota = nota;
-            let nuevasTareas = tareas;
+            let nuevasTareas = [...(tareas || [])];
 
             // Actualizar título si fue seleccionado
             if (seccionesSeleccionadas.titulo && resultado.titulo !== undefined) {
@@ -160,13 +160,21 @@ export default function ModalTiNoTa({ tituloRef, notaRef, addToHistoryImmediate 
                 const textosTareas = resultado.tareas.map(texto => texto.substring(0, 500));
                 dispatch(reemplazarTareasConIA(textosTareas)); // Agregar en lugar de setTareas
 
+                // ✅ Calcular el orden_creacion basado en las tareas existentes
+                const maxOrden = nuevasTareas.length > 0
+                    ? Math.max(...nuevasTareas.map(t => t.orden_creacion ?? -1))
+                    : -1;
+
                 // Obtener las nuevas tareas para el historial
-                nuevasTareas = resultado.tareas.map((texto, index) => ({
+                const tareasGeneradasPorIA = resultado.tareas.map((texto, index) => ({
                     id: Date.now() + index,
                     texto: texto.substring(0, 500),
                     completada: false,
-                    orden_creacion: index
+                    orden_creacion: maxOrden + 1 + index // ✅ Continuar desde el último orden
                 }));
+
+                // ✅ AGREGAR las nuevas tareas a las existentes
+                nuevasTareas = [...nuevasTareas, ...tareasGeneradasPorIA];
             }
 
             // ✅ Agregar al historial DESPUÉS de aplicar todos los cambios
@@ -179,7 +187,9 @@ export default function ModalTiNoTa({ tituloRef, notaRef, addToHistoryImmediate 
 
                 logDesarrollo('📝 Agregando al historial (text-to-tasks):', {
                     previo: estadoPrevio,
-                    nuevo: nuevoEstado
+                    nuevo: nuevoEstado,
+                    tareasPrevias: estadoPrevio.tareas.length,
+                    tareasNuevas: nuevoEstado.tareas.length
                 });
 
                 addToHistoryImmediate(nuevoEstado);
