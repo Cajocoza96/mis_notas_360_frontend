@@ -406,7 +406,7 @@ export default function PaginaCrearEditNota() {
                 <AnimatePresence>
                     <ModalExitoError animado={true} />
                 </AnimatePresence>
-
+ 
                 {mostrarSkeleton ? (
                     <SkeletonCrearEditPrevia />
                 ) : mostrarSinConexion ? (

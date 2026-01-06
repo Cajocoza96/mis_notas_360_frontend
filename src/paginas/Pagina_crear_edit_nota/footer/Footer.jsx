@@ -219,9 +219,9 @@ export default function Footer({ handleUndoClick, handleRedoClick, esModoEdicion
                 <div className="flex flex-row items-center justify-center gap-5">
                     {/* Botón Deshacer */}
                     <HiReply
-                        className={`text-2xl md:text-3xl cursor-pointer transition-opacity
+                        className={`text-2xl md:text-3xl transition-opacity
                                 ${canUndo
-                                ? 'text-black dark:text-white hover:opacity-80'
+                                ? 'text-black dark:text-white hover:opacity-80 cursor-pointer'
                                 : 'text-gray-600 dark:text-gray-500 cursor-not-allowed opacity-50'
                             }`}
                         onClick={canUndo ? handleUndoClick : undefined}
@@ -230,9 +230,9 @@ export default function Footer({ handleUndoClick, handleRedoClick, esModoEdicion
 
                     {/* Botón Rehacer */}
                     <HiReply
-                        className={`transform -scale-x-100 text-2xl md:text-3xl cursor-pointer transition-opacity
+                        className={`transform -scale-x-100 text-2xl md:text-3xl transition-opacity
                                 ${canRedo
-                                ? 'text-black dark:text-white hover:opacity-80'
+                                ? 'text-black dark:text-white hover:opacity-80 cursor-pointer'
                                 : 'text-gray-600 dark:text-gray-500 cursor-not-allowed opacity-50'
                             }`}
                         onClick={canRedo ? handleRedoClick : undefined}
