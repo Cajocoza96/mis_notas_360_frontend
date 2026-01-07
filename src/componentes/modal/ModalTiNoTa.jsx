@@ -202,7 +202,7 @@ export default function ModalTiNoTa({ tituloRef, notaRef, addToHistoryImmediate 
         // Variables para el nuevo estado
         let nuevoTitulo = titulo;
         let nuevaNota = nota;
-        let nuevasTareas = tareas;
+        let nuevasTareas = tareas || [];
 
         // ✅ OTROS CASOS: Corregir, Mejorar, Resumir
         // Actualizar título si fue seleccionado
@@ -223,8 +223,9 @@ export default function ModalTiNoTa({ tituloRef, notaRef, addToHistoryImmediate 
             }
         }
 
-        // Actualizar tareas solo si fueron seleccionadas
+        // Actualizar tareas PRESERVANDO completada e id
         if (seccionesSeleccionadas.tareas && resultado.tareas !== undefined && Array.isArray(resultado.tareas)) {
+            /*
             const tareasObjeto = resultado.tareas.map((texto, index) => ({
                 id: Date.now() + index,
                 texto: texto.substring(0, 500),
@@ -233,6 +234,21 @@ export default function ModalTiNoTa({ tituloRef, notaRef, addToHistoryImmediate 
             }));
             dispatch(setTareas(tareasObjeto));
             nuevasTareas = tareasObjeto;
+            */
+            // ✅ Mapear las tareas modificadas preservando completada, id y orden_creacion
+            const tareasModificadas = resultado.tareas.map((textoModificado, index) => {
+                const tareaOriginal = tareas[index]; // Obtener la tarea original correspondiente
+
+                return {
+                    id: tareaOriginal?.id || Date.now() + index, // ✅ Preservar ID original
+                    texto: textoModificado.substring(0, 500), // ✅ Nuevo texto de la IA
+                    completada: tareaOriginal?.completada ?? false, // ✅ PRESERVAR estado completada
+                    orden_creacion: tareaOriginal?.orden_creacion ?? index // ✅ PRESERVAR orden
+                };
+            });
+
+            dispatch(setTareas(tareasModificadas));
+            nuevasTareas = tareasModificadas;
         }
 
         // ✅ Agregar al historial DESPUÉS de aplicar todos los cambios

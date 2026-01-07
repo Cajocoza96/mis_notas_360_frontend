@@ -183,6 +183,9 @@ const CuerpoEdicion = forwardRef(({ handleNotaChange, handleNotaKeyDown,
                         key={tarea.id}
                         tarea={tarea}
                         esModoVistaPrevia={esModoVistaPrevia}
+                        addToHistoryImmediate={addToHistoryImmediate} // ✅ NUEVO
+                        tituloRef={tituloRef} // ✅ NUEVO
+                        notaRef={notaRef} // ✅ NUEVO
                     />
                 ))}
             </div>

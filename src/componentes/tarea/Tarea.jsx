@@ -4,20 +4,39 @@ import { FaRegCircle } from "react-icons/fa";
 
 import { HiDotsHorizontal, HiCheckCircle } from "react-icons/hi";
 
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
-import { toggleVerModalTarea } from "../../store/tareasSlice";
+import { toggleVerModalTarea, toggleCompletarTarea, 
+        setTareaActual, setModoModal } from "../../store/tareasSlice";
 
-import { toggleCompletarTarea, setTareaActual, setModoModal } from "../../store/tareasSlice";
-
-export default function Tarea({ tarea, esModoVistaPrevia }) {
+export default function Tarea({ tarea, esModoVistaPrevia, 
+                                addToHistoryImmediate, tituloRef, notaRef }) {
 
     const dispatch = useDispatch();
+
+    // ✅ Obtener estado actual desde Redux
+    const { tareas } = useSelector((state) => state.tareas);
 
     const handleTareaLista = () => {
         // Solo permitir completar/descompletar si NO estamos en modo vista previa
         if (!esModoVistaPrevia) {
             dispatch(toggleCompletarTarea(tarea.id));
+
+            // ✅ Agregar al historial DESPUÉS de cambiar el estado de completada
+            setTimeout(() => {
+                if (addToHistoryImmediate && tituloRef?.current && notaRef?.current) {
+                    const nuevoEstado = {
+                        titulo: tituloRef.current.innerText || "",
+                        nota: notaRef.current.innerText || "",
+                        tareas: tareas.map(t => 
+                            t.id === tarea.id 
+                                ? { ...t, completada: !t.completada }
+                                : t
+                        )
+                    };
+                    addToHistoryImmediate(nuevoEstado);
+                }
+            }, 0);
         }
     }
 
