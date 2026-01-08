@@ -27,6 +27,18 @@ const CuerpoEdicion = forwardRef(({ handleNotaChange, handleNotaKeyDown,
         dispatch(setEstadoAutomatico());
     }, [tareas, dispatch]);
 
+    // ✅ Sincronizar el ref cuando Redux cambia desde fuera
+    useEffect(() => {
+        if (notaRef.current && nota !== undefined && nota !== null) {
+            const notaActual = notaRef.current.innerText || "";
+
+            // Solo actualizar si el contenido es diferente
+            if (notaActual !== nota) {
+                notaRef.current.innerText = nota;
+            }
+        }
+    }, [nota, notaRef]);
+
     // ✅ Callback ref para inicializar el contenido inmediatamente cuando el ref se crea
     const setRefWithContent = useCallback((element) => {
         if (element) {

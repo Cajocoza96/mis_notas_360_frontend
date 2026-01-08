@@ -2,17 +2,24 @@ import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { motion } from "framer-motion";
 
+import { useLocation } from "react-router-dom";
+
 import { FaCircle, FaRegCircle } from "react-icons/fa";
-import { FcCheckmark, FcEditImage, FcList, FcTodoList } from "react-icons/fc";
+import { FcCheckmark, FcEditImage, FcList, FcTodoList, FcIdea } from "react-icons/fc";
 
 import {
     toggleVerModalModosIA,
     setModoIASeleccionado,
     setVerModalTiNoTa,
+    setVerModalGenerarContenido,
     resetSeccionesSeleccionadas
 } from "../../store/tareasSlice";
 
 export default function ModalModosIA() {
+
+    const location = useLocation();
+
+    const esModoCrear = location.pathname.includes("/agregar-nota");
 
     const dispatch = useDispatch();
 
@@ -20,15 +27,19 @@ export default function ModalModosIA() {
 
     const [modoSeleccionado, setModoSeleccionado] = useState(null);
 
+    const generarContenido = modoSeleccionado === 'generate-content'
+
     const handleSeleccionar = (modo) => {
         setModoSeleccionado(modo);
         dispatch(setModoIASeleccionado(modo));
     };
 
     const handleCancelar = () => {
-        setModoSeleccionado(null);
-        dispatch(setModoIASeleccionado(null));
         dispatch(toggleVerModalModosIA());
+
+        /*setModoSeleccionado(null);
+        dispatch(setModoIASeleccionado(null));
+        */
     };
 
     // ✅ Validar si se puede aceptar según el modo y contenido disponible
@@ -40,7 +51,7 @@ export default function ModalModosIA() {
         const tieneTareas = tareas && tareas.length > 0;
 
         // ✅ Punto 3: Si no hay nada en ningún lado, deshabilitar
-        if (!tieneTitulo && !tienNota && !tieneTareas) {
+        if (!tieneTitulo && !tienNota && !tieneTareas && !generarContenido) {
             return false;
         }
 
@@ -62,7 +73,13 @@ export default function ModalModosIA() {
 
         // ✅ Cerrar modal de modos y abrir modal de secciones
         dispatch(toggleVerModalModosIA());
-        dispatch(setVerModalTiNoTa(true));
+
+        if (!generarContenido) {
+            dispatch(setVerModalTiNoTa(true));
+
+        } else if (generarContenido) {
+            dispatch(setVerModalGenerarContenido(true));
+        }
     };
 
     return (
@@ -88,6 +105,28 @@ export default function ModalModosIA() {
 
                         {/* Opciones de IA */}
                         <div className="flex flex-col gap-2">
+
+                            {/* Generar contenido */}
+                            {esModoCrear && (
+                                <div
+                                    onClick={() => handleSeleccionar('generate-content')}
+                                    className="w-fit cursor-pointer flex flex-row items-center gap-4">
+                                    <div>
+                                        {modoSeleccionado === 'generate-content' ? (
+                                            <FaCircle className="text-base md:text-lg text-violet-800 dark:text-violet-400" />
+                                        ) : (
+                                            <FaRegCircle className="text-base md:text-lg text-black dark:text-white" />
+                                        )}
+                                    </div>
+
+                                    <div className="text-2xl md:text-3xl">
+                                        <FcIdea />
+                                    </div>
+                                    <p className="text-base md:text-lg text-black dark:text-white">
+                                        Generar contenido
+                                    </p>
+                                </div>
+                            )}
 
                             {/* Corregir ortografía y gramática */}
                             <div

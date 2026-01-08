@@ -27,6 +27,7 @@ const initialState = {
 
     verModalModosIA: false,
     verModalTiNoTa: false,
+    verModalGenerarContenido: false,
     modoIASeleccionado: null, // 'correct', 'improve', 'summarize', 'text-to-tasks'
 
     // ✅ Nuevos estados para las secciones seleccionadas
@@ -223,6 +224,13 @@ const tareasSlice = createSlice({
         },
         setVerModalTiNoTa: (state, action) => {
             state.verModalTiNoTa = action.payload
+        },
+
+        toggleVerModalGenerarContenido: (state) => {
+            state.verModalGenerarContenido = !state.verModalGenerarContenido
+        },
+        setVerModalGenerarContenido: (state, action) => {
+            state.verModalGenerarContenido = action.payload
         },
 
         // IA - Seleccionar modo
@@ -482,6 +490,8 @@ export const {
     setVerModalModosIA,
     toggleVerModalTiNoTa,
     setVerModalTiNoTa,
+    toggleVerModalGenerarContenido,
+    setVerModalGenerarContenido,
     setModoIASeleccionado,
     toggleSeccionTitulo,
     toggleSeccionNota,

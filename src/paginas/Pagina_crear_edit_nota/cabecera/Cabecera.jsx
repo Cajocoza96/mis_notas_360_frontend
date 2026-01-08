@@ -28,6 +28,18 @@ const Cabecera = forwardRef(({ handleTituloChange, handleTituloKeyDown,
         setTieneTitulo(contenido !== "");
     }, [titulo]);
 
+    // ✅ Sincronizar el ref cuando Redux cambia desde fuera
+    useEffect(() => {
+        if (tituloRef.current && titulo !== undefined && titulo !== null) {
+            const tituloActual = tituloRef.current.innerText || "";
+
+            // Solo actualizar si el contenido es diferente
+            if (tituloActual !== titulo) {
+                tituloRef.current.innerText = titulo;
+            }
+        }
+    }, [titulo, tituloRef]);
+
     const handleFocus = () => {
         if (!esModoVistaPrevia) {
             dispatch(setIsTituloFocused(true));

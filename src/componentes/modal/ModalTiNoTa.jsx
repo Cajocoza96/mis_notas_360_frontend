@@ -106,9 +106,10 @@ export default function ModalTiNoTa({ tituloRef, notaRef, addToHistoryImmediate 
     const handleCancelar = () => {
         if (procesandoIA) return;
 
-        dispatch(resetSeccionesSeleccionadas());
-        dispatch(setModoIASeleccionado(null));
         dispatch(toggleVerModalTiNoTa());
+        
+        //dispatch(resetSeccionesSeleccionadas());
+        //dispatch(setModoIASeleccionado(null));
     };
 
     const hayAlgunaSeccionSeleccionada = () => {
@@ -225,16 +226,6 @@ export default function ModalTiNoTa({ tituloRef, notaRef, addToHistoryImmediate 
 
         // Actualizar tareas PRESERVANDO completada e id
         if (seccionesSeleccionadas.tareas && resultado.tareas !== undefined && Array.isArray(resultado.tareas)) {
-            /*
-            const tareasObjeto = resultado.tareas.map((texto, index) => ({
-                id: Date.now() + index,
-                texto: texto.substring(0, 500),
-                completada: false,
-                orden_creacion: index
-            }));
-            dispatch(setTareas(tareasObjeto));
-            nuevasTareas = tareasObjeto;
-            */
             // ✅ Mapear las tareas modificadas preservando completada, id y orden_creacion
             const tareasModificadas = resultado.tareas.map((textoModificado, index) => {
                 const tareaOriginal = tareas[index]; // Obtener la tarea original correspondiente
@@ -337,6 +328,20 @@ export default function ModalTiNoTa({ tituloRef, notaRef, addToHistoryImmediate 
             dispatch(setProcesandoIA(false));
             dispatch(resetSeccionesSeleccionadas());
             dispatch(setModoIASeleccionado(null));
+
+            if (modoIASeleccionado === 'correct') {
+                mostrarToast('Corregido exitosamente');
+
+            } else if (modoIASeleccionado === 'improve') {
+                mostrarToast('Redacción mejorada exitosamente');
+
+            } else if (modoIASeleccionado === 'summarize') {
+                mostrarToast('Resumido exitosamente');
+
+            } else if (modoIASeleccionado === 'text-to-tasks') {
+                mostrarToast('Tarea extraida exitosamente');
+            }
+
             dispatch(toggleVerModalTiNoTa());
 
         } catch (error) {

@@ -256,5 +256,39 @@ export const convertirTextoATareas = async (titulo, nota, tareas) => {
     }
 };
 
+// Generar contenido libre con IA
+export const generarContenido = async (prompt) => {
+    try {
+        const token = obtenerToken();
+
+        logDesarrollo('🤖 Enviando prompt a IA para generar contenido');
+
+        const response = await fetchConAuth(`${API_URL}/ai/generate-content`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({ prompt })
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+            logDesarrollo('✅ Contenido generado exitosamente');
+            return {
+                ...data,
+                success: true
+            };
+        }
+
+        throw new Error(data.mensaje || 'Error al generar contenido');
+
+    } catch (error) {
+        registrarError('generarContenido', error);
+        procesarError(error, 'Error al generar contenido');
+    }
+};
+
 // Exportar también API_URL por si se necesita en otros lugares
 export { API_URL };

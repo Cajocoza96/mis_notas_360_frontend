@@ -22,6 +22,8 @@ import ModalModosIA from "../../componentes/modal/ModalModosIA";
 
 import ModalTiNoTa from "../../componentes/modal/ModalTiNoTa";
 
+import ModalGenerarContenido from "../../componentes/modal/ModalGenerarContenido";
+
 import ModalExitoError from "../../componentes/modal/ModalExitoError";
 
 import { mapearEstadoDesdeBD } from "../../utils/estadoUtils";
@@ -83,7 +85,7 @@ export default function PaginaCrearEditNota() {
 
     const verModalModosIA = useSelector((state) => state.tareas.verModalModosIA);
     const verModalTiNoTa = useSelector((state) => state.tareas.verModalTiNoTa);
-
+    const verModalGenerarContenido = useSelector((state) => state.tareas.verModalGenerarContenido);
 
     // Determinar si estamos en modo edición
     const esModoEdicion = location.pathname.includes('/editar/nota/');
@@ -332,6 +334,14 @@ export default function PaginaCrearEditNota() {
             // ✅ Actualizar tareas en Redux
             dispatch(setTareas(prevState.tareas));
         }
+
+        // ✅ Actualizar Redux con los valores de los refs después del undo
+        setTimeout(() => {
+            if (tituloRef.current && notaRef.current) {
+                dispatch(setTitulo(tituloRef.current.innerText || ""));
+                dispatch(setNota(notaRef.current.innerText || ""));
+            }
+        }, 0);
     };
 
     const handleRedoClickAdapter = () => {
@@ -341,6 +351,14 @@ export default function PaginaCrearEditNota() {
             // ✅ Actualizar tareas en Redux
             dispatch(setTareas(nextState.tareas));
         }
+
+        // ✅ Actualizar Redux con los valores de los refs después del redo
+        setTimeout(() => {
+            if (tituloRef.current && notaRef.current) {
+                dispatch(setTitulo(tituloRef.current.innerText || ""));
+                dispatch(setNota(notaRef.current.innerText || ""));
+            }
+        }, 0);
     };
 
     const [reload, setReload] = useState(false);
@@ -441,7 +459,6 @@ export default function PaginaCrearEditNota() {
                         <CargandoNoHayNada errorCargaInformacion={true} />
                     </div>
                 ) : mostrarContenido ? (
-
                     <>
                         <AnimatePresence>
                             {verModalEstado && (
@@ -464,6 +481,16 @@ export default function PaginaCrearEditNota() {
                         <AnimatePresence>
                             {verModalTiNoTa && (
                                 <ModalTiNoTa
+                                    tituloRef={tituloRef}
+                                    notaRef={notaRef}
+                                    addToHistoryImmediate={undoRedoHook.addToHistoryImmediate}
+                                />
+                            )}
+                        </AnimatePresence>
+
+                        <AnimatePresence>
+                            {verModalGenerarContenido && (
+                                <ModalGenerarContenido
                                     tituloRef={tituloRef}
                                     notaRef={notaRef}
                                     addToHistoryImmediate={undoRedoHook.addToHistoryImmediate}
@@ -498,9 +525,7 @@ export default function PaginaCrearEditNota() {
                             notaRef={notaRef}
                         />
                     </>
-
                 ) : null}
-
             </motion.div>
         </AnimatePresence>
     );
