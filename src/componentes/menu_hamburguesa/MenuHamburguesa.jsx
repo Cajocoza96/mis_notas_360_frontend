@@ -37,7 +37,7 @@ export default function MenuHamburguesa() {
                 transition={{ duration: 0.4, ease: "easeOut" }}>
 
                 <div className="h-full w-full 2xs:w-[80%] lg:w-[85%] overflow-hidden 
-                            flex flex-col justify-between border border-white">
+                            flex flex-col justify-between">
                     <Link to="/"
                         className="w-fit p-2  flex flex-row items-center gap-2">
                         <div>
@@ -51,12 +51,12 @@ export default function MenuHamburguesa() {
                     </Link>
 
                     {/*
-                    <div className="border border-white">
+                    <div>
                         <InterNotificaciones />
                     </div>
                     */}
 
-                    <div className="border border-white">
+                    <div>
                         <AdminUsuario />
                     </div>
 
