@@ -10,6 +10,8 @@ import { toggleVerMenuHamburguesa } from "../../store/layoutSlice";
 
 import { HiOutlineBookOpen } from "react-icons/hi";
 
+import InterNotificaciones from "../inter_notificaciones/InterNotificaciones";
+
 import AdminUsuario from "../admin_usuario/AdminUsuario";
 
 export default function MenuHamburguesa() {
@@ -26,7 +28,7 @@ export default function MenuHamburguesa() {
                 onClick={handleVerMenuHamburguesa}></div>
 
             <motion.div
-                className="h-dvh w-[60%] lg:w-[40%] p-2
+                className="h-dvh w-[60%] lg:w-[30%] p-2
                                 fixed inset-0 z-40
                                 bg-white dark:bg-gray-800"
                 initial={{ x: "-100%" }}
@@ -35,20 +37,26 @@ export default function MenuHamburguesa() {
                 transition={{ duration: 0.4, ease: "easeOut" }}>
 
                 <div className="h-full w-full 2xs:w-[80%] lg:w-[85%] overflow-hidden 
-                            flex flex-col justify-between">
+                            flex flex-col justify-between border border-white">
                     <Link to="/"
                         className="w-fit p-2  flex flex-row items-center gap-2">
                         <div>
                             <HiOutlineBookOpen className="text-2xl md:text-3xl  text-black dark:text-white" />
                         </div>
                         <p className="w-full text-left text-base md:text-lg 
-                                    font-bold select-none truncate
+                                    font-bold select-none truncate 
                                     text-black dark:text-white" translate="no">
                             MisNotas360
                         </p>
                     </Link>
 
-                    <div>
+                    {/*
+                    <div className="border border-white">
+                        <InterNotificaciones />
+                    </div>
+                    */}
+
+                    <div className="border border-white">
                         <AdminUsuario />
                     </div>
 

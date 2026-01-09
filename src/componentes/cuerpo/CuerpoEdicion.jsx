@@ -152,6 +152,7 @@ const CuerpoEdicion = forwardRef(({ handleNotaChange, handleNotaKeyDown,
             </AnimatePresence>
 
             <div className="relative p-2">
+                {/*En este div editable es donde se ve la nota*/}
                 <div
                     ref={setRefWithContent}
                     contentEditable={!esModoVistaPrevia}

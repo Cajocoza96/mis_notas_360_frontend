@@ -22,6 +22,8 @@ import { setVerToast, setMensajeToast } from "../../../store/accesoSlice";
 
 import BuscarContenido from "../../../componentes/buscar_contenido/BuscarContenido";
 
+import CompartirContenido from "../../../componentes/compartir_contenido/CompartirContenido";
+
 import { logDesarrollo, errorDesarrollo, registrarError } from "../../../utils/errorHandler";
 
 export default function Cabecera({ esModoVistaPrevia }) {
@@ -147,6 +149,10 @@ export default function Cabecera({ esModoVistaPrevia }) {
 
                     <div className={`${verInputBusqueda ? 'w-full' : ''} flex flex-row items-center gap-5 lg:gap-4`}>
 
+                        {!verInputBusqueda && (
+                            <CompartirContenido />
+                        )}
+
                         <BuscarContenido />
 
                         {!verInputBusqueda && (
@@ -196,7 +202,7 @@ export default function Cabecera({ esModoVistaPrevia }) {
 
                 <div className="w-full p-1 overflow-y-auto 
                                 flex flex-row items-center justify-between">
-                    {/*Esto corresponde al titulo*/}
+                    {/*Esto corresponde al titulo aqui es donde se ve el titulo*/}
                     <p
                         data-campo="titulo-2"
                         className={`text-base md:text-lg truncate
