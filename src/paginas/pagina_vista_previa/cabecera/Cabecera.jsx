@@ -179,7 +179,7 @@ export default function Cabecera({ esModoVistaPrevia }) {
                     </div>
                 </div>
 
-                <div className="p-1 flex flex-row items-center justify-between">
+                <div className="p-1 flex flex-row items-center justify-between select-none">
                     <p className={`text-sm md:text-base 
                             ${esModoVistaPrevia ? 'cursor-default' : ''}
                             
