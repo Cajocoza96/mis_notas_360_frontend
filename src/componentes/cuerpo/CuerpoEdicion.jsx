@@ -16,42 +16,51 @@ const CuerpoEdicion = forwardRef(({ handleNotaChange, handleNotaKeyDown,
     const { isNotaFocused, nota, tareas } = useSelector((state) => state.tareas);
     const verModalTarea = useSelector((state) => state.tareas.verModalTarea);
 
-    // ✅ Determinar si tiene nota directamente desde Redux
     const tieneNota = nota && nota.trim() !== "";
-    const isProcessingRef = useRef(false); // ✅ Prevenir loops infinitos
+    const isProcessingRef = useRef(false);
 
     const { isOnline, justReconnected } = useConexionInternet();
 
-    // Efecto para actualizar el estado automáticamente cuando cambien las tareas
     useEffect(() => {
         dispatch(setEstadoAutomatico());
     }, [tareas, dispatch]);
 
-    // ✅ Sincronizar el ref cuando Redux cambia desde fuera
+    // ✅ Función helper para normalizar solo formato de saltos de línea
+    const normalizarTexto = (texto) => {
+        if (!texto) return '';
+        // Solo normalizar diferentes formatos de saltos de línea a \n
+        return texto
+            .replace(/\r\n/g, '\n')
+            .replace(/\r/g, '\n');
+    };
+
+    // ✅ Sincronizar el ref cuando Redux cambia desde fuera (al cargar desde BD)
     useEffect(() => {
         if (notaRef.current && nota !== undefined && nota !== null) {
             const notaActual = notaRef.current.innerText || "";
+            const notaNormalizada = normalizarTexto(nota);
 
             // Solo actualizar si el contenido es diferente
-            if (notaActual !== nota) {
-                notaRef.current.innerText = nota;
+            if (notaActual !== notaNormalizada) {
+                notaRef.current.innerText = notaNormalizada;
             }
         }
     }, [nota, notaRef]);
 
-    // ✅ Callback ref para inicializar el contenido inmediatamente cuando el ref se crea
+    // ✅ Callback ref para inicializar el contenido
     const setRefWithContent = useCallback((element) => {
         if (element) {
-            // Asignar el ref
             if (typeof notaRef === 'function') {
                 notaRef(element);
             } else if (notaRef) {
                 notaRef.current = element;
             }
 
-            // ✅ Establecer contenido inmediatamente si estamos en modo vista previa
-            if (esModoVistaPrevia && nota && element.innerText !== nota) {
-                element.innerText = nota;
+            if (esModoVistaPrevia && nota) {
+                const notaNormalizada = normalizarTexto(nota);
+                if (element.innerText !== notaNormalizada) {
+                    element.innerText = notaNormalizada;
+                }
             }
         }
     }, [notaRef, esModoVistaPrevia, nota]);
@@ -69,23 +78,21 @@ const CuerpoEdicion = forwardRef(({ handleNotaChange, handleNotaKeyDown,
     };
 
     const handleInputLocal = () => {
-        // ✅ Prevenir llamadas simultáneas
         if (isProcessingRef.current) return;
         isProcessingRef.current = true;
 
         try {
             if (notaRef.current) {
-                // ✅ Obtener el texto limpio
                 let contenido = notaRef.current.innerText;
 
-                // ✅ Si está vacío o solo tiene espacios/saltos de línea, limpiar completamente
+                // Si está vacío o solo tiene espacios/saltos de línea, limpiar completamente
                 if (!contenido || contenido.trim() === '') {
                     notaRef.current.innerText = '';
                     handleNotaChange(notaRef);
                     return;
                 }
 
-                // ✅ Limitar a 50000 caracteres
+                // Limitar a 50000 caracteres
                 if (contenido.length > 50000) {
                     const textoLimitado = contenido.substring(0, 50000);
                     notaRef.current.innerText = textoLimitado;
@@ -102,7 +109,6 @@ const CuerpoEdicion = forwardRef(({ handleNotaChange, handleNotaKeyDown,
 
             handleNotaChange(notaRef);
         } finally {
-            // ✅ Liberar el lock después de un pequeño delay
             setTimeout(() => {
                 isProcessingRef.current = false;
             }, 10);
@@ -116,7 +122,7 @@ const CuerpoEdicion = forwardRef(({ handleNotaChange, handleNotaKeyDown,
         e.preventDefault();
 
         const text = (e.clipboardData || window.clipboardData).getData('text/plain');
-        const textoLimpio = text.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
+        const textoLimpio = normalizarTexto(text);
 
         const contenidoActual = notaRef.current?.innerText || "";
         const selection = window.getSelection();
@@ -196,9 +202,9 @@ const CuerpoEdicion = forwardRef(({ handleNotaChange, handleNotaKeyDown,
                         key={tarea.id}
                         tarea={tarea}
                         esModoVistaPrevia={esModoVistaPrevia}
-                        addToHistoryImmediate={addToHistoryImmediate} // ✅ NUEVO
-                        tituloRef={tituloRef} // ✅ NUEVO
-                        notaRef={notaRef} // ✅ NUEVO
+                        addToHistoryImmediate={addToHistoryImmediate}
+                        tituloRef={tituloRef}
+                        notaRef={notaRef}
                     />
                 ))}
             </div>
