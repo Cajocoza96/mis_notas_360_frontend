@@ -43,12 +43,23 @@ import iconoRestaurar from "../../assets/lottie/procesos_nota/iconoRestaurar.jso
 import iconoCerrarSesion from "../../assets/lottie/procesos_usuario/iconoCerrarSesion.json";
 import iconoEliminarCuenta from "../../assets/lottie/procesos_usuario/iconoEliminarCuenta.json";
 
+import { setVerToast, setMensajeToast } from "../../store/accesoSlice";
 
 import { logDesarrollo, errorDesarrollo, registrarError } from "../../utils/errorHandler";
 
 export default function ModalConfirmacion({ textoPregunta, textoAccion, restaurarTexto,
     eliminarPregunta, eliminarAceptar, animadoCrear, animadoEliminar,
     animadoPapelera, animadoRestaurar, animadoCerrarSesion, animadoEliminarCuenta }) {
+
+    const mostrarToast = (mensaje) => {
+        dispatch(setMensajeToast(mensaje));
+        dispatch(setVerToast(true));
+
+        setTimeout(() => {
+            dispatch(setVerToast(false));
+        }, 3000);
+    };
+
     const location = useLocation();
 
     const { actualizarContadores } = useContadores();
@@ -121,7 +132,7 @@ export default function ModalConfirmacion({ textoPregunta, textoAccion, restaura
 
         if (!anotacionId) {
             errorDesarrollo('No se encontró el ID de la anotación');
-            alert('Error: No se pudo identificar la anotación');
+            mostrarToast('Error: No se pudo identificar la anotación');
             return;
         }
 
@@ -236,7 +247,7 @@ export default function ModalConfirmacion({ textoPregunta, textoAccion, restaura
 
         if (!anotacionId) {
             errorDesarrollo('No se encontró el ID de la anotación');
-            alert('Error: No se pudo identificar la anotación');
+            mostrarToast('Error: No se pudo identificar la anotación');
             return;
         }
 
@@ -292,7 +303,7 @@ export default function ModalConfirmacion({ textoPregunta, textoAccion, restaura
 
         if (!anotacionId) {
             errorDesarrollo('No se encontró el ID de la anotación');
-            alert('Error: No se pudo identificar la anotación');
+            mostrarToast('Error: No se pudo identificar la anotación');
             return;
         }
 

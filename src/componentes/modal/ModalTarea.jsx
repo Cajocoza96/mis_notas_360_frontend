@@ -5,8 +5,20 @@ import { agregarTarea, editarTarea, eliminarTarea, toggleVerModalTarea } from ".
 import useIsMobile from "../../hooks/useIsMobile";
 import { motion } from "framer-motion";
 
+import { setVerToast, setMensajeToast } from "../../store/accesoSlice";
+
 // ✅ NUEVO: Recibir addToHistoryImmediate como prop
 export default function ModalTarea({ addToHistoryImmediate, tituloRef, notaRef }) {
+
+    const mostrarToast = (mensaje) => {
+        dispatch(setMensajeToast(mensaje));
+        dispatch(setVerToast(true));
+
+        setTimeout(() => {
+            dispatch(setVerToast(false));
+        }, 3000);
+    };
+
     const dispatch = useDispatch();
 
     const { modoModal, tareaActual, tareas } = useSelector((state) => state.tareas);
@@ -71,7 +83,7 @@ export default function ModalTarea({ addToHistoryImmediate, tituloRef, notaRef }
         if (addToHistoryImmediate && tituloRef && notaRef) {
             const tituloActual = tituloRef.current?.innerText || titulo || "";
             const notaActual = notaRef.current?.innerText || nota || "";
-            
+
             addToHistoryImmediate({
                 titulo: tituloActual,
                 nota: notaActual,
@@ -83,14 +95,14 @@ export default function ModalTarea({ addToHistoryImmediate, tituloRef, notaRef }
     const handleAgregar = () => {
         if (textoTarea.trim()) {
             if (textoTarea.length > 500) {
-                alert('La tarea solo permite 500 caracteres');
+                mostrarToast('La tarea solo permite 500 caracteres');
                 return;
             }
 
             if (modoModal === 'crear') {
                 // ✅ Calcular el siguiente orden_creacion
-                const siguienteOrdenCreacion = tareas.length > 0 
-                    ? Math.max(...tareas.map(t => t.orden_creacion ?? -1)) + 1 
+                const siguienteOrdenCreacion = tareas.length > 0
+                    ? Math.max(...tareas.map(t => t.orden_creacion ?? -1)) + 1
                     : 0;
 
                 const nuevaTarea = {
@@ -102,28 +114,28 @@ export default function ModalTarea({ addToHistoryImmediate, tituloRef, notaRef }
 
                 // ✅ Crear nuevo array de tareas con la nueva tarea
                 const nuevasTareas = [...tareas, nuevaTarea];
-                
+
                 // ✅ Guardar en historial ANTES de despachar
                 guardarEnHistorial(nuevasTareas);
-                
+
                 // Despachar acción
                 dispatch(agregarTarea(textoTarea));
-                
+
             } else if (modoModal === 'editar' && tareaActual) {
                 // ✅ Crear nuevo array con la tarea editada
-                const nuevasTareas = tareas.map(t => 
-                    t.id === tareaActual.id 
+                const nuevasTareas = tareas.map(t =>
+                    t.id === tareaActual.id
                         ? { ...t, texto: textoTarea }
                         : t
                 );
-                
+
                 // ✅ Guardar en historial ANTES de despachar
                 guardarEnHistorial(nuevasTareas);
-                
+
                 // Despachar acción
                 dispatch(editarTarea({ id: tareaActual.id, texto: textoTarea }));
             }
-            
+
             handleverModalTarea();
         }
     }
@@ -132,10 +144,10 @@ export default function ModalTarea({ addToHistoryImmediate, tituloRef, notaRef }
         if (tareaActual) {
             // ✅ Crear nuevo array sin la tarea eliminada
             const nuevasTareas = tareas.filter(t => t.id !== tareaActual.id);
-            
+
             // ✅ Guardar en historial ANTES de despachar
             guardarEnHistorial(nuevasTareas);
-            
+
             // Despachar acción
             dispatch(eliminarTarea(tareaActual.id));
             handleverModalTarea();
@@ -144,11 +156,11 @@ export default function ModalTarea({ addToHistoryImmediate, tituloRef, notaRef }
 
     const handleInputChange = (e) => {
         const nuevoTexto = e.target.value;
-        
+
         if (nuevoTexto.length <= 500) {
             setTextoTarea(nuevoTexto);
         }
-        
+
         hasInteractedRef.current = true;
     }
 
@@ -178,77 +190,76 @@ export default function ModalTarea({ addToHistoryImmediate, tituloRef, notaRef }
                                     min-h-0
                                     overflow-x-hidden overflow-y-auto">
 
-                    <div className="p-2 flex flex-col">
+                        <div className="p-2 flex flex-col">
 
-                        <div className="flex flex-row justify-end">
-                            <HiX
-                                className="text-xl md:text-2xl
+                            <div className="flex flex-row justify-end">
+                                <HiX
+                                    className="text-xl md:text-2xl
                                 text-black dark:text-white cursor-pointer"
-                                onClick={handleverModalTarea} />
-                        </div>
+                                    onClick={handleverModalTarea} />
+                            </div>
 
-                        <p className="text-center text-base md:text-lg select-none 
+                            <p className="text-center text-base md:text-lg select-none 
                                 text-violet-800 dark:text-white">
-                            Casilla de tarea
-                        </p>
+                                Casilla de tarea
+                            </p>
 
-                        <div className="border-b-3 border-violet-500 p-2">
-                            <input
-                                ref={inputRef}
-                                type="text"
-                                value={textoTarea}
-                                onChange={handleInputChange}
-                                onClick={handleInputInteraction}
-                                onKeyDown={handleInputInteraction}
-                                maxLength={500}
-                                className="w-full text-base md:text-lg
+                            <div className="border-b-3 border-violet-500 p-2">
+                                <input
+                                    ref={inputRef}
+                                    type="text"
+                                    value={textoTarea}
+                                    onChange={handleInputChange}
+                                    onClick={handleInputInteraction}
+                                    onKeyDown={handleInputInteraction}
+                                    maxLength={500}
+                                    className="w-full text-base md:text-lg
                                 border-0 focus:outline-none
                                 text-black dark:text-white"/>
-                        </div>
-
-                    </div>
-
-                    <div className="p-2 w-full bg-violet-950 dark:bg-black select-none
-                                    flex flex-col gap-2">
-                        <div className="flex flex-row items-center justify-around ">
-
-                            {modoModal === 'editar' && (
-                                <>
-                                    <p
-                                        className="text-base md:text-lg text-white cursor-pointer"
-                                        onClick={handleEliminar}>
-                                        Eliminar
-                                    </p>
-                                </>
-                            )}
-
-                            <div className="text-base md:text-lg text-white" onClick={handleAgregar}>
-                                {modoModal === 'editar' && (
-                                    <p className="cursor-pointer">
-                                        Editar
-                                    </p>
-                                )}
-
-                                {modoModal === 'crear' && (
-                                    <p className="cursor-pointer">
-                                        Añadir
-                                    </p>
-                                )}
                             </div>
 
                         </div>
 
-                        <div className="flex flex-col items-center">
-                            <p className={`text-center text-base md:text-lg ${
-                                limiteExcedido 
-                                    ? "text-red-600" 
-                                    : "text-white"
-                            }`}>
-                                {cantTarea}/500
-                            </p>
-                        </div>
+                        <div className="p-2 w-full bg-violet-950 dark:bg-black select-none
+                                    flex flex-col gap-2">
+                            <div className="flex flex-row items-center justify-around ">
 
-                    </div>
+                                {modoModal === 'editar' && (
+                                    <>
+                                        <p
+                                            className="text-base md:text-lg text-white cursor-pointer"
+                                            onClick={handleEliminar}>
+                                            Eliminar
+                                        </p>
+                                    </>
+                                )}
+
+                                <div className="text-base md:text-lg text-white" onClick={handleAgregar}>
+                                    {modoModal === 'editar' && (
+                                        <p className="cursor-pointer">
+                                            Editar
+                                        </p>
+                                    )}
+
+                                    {modoModal === 'crear' && (
+                                        <p className="cursor-pointer">
+                                            Añadir
+                                        </p>
+                                    )}
+                                </div>
+
+                            </div>
+
+                            <div className="flex flex-col items-center">
+                                <p className={`text-center text-base md:text-lg ${limiteExcedido
+                                        ? "text-red-600"
+                                        : "text-white"
+                                    }`}>
+                                    {cantTarea}/500
+                                </p>
+                            </div>
+
+                        </div>
 
                     </div>
 

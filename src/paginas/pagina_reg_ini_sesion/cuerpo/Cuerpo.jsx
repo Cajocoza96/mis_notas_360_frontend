@@ -223,7 +223,7 @@ export default function Cuerpo() {
                     o
                 </p>
 
-                {/* ✅ Botón de Facebook */}
+                {/*  
                 <div className="w-full flex flex-col justify-center items-center">
                     <button
                         onClick={handleFacebookLogin}
@@ -262,8 +262,9 @@ export default function Cuerpo() {
                             Facebook Login requiere HTTPS.
                         </p>
                     )}
-                    */}
                 </div>
+                */}
+                
             </div>
 
             <CorreoContrasena
