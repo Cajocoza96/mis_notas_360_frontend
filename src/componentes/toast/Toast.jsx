@@ -16,7 +16,7 @@ export default function Toast() {
       return (
         <div className="flex flex-col gap-2">
           {mensajes.map((mensaje, index) => (
-            <span key={index} className="text-center text-sm md:text-base font-medium">
+            <span key={index} className="text-center text-sm md:text-base">
               • {mensaje.trim()}{index < mensajes.length - 1 ? '.' : ''}
             </span>
           ))}

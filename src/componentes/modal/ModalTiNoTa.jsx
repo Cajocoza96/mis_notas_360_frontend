@@ -329,6 +329,7 @@ export default function ModalTiNoTa({ tituloRef, notaRef, addToHistoryImmediate 
             dispatch(resetSeccionesSeleccionadas());
             dispatch(setModoIASeleccionado(null));
 
+            /*
             if (modoIASeleccionado === 'correct') {
                 mostrarToast('Corregido exitosamente');
 
@@ -341,6 +342,7 @@ export default function ModalTiNoTa({ tituloRef, notaRef, addToHistoryImmediate 
             } else if (modoIASeleccionado === 'text-to-tasks') {
                 mostrarToast('Tarea extraida exitosamente');
             }
+            */
 
             dispatch(toggleVerModalTiNoTa());
 
