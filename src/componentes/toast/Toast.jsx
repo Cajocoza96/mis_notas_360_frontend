@@ -5,6 +5,29 @@ export default function Toast() {
   const verToast = useSelector((state) => state.acceso.verToast);
   const mensajeToast = useSelector((state) => state.acceso.mensajeToast);
 
+  // ✅ Función para renderizar el mensaje con saltos de línea
+  const renderizarMensaje = () => {
+    if (!mensajeToast) return "Error desconocido";
+
+    // Si el mensaje contiene ". " (punto seguido de espacio), dividirlo
+    if (mensajeToast.includes('. ')) {
+      const mensajes = mensajeToast.split('. ').filter(msg => msg.trim() !== '');
+      
+      return (
+        <div className="flex flex-col gap-2">
+          {mensajes.map((mensaje, index) => (
+            <span key={index} className="text-center text-sm md:text-base font-medium">
+              • {mensaje.trim()}{index < mensajes.length - 1 ? '.' : ''}
+            </span>
+          ))}
+        </div>
+      );
+    }
+
+    // Si no tiene ". ", renderizar normal
+    return mensajeToast;
+  };
+
   return (
     <AnimatePresence>
       {verToast && (
@@ -19,11 +42,9 @@ export default function Toast() {
                     outline outline-gray-300 dark:outline-gray-700
                     text-white dark:text-black px-4 py-3 rounded-md 
                     shadow-xl flex items-center justify-center 
-                    w-[95%] z-90 backdrop-blur-sm"
+                    w-[95%] max-h-[90dvh] z-90 backdrop-blur-sm"
         >
-          <span className="text-center text-sm md:text-base font-medium">
-            {mensajeToast || "Error desconocido"}
-          </span>
+          {renderizarMensaje()}
         </motion.div>
       )}
     </AnimatePresence>
