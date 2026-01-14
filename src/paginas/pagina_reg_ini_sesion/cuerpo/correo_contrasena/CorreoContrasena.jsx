@@ -87,7 +87,7 @@ export default function CorreoContrasena({ textoContrasena, restablecer, noResta
         
         // Validar límite de caracteres
         if (valor.length > LIMITE_USUARIO) {
-            mostrarToast(`El nombre de usuario solo permite ${LIMITE_USUARIO} caracteres`);
+            mostrarToast(`El nombre de usuario solo permite ${LIMITE_USUARIO} carácteres`);
             valor = valor.slice(0, LIMITE_USUARIO);
         }
         
@@ -103,7 +103,7 @@ export default function CorreoContrasena({ textoContrasena, restablecer, noResta
         
         // Validar límite de caracteres
         if (valor.length > LIMITE_CONTRASENA) {
-            mostrarToast(`La contraseña solo permite ${LIMITE_CONTRASENA} caracteres`);
+            mostrarToast(`La contraseña solo permite ${LIMITE_CONTRASENA} carácteres`);
             valor = valor.slice(0, LIMITE_CONTRASENA);
         }
         
@@ -122,7 +122,7 @@ export default function CorreoContrasena({ textoContrasena, restablecer, noResta
         
         // Validar y cortar si excede el límite
         if (textoPegado.length > LIMITE_USUARIO) {
-            mostrarToast(`El nombre de usuario solo permite ${LIMITE_USUARIO} caracteres. Se ha cortado el texto`);
+            mostrarToast(`El nombre de usuario solo permite ${LIMITE_USUARIO} carácteres. Se ha cortado el texto`);
             textoPegado = textoPegado.slice(0, LIMITE_USUARIO);
         }
         
@@ -141,7 +141,7 @@ export default function CorreoContrasena({ textoContrasena, restablecer, noResta
         
         // Validar y cortar si excede el límite
         if (textoPegado.length > LIMITE_CONTRASENA) {
-            mostrarToast(`La contraseña solo permite ${LIMITE_CONTRASENA} caracteres. Se ha cortado el texto`);
+            mostrarToast(`La contraseña solo permite ${LIMITE_CONTRASENA} carácteres. Se ha cortado el texto`);
             textoPegado = textoPegado.slice(0, LIMITE_CONTRASENA);
         }
         
@@ -399,7 +399,7 @@ export default function CorreoContrasena({ textoContrasena, restablecer, noResta
                         </div>
 
                         <div className="text-xs md:text-sm space-y-1">
-                            <RequisitoItem cumple={fortalezaContrasena.requisitos.longitud} texto="Mínimo 8 caracteres" />
+                            <RequisitoItem cumple={fortalezaContrasena.requisitos.longitud} texto="Mínimo 8 carácteres" />
                             <RequisitoItem cumple={fortalezaContrasena.requisitos.minuscula} texto="Una letra minúscula" />
                             <RequisitoItem cumple={fortalezaContrasena.requisitos.mayuscula} texto="Una letra mayúscula" />
                             <RequisitoItem cumple={fortalezaContrasena.requisitos.numero} texto="Un número" />
