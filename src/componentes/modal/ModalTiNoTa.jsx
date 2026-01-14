@@ -66,7 +66,7 @@ export default function ModalTiNoTa({ tituloRef, notaRef, addToHistoryImmediate 
 
         setTimeout(() => {
             dispatch(setVerToast(false));
-        }, 3000);
+        }, 4000);
     };
 
     const handleToggleSeccion = (seccion) => {
@@ -77,12 +77,6 @@ export default function ModalTiNoTa({ tituloRef, notaRef, addToHistoryImmediate 
             return;
 
         }
-
-        /*
-        else if (modoIASeleccionado === 'summarize' && seccion === 'tareas') {
-            return;
-        }
-        */
 
         switch (seccion) {
             case 'titulo':
@@ -286,6 +280,9 @@ export default function ModalTiNoTa({ tituloRef, notaRef, addToHistoryImmediate 
                     // ✅ Mostrar advertencia si hay tareas con problemas
                     if (resultado.hasWarnings) {
                         mostrarToast(resultado.warningMessage);
+                    } else {
+                        // Código 200: Éxito completo
+                        mostrarToast(resultado.successMessage);
                     }
                     break;
 
@@ -296,6 +293,9 @@ export default function ModalTiNoTa({ tituloRef, notaRef, addToHistoryImmediate 
                     // ✅ Mostrar advertencia si hay tareas con problemas
                     if (resultado.hasWarnings) {
                         mostrarToast(resultado.warningMessage);
+                    } else {
+                        // Código 200: Éxito completo
+                        mostrarToast(resultado.successMessage);
                     }
                     break;
 
@@ -306,6 +306,9 @@ export default function ModalTiNoTa({ tituloRef, notaRef, addToHistoryImmediate 
                     // ✅ Mostrar advertencia si hay tareas con problemas
                     if (resultado.hasWarnings) {
                         mostrarToast(resultado.warningMessage);
+                    } else {
+                        // Código 200: Éxito completo
+                        mostrarToast(resultado.successMessage);
                     }
                     break;
 
@@ -317,6 +320,9 @@ export default function ModalTiNoTa({ tituloRef, notaRef, addToHistoryImmediate 
                     // ✅ Mostrar advertencia si hay tareas con problemas
                     if (resultado.hasWarnings) {
                         mostrarToast(resultado.warningMessage);
+                    } else {
+                        // Código 200: Éxito completo
+                        mostrarToast(resultado.successMessage);
                     }
                     break;
 
@@ -328,22 +334,7 @@ export default function ModalTiNoTa({ tituloRef, notaRef, addToHistoryImmediate 
             dispatch(setProcesandoIA(false));
             dispatch(resetSeccionesSeleccionadas());
             dispatch(setModoIASeleccionado(null));
-
-            /*
-            if (modoIASeleccionado === 'correct') {
-                mostrarToast('Corregido exitosamente');
-
-            } else if (modoIASeleccionado === 'improve') {
-                mostrarToast('Redacción mejorada exitosamente');
-
-            } else if (modoIASeleccionado === 'summarize') {
-                mostrarToast('Resumido exitosamente');
-
-            } else if (modoIASeleccionado === 'text-to-tasks') {
-                mostrarToast('Tarea extraida exitosamente');
-            }
-            */
-
+            
             dispatch(toggleVerModalTiNoTa());
 
         } catch (error) {

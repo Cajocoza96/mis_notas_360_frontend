@@ -73,7 +73,7 @@ export default function ModalTarea({ addToHistoryImmediate, tituloRef, notaRef }
 
     const handleverModalTarea = () => {
         dispatch(toggleVerModalTarea());
-        setTextoTarea("");
+        //setTextoTarea("");
         hasInteractedRef.current = false;
         initialSetupDoneRef.current = false;
     }

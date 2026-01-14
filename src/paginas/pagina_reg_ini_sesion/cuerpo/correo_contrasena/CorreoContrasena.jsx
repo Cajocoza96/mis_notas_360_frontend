@@ -449,7 +449,7 @@ export default function CorreoContrasena({ textoContrasena, restablecer, noResta
                     </div>
 
                     <p className="text-sm text-gray-600 dark:text-gray-400 text-center">
-                        Esta opción solo aplica para cuentas locales. Las cuentas de Google y Facebook no pueden usar este método.
+                        Esta opción solo aplica para cuentas locales. Las cuentas de Google no pueden usar este método.
                     </p>
                 </>
             )}

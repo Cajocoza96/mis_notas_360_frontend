@@ -94,7 +94,8 @@ export const corregirTexto = async (titulo, nota, tareas) => {
             return {
                 ...data,
                 success: true,
-                hasWarnings: false
+                hasWarnings: false,
+                successMessage: data.mensaje // ✅ Mensaje de éxito
             };
         }
 
@@ -144,7 +145,8 @@ export const mejorarRedaccion = async (titulo, nota, tareas) => {
             return {
                 ...data,
                 success: true,
-                hasWarnings: false
+                hasWarnings: false,
+                successMessage: data.mensaje // ✅ Mensaje de éxito
             };
         }
 
@@ -194,7 +196,8 @@ export const resumirTexto = async (titulo, nota, tareas) => {
             return {
                 ...data,
                 success: true,
-                hasWarnings: false
+                hasWarnings: false,
+                successMessage: data.mensaje // ✅ Mensaje de éxito
             };
         }
 
@@ -244,7 +247,8 @@ export const convertirTextoATareas = async (titulo, nota, tareas) => {
             return {
                 ...data,
                 success: true,
-                hasWarnings: false
+                hasWarnings: false,
+                successMessage: data.mensaje // ✅ Mensaje de éxito
             };
         }
 
@@ -274,11 +278,13 @@ export const generarContenido = async (prompt) => {
 
         const data = await response.json();
 
+        // ✅ Éxito completo (código 200)
         if (response.ok) {
             logDesarrollo('✅ Contenido generado exitosamente');
             return {
                 ...data,
-                success: true
+                success: true,
+                successMessage: data.mensaje // ✅ Mensaje de éxito
             };
         }
 

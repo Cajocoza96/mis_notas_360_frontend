@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react"; 
+import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { setVerToast, setMensajeToast, toggleVerModalRestablecerContrasena } from "../../../store/accesoSlice";
@@ -264,8 +264,14 @@ export default function Cuerpo() {
                     )}
                 </div>
                 */}
-                
+
             </div>
+
+            <p className="w-full text-center text-base md:text-lg 
+                            select-none
+                        text-black dark:text-white">
+                ¿No quieres usar Google? <span>{esRegistro ? 'Regístrate con usuario y contraseña' : 'Inicia sesión con usuario y contraseña'}</span> 
+            </p>
 
             <CorreoContrasena
                 textoContrasena="Contraseña"

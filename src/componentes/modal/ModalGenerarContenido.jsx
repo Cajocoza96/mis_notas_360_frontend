@@ -52,7 +52,7 @@ export default function ModalGenerarContenido({ tituloRef, notaRef, addToHistory
 
     const handleCancelar = () => {
         if (procesandoIA) return;
-        setPromptUsuario("");
+        //setPromptUsuario("");
         dispatch(setVerModalGenerarContenido(false));
     };
 
@@ -155,7 +155,7 @@ export default function ModalGenerarContenido({ tituloRef, notaRef, addToHistory
                     }, 100);
                 }
 
-                mostrarToast('Contenido generado exitosamente');
+                mostrarToast(resultado.successMessage);
                 setPromptUsuario("");
                 dispatch(setVerModalGenerarContenido(false));
             }
