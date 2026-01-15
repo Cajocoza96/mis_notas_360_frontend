@@ -20,6 +20,7 @@ import PaginaInfoUsuario from "../paginas/pagina_info_usuario/PaginaInfoUsuario"
 import PaginaRegIniSesion from "../paginas/pagina_reg_ini_sesion/PaginaRegIniSesion";
 import PaginaTerminosPoliticas from "../paginas/pagina_terminos_politicas/PaginaTerminosPoliticas";
 import PaginaErrorNotaNoEncontrada from "../paginas/pagina_error_nota_no_encontrada/PaginaErrorNotaNoEncontrada";
+import PaginaIntro from "../paginas/pagina_intro/PaginaIntro";
 
 // Componentes
 import RutaProtegida from "./RutaProtegida";
@@ -44,6 +45,16 @@ export default function Rutas() {
 
     return (
         <Routes location={location} key={location.pathname}>
+
+            <Route
+                path="/pagina-intro"
+                element={
+                    <PageTransition>
+                        <PaginaIntro />
+                    </PageTransition>
+                }
+            />
+
             <Route
                 path="/"
                 element={

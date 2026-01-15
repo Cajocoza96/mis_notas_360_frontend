@@ -133,7 +133,10 @@ export default function PaginaBienvenida() {
                     </div>
 
                     <p className="text-base md:text-lg text-white/80 text-center">
-                        Organiza tus ideas, captura tus pensamientos, sincroniza en todos tus dispositivos
+                        Organiza tus ideas, captura tus pensamientos y potencia tu productividad con IA.
+                    </p>
+                    <p className="text-base md:text-lg text-white/80 text-center">
+                        Todo sincronizado en un solo lugar.
                     </p>
                 </div>
 
