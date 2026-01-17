@@ -22,11 +22,15 @@ import CargandoNoHayNada from "../../componentes/cargando_no_hay_nada/CargandoNo
 
 import { useNavigate } from "react-router-dom";
 
+import useConexionInternet from "../../hooks/useConexionInternet";
+
 import Toast from "../../componentes/toast/Toast";
 
 export default function PaginaInfoUsuario() {
     const dispatch = useDispatch();
     const { usuario, cargando } = useAuth();
+
+    const { isOnline } = useConexionInternet();
 
     const verModalEliminarUsuario = useSelector((state) => state.acceso.verModalEliminarUsuario);
 
@@ -36,9 +40,18 @@ export default function PaginaInfoUsuario() {
 
     const navigate = useNavigate();
 
-    const handleIrTerminosPoliticas = () => navigate("/terminos-de-servicio");
+    const handleIrTerminosPoliticas = () => {
+        if (!isOnline) {
+            return;
+        }
+        navigate("/terminos-de-servicio");
+    }
 
     const handleEliminarCuenta = () => {
+        if (!isOnline) {
+            return;
+        }
+
         if (verMenuHamburguesa) {
             dispatch(toggleVerMenuHamburguesa());
         }
@@ -46,6 +59,10 @@ export default function PaginaInfoUsuario() {
     };
 
     const handleCerrarSesion = () => {
+        if (!isOnline) {
+            return;
+        }
+
         if (verMenuHamburguesa) {
             dispatch(toggleVerMenuHamburguesa());
         }
@@ -157,10 +174,11 @@ export default function PaginaInfoUsuario() {
 
                     <ContIconoInfoUsua
                         onClick={handleIrTerminosPoliticas}
-                        className="text-black dark:text-white cursor-pointer
+                        className={`text-black dark:text-white 
+                            ${!isOnline ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
                             hover:bg-gray-300 active:bg-gray-300
                             dark:hover:bg-gray-700 dark:active:bg-gray-700
-                            rounded-md transition-colors duration-200"
+                            rounded-md transition-colors duration-200`}
                         iconoInfoUsua={<HiOutlineInformationCircle />}
                         titulo="Acerca de"
                     />
@@ -168,10 +186,11 @@ export default function PaginaInfoUsuario() {
                     {/*Eliminar cuenta*/}
                     <ContIconoInfoUsua
                         onClick={handleEliminarCuenta}
-                        className="text-red-600 cursor-pointer 
+                        className={`text-red-600
+                            ${!isOnline ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
                             hover:bg-red-200 active:bg-red-200
                             dark:hover:bg-red-900/30 dark:active:bg-red-900/30
-                            rounded-md transition-colors duration-200"
+                            rounded-md transition-colors duration-200`}
                         iconoInfoUsua={<HiOutlineExclamationCircle />}
                         titulo="Eliminar cuenta"
                     />
@@ -180,10 +199,11 @@ export default function PaginaInfoUsuario() {
                     {/* Cerrar sesión */}
                     <ContIconoInfoUsua
                         onClick={handleCerrarSesion}
-                        className="text-red-600 cursor-pointer 
+                        className={`text-red-600
+                            ${!isOnline ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
                             hover:bg-red-200 active:bg-red-200
                             dark:hover:bg-red-900/30 dark:active:bg-red-900/30
-                            rounded-md transition-colors duration-200"
+                            rounded-md transition-colors duration-200`}
                         iconoInfoUsua={<HiOutlineLogout />}
                         titulo="Cerrar sesión"
                     />

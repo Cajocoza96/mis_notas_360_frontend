@@ -96,7 +96,7 @@ export default function Footer() {
                 </div>
 
                 <div className={`w-full h-full p-1 active:bg-gray-300 dark:active:bg-gray-600
-                                rounded-sm  ${!isOnline ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
+                                rounded-sm ${!isOnline ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
                                 flex items-center justify-center`}
                     onClick={handleVerModalCrearNota}>
                     <div className="bg-violet-800 rounded-[50%] p-2

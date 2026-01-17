@@ -2,11 +2,11 @@ import React, { useCallback } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { toggleVerMenuHamburguesa } from "../../store/layoutSlice";
 import { motion } from "framer-motion";
-import Particles from "react-tsparticles";
-import { loadSlim } from "tsparticles-slim";
 import { HiOutlineBookOpen } from "react-icons/hi";
 import { useNavigate } from "react-router-dom";
 import BotonAccion from "../../componentes/botones/BotonAccion";
+import Particles from "react-tsparticles";
+import { loadSlim } from "tsparticles-slim";
 
 import Toast from "../../componentes/toast/Toast";
 
@@ -133,7 +133,8 @@ export default function PaginaBienvenida() {
                     </div>
 
                     <p className="text-base md:text-lg text-white/80 text-center">
-                        Organiza tus ideas, captura tus pensamientos y potencia tu productividad con IA.
+                        Organiza tus ideas, captura tus pensamientos y potencia tu productividad con IA para corregir, mejorar, resumir y
+                        generar contenido fácilmente.
                     </p>
                     <p className="text-base md:text-lg text-white/80 text-center">
                         Todo sincronizado en un solo lugar.

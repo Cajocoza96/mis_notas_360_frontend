@@ -5,7 +5,7 @@ import { createRoot } from 'react-dom/client';
 import { Provider } from 'react-redux';
 import { store } from './store/store.js';
 import { GoogleOAuthProvider } from '@react-oauth/google';
-import AuthInitializer from './componentes/cargando_no_hay_nada/AuthInitializer.jsx'; 
+import AuthInitializer from './componentes/cargando_no_hay_nada/AuthInitializer.jsx';
 
 import './index.css';
 import App from './App.jsx';

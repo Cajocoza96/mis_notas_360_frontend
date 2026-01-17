@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
-import { useDispatch } from "react-redux";
-import { Routes, Route, useLocation } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { Routes, Route, useLocation, Navigate } from "react-router-dom";
 
 // Para resetear los estados redux cuando se regrese o adelante en la página
 import { resetAllLayoutState } from "../store/layoutSlice";
@@ -25,6 +25,8 @@ import PaginaIntro from "../paginas/pagina_intro/PaginaIntro";
 // Componentes
 import RutaProtegida from "./RutaProtegida";
 import RutaPublica from "./RutaPublica";
+import RutaIntro from "./RutaIntro";
+import RutaPrincipal from "./RutaPrincipal";
 import PageTransition from "./PageTransition";
 
 import useConexionInternet from "../hooks/useConexionInternet";
@@ -49,18 +51,27 @@ export default function Rutas() {
             <Route
                 path="/pagina-intro"
                 element={
-                    <PageTransition>
-                        <PaginaIntro />
-                    </PageTransition>
+                    <RutaProtegida>
+                        <RutaIntro>
+                            <PageTransition>
+                                <PaginaIntro />
+                            </PageTransition>
+                        </RutaIntro>
+                    </RutaProtegida>
                 }
             />
 
+            {/* Ruta principal - segunda vez en adelante */}
             <Route
                 path="/"
                 element={
-                    <PageTransition>
-                        <PaginaBienvenida />
-                    </PageTransition>
+                    <RutaProtegida>
+                        <RutaPrincipal>
+                            <PageTransition>
+                                <PaginaBienvenida />
+                            </PageTransition>
+                        </RutaPrincipal>
+                    </RutaProtegida>
                 }
             />
 

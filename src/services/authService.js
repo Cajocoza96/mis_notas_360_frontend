@@ -392,6 +392,35 @@ export const restablecerContrasena = async (nombreUsuario, nuevaContrasena) => {
     }
 };
 
+// Marcar que el usuario vio la página de introducción
+export const marcarBienvenidaVista = async () => {
+    try {
+        const response = await fetchConAuth(
+            `${API_URL}/auth/marcar-bienvenida-vista`,
+            {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+            },
+            TIMEOUTS.NORMAL
+        );
+
+        const data = await manejarRespuestaAuth(response);
+        
+        // Actualizar en localStorage
+        const usuario = obtenerUsuarioActual();
+        if (usuario) {
+            usuario.vioBienvenida = true;
+            localStorage.setItem('usuario', JSON.stringify(usuario));
+        }
+        
+        logDesarrollo('✅ Bienvenida marcada como vista');
+        return data;
+    } catch (error) {
+        errorDesarrollo('❌ Error al marcar bienvenida vista:', error);
+        throw error;
+    }
+};
+
 // ===============================
 // ✅ FUNCIÓN PARA PETICIONES AUTENTICADAS
 // ===============================
