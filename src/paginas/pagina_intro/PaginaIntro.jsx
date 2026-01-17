@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import BotonAccion from "../../componentes/botones/BotonAccion";
 import { HiOutlineBookOpen, HiHand } from "react-icons/hi";
 import { useSelector } from "react-redux";
@@ -34,6 +34,22 @@ export default function PaginaIntro() {
 
     const verToast = useSelector((state) => state.acceso.verToast);
 
+    // ✅ Bloquear navegación hacia atrás
+    useEffect(() => {
+        const handlePopState = (e) => {
+            e.preventDefault();
+            // Forzar a quedarse en pagina-intro
+            navigate('/pagina-intro', { replace: true });
+        };
+
+        window.history.pushState(null, '', window.location.href);
+        window.addEventListener('popstate', handlePopState);
+
+        return () => {
+            window.removeEventListener('popstate', handlePopState);
+        };
+    }, [navigate]);
+
     const handleContinuar = async () => {
         if (!isOnline || procesando) {
             return;
@@ -54,65 +70,6 @@ export default function PaginaIntro() {
         }
     };
 
-    /*
-    const particlesInit = async (engine) => {
-        await loadSlim(engine);
-    };
-    */
-
-    /*
-    const particlesOptions = useMemo(
-        () => ({
-            background: {
-                color: {
-                    value: "transparent",
-                },
-            },
-            fpsLimit: 120,
-            particles: {
-                color: {
-                    value: "#8b5cf6",
-                },
-                links: {
-                    color: "#8b5cf6",
-                    distance: 150,
-                    enable: true,
-                    opacity: 0.3,
-                    width: 1,
-                },
-                move: {
-                    direction: "none",
-                    enable: true,
-                    outModes: {
-                        default: "bounce",
-                    },
-                    random: false,
-                    speed: 1,
-                    straight: false,
-                },
-                number: {
-                    density: {
-                        enable: true,
-                        area: 800,
-                    },
-                    value: 80,
-                },
-                opacity: {
-                    value: 0.5,
-                },
-                shape: {
-                    type: "circle",
-                },
-                size: {
-                    value: { min: 1, max: 3 },
-                },
-            },
-            detectRetina: true,
-        }),
-        []
-    );
-    */
-
     return (
         <div key="pagina-intro-wrapper" className="relative h-dvh bg-gradient-to-br from-violet-50 via-purple-50 to-indigo-100 
                         dark:from-gray-900 dark:via-purple-900 dark:to-violet-900
@@ -123,15 +80,6 @@ export default function PaginaIntro() {
             {verToast && (
                 <Toast />
             )}
-
-            {/* Fondo de partículas 
-            <Particles
-                id="tsparticles"
-                init={particlesInit}
-                options={particlesOptions}
-                className="absolute inset-0"
-            />
-            */}
 
             <Particles
                 id="tsparticles"
@@ -269,10 +217,15 @@ export default function PaginaIntro() {
 
                     <div className="flex flex-row items-center justify-center gap-4">
 
-                        <div className="w-[45%] 2xs:w-[30%] lg:w-[25%] flex items-center justify-center">
+                        <motion.div
+                            initial={{ opacity: 0, scale: 0.8 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            transition={{ delay: 0.5, duration: 0.4 }}
+                            className="w-[45%] 2xs:w-[30%] lg:w-[25%] 
+                                        flex items-center justify-center">
                             <Lottie className="w-full object-cover"
                                 animationData={modalIntro} loop={true} />
-                        </div>
+                        </motion.div>
 
                         <motion.div
                             key="button-animation"

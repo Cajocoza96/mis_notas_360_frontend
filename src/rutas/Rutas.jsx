@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { Routes, Route, useLocation, Navigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { Routes, Route, useLocation } from "react-router-dom";
 
 // Para resetear los estados redux cuando se regrese o adelante en la página
 import { resetAllLayoutState } from "../store/layoutSlice";
@@ -27,6 +27,7 @@ import RutaProtegida from "./RutaProtegida";
 import RutaPublica from "./RutaPublica";
 import RutaIntro from "./RutaIntro";
 import RutaPrincipal from "./RutaPrincipal";
+import RequiereBienvenida from "./RequiereBienvenida";
 import PageTransition from "./PageTransition";
 
 import useConexionInternet from "../hooks/useConexionInternet";
@@ -66,11 +67,13 @@ export default function Rutas() {
                 path="/"
                 element={
                     <RutaProtegida>
-                        <RutaPrincipal>
-                            <PageTransition>
-                                <PaginaBienvenida />
-                            </PageTransition>
-                        </RutaPrincipal>
+                        <RequiereBienvenida>
+                            <RutaPrincipal>
+                                <PageTransition>
+                                    <PaginaBienvenida />
+                                </PageTransition>
+                            </RutaPrincipal>
+                        </RequiereBienvenida>
                     </RutaProtegida>
                 }
             />
@@ -79,9 +82,11 @@ export default function Rutas() {
                 path="/panel-principal"
                 element={
                     <RutaProtegida>
-                        <PageTransition>
-                            <PanelPrincipal />
-                        </PageTransition>
+                        <RequiereBienvenida>
+                            <PageTransition>
+                                <PanelPrincipal />
+                            </PageTransition>
+                        </RequiereBienvenida>
                     </RutaProtegida>
                 }
             />
@@ -90,9 +95,11 @@ export default function Rutas() {
                 path="/agregar-nota"
                 element={
                     <RutaProtegida>
-                        <PageTransition>
-                            <PaginaCrearEditNota />
-                        </PageTransition>
+                        <RequiereBienvenida>
+                            <PageTransition>
+                                <PaginaCrearEditNota />
+                            </PageTransition>
+                        </RequiereBienvenida>
                     </RutaProtegida>
                 }
             />
@@ -101,9 +108,11 @@ export default function Rutas() {
                 path="/vista-previa/nota/:id"
                 element={
                     <RutaProtegida>
-                        <PageTransition>
-                            <PaginaVistaPrevia />
-                        </PageTransition>
+                        <RequiereBienvenida>
+                            <PageTransition>
+                                <PaginaVistaPrevia />
+                            </PageTransition>
+                        </RequiereBienvenida>
                     </RutaProtegida>
                 }
             />
@@ -112,9 +121,11 @@ export default function Rutas() {
                 path="/editar/nota/:id"
                 element={
                     <RutaProtegida>
-                        <PageTransition>
-                            <PaginaCrearEditNota />
-                        </PageTransition>
+                        <RequiereBienvenida>
+                            <PageTransition>
+                                <PaginaCrearEditNota />
+                            </PageTransition>
+                        </RequiereBienvenida>
                     </RutaProtegida>
                 }
             />
@@ -123,9 +134,11 @@ export default function Rutas() {
                 path="/buscar"
                 element={
                     <RutaProtegida>
-                        <PageTransition>
-                            <PaginaBuscar />
-                        </PageTransition>
+                        <RequiereBienvenida>
+                            <PageTransition>
+                                <PaginaBuscar />
+                            </PageTransition>
+                        </RequiereBienvenida>
                     </RutaProtegida>
                 }
             />
@@ -134,9 +147,11 @@ export default function Rutas() {
                 path="/papelera"
                 element={
                     <RutaProtegida>
-                        <PageTransition>
-                            <PaginaPapelera />
-                        </PageTransition>
+                        <RequiereBienvenida>
+                            <PageTransition>
+                                <PaginaPapelera />
+                            </PageTransition>
+                        </RequiereBienvenida>
                     </RutaProtegida>
                 }
             />
@@ -145,9 +160,11 @@ export default function Rutas() {
                 path="/estados"
                 element={
                     <RutaProtegida>
-                        <PageTransition>
-                            <PaginaEstado />
-                        </PageTransition>
+                        <RequiereBienvenida>
+                            <PageTransition>
+                                <PaginaEstado />
+                            </PageTransition>
+                        </RequiereBienvenida>
                     </RutaProtegida>
                 }
             />
@@ -156,9 +173,11 @@ export default function Rutas() {
                 path="/informacion-usuario"
                 element={
                     <RutaProtegida>
-                        <PageTransition>
-                            <PaginaInfoUsuario />
-                        </PageTransition>
+                        <RequiereBienvenida>
+                            <PageTransition>
+                                <PaginaInfoUsuario />
+                            </PageTransition>
+                        </RequiereBienvenida>
                     </RutaProtegida>
                 }
             />
@@ -215,9 +234,13 @@ export default function Rutas() {
             <Route
                 path="/nota-no-encontrada"
                 element={
-                    <PageTransition>
-                        <PaginaErrorNotaNoEncontrada />
-                    </PageTransition>
+                    <RutaProtegida>
+                        <RequiereBienvenida>
+                            <PageTransition>
+                                <PaginaErrorNotaNoEncontrada />
+                            </PageTransition>
+                        </RequiereBienvenida>
+                    </RutaProtegida>
                 }
             />
 
