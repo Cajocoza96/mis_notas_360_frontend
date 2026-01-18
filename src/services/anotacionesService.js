@@ -14,43 +14,43 @@ const procesarError = (error, mensajeGenerico) => {
     if (error.message === 'RATE_LIMIT_SESSION_CLOSED') {
         throw error; // Propagar sin modificar
     }
-    
+
     // 2️⃣ Si es rate limit específico (favoritos, crear, editar)
     // El error ya tiene el mensaje del backend desde fetchConAuth
     if (error.message && (
-        error.message.includes('Límite') || 
+        error.message.includes('Límite') ||
         error.message.includes('límite') ||
         error.message.includes('Rate limit')
     )) {
         // ✅ Mostrar en consola para debugging
         errorDesarrollo('🚫 Rate Limit:', error.message);
         logDesarrollo('📛 Error de rate limit detectado');
-        
+
         // ✅ Crear error con código para que Cabecera lo detecte
         const rateLimitError = new Error(error.message);
         rateLimitError.code = 'RATE_LIMIT_EXCEEDED';
         rateLimitError.status = 429;
         throw rateLimitError;
     }
-    
+
     // 3️⃣ Para otros errores de sesión
     if (error.message && (
-        error.message.includes('sesión') || 
+        error.message.includes('sesión') ||
         error.message.includes('Sesión')
     )) {
         throw error; // Ya manejado en authService
     }
-    
+
     // 4️⃣ Otros errores - usar mensaje genérico
     if (import.meta.env.MODE === 'development') {
         errorDesarrollo(`❌ Error: ${error.message}`);
     }
-    
+
     // Si el error no tiene un mensaje útil, usar el genérico
     if (!error.message || error.message === 'Failed to fetch') {
         error.message = mensajeGenerico;
     }
-    
+
     throw error;
 };
 
@@ -386,7 +386,21 @@ export const obtenerAnotacionPorId = async (id) => {
         return data.anotacion;
     } catch (error) {
         registrarError('obtenerAnotacionPorId', error);
+
+        // ✅ CRÍTICO: Si el error indica que la nota no fue encontrada (404)
+        if (error.message?.includes('404') ||
+            error.message?.toLowerCase().includes('no encontrada') ||
+            error.message?.toLowerCase().includes('not found')) {
+            logDesarrollo('❌ Nota no encontrada (404)');
+            return null; // ← Retornar null para notas inexistentes
+        }
+
+        // ✅ Para cualquier otro error (conexión, servidor, etc.)
         procesarError(error, 'Error al obtener notas por id');
+        // ❌ procesarError lanza el error, pero necesitas propagarlo explícitamente
+        // Como procesarError ya hace throw, técnicamente no llegas aquí,
+        // pero por claridad del código es bueno agregarlo:
+        throw error; // ← Esto asegura que el error se propague
     }
 };
 

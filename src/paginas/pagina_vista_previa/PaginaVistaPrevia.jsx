@@ -55,6 +55,8 @@ export default function PaginaVistaPrevia() {
     const [cargando, setCargando] = useState(true);
     // ✅ Estado para controlar si hubo error
     const [errorCarga, setErrorCarga] = useState(false);
+    // ✅ NUEVO: Estado para identificar si la nota no existe (404)
+    const [notaNoEncontrada, setNotaNoEncontrada] = useState(false);
 
     const { isOnline, justReconnected, resetReconnectionState } = useConexionInternet();
 
@@ -78,21 +80,12 @@ export default function PaginaVistaPrevia() {
     useEffect(() => {
         // Si estaba sin conexión y ahora hay conexión, reintentar carga
         // También reintenta si hubo error previo
-        if (isOnline && (cargando || errorCarga) && id && esModoVistaPrevia) {
+        if (isOnline && (cargando || errorCarga) && id && esModoVistaPrevia && !notaNoEncontrada) {
             cargarAnotacion();
         }
-    }, [isOnline, cargando, errorCarga, id, esModoVistaPrevia]);
+    }, [isOnline, cargando, errorCarga, id, esModoVistaPrevia, notaNoEncontrada]);
 
     const cargarAnotacion = async () => {
-        /*
-        // ✅ CRÍTICO: Si no hay conexión, no intentar cargar
-        if (!isOnline) {
-            setCargando(true);
-            setErrorCarga(false);
-            return;
-        }
-        */
-
         try {
             setCargando(true);
 
@@ -105,6 +98,7 @@ export default function PaginaVistaPrevia() {
             // ✅ VALIDACIÓN: Si no existe, redirigir ANTES de actualizar estados
             if (!anotacion || !anotacion.id) {
                 errorDesarrollo('❌ Anotación no encontrada');
+                setNotaNoEncontrada(true); // ✅ Marcar como no encontrada
                 navigate('/nota-no-encontrada', { replace: true });
                 return;
             }
@@ -133,14 +127,17 @@ export default function PaginaVistaPrevia() {
             setCargando(false);
         } catch (error) {
             errorDesarrollo('Error al cargar la anotación para vista previa:', error);
-            setCargando(false);
-            setErrorCarga(true);
-        } /*finally {
-            // ✅ IMPORTANTE: Solo desactivar carga si hubo éxito
-            if (isOnline) {
+            
+            // ✅ CRÍTICO: Verificar si es un error 404 (nota no encontrada)
+            if (error?.response?.status === 404 || error?.status === 404) {
+                setNotaNoEncontrada(true);
+                navigate('/nota-no-encontrada', { replace: true });
+            } else {
+                // Es un error de conexión u otro tipo de error, permitir reintentos
                 setCargando(false);
+                setErrorCarga(true);
             }
-        }*/
+        }
     }
 
     // Sincronizar estados con Redux (solo si NO estamos en modo vista previa)
@@ -160,7 +157,8 @@ export default function PaginaVistaPrevia() {
 
     // En caso de error y online volver a cargar
     useEffect(() => {
-        if (errorCarga && isOnline) {
+        // ✅ CRÍTICO: No reintentar si la nota no fue encontrada
+        if (errorCarga && isOnline && !notaNoEncontrada) {
             // ✅ Ejecutar reintento inteligente
             ejecutarConReintento(
                 cargarAnotacion,
@@ -177,7 +175,7 @@ export default function PaginaVistaPrevia() {
 
     // ✅ SOLUCIÓN: Efecto para recargar cuando se restablece la conexión
     useEffect(() => {
-        if (justReconnected && id && esModoVistaPrevia) {
+        if (justReconnected && id && esModoVistaPrevia && !notaNoEncontrada) {
             // ✅ CRÍTICO: Forzar estado de carga inmediatamente
             // Esto evita el parpadeo de "sin título"
             setCargando(true);
@@ -204,6 +202,7 @@ export default function PaginaVistaPrevia() {
     // ✅ Efecto para resetear intentos al cambiar de ruta
     useEffect(() => {
         resetearIntentos();
+        setNotaNoEncontrada(false); // ✅ Resetear estado al cambiar de ruta
     }, [location.pathname]);
 
     // ✅ Limpiar timeouts al desmontar
