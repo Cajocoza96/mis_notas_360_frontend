@@ -48,6 +48,15 @@ export default function PaginaVistaPrevia() {
     const location = useLocation();
     const navigate = useNavigate();
 
+    useEffect(() => {
+        if (id && (isNaN(id) || !Number.isInteger(Number(id) || Number(id) <= 0))) {
+            errorDesarrollo("Id invalido", id);
+            navigate('/nota-no-encontrada', { replace: true });
+            return;
+        }
+    }, [id, navigate]);
+
+
     const dispatch = useDispatch();
     const notaRef = useRef(null);
 
@@ -83,7 +92,7 @@ export default function PaginaVistaPrevia() {
         if (isOnline && (cargando || errorCarga) && id && esModoVistaPrevia && !notaNoEncontrada) {
             cargarAnotacion();
         }
-    }, [isOnline, cargando, errorCarga, id, esModoVistaPrevia, notaNoEncontrada]);
+    }, [isOnline, cargando, errorCarga, id, esModoVistaPrevia, !notaNoEncontrada]);
 
     const cargarAnotacion = async () => {
         try {
@@ -127,7 +136,7 @@ export default function PaginaVistaPrevia() {
             setCargando(false);
         } catch (error) {
             errorDesarrollo('Error al cargar la anotación para vista previa:', error);
-            
+
             // ✅ CRÍTICO: Verificar si es un error 404 (nota no encontrada)
             if (error?.response?.status === 404 || error?.status === 404) {
                 setNotaNoEncontrada(true);
@@ -251,7 +260,7 @@ export default function PaginaVistaPrevia() {
         }
 
         // Si está cargando con conexión, mostrar skeleton
-        if (cargando && isOnline) {
+        if (cargando && isOnline && !errorCarga) {
             return <SkeletonCrearEditPrevia />;
         }
 

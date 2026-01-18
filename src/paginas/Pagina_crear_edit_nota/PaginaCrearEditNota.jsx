@@ -63,6 +63,14 @@ export default function PaginaCrearEditNota() {
 
     const navigate = useNavigate();
 
+    useEffect(() => {
+        if (id && (isNaN(id) || !Number.isInteger(Number(id) || Number(id) <= 0))) {
+            errorDesarrollo("Id invalido", id);
+            navigate('/nota-no-encontrada', { replace: true });
+            return;
+        }
+    }, [id, navigate]);
+
     // ✅ Estado para controlar si la anotación fue validada
     const [anotacionValidada, setAnotacionValidada] = useState(false);
 
@@ -74,6 +82,8 @@ export default function PaginaCrearEditNota() {
 
     // ✅ NUEVO: Estado para controlar errores de carga
     const [errorCarga, setErrorCarga] = useState(false);
+
+    const [notaNoEncontrada, setNotaNoEncontrada] = useState(false);
 
     const { isOnline, justReconnected, resetReconnectionState } = useConexionInternet();
 
@@ -124,6 +134,7 @@ export default function PaginaCrearEditNota() {
                 errorDesarrollo('❌ Modo edición sin ID');
                 setCargando(false);
                 setErrorCarga(false);
+                setNotaNoEncontrada(true);
                 navigate('/nota-no-encontrada', { replace: true });
                 return;
             }
@@ -144,11 +155,16 @@ export default function PaginaCrearEditNota() {
                 const anotacion = await obtenerAnotacionPorId(id);
 
                 // ✅ VALIDACIÓN: Si no existe, redirigir ANTES de actualizar estados
-                if (!anotacion || !anotacion.id) {
-                    errorDesarrollo('❌ Anotación no encontrada');
+                if (anotacion === undefined || anotacion === null || !anotacion || !anotacion.id) {
+                    errorDesarrollo('❌ Anotación no encontrada (retornó null/undefined)');
+                    setNotaNoEncontrada(true);
+                    setCargando(false);
+                    setErrorCarga(false); // ← No es error de carga, es nota inexistente
                     navigate('/nota-no-encontrada', { replace: true });
                     return;
                 }
+
+                resetearIntentos(); // ✅ Resetear intentos SOLO si hay éxito
 
                 logDesarrollo('✅ Anotación obtenida:', anotacion);
 
@@ -179,23 +195,21 @@ export default function PaginaCrearEditNota() {
                 setAnotacionCargada(anotacion);
                 setAnotacionValidada(true);
                 setErrorCarga(false);
-                resetearIntentos(); // ✅ Resetear intentos en éxito
                 setCargando(false);
             } catch (error) {
                 errorDesarrollo('❌ Error al cargar la anotación:', error);
-                setCargando(false);
-                setErrorCarga(true);
-
-                // ✅ Ejecutar reintento inteligente
-                ejecutarConReintento(
-                    cargarDatos,
-                    isOnline,
-                    (mensaje) => {
-                        setErrorCarga(true);
-                        errorDesarrollo(mensaje);
-                    }
-                );
-
+                // ✅ CRÍTICO: Verificar si es un error 404 (nota no encontrada)
+                if (error?.response?.status === 404 || error?.status === 404 || error?.message?.includes('404')) {
+                    errorDesarrollo('❌ Nota no encontrada (404)');
+                    setNotaNoEncontrada(true);
+                    setCargando(false);
+                    setErrorCarga(false); // ← No es error de carga, es nota inexistente
+                    navigate('/nota-no-encontrada', { replace: true });
+                } else {
+                    // Es un error de conexión u otro tipo de error, permitir reintentos
+                    setCargando(false);
+                    setErrorCarga(true);
+                }
             } finally {
                 // ✅ IMPORTANTE: Solo desactivar carga si hubo éxito
                 if (isOnline) {
@@ -211,6 +225,54 @@ export default function PaginaCrearEditNota() {
             dispatch(resetNotaState());
         };
     }, [id, esModoEdicion, isOnline, dispatch]);
+
+    // ✅ Efecto SEPARADO para manejar reintentos
+    useEffect(() => {
+        // Solo reintentar si hay error, hay conexión y NO es una nota no encontrada
+        if (errorCarga && isOnline && esModoEdicion && !notaNoEncontrada) {
+            ejecutarConReintento(
+                async () => {
+                    try {
+                        setCargando(true);
+                        const anotacion = await obtenerAnotacionPorId(id);
+
+                        if (!anotacion || !anotacion.id) {
+                            setNotaNoEncontrada(true);
+                            navigate('/nota-no-encontrada', { replace: true });
+                            return;
+                        }
+
+                        dispatch(setAnotacionActual(anotacion));
+                        dispatch(setAnotacionId(anotacion.id));
+                        dispatch(setEstadoSeleccionado(mapearEstadoDesdeBD(anotacion.estado)));
+                        dispatch(setOrdenTareasSeleccionado(anotacion.orden_tareas || 'creacion'));
+
+                        const tareasFormateadas = anotacion.tareas.map(t => ({
+                            id: t.id,
+                            texto: t.texto_tarea,
+                            completada: t.tarea_completada === true || t.tarea_completada === 1,
+                            orden_creacion: t.orden_creacion
+                        }));
+
+                        dispatch(setTareas(tareasFormateadas));
+                        setAnotacionCargada(anotacion);
+                        setAnotacionValidada(true);
+                        setErrorCarga(false);
+                        setCargando(false);
+                        resetearIntentos();
+                    } catch (error) {
+                        setCargando(false);
+                        setErrorCarga(true);
+                    }
+                },
+                isOnline,
+                (mensaje) => {
+                    setErrorCarga(true);
+                    errorDesarrollo(mensaje);
+                }
+            );
+        }
+    }, [errorCarga, isOnline, esModoEdicion, notaNoEncontrada]);
 
     // ✅ Efecto SEPARADO para actualizar los refs cuando la anotación esté lista Y los refs estén montados
     useEffect(() => {
