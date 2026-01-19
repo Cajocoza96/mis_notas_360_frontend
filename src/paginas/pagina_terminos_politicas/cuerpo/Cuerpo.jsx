@@ -69,6 +69,8 @@ export default function Cuerpo() {
                         <div>
                             <ul className="list-disc list-inside text-base md:text-lg">
                                 <li>{inforTerminosServicio.texto8}</li>
+                                <li>{inforTerminosServicio.texto8_1}</li>
+                                <li>{inforTerminosServicio.texto8_2}</li>
                                 <li>{inforTerminosServicio.texto9}</li>
                                 <li>{inforTerminosServicio.texto10}</li>
                                 <li>{inforTerminosServicio.texto11}</li>
@@ -235,7 +237,7 @@ export default function Cuerpo() {
                                 </p>
                                 <div>
                                     <ul className="list-disc list-inside text-base md:text-lg">
-                                        <li>{inforPoliticaPrivacidad.texto21}</li>
+                                        <li>{inforPoliticaPrivacidad.texto21} <span translate="no">{infoMisNotas360.texto4MisNotas360}</span></li>
                                         <li>{inforPoliticaPrivacidad.texto22}</li>
                                         <li>{inforPoliticaPrivacidad.texto23}</li>
                                         <li>{inforPoliticaPrivacidad.texto24}</li>

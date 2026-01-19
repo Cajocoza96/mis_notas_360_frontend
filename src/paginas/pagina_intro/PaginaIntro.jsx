@@ -14,6 +14,8 @@ import modalIntro from "../../assets/lottie/modal_pagina_intro/modalIntro.json";
 
 import useConexionInternet from "../../hooks/useConexionInternet";
 
+import CargandoNoHayNada from "../../componentes/cargando_no_hay_nada/CargandoNoHayNada";
+
 import { logDesarrollo, errorDesarrollo, registrarError } from "../../utils/errorHandler";
 
 import Toast from "../../componentes/toast/Toast";
@@ -215,8 +217,9 @@ export default function PaginaIntro() {
                         fácilmente, con herramientas de IA.
                     </motion.p>
 
-                    <div className="flex flex-row items-center justify-center gap-4">
-
+                    <div className="flex flex-col 2xs:flex-row 
+                                    items-center justify-center 
+                                    gap-2 2xs:gap-4">
                         <motion.div
                             initial={{ opacity: 0, scale: 0.8 }}
                             animate={{ opacity: 1, scale: 1 }}
@@ -234,15 +237,17 @@ export default function PaginaIntro() {
                             transition={{ delay: 0.5, duration: 0.4 }}
                             className="mt-4 flex flex-col"
                         >
-                            <MiBoton
-                                className={`bg-violet-600 text-white
+                            {procesando ? <CargandoNoHayNada iconoDeCarga={true} /> :
+                                <MiBoton
+                                    className={`bg-violet-600 text-white
                                 hover:bg-violet-700 active:bg-violet-800
                                 ${!isOnline || procesando ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
                                 rounded-full px-8 py-3 font-semibold`}
-                                accion={procesando ? "Procesando..." : "Continuar"}
-                                onClick={handleContinuar}
-                                transition={{ type: "spring", stiffness: 300, damping: 15 }}
-                            />
+                                    accion="Continuar"
+                                    onClick={handleContinuar}
+                                    transition={{ type: "spring", stiffness: 300, damping: 15 }}
+                                />
+                            }
                         </motion.div>
 
                     </div>
