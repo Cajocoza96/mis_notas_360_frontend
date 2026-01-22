@@ -215,8 +215,8 @@ export const iniciarSesion = async (nombreUsuario, contrasena) => {
     }
 };
 
-// ✅ MEJORADO: Autenticación con Google
-export const autenticarConGoogle = async (credential) => {
+// ✅ Autenticación con Google usando access_token
+export const autenticarConGoogle = async (accessToken) => {
     try {
         await warmUpServer();
 
@@ -225,7 +225,7 @@ export const autenticarConGoogle = async (credential) => {
             {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ credential }),
+                body: JSON.stringify({ accessToken }), // ✅ CAMBIO: Enviamos accessToken
             },
             TIMEOUTS.AUTH
         );

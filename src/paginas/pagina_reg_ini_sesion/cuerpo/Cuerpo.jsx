@@ -5,9 +5,10 @@ import { setVerToast, setMensajeToast, toggleVerModalRestablecerContrasena } fro
 import CorreoContrasena from "./correo_contrasena/CorreoContrasena";
 import infoRegIniSesion from "../../../data/infoRegIniSesion.json";
 import { autenticarConGoogle, autenticarConFacebook } from "../../../services/authService";
-import { GoogleLogin } from "@react-oauth/google";
+import { useGoogleLogin } from "@react-oauth/google";
 import { toggleVerMenuHamburguesa } from "../../../store/layoutSlice";
 import { obtenerMensajeError, registrarError, logDesarrollo, errorDesarrollo } from "../../../utils/errorHandler";
+import { FcGoogle } from "react-icons/fc";
 import { FaFacebook } from "react-icons/fa";
 import CargandoNoHayNada from "../../../componentes/cargando_no_hay_nada/CargandoNoHayNada";
 
@@ -88,6 +89,34 @@ export default function Cuerpo() {
         dispatch(toggleVerModalRestablecerContrasena());
     };
 
+    // ✅ Hook de Google Login personalizado
+    const loginGoogle = useGoogleLogin({
+        onSuccess: async (tokenResponse) => {
+            setCargandoGoogle(true);
+            try {
+                // ✅ Enviar access_token al backend
+                await autenticarConGoogle(tokenResponse.access_token);
+
+                if (verMenuHamburguesa) {
+                    dispatch(toggleVerMenuHamburguesa());
+                }
+                navigate("/panel-principal");
+
+            } catch (error) {
+                registrarError('Autenticar con Google', error);
+                const mensajeSeguro = obtenerMensajeError(error, 'Error al autenticar con Google');
+                mostrarToast(mensajeSeguro);
+                setCargandoGoogle(false);
+            }
+        },
+        onError: () => {
+            mostrarToast("Error al iniciar sesión con Google");
+            setCargandoGoogle(false);
+        },
+    });
+
+
+    /*
     // Forzar re-render de Google cuando cambia el tema
     useEffect(() => {
         setGoogleKey(prev => prev + 1);
@@ -120,6 +149,8 @@ export default function Cuerpo() {
         mostrarToast("Error al iniciar sesión con Google");
         setCargandoGoogle(false);
     };
+
+    */
 
     // ✅ AUTENTICACIÓN SEGURA CON FACEBOOK
     const handleFacebookLogin = () => {
@@ -182,9 +213,45 @@ export default function Cuerpo() {
             </p>
 
             <div className="w-full flex flex-col justify-center items-center gap-2">
-                {/* ✅ Botón de Google con overlay de carga */}
+
+                {/* ✅ BOTÓN PERSONALIZADO DE GOOGLE - 100% CLICKEABLE */}
+                <button
+                    onClick={() => loginGoogle()}
+                    disabled={cargandoGoogle}
+                    className={`
+                        w-full h-12 
+                        flex items-center justify-center gap-3
+                        rounded-full border-2
+                        font-medium text-sm md:text-base
+                        transition-all duration-200
+                        ${cargandoGoogle
+                            ? 'opacity-50 cursor-not-allowed'
+                            : 'hover:bg-gray-50 dark:hover:bg-gray-700 hover:shadow-md cursor-pointer active:scale-[0.98]'
+                        }
+                        border-gray-300 dark:border-gray-600
+                        bg-white dark:bg-gray-800
+                        text-gray-700 dark:text-gray-200
+                        shadow-sm
+                    `}
+                >
+                    {cargandoGoogle ? (
+                        <>
+                            <CargandoNoHayNada iconoDeCarga={true} />
+                            <span>Autenticando...</span>
+                        </>
+                    ) : (
+                        <>
+                            <FcGoogle className="text-2xl flex-shrink-0" />
+                            <span className="truncate">
+                                {esRegistro ? 'Registrarse con Google' : 'Iniciar sesión con Google'}
+                            </span>
+                        </>
+                    )}
+                </button>
+
+                {/*
                 <div className="w-full flex justify-center items-center relative">
-                    {/* Contenedor del botón de Google */}
+                    
                     <div
                         key={googleKey}
                         className={`${cargandoGoogle ? 'opacity-50 pointer-events-none' : ''}`}
@@ -203,11 +270,11 @@ export default function Cuerpo() {
                         />
                     </div>
 
-                    {/* ✅ Overlay de carga sobre el botón de Google */}
+                    
                     {cargandoGoogle && (
                         <div className="w-full absolute inset-0 flex items-center justify-center bg-white/80 dark:bg-gray-800/80 rounded-full">
                             <div className="w-full flex items-center justify-center gap-2">
-                                {/* Spinner */}
+                            
                                 <CargandoNoHayNada iconoDeCarga={true} />
                                 <span className="text-sm font-medium text-gray-700 dark:text-gray-200">
                                     Autenticando...
@@ -216,6 +283,7 @@ export default function Cuerpo() {
                         </div>
                     )}
                 </div>
+                */}
 
                 <p className="w-full text-center text-base md:text-lg 
                             select-none truncate
@@ -270,7 +338,7 @@ export default function Cuerpo() {
             <p className="w-full text-center text-base md:text-lg 
                             select-none
                         text-black dark:text-white">
-                ¿No quieres usar Google? <span>{esRegistro ? 'Regístrate con usuario y contraseña' : 'Inicia sesión con usuario y contraseña'}</span> 
+                ¿No quieres usar Google? <span>{esRegistro ? 'Regístrate con usuario y contraseña' : 'Inicia sesión con usuario y contraseña'}</span>
             </p>
 
             <CorreoContrasena
