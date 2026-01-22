@@ -221,7 +221,7 @@ export default function Cuerpo() {
                     className={`
                         w-full h-12 
                         flex items-center justify-center gap-3
-                        rounded-full border-2
+                        rounded-md border-2
                         font-medium text-sm md:text-base
                         transition-all duration-200
                         ${cargandoGoogle
@@ -248,42 +248,6 @@ export default function Cuerpo() {
                         </>
                     )}
                 </button>
-
-                {/*
-                <div className="w-full flex justify-center items-center relative">
-                    
-                    <div
-                        key={googleKey}
-                        className={`${cargandoGoogle ? 'opacity-50 pointer-events-none' : ''}`}
-                    >
-                        <GoogleLogin
-                            onSuccess={handleGoogleSuccess}
-                            onError={handleGoogleError}
-                            useOneTap={false}
-                            theme={isDarkMode ? "filled_black" : "outline"}
-                            size="large"
-                            text={esRegistro ? "signup_with" : "signin_with"}
-                            shape="circle"
-                            logo_alignment="left"
-                            locale="es"
-                            type="standard"
-                        />
-                    </div>
-
-                    
-                    {cargandoGoogle && (
-                        <div className="w-full absolute inset-0 flex items-center justify-center bg-white/80 dark:bg-gray-800/80 rounded-full">
-                            <div className="w-full flex items-center justify-center gap-2">
-                            
-                                <CargandoNoHayNada iconoDeCarga={true} />
-                                <span className="text-sm font-medium text-gray-700 dark:text-gray-200">
-                                    Autenticando...
-                                </span>
-                            </div>
-                        </div>
-                    )}
-                </div>
-                */}
 
                 <p className="w-full text-center text-base md:text-lg 
                             select-none truncate
