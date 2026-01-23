@@ -286,7 +286,7 @@ export default function CorreoContrasena({ textoContrasena, restablecer, noResta
         <div className="w-full flex flex-col justify-center gap-5">
             {/* Input de Nombre de Usuario */}
             <div className="relative">
-                <div className={`border rounded-md
+                <div className={`border-2 rounded-md shadow-sm
                                 flex flex-row items-center justify-between
                                 transition-all duration-200
                                 ${inputUsuarioFocused ? 'border-violet-800' : 'border-gray-300 dark:border-gray-700'}
@@ -325,7 +325,7 @@ export default function CorreoContrasena({ textoContrasena, restablecer, noResta
             {/* Input de Contraseña */}
             <div className="flex flex-col gap-3">
                 <div className="relative">
-                    <div className={`border rounded-md
+                    <div className={`border-2 rounded-md shadow-sm
                                     flex flex-row items-center justify-between
                                     transition-all duration-200
                                     ${inputContrasenaFocused ? 'border-violet-800' : 'border-gray-300 dark:border-gray-700'}
@@ -416,7 +416,7 @@ export default function CorreoContrasena({ textoContrasena, restablecer, noResta
                     onMouseDown={(e) => handleBotonClick(e, handleSubmit)}
                     className="touch-manipulation w-fit">
                     <MiBoton
-                        className={`bg-violet-800 text-white hover:bg-violet-800 active:bg-violet-800 
+                        className={`bg-violet-800 text-white hover:bg-violet-800 active:bg-violet-800
                         ${cargando ? 'opacity-50 cursor-not-allowed' : ''}`}
                         accion={cargando ? <FaSpinner className="animate-spin text-lg md:text-xl text-white" /> : textoBoton}
                         disabled={cargando}
@@ -436,7 +436,7 @@ export default function CorreoContrasena({ textoContrasena, restablecer, noResta
                         onMouseDown={(e) => handleBotonClick(e, handleRestablecerContrasena)}
                         className="touch-manipulation">
                         <MiBoton
-                            className={`w-full bg-violet-800 text-white hover:bg-violet-800 active:bg-violet-800 
+                            className={`w-full bg-violet-800 text-white hover:bg-violet-800 active:bg-violet-800
                                     ${cargando ? 'opacity-50 cursor-not-allowed' : ''}`}
                             accion={cargando ? 'Restableciendo...' : 'Restablecer contraseña'}
                             disabled={cargando}

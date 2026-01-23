@@ -20,9 +20,7 @@ export default function Cuerpo() {
     const dispatch = useDispatch();
 
     const verMenuHamburguesa = useSelector((state) => state.layout.verMenuHamburguesa);
-    const tema = useSelector((state) => state.preferencia.tema);
 
-    const [googleKey, setGoogleKey] = useState(0);
     const [fbSDKLoaded, setFbSDKLoaded] = useState(false);
     const [cargandoFB, setCargandoFB] = useState(false);
     const [cargandoGoogle, setCargandoGoogle] = useState(false);
@@ -30,10 +28,6 @@ export default function Cuerpo() {
 
     const esRegistro = location.pathname === "/registrar";
     const textoAccion = esRegistro ? infoRegIniSesion.registrate.accionCuenta : infoRegIniSesion.iniciar.accionCuenta;
-
-    // Determinar si está en modo oscuro
-    const isDarkMode = tema === "oscuro" ||
-        (tema === "sistema" && window.matchMedia("(prefers-color-scheme: dark)").matches);
 
     // ✅ Verificar si estamos en HTTPS
     useEffect(() => {
@@ -89,7 +83,7 @@ export default function Cuerpo() {
         dispatch(toggleVerModalRestablecerContrasena());
     };
 
-    // ✅ Hook de Google Login personalizado
+    // ✅ GOOGLE LOGIN CON REDIRECT (ESTÁNDAR PROFESIONAL)
     const loginGoogle = useGoogleLogin({
         onSuccess: async (tokenResponse) => {
             setCargandoGoogle(true);
@@ -113,44 +107,10 @@ export default function Cuerpo() {
             mostrarToast("Error al iniciar sesión con Google");
             setCargandoGoogle(false);
         },
+        // ✅ MODO REDIRECT PROFESIONAL
+        ux_mode: 'redirect',
+        redirect_uri: window.location.origin + (esRegistro ? '/registrar' : '/iniciar-sesion')
     });
-
-
-    /*
-    // Forzar re-render de Google cuando cambia el tema
-    useEffect(() => {
-        setGoogleKey(prev => prev + 1);
-    }, [tema, location.pathname]);
-
-    // Función para manejar autenticación con Google
-    const handleGoogleSuccess = async (credentialResponse) => {
-        setCargandoGoogle(true);
-        try {
-            // Enviamos el JWT token como tu backend espera
-            await autenticarConGoogle(credentialResponse.credential);
-
-            if (verMenuHamburguesa) {
-                dispatch(toggleVerMenuHamburguesa());
-            }
-            navigate("/panel-principal");
-
-        } catch (error) {
-            registrarError('Autenticar con Google', error);
-            const mensajeSeguro = obtenerMensajeError(
-                error,
-                'Error al autenticar con Google'
-            );
-            mostrarToast(mensajeSeguro);
-            setCargandoGoogle(false);
-        }
-    };
-
-    const handleGoogleError = () => {
-        mostrarToast("Error al iniciar sesión con Google");
-        setCargandoGoogle(false);
-    };
-
-    */
 
     // ✅ AUTENTICACIÓN SEGURA CON FACEBOOK
     const handleFacebookLogin = () => {
