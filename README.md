@@ -46,6 +46,7 @@ La aplicación cuenta con un frontend desarrollado en React + Vite, un backend e
 9 Información detallada:
 -Fecha de creación y modificación
 -Conteo de caracteres del título, nota y tareas
+-Conteo de tareas, tareas completada y tareas no completada
 
 10 Ordenamiento de anotaciones por:
 -Vista previa (Ascendente / Descendente)
