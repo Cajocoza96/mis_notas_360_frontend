@@ -16,23 +16,39 @@ export default function VerFechaCreaModCantText() {
                 titulo: 0,
                 nota: 0,
                 tareas: 0,
-                total: 0
+                total: 0,
+                cantidadTareas: 0,
+                tareasCompletadas: 0,
+                tareasNoCompletadas: 0
             };
         }
 
         const cantTitulo = anotacionActual.cant_caract_titulo || 0;
         const cantNota = anotacionActual.cant_caract_nota || 0;
-        
+
         // Calcular total de caracteres de todas las tareas
         const cantTareas = anotacionActual.tareas?.reduce((total, tarea) => {
             return total + (tarea.cant_caract_tarea || 0);
         }, 0) || 0;
 
+        // ✅ NUEVO: Calcular estadísticas de tareas
+        const cantidadTareas = anotacionActual.cantidad_tareas ||
+            anotacionActual.tareas?.length || 0;
+
+        const tareasCompletadas = anotacionActual.cant_tareas_complet ||
+            anotacionActual.tareas?.filter(t => t.tarea_completada === true).length || 0;
+
+        const tareasNoCompletadas = anotacionActual.cant_tareas_no_complet ||
+            (cantidadTareas - tareasCompletadas);
+
         return {
             titulo: cantTitulo,
             nota: cantNota,
             tareas: cantTareas,
-            total: cantTitulo + cantNota + cantTareas
+            total: cantTitulo + cantNota + cantTareas,
+            cantidadTareas,
+            tareasCompletadas,
+            tareasNoCompletadas
         };
     }, [anotacionActual]);
 
@@ -104,6 +120,25 @@ export default function VerFechaCreaModCantText() {
                 className="justify-between"
                 textoFechaCanttexto="Cantidad carácteres total"
                 fechaCantNumero={totales.total}
+            />
+
+            {/* ✅ NUEVO: Estadísticas de tareas */}
+            <SubOpcionesCabecera
+                className="justify-between"
+                textoFechaCanttexto="Cantidad de tareas"
+                fechaCantNumero={totales.cantidadTareas}
+            />
+
+            <SubOpcionesCabecera
+                className="justify-between"
+                textoFechaCanttexto="Tareas completadas"
+                fechaCantNumero={totales.tareasCompletadas}
+            />
+
+            <SubOpcionesCabecera
+                className="justify-between"
+                textoFechaCanttexto="Tareas no completadas"
+                fechaCantNumero={totales.tareasNoCompletadas}
             />
 
         </div>
