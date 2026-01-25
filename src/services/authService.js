@@ -39,9 +39,6 @@ const limpiarSesion = () => {
 
 // ✅ NUEVO: Manejar cierre de sesión por rate limit
 const manejarRateLimitExcedido = (mensaje = 'Demasiadas solicitudes, intenta más tarde') => {
-    // Marcar en localStorage que hay rate limit activo
-    localStorage.setItem('rateLimitActivo', Date.now().toString());
-    
     limpiarSesion();
 
     // Mostrar mensaje toast
@@ -52,29 +49,10 @@ const manejarRateLimitExcedido = (mensaje = 'Demasiadas solicitudes, intenta má
         store.dispatch(setVerToast(false));
     }, 4000);
 
-    // Redirigir a iniciar sesión SOLO si no estamos ya ahí
+    // Redirigir a iniciar sesión
     setTimeout(() => {
-        if (!window.location.pathname.includes('/iniciar-sesion')) {
-            window.location.href = '/iniciar-sesion';
-        }
+        window.location.href = '/iniciar-sesion';
     }, 500);
-};
-
-// ✅ Función para verificar si hay rate limit activo
-const verificarRateLimitActivo = () => {
-    const rateLimitTimestamp = localStorage.getItem('rateLimitActivo');
-    
-    if (rateLimitTimestamp) {
-        const tiempoTranscurrido = Date.now() - parseInt(rateLimitTimestamp);
-        // Si han pasado menos de 15 minutos (900000 ms), el rate limit sigue activo
-        if (tiempoTranscurrido < 900000) {
-            const minutosRestantes = Math.ceil((900000 - tiempoTranscurrido) / 60000);
-            throw new Error(`Demasiadas solicitudes. Intenta de nuevo en ${minutosRestantes} minuto${minutosRestantes !== 1 ? 's' : ''}.`);
-        } else {
-            // Si ya pasó el tiempo, limpiar el flag
-            localStorage.removeItem('rateLimitActivo');
-        }
-    }
 };
 
 // ✅ NUEVO: Función para hacer warm-up del servidor
@@ -183,12 +161,9 @@ const manejarRespuestaAuth = async (response) => {
 // ✅ FUNCIONES DE AUTENTICACIÓN
 // ===============================
 
-// ✅ MEJORADO: Registrar usuario con verificación de rate limit
+// ✅ MEJORADO: Registrar usuario con warm-up
 export const registrarUsuario = async (nombreUsuario, contrasena) => {
     try {
-        // Verificar si hay rate limit activo antes de intentar
-        verificarRateLimitActivo();
-        
         // Intentar despertar el servidor primero
         await warmUpServer();
 
@@ -205,9 +180,6 @@ export const registrarUsuario = async (nombreUsuario, contrasena) => {
         const data = await manejarRespuestaAuth(response);
         logDesarrollo('✅ Usuario registrado:', data);
 
-        // Limpiar el flag de rate limit si el registro fue exitoso
-        localStorage.removeItem('rateLimitActivo');
-        
         establecerSesionUsuario(data.token, data.usuario);
         return data;
     } catch (error) {
@@ -216,12 +188,9 @@ export const registrarUsuario = async (nombreUsuario, contrasena) => {
     }
 };
 
-// ✅ MEJORADO: Iniciar sesión con verificación de rate limit
+// ✅ MEJORADO: Iniciar sesión con warm-up
 export const iniciarSesion = async (nombreUsuario, contrasena) => {
     try {
-        // Verificar si hay rate limit activo antes de intentar
-        verificarRateLimitActivo();
-        
         // Intentar despertar el servidor primero
         await warmUpServer();
 
@@ -238,9 +207,6 @@ export const iniciarSesion = async (nombreUsuario, contrasena) => {
         const data = await manejarRespuestaAuth(response);
         logDesarrollo('✅ Usuario ha iniciado sesión:', data);
 
-        // Limpiar el flag de rate limit si el login fue exitoso
-        localStorage.removeItem('rateLimitActivo');
-        
         establecerSesionUsuario(data.token, data.usuario);
         return data;
     } catch (error) {
@@ -249,11 +215,9 @@ export const iniciarSesion = async (nombreUsuario, contrasena) => {
     }
 };
 
-// ✅ Autenticación con Google con verificación de rate limit
+// ✅ Autenticación con Google usando access_token
 export const autenticarConGoogle = async (accessToken) => {
     try {
-        verificarRateLimitActivo();
-        
         await warmUpServer();
 
         const response = await fetchConTimeout(
@@ -261,7 +225,7 @@ export const autenticarConGoogle = async (accessToken) => {
             {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ accessToken }),
+                body: JSON.stringify({ accessToken }), // ✅ CAMBIO: Enviamos accessToken
             },
             TIMEOUTS.AUTH
         );
@@ -269,7 +233,6 @@ export const autenticarConGoogle = async (accessToken) => {
         const data = await manejarRespuestaAuth(response);
         logDesarrollo('✅ Usuario autenticado con Google:', data);
 
-        localStorage.removeItem('rateLimitActivo');
         establecerSesionUsuario(data.token, data.usuario);
         return data;
     } catch (error) {
@@ -278,11 +241,9 @@ export const autenticarConGoogle = async (accessToken) => {
     }
 };
 
-// ✅ MEJORADO: Autenticación con Facebook con verificación de rate limit
+// ✅ MEJORADO: Autenticación con Facebook
 export const autenticarConFacebook = async (facebookData) => {
     try {
-        verificarRateLimitActivo();
-        
         await warmUpServer();
 
         const response = await fetchConTimeout(
@@ -298,7 +259,6 @@ export const autenticarConFacebook = async (facebookData) => {
         const data = await manejarRespuestaAuth(response);
         logDesarrollo('✅ Usuario autenticado con Facebook:', data);
 
-        localStorage.removeItem('rateLimitActivo');
         establecerSesionUsuario(data.token, data.usuario);
         return data;
     } catch (error) {
