@@ -330,7 +330,6 @@ export default function CorreoContrasena({ textoContrasena, restablecer, noResta
                                     transition-all duration-200
                                     ${inputContrasenaFocused ? 'border-violet-800' : 'border-gray-300 dark:border-gray-700'}
                                     ${!cargando && 'active:bg-gray-200 dark:active:bg-gray-700'}`}>
-
                         <input
                             className="w-full text-base md:text-lg p-2 pt-6 pb-2
                                     focus:outline-none bg-transparent
@@ -368,7 +367,7 @@ export default function CorreoContrasena({ textoContrasena, restablecer, noResta
 
                         <button
                             type="button"
-                            className="text-base md:text-lg mr-2 p-2 -m-2
+                            className="text-base md:text-lg mr-2 p-2
                                 text-black dark:text-white cursor-pointer z-10 
                                 touch-manipulation select-none"
                             onMouseDown={handleVerContrasena}

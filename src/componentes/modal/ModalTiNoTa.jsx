@@ -344,13 +344,6 @@ export default function ModalTiNoTa({ tituloRef, notaRef, addToHistoryImmediate 
             mostrarToast(error.message || 'Error al procesar con IA');
 
             dispatch(setProcesandoIA(false));
-
-            // Si es rate limit, cerrar modal después de mostrar el toast
-            if (error.code === 'RATE_LIMIT_AI') {
-                setTimeout(() => {
-                    handleCancelar();
-                }, 3000);
-            }
         }
     };
 
