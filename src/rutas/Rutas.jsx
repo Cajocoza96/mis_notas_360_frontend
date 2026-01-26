@@ -66,15 +66,13 @@ export default function Rutas() {
             <Route
                 path="/"
                 element={
-                    <RutaProtegida>
-                        <RequiereBienvenida>
-                            <RutaPrincipal>
-                                <PageTransition>
-                                    <PaginaBienvenida />
-                                </PageTransition>
-                            </RutaPrincipal>
-                        </RequiereBienvenida>
-                    </RutaProtegida>
+                    <RequiereBienvenida>
+                        <RutaPrincipal>
+                            <PageTransition>
+                                <PaginaBienvenida />
+                            </PageTransition>
+                        </RutaPrincipal>
+                    </RequiereBienvenida>
                 }
             />
 
