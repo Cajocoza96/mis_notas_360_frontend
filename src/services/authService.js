@@ -48,13 +48,6 @@ const manejarRateLimitExcedido = (mensaje = 'Demasiadas solicitudes, intenta má
     setTimeout(() => {
         store.dispatch(setVerToast(false));
     }, 4000);
-
-    // Redirigir a iniciar sesión
-    /*
-    setTimeout(() => {
-        window.location.href = '/iniciar-sesion';
-    }, 500);
-    */
 };
 
 // ✅ NUEVO: Función para hacer warm-up del servidor
@@ -147,6 +140,12 @@ const manejarRespuestaAuth = async (response) => {
     const data = await response.json();
 
     if (!response.ok) {
+        // ✅ NUEVO: Manejar bloqueo temporal por rate limit
+        if (response.status === 429 && data.bloqueadoTemporalmente) {
+            const minutos = data.minutosRestantes || 15;
+            throw new Error(`Tu cuenta está temporalmente bloqueada por exceder el límite de solicitudes. Intenta nuevamente en ${minutos} minutos.`);
+        }
+        
         // Si es error de sesión inválida
         if (response.status === 401 && (data.sesionInvalida || data.tokenInvalido)) {
             limpiarSesion();
