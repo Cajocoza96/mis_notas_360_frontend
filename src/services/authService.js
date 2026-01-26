@@ -37,8 +37,15 @@ const limpiarSesion = () => {
     store.dispatch({ type: 'auth/cerrarSesionLocal' });
 };
 
-// ✅ NUEVO: Manejar cierre de sesión por rate limit
+// ✅ NUEVO: Variable para controlar si hay rate limit activo
+let rateLimitActivo = false;
+
+// ✅ MEJORADO: Manejar cierre de sesión por rate limit
 const manejarRateLimitExcedido = (mensaje = 'Demasiadas solicitudes, intenta más tarde') => {
+    // Evitar ejecuciones múltiples
+    if (rateLimitActivo) return;
+    rateLimitActivo = true;
+
     limpiarSesion();
 
     // Mostrar mensaje toast
@@ -49,10 +56,18 @@ const manejarRateLimitExcedido = (mensaje = 'Demasiadas solicitudes, intenta má
         store.dispatch(setVerToast(false));
     }, 4000);
 
-    // Redirigir a iniciar sesión
+    // ✅ CORRECCIÓN: Solo redirigir si NO estás ya en /iniciar-sesion
+    const rutaActual = window.location.pathname;
+    if (rutaActual !== '/iniciar-sesion') {
+        setTimeout(() => {
+            window.location.href = '/iniciar-sesion';
+        }, 500);
+    }
+
+    // Resetear la bandera después de 5 segundos
     setTimeout(() => {
-        window.location.href = '/iniciar-sesion';
-    }, 500);
+        rateLimitActivo = false;
+    }, 5000);
 };
 
 // ✅ NUEVO: Función para hacer warm-up del servidor
@@ -77,6 +92,11 @@ const warmUpServer = async () => {
 
 // ✅ MEJORADO: Fetch con timeout y manejo de rate limit
 const fetchConTimeout = async (url, options = {}, timeout = TIMEOUTS.NORMAL, intentos = 1) => {
+    // ✅ CRÍTICO: Si hay rate limit activo, rechazar inmediatamente
+    if (rateLimitActivo) {
+        throw new Error('RATE_LIMIT_ACTIVO');
+    }
+
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), timeout);
 
@@ -96,8 +116,6 @@ const fetchConTimeout = async (url, options = {}, timeout = TIMEOUTS.NORMAL, int
             // Si el backend indica que debe cerrar sesión
             if (data.sesionExpirada || data.debeRenovarSesion) {
                 manejarRateLimitExcedido(data.error || 'Demasiadas solicitudes, intenta más tarde');
-
-                // Lanzar error para que no continúe el proceso
                 throw new Error('RATE_LIMIT_SESSION_CLOSED');
             }
 
@@ -110,8 +128,8 @@ const fetchConTimeout = async (url, options = {}, timeout = TIMEOUTS.NORMAL, int
     } catch (error) {
         clearTimeout(timeoutId);
 
-        // Si ya se manejó el rate limit, no hacer nada más
-        if (error.message === 'RATE_LIMIT_SESSION_CLOSED') {
+        // ✅ Si hay rate limit activo, propagar el error sin reintentar
+        if (error.message === 'RATE_LIMIT_ACTIVO' || error.message === 'RATE_LIMIT_SESSION_CLOSED') {
             throw error;
         }
 
@@ -138,7 +156,6 @@ const fetchConTimeout = async (url, options = {}, timeout = TIMEOUTS.NORMAL, int
         throw error;
     }
 };
-
 
 // Función helper para manejar respuestas de autenticación
 const manejarRespuestaAuth = async (response) => {
