@@ -525,3 +525,19 @@ export const obtenerUsuarioActual = () => {
 export const haySesionActiva = () => {
     return !!localStorage.getItem('token');
 };
+
+export const hayRateLimitActivo = () => {
+    const timestamp = localStorage.getItem('rateLimitActivo');
+    if (!timestamp) return false;
+    
+    const ahora = Date.now();
+    const tiempoTranscurrido = ahora - parseInt(timestamp);
+    
+    // Si pasó más de 1 hora, limpiar
+    if (tiempoTranscurrido > 60 * 60 * 1000) {
+        localStorage.removeItem('rateLimitActivo');
+        return false;
+    }
+    
+    return true;
+};

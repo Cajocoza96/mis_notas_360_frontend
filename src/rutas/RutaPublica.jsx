@@ -1,6 +1,7 @@
 import React from "react";
 import { Navigate, useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
+import { hayRateLimitActivo } from "../services/authService"; // ✅ NUEVO
 
 import useConexionInternet from "../hooks/useConexionInternet";
 
@@ -9,6 +10,11 @@ export default function RutaPublica({ children }) {
     const location = useLocation();
 
     const { isOnline } = useConexionInternet();
+
+    // ✅ CRÍTICO: Si hay rate limit activo, quedarse en la página pública
+    if (hayRateLimitActivo()) {
+        return children;
+    }
 
     // Si está autenticado
     if (autenticado === true && isOnline) {
@@ -21,14 +27,11 @@ export default function RutaPublica({ children }) {
         return <Navigate to="/panel-principal" replace state={{ from: location }} />;
     }
 
-
     // Si está autenticado pero no hay conexión, no redirigir
-    // Esto previene el loop infinito cuando pierdes conexión
     if (autenticado === true && !isOnline) {
-        // Permitir que se quede en la página actual (login/registro)
-        // o redirigir a una página offline específica
         return <Navigate to="/" replace state={{ from: location}} />
     }
+    
     // Si no está autenticado, mostrar la página pública
     return children;
 }
