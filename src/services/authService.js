@@ -50,9 +50,11 @@ const manejarRateLimitExcedido = (mensaje = 'Demasiadas solicitudes, intenta má
     }, 4000);
 
     // Redirigir a iniciar sesión
+    /*
     setTimeout(() => {
         window.location.href = '/iniciar-sesion';
     }, 500);
+    */
 };
 
 // ✅ NUEVO: Función para hacer warm-up del servidor
@@ -454,7 +456,7 @@ export const fetchConAuth = async (url, options = {}) => {
             // 401: Sesión inválida/expirada
             if (response.status === 401 && (data.sesionInvalida || data.tokenInvalido)) {
                 limpiarSesion();
-                //window.location.href = '/iniciar-sesion';
+                window.location.href = '/iniciar-sesion';
                 throw new Error(data.error || 'Sesión expirada');
             }
 
