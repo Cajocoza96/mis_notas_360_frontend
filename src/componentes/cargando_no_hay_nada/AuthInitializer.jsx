@@ -1,10 +1,10 @@
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { inicializarAuth, cerrarSesionLocal } from '../../store/authSlice';
+import { inicializarAuth } from '../../store/authSlice';
 import { cargarPreferencia } from '../../store/preferenciaSlice';
-import { hayRateLimitActivo } from '../../services/authService'; // ✅ NUEVO
 
 import { HiOutlineBookOpen } from 'react-icons/hi';
+
 import { FaSpinner } from 'react-icons/fa';
 
 export default function AuthInitializer({ children }) {
@@ -12,14 +12,8 @@ export default function AuthInitializer({ children }) {
     const { inicializando, autenticado } = useSelector((state) => state.auth);
 
     useEffect(() => {
-        // ✅ CRÍTICO: Verificar token solo si NO hay rate limit activo
+        // ✅ Verificar token solo una vez al montar la aplicación
         const inicializar = async () => {
-            // Si hay rate limit activo, cerrar sesión y NO intentar verificar
-            if (hayRateLimitActivo()) {
-                dispatch(cerrarSesionLocal());
-                return;
-            }
-
             const result = await dispatch(inicializarAuth());
 
             // Si está autenticado, cargar preferencias
