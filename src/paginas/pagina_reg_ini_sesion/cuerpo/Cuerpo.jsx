@@ -54,7 +54,7 @@ export default function Cuerpo() {
                 version: 'v18.0'
             });
             setFbSDKLoaded(true);
-            logDesarrollo('✅ Facebook SDK cargado');
+            //logDesarrollo('✅ Facebook SDK cargado');
         };
 
         const script = document.createElement('script');
@@ -235,7 +235,7 @@ export default function Cuerpo() {
                             </div>
                         ) : (
                             <div className="flex flex-row items-center justify-center gap-2">
-                                <FaFacebook className="text-4xl" />
+                                <FaFacebook className="text-2xl" />
                                 <span className="text-sm md:text-base">
                                     {esRegistro ? 'Registrarse con Facebook' : 'Iniciar sesión con Facebook'}
                                 </span>
