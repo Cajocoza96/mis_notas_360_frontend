@@ -251,7 +251,7 @@ export const restaurarDesdePapelera = async (anotacionId) => {
     }
 };
 
-//Elimina definitivamente una anotación desde la papelera
+//Elimina definitivamente una anotación
 export const eliminarDefinitivamente = async (anotacionId) => {
     try {
         const token = obtenerToken();
@@ -303,6 +303,33 @@ export const eliminarTodasDefinitivamente = async (anotacionesIds, aplicarFiltro
     } catch (error) {
         registrarError('eliminarTodasDefinitivamente', error);
         procesarError(error, 'Error al eliminar todas definitivamente');
+    }
+};
+
+//Eliminar definitivamente una anotación desde la papelera
+export const vaciarPorId = async (anotacionId) => {
+    try {
+        const token = obtenerToken();
+
+        logDesarrollo('📤 En proceso de eliminar definitivamente la nota desde la papelera:', anotacionId);
+
+        const response = await fetchConAuth(`${API_URL}/anotaciones/obtener-papelera/vaciar/${anotacionId}`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            }
+        });
+
+        // ✅ fetchConAuth ya verificó que response.ok === true
+        const data = await response.json();
+
+        logDesarrollo('✅ Nota eliminada definitivamente desde la papelera:', data);
+
+        return data;
+    } catch (error) {
+        registrarError('vaciarPorId', error);
+        procesarError(error, 'Error al eliminar definitivamente la nota desde la papelera');
     }
 };
 

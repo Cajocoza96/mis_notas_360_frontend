@@ -28,7 +28,7 @@ import {
     moverAPapelera, moverTodasAPapelera,
     restaurarDesdePapelera,
     eliminarDefinitivamente, eliminarTodasDefinitivamente,
-    vaciarPapelera
+    vaciarPorId, vaciarPapelera
 } from "../../services/anotacionesService";
 
 import CargandoNoHayNada from "../cargando_no_hay_nada/CargandoNoHayNada";
@@ -310,11 +310,17 @@ export default function ModalConfirmacion({ textoPregunta, textoAccion, restaura
         setProcesando(true);
 
         try {
-            const data = await eliminarDefinitivamente(anotacionId);
+            let data;
+
+            // ✅ Si estamos en papelera, usar vaciarPorId (solo elimina si está en papelera)
+            if (esPapelera) {
+                data = await vaciarPorId(anotacionId);
+            } else {
+                // ✅ Si estamos en otra ruta, usar eliminarDefinitivamente (solo elimina si NO está en papelera)
+                data = await eliminarDefinitivamente(anotacionId);
+            }
 
             await actualizarContadores();
-
-            logDesarrollo(`Nota eliminada definitivamente desde la ${esModoVistaPrevia ? 'vista previa' : 'papelera'}`, data);
 
             // Actualizar Redux: eliminar la anotación de la lista de papelera
             dispatch(eliminarAnotacion(anotacionId));

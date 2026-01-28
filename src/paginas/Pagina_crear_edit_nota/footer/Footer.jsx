@@ -82,14 +82,6 @@ export default function Footer({ handleUndoClick, handleRedoClick, esModoEdicion
             logDesarrollo('Tareas:', tareas);
             logDesarrollo('==================');
 
-            /*
-            // Preparar el array de tareas con su estado de completado
-            const tareasParaGuardar = tareas.map(tarea => ({
-                texto: tarea.texto,
-                completada: tarea.completada  // true o false
-            }));
-            */
-
             // ✅ IMPORTANTE: Ordenar tareas por orden_creacion antes de guardar
             const tareasParaGuardar = [...tareas]
                 .sort((a, b) => {
