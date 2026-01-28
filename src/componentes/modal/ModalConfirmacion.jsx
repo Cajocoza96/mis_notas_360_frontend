@@ -142,7 +142,7 @@ export default function ModalConfirmacion({ textoPregunta, textoAccion, restaura
             const data = await moverAPapelera(anotacionId);
 
             await actualizarContadores();
-            logDesarrollo('Nota movida a papelera:', data);
+            logDesarrollo('Nota movida a la papelera:', data);
 
             // Actualizar Redux: eliminar la anotación de la lista
             dispatch(papeleraAnotacion(anotacionId));
