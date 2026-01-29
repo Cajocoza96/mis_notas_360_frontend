@@ -5,6 +5,7 @@ import { toggleVerMenuHamburguesa } from "../../store/layoutSlice";
 import { useAuth } from "../../hooks/useAuth";
 import { HiOutlineUser, HiChevronDown } from "react-icons/hi";
 import CargandoNoHayNada from "../cargando_no_hay_nada/CargandoNoHayNada";
+import useConexionInternet from "../../hooks/useConexionInternet";
 
 export default function AdminUsuario() {
     const dispatch = useDispatch();
@@ -14,6 +15,8 @@ export default function AdminUsuario() {
     const { usuario, cargando } = useAuth();
 
     const navigate = useNavigate();
+
+    const { isOnline } = useConexionInternet();
 
     // Generar color de fondo aleatorio basado en el nombre
     const avatarBg = useMemo(() => {
@@ -49,19 +52,25 @@ export default function AdminUsuario() {
         if (verMenuHamburguesa) {
             dispatch(toggleVerMenuHamburguesa());
         }
-        navigate("/informacion-usuario")
+
+        if (!isOnline) {
+            return;
+        } else {
+            navigate("/informacion-usuario")
+        }
+
     }
 
     if (cargando) {
         return (
             <div className="p-2 select-none 
                         flex flex-row items-center justify-start gap-2">
-            <CargandoNoHayNada
-                iconoDeCarga={true}
-            />
+                <CargandoNoHayNada
+                    iconoDeCarga={true}
+                />
 
             </div>
-            
+
         );
     }
 
@@ -70,10 +79,11 @@ export default function AdminUsuario() {
 
     return (
         <div
-            className="text-black dark:text-white p-2 select-none cursor-pointer
+            className={`text-black dark:text-white p-2 select-none
                         hover:bg-gray-300 active:bg-gray-300
+                        ${!isOnline ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
                         dark:hover:bg-gray-700 dark:active:bg-gray-700 
-                        flex flex-row items-center justify-start gap-2"
+                        flex flex-row items-center justify-start gap-2`}
             onClick={handleInfoUsuario}
         >
             {/* Avatar */}
