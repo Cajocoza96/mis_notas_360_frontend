@@ -1,8 +1,12 @@
 import React from "react";
 import ConexionMonitor from "./componentes/conexion_monitor/ConexionMonitor";
 import Rutas from "./rutas/Rutas";
+import { useSyncAuth } from "./hooks/useSyncAuth";
 
 function App() {
+
+    useSyncAuth();
+    
     return (
         <div
             className="bg-white dark:bg-gray-800"
