@@ -17,18 +17,18 @@ const Cabecera = forwardRef(({ handleTituloChange, handleTituloKeyDown,
 
     const { isTituloFocused, titulo } = useSelector((state) => state.tareas);
 
-    // ✅ Usar el estado de Redux en lugar de verificar el ref
+    //  Usar el estado de Redux en lugar de verificar el ref
     const [tieneTitulo, setTieneTitulo] = useState(false);
 
-    const isProcessingRef = useRef(false); // ✅ Prevenir loops infinitos
+    const isProcessingRef = useRef(false); //  Prevenir loops infinitos
 
-    // ✅ Sincronizar con el estado de Redux (más confiable que verificar el ref)
+    //  Sincronizar con el estado de Redux (más confiable que verificar el ref)
     useEffect(() => {
         const contenido = titulo?.trim() || "";
         setTieneTitulo(contenido !== "");
     }, [titulo]);
 
-    // ✅ Sincronizar el ref cuando Redux cambia desde fuera
+    //  Sincronizar el ref cuando Redux cambia desde fuera
     useEffect(() => {
         if (tituloRef.current && titulo !== undefined && titulo !== null) {
             const tituloActual = tituloRef.current.innerText || "";
@@ -53,23 +53,23 @@ const Cabecera = forwardRef(({ handleTituloChange, handleTituloKeyDown,
     };
 
     const handleInputLocal = () => {
-        // ✅ Prevenir llamadas simultáneas
+        //  Prevenir llamadas simultáneas
         if (isProcessingRef.current) return;
         isProcessingRef.current = true;
 
         try {
             if (tituloRef.current) {
-                // ✅ Obtener el texto limpio (sin \n ni espacios extra)
+                //  Obtener el texto limpio (sin \n ni espacios extra)
                 let contenido = tituloRef.current.innerText;
 
-                // ✅ Si está vacío o solo tiene espacios/saltos de línea, limpiar completamente
+                //  Si está vacío o solo tiene espacios/saltos de línea, limpiar completamente
                 if (!contenido || contenido.trim() === '') {
                     tituloRef.current.innerText = '';
                     handleTituloChange(tituloRef);
                     return;
                 }
 
-                // ✅ Limitar a 255 caracteres
+                //  Limitar a 255 caracteres
                 if (contenido.length > 255) {
                     const textoLimitado = contenido.substring(0, 255);
                     tituloRef.current.innerText = textoLimitado;
@@ -86,14 +86,14 @@ const Cabecera = forwardRef(({ handleTituloChange, handleTituloKeyDown,
 
             handleTituloChange(tituloRef);
         } finally {
-            // ✅ Liberar el lock después de un pequeño delay
+            //  Liberar el lock después de un pequeño delay
             setTimeout(() => {
                 isProcessingRef.current = false;
             }, 10);
         }
     };
 
-    // ✅ Manejador para forzar texto plano al pegar
+    //  Manejador para forzar texto plano al pegar
     const handlePaste = (e) => {
         if (esModoVistaPrevia) return;
 

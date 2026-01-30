@@ -5,7 +5,7 @@ export default function Toast() {
   const verToast = useSelector((state) => state.acceso.verToast);
   const mensajeToast = useSelector((state) => state.acceso.mensajeToast);
 
-  // ✅ Función para renderizar el mensaje con saltos de línea
+  //  Función para renderizar el mensaje con saltos de línea
   const renderizarMensaje = () => {
     if (!mensajeToast) return "Error desconocido";
 

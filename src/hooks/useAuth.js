@@ -17,7 +17,7 @@ export const useAuth = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
-    // ✅ Obtener datos del Redux store
+    //  Obtener datos del Redux store
     const { usuario, autenticado, inicializando } = useSelector((state) => state.auth);
 
     // Función para cerrar sesión
@@ -29,7 +29,7 @@ export const useAuth = () => {
             navigate('/iniciar-sesion');
             return { exito: true };
         } catch (error) {
-            // ✅ Registrar el error de forma segura
+            //  Registrar el error de forma segura
             registrarError('Cerrar sesión', error);
 
             // Cerrar sesión localmente de todas formas
@@ -37,7 +37,7 @@ export const useAuth = () => {
             dispatch(setVerModalCerrarSesion(false));
             navigate('/iniciar-sesion');
 
-            // ✅ Retornar mensaje de error seguro
+            //  Retornar mensaje de error seguro
             return {
                 exito: false,
                 error: obtenerMensajeError(error, 'Error al cerrar sesión')
@@ -54,12 +54,12 @@ export const useAuth = () => {
             navigate('/registrar');
             return { exito: true };
         } catch (error) {
-            // ✅ Registrar el error de forma segura
+            //  Registrar el error de forma segura
             registrarError('Eliminar cuenta', error);
 
             dispatch(setVerModalEliminarUsuario(false));
 
-            // ✅ Mostrar mensaje de error seguro al usuario
+            //  Mostrar mensaje de error seguro al usuario
             const mensajeSeguro = obtenerMensajeError(
                 error,
                 'Error al eliminar la cuenta. Por favor intenta más tarde'

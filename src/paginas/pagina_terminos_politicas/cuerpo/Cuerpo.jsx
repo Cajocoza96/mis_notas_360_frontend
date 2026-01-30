@@ -11,6 +11,7 @@ export default function Cuerpo() {
     const inforTerminosServicio = infoTerminosPoliticas.terminosDeServicio;
     const inforPoliticaPrivacidad = infoTerminosPoliticas.politicaDePrivacidad;
     const inforEliminarCuenta = infoTerminosPoliticas.eliminarCuenta;
+    const inforProbleConocidos = infoTerminosPoliticas.problemasConocidos;
 
     const location = useLocation();
 
@@ -19,6 +20,8 @@ export default function Cuerpo() {
     const esPoliticaDePrivacidad = location.pathname === "/politica-de-privacidad";
 
     const esInfoEliminarCuenta = location.pathname === "/informacion-eliminar-cuenta";
+
+    const esProblemasConocidos = location.pathname === "/problemas-conocidos";
 
     return (
         <div className="w-[95%] mx-auto p-2
@@ -372,6 +375,87 @@ export default function Cuerpo() {
             )}
 
 
+            {/*Esto es para Problemas conocidos */}
+
+            {esProblemasConocidos && (
+                <div className="flex flex-col gap-4">
+                    <div className="flex flex-col gap-4">
+                        <p className="text-base md:text-lg">
+                            <span>{inforProbleConocidos.texto1}</span> <span><span translate="no">{infoMisNotas360.texto4MisNotas360}</span></span> <span>{inforProbleConocidos.texto1_1}</span>
+                        </p>
+
+                        <div className="flex flex-col gap-2 text-base md:text-lg">
+                            <p className="font-medium">
+                                {inforProbleConocidos.texto2}
+                            </p>
+
+                            <p>
+                                {inforProbleConocidos.texto3}
+                            </p>
+
+                            <p className="font-medium">
+                                {inforProbleConocidos.causa}
+                            </p>
+
+                            <p>
+                                {inforProbleConocidos.texto4}
+                            </p>
+                        </div>
+
+                        <div className="flex flex-col gap-2 text-base md:text-lg">
+                            <p className="font-medium">
+                                {inforProbleConocidos.texto5}
+                            </p>
+
+                            <p>
+                                {inforProbleConocidos.texto6}
+                            </p>
+
+                            <p className="font-medium">
+                                {inforProbleConocidos.causa}
+                            </p>
+
+                            <p>
+                                {inforProbleConocidos.texto7}
+                            </p>
+                        </div>
+
+                        <div className="flex flex-col gap-2 text-base md:text-lg">
+                            <p className="font-medium">
+                                {inforProbleConocidos.texto8}
+                            </p>
+
+                            <p>
+                                {inforProbleConocidos.texto9}
+                            </p>
+
+                            <p className="font-medium">
+                                {inforProbleConocidos.causa}
+                            </p>
+
+                            <p>
+                                {inforProbleConocidos.texto10}
+                            </p>
+                        </div>
+
+                    </div>
+
+                    <div className="flex flex-col gap-2 text-base md:text-lg">
+                        <p className="font-medium">
+                            {inforProbleConocidos.texto11}
+                        </p>
+
+                        <p>
+                            <span>{inforProbleConocidos.texto12}</span> <span className="font-semibold" translate="no">{infoMisNotas360.texto10Correo}</span>
+                        </p>
+
+                        <p className="font-medium">
+                            {inforProbleConocidos.texto13}
+                        </p>
+                    </div>
+                </div>
+
+            )}
 
         </div >
     );

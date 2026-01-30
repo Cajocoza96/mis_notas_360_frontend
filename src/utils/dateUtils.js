@@ -2,8 +2,6 @@
 
 /**
  * Formatea una fecha en formato dd/mm/yyyy
- * @param {string|Date} fecha - Fecha a formatear
- * @returns {string} Fecha formateada en formato dd/mm/yyyy
  */
 export const formatearFecha = (fecha) => {
     if (!fecha) return '';
@@ -16,8 +14,6 @@ export const formatearFecha = (fecha) => {
 
 /**
  * Formatea una fecha con hora en formato 12 horas (AM/PM)
- * @param {string|Date} fecha - Fecha a formatear
- * @returns {string} Fecha y hora formateada (dd/mm/yyyy hh:mm AM/PM)
  */
 export const formatearFechaConHora = (fecha) => {
     if (!fecha) return '';
@@ -43,8 +39,6 @@ export const formatearFechaConHora = (fecha) => {
 
 /**
  * Formatea solo la hora en formato 12 horas (AM/PM)
- * @param {string|Date} fecha - Fecha de la cual extraer la hora
- * @returns {string} Hora formateada (hh:mm AM/PM)
  */
 export const formatearHora = (fecha) => {
     if (!fecha) return '';

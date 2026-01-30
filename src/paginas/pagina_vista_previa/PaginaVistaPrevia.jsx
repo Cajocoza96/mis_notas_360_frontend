@@ -32,7 +32,7 @@ import CargandoNoHayNada from "../../componentes/cargando_no_hay_nada/CargandoNo
 
 export default function PaginaVistaPrevia() {
 
-    // ✅ Hook de reintento inteligente
+    //  Hook de reintento inteligente
     const {
         ejecutarConReintento,
         resetearIntentos,
@@ -60,11 +60,11 @@ export default function PaginaVistaPrevia() {
     const dispatch = useDispatch();
     const notaRef = useRef(null);
 
-    // ✅ Estado local simple para controlar la carga
+    //  Estado local simple para controlar la carga
     const [cargando, setCargando] = useState(true);
-    // ✅ Estado para controlar si hubo error
+    //  Estado para controlar si hubo error
     const [errorCarga, setErrorCarga] = useState(false);
-    // ✅ NUEVO: Estado para identificar si la nota no existe (404)
+    //  NUEVO: Estado para identificar si la nota no existe (404)
     const [notaNoEncontrada, setNotaNoEncontrada] = useState(false);
 
     const { isOnline, justReconnected, resetReconnectionState } = useConexionInternet();
@@ -85,7 +85,7 @@ export default function PaginaVistaPrevia() {
         }
     }, [id]);
 
-    // ✅ NUEVO: Reintentar cargar cuando se recupere la conexión
+    //  NUEVO: Reintentar cargar cuando se recupere la conexión
     useEffect(() => {
         // Si estaba sin conexión y ahora hay conexión, reintentar carga
         // También reintenta si hubo error previo
@@ -102,21 +102,21 @@ export default function PaginaVistaPrevia() {
 
             setErrorCarga(false);
 
-            resetearIntentos(); // ✅ Resetear intentos en éxito
+            resetearIntentos(); //  Resetear intentos en éxito
 
-            // ✅ VALIDACIÓN: Si no existe, redirigir ANTES de actualizar estados
+            //  VALIDACIÓN: Si no existe, redirigir ANTES de actualizar estados
             if (!anotacion || !anotacion.id) {
                 errorDesarrollo('❌ Anotación no encontrada');
-                setNotaNoEncontrada(true); // ✅ Marcar como no encontrada
+                setNotaNoEncontrada(true); //  Marcar como no encontrada
                 navigate('/nota-no-encontrada', { replace: true });
                 return;
             }
 
-            // ✅ Primero: Actualizar Redux con toda la información
+            //  Primero: Actualizar Redux con toda la información
             dispatch(setAnotacionActual(anotacion));
             dispatch(setNota(anotacion.nota || ""));
 
-            // ✅ IMPORTANTE: Establecer el orden ANTES de cargar las tareas
+            //  IMPORTANTE: Establecer el orden ANTES de cargar las tareas
             dispatch(setOrdenTareasSeleccionado(anotacion.orden_tareas || 'creacion'));
 
             // Mapear las tareas de la BD al formato del frontend
@@ -124,20 +124,20 @@ export default function PaginaVistaPrevia() {
                 id: t.id,
                 texto: t.texto_tarea,
                 completada: t.tarea_completada === true || t.tarea_completada === 1,
-                orden_creacion: t.orden_creacion // ✅ Agregar orden_creacion
+                orden_creacion: t.orden_creacion //  Agregar orden_creacion
             }));
 
             dispatch(setTareas(tareasFormateadas));
 
-            // ✅ Esperar un momento para que React procese los cambios
+            //  Esperar un momento para que React procese los cambios
             await new Promise(resolve => setTimeout(resolve, 0));
 
-            // ✅ Terminar carga - el ref se llenará automáticamente en CuerpoEdicion
+            //  Terminar carga - el ref se llenará automáticamente en CuerpoEdicion
             setCargando(false);
         } catch (error) {
             errorDesarrollo('Error al cargar la anotación para vista previa:', error);
 
-            // ✅ CRÍTICO: Verificar si es un error 404 (nota no encontrada)
+            //  CRÍTICO: Verificar si es un error 404 (nota no encontrada)
             if (error?.response?.status === 404 || error?.status === 404) {
                 setNotaNoEncontrada(true);
                 navigate('/nota-no-encontrada', { replace: true });
@@ -166,9 +166,9 @@ export default function PaginaVistaPrevia() {
 
     // En caso de error y online volver a cargar
     useEffect(() => {
-        // ✅ CRÍTICO: No reintentar si la nota no fue encontrada
+        //  CRÍTICO: No reintentar si la nota no fue encontrada
         if (errorCarga && isOnline && !notaNoEncontrada) {
-            // ✅ Ejecutar reintento inteligente
+            //  Ejecutar reintento inteligente
             ejecutarConReintento(
                 cargarAnotacion,
                 isOnline,
@@ -182,10 +182,10 @@ export default function PaginaVistaPrevia() {
     })
 
 
-    // ✅ SOLUCIÓN: Efecto para recargar cuando se restablece la conexión
+    //  SOLUCIÓN: Efecto para recargar cuando se restablece la conexión
     useEffect(() => {
         if (justReconnected && id && esModoVistaPrevia && !notaNoEncontrada) {
-            // ✅ CRÍTICO: Forzar estado de carga inmediatamente
+            //  CRÍTICO: Forzar estado de carga inmediatamente
             // Esto evita el parpadeo de "sin título"
             setCargando(true);
             setErrorCarga(false);
@@ -208,13 +208,13 @@ export default function PaginaVistaPrevia() {
         }
     }, [justReconnected]);
 
-    // ✅ Efecto para resetear intentos al cambiar de ruta
+    //  Efecto para resetear intentos al cambiar de ruta
     useEffect(() => {
         resetearIntentos();
-        setNotaNoEncontrada(false); // ✅ Resetear estado al cambiar de ruta
+        setNotaNoEncontrada(false); //  Resetear estado al cambiar de ruta
     }, [location.pathname]);
 
-    // ✅ Limpiar timeouts al desmontar
+    //  Limpiar timeouts al desmontar
     useEffect(() => {
         return () => {
             limpiar();
@@ -224,7 +224,7 @@ export default function PaginaVistaPrevia() {
     useEffect(() => {
         if (justReconnected) {
             setErrorCarga(false);
-            resetearIntentos(); // ✅ Resetear intentos al reconectar
+            resetearIntentos(); //  Resetear intentos al reconectar
         }
     }, [justReconnected]);
 
@@ -248,7 +248,7 @@ export default function PaginaVistaPrevia() {
         }
     }
 
-    // ✅ Determinar qué mostrar según el estado
+    //  Determinar qué mostrar según el estado
     const renderContenido = () => {
         // Sin conexión o recién reconectado (cargando datos) → mostrar skeleton
         if (!isOnline || (justReconnected && cargando)) {
@@ -264,7 +264,7 @@ export default function PaginaVistaPrevia() {
             return <SkeletonCrearEditPrevia />;
         }
 
-        // ✅ Si hubo error con conexión → mostrar mensaje de error
+        //  Si hubo error con conexión → mostrar mensaje de error
         if (errorCarga && isOnline) {
             return (
                 <div className="flex-1 flex items-center justify-center">

@@ -14,7 +14,7 @@ export default function Tarea({ tarea, esModoVistaPrevia,
 
     const dispatch = useDispatch();
 
-    // ✅ Obtener estado actual desde Redux
+    //  Obtener estado actual desde Redux
     const { tareas } = useSelector((state) => state.tareas);
 
     const handleTareaLista = () => {
@@ -22,7 +22,7 @@ export default function Tarea({ tarea, esModoVistaPrevia,
         if (!esModoVistaPrevia) {
             dispatch(toggleCompletarTarea(tarea.id));
 
-            // ✅ Agregar al historial DESPUÉS de cambiar el estado de completada
+            //  Agregar al historial DESPUÉS de cambiar el estado de completada
             setTimeout(() => {
                 if (addToHistoryImmediate && tituloRef?.current && notaRef?.current) {
                     const nuevoEstado = {

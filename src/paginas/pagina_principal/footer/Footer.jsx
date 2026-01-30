@@ -55,7 +55,7 @@ export default function Footer() {
         }
     }
 
-    // ✅ Simplificado: solo actualizar preferencia, Cuerpo.jsx se encarga de recargar
+    //  Simplificado: solo actualizar preferencia, Cuerpo.jsx se encarga de recargar
     const handleToggleFavoritos = async () => {
         const nuevoValor = !verSoloFavoritos;
 
@@ -66,8 +66,8 @@ export default function Footer() {
                 // Guardar en el backend primero
                 await dispatch(guardarVerSoloFavoritos(nuevoValor)).unwrap();
             }
-            // ✅ El useEffect de Cuerpo.jsx detectará el cambio y recargará automáticamente
-            // NO necesitas llamar a cargarAnotaciones() aquí
+            //  El useEffect de Cuerpo.jsx detectará el cambio y recargará automáticamente
+            // NO se necesita llamar a cargarAnotaciones() aquí
         } catch (error) {
             errorDesarrollo('Error al cambiar filtro de favoritos:', error);
         }

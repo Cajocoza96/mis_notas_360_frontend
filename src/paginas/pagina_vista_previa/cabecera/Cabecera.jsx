@@ -35,7 +35,7 @@ export default function Cabecera({ esModoVistaPrevia }) {
 
     const verInputBusqueda = useSelector((state) => state.tareas.verInputBusqueda);
 
-    // ✅ Obtener anotación actual
+    //  Obtener anotación actual
     const { anotacionActual } = useSelector((state) => state.anotaciones);
 
     const [actualizandoFavorito, setActualizandoFavorito] = useState(false);
@@ -103,9 +103,9 @@ export default function Cabecera({ esModoVistaPrevia }) {
 
 
         } catch (error) {
-            // ✅ DETECTAR ERROR DE RATE LIMIT
+            //  DETECTAR ERROR DE RATE LIMIT
             if (error.code === 'RATE_LIMIT_EXCEEDED') {
-                // ✅ Mostrar Toast con el mensaje del backend (detail)
+                //  Mostrar Toast con el mensaje del backend (detail)
                 // El mensaje ya viene en error.message desde anotacionesService
                 dispatch(setMensajeToast(error.message));
                 dispatch(setVerToast(true));
@@ -127,12 +127,12 @@ export default function Cabecera({ esModoVistaPrevia }) {
         }
     };
 
-    // ✅ No mostrar nada mientras está cargando localmente
+    //  No mostrar nada mientras está cargando localmente
     if (cargando) {
         return null;
     }
 
-    // ✅ No mostrar nada mientras se está redirigiendo
+    //  No mostrar nada mientras se está redirigiendo
     if (!anotacionActual) {
         return null;
     }

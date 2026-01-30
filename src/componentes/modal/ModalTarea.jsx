@@ -7,7 +7,7 @@ import { motion } from "framer-motion";
 
 import { setVerToast, setMensajeToast } from "../../store/accesoSlice";
 
-// ✅ NUEVO: Recibir addToHistoryImmediate como prop
+// Recibir addToHistoryImmediate como prop
 export default function ModalTarea({ addToHistoryImmediate, tituloRef, notaRef }) {
 
     const mostrarToast = (mensaje) => {
@@ -78,7 +78,7 @@ export default function ModalTarea({ addToHistoryImmediate, tituloRef, notaRef }
         initialSetupDoneRef.current = false;
     }
 
-    // ✅ Función auxiliar para guardar en el historial
+    //  Función auxiliar para guardar en el historial
     const guardarEnHistorial = (nuevasTareas) => {
         if (addToHistoryImmediate && tituloRef && notaRef) {
             const tituloActual = tituloRef.current?.innerText || titulo || "";
@@ -100,7 +100,7 @@ export default function ModalTarea({ addToHistoryImmediate, tituloRef, notaRef }
             }
 
             if (modoModal === 'crear') {
-                // ✅ Calcular el siguiente orden_creacion
+                //  Calcular el siguiente orden_creacion
                 const siguienteOrdenCreacion = tareas.length > 0
                     ? Math.max(...tareas.map(t => t.orden_creacion ?? -1)) + 1
                     : 0;
@@ -112,24 +112,24 @@ export default function ModalTarea({ addToHistoryImmediate, tituloRef, notaRef }
                     orden_creacion: siguienteOrdenCreacion
                 };
 
-                // ✅ Crear nuevo array de tareas con la nueva tarea
+                //  Crear nuevo array de tareas con la nueva tarea
                 const nuevasTareas = [...tareas, nuevaTarea];
 
-                // ✅ Guardar en historial ANTES de despachar
+                //  Guardar en historial ANTES de despachar
                 guardarEnHistorial(nuevasTareas);
 
                 // Despachar acción
                 dispatch(agregarTarea(textoTarea));
 
             } else if (modoModal === 'editar' && tareaActual) {
-                // ✅ Crear nuevo array con la tarea editada
+                //  Crear nuevo array con la tarea editada
                 const nuevasTareas = tareas.map(t =>
                     t.id === tareaActual.id
                         ? { ...t, texto: textoTarea }
                         : t
                 );
 
-                // ✅ Guardar en historial ANTES de despachar
+                //  Guardar en historial ANTES de despachar
                 guardarEnHistorial(nuevasTareas);
 
                 // Despachar acción
@@ -142,10 +142,10 @@ export default function ModalTarea({ addToHistoryImmediate, tituloRef, notaRef }
 
     const handleEliminar = () => {
         if (tareaActual) {
-            // ✅ Crear nuevo array sin la tarea eliminada
+            //  Crear nuevo array sin la tarea eliminada
             const nuevasTareas = tareas.filter(t => t.id !== tareaActual.id);
 
-            // ✅ Guardar en historial ANTES de despachar
+            //  Guardar en historial ANTES de despachar
             guardarEnHistorial(nuevasTareas);
 
             // Despachar acción

@@ -20,7 +20,7 @@ export default function PaginaBienvenida() {
     const handleNavegarRegistrarCuenta = () => navigate("/registrar");
     const handleNavegarInicioSesion = () => navigate("/iniciar-sesion");
 
-    // ✅ Obtener estado de autenticación desde Redux
+    //  Obtener estado de autenticación desde Redux
     const { autenticado } = useSelector((state) => state.auth);
     const verMenuHamburguesa = useSelector((state) => state.layout.verMenuHamburguesa);
 

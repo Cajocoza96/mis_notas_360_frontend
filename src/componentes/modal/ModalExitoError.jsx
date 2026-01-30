@@ -13,14 +13,14 @@ export default function ModalExitoError({ animado }) {
 
     const dispatch = useDispatch();
 
-    // ✅ Obtener el estado desde Redux
+    //  Obtener el estado desde Redux
     const {
         mostrarModalNotificacion,
         mensajeNotificacion,
         esErrorNotificacion
     } = useSelector((state) => state.anotaciones);
 
-    // ✅ Si no debe mostrarse, retornar null
+    //  Si no debe mostrarse, retornar null
     if (!mostrarModalNotificacion) {
         return null;
     }

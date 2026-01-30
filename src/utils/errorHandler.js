@@ -26,7 +26,6 @@ export const errorDesarrollo = (...args) => {
 
 /**
  * Obtiene un mensaje de error seguro para mostrar al usuario
- * 🔥 CAMBIO: Ahora siempre muestra el mensaje del backend si existe
  */
 export const obtenerMensajeError = (error, mensajeGenerico = 'Ocurrió un error') => {
     // Si el error tiene un mensaje, lo mostramos (viene del backend)

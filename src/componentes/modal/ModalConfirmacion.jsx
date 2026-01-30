@@ -99,7 +99,7 @@ export default function ModalConfirmacion({ textoPregunta, textoAccion, restaura
     const verModalCerrarSesion = useSelector((state) => state.acceso.verModalCerrarSesion);
 
 
-    // ✅ Resetear estados cuando el modal se abre
+    //  Resetear estados cuando el modal se abre
     useEffect(() => {
         const algunModalAbierto = verModalCrearNota || verModalPapeleraNota ||
             verModalPapeleraTodasLasNotas || verModalRestaurarNota ||
@@ -150,7 +150,7 @@ export default function ModalConfirmacion({ textoPregunta, textoAccion, restaura
             // Cerrar el modal
             dispatch(toggleVerModalPapeleraNota());
 
-            // ✅ Mostrar notificación de éxito para enviar a papelera
+            //  Mostrar notificación de éxito para enviar a papelera
             dispatch(mostrarNotificacion({
                 mensaje: '¡Nota enviada a papelera!',
                 esError: false
@@ -175,7 +175,7 @@ export default function ModalConfirmacion({ textoPregunta, textoAccion, restaura
             // Cerrar el modal
             dispatch(toggleVerModalPapeleraNota());
 
-            // ✅ Mostrar notificación de error
+            //  Mostrar notificación de error
             dispatch(mostrarNotificacion({
                 mensaje: '¡Error al enviar la nota a la papelera!',
                 esError: true
@@ -204,7 +204,7 @@ export default function ModalConfirmacion({ textoPregunta, textoAccion, restaura
             const data = await moverTodasAPapelera(anotacionesSeleccionadas, false);
 
             await actualizarContadores();
-            logDesarrollo('✅ Notas movidas a papelera:', data);
+            logDesarrollo(' Notas movidas a papelera:', data);
 
             // Eliminar las anotaciones de la vista
             dispatch(eliminarMultiplesAnotaciones(anotacionesSeleccionadas));
@@ -265,7 +265,7 @@ export default function ModalConfirmacion({ textoPregunta, textoAccion, restaura
             // Cerrar el modal
             dispatch(toggleVerModalRestaurarNota());
 
-            // ✅ Mostrar notificación de éxito para restaurar
+            //  Mostrar notificación de éxito para restaurar
             dispatch(mostrarNotificacion({
                 mensaje: '¡Nota restaurada!',
                 esError: false
@@ -281,7 +281,7 @@ export default function ModalConfirmacion({ textoPregunta, textoAccion, restaura
             // Cerrar el modal
             dispatch(toggleVerModalRestaurarNota());
 
-            // ✅ Mostrar notificación de error
+            //  Mostrar notificación de error
             dispatch(mostrarNotificacion({
                 mensaje: '¡Error al restaurar la nota!',
                 esError: true
@@ -312,11 +312,11 @@ export default function ModalConfirmacion({ textoPregunta, textoAccion, restaura
         try {
             let data;
 
-            // ✅ Si estamos en papelera, usar vaciarPorId (solo elimina si está en papelera)
+            //  Si estamos en papelera, usar vaciarPorId (solo elimina si está en papelera)
             if (esPapelera) {
                 data = await vaciarPorId(anotacionId);
             } else {
-                // ✅ Si estamos en otra ruta, usar eliminarDefinitivamente (solo elimina si NO está en papelera)
+                //  Si estamos en otra ruta, usar eliminarDefinitivamente (solo elimina si NO está en papelera)
                 data = await eliminarDefinitivamente(anotacionId);
             }
 
@@ -328,7 +328,7 @@ export default function ModalConfirmacion({ textoPregunta, textoAccion, restaura
             // Cerrar el modal
             dispatch(toggleVerModalEliminarNotaDefinitiva());
 
-            // ✅ Mostrar notificación de éxito para enviar a papelera
+            //  Mostrar notificación de éxito para enviar a papelera
             dispatch(mostrarNotificacion({
                 mensaje: '¡Nota eliminada definitivamente!',
                 esError: false
@@ -351,7 +351,7 @@ export default function ModalConfirmacion({ textoPregunta, textoAccion, restaura
             // Cerrar el modal
             dispatch(toggleVerModalEliminarNotaDefinitiva());
 
-            // ✅ Mostrar notificación de error
+            //  Mostrar notificación de error
             dispatch(mostrarNotificacion({
                 mensaje: '¡Error al eliminar la nota definitivamente!',
                 esError: true
@@ -375,7 +375,7 @@ export default function ModalConfirmacion({ textoPregunta, textoAccion, restaura
             if (location.pathname.includes('/papelera')) {
                 const data = await vaciarPapelera();
 
-                logDesarrollo('✅ Han sido eliminadas definitivamente todas las notas desde la papelera:', data);
+                logDesarrollo(' Han sido eliminadas definitivamente todas las notas desde la papelera:', data);
 
                 // Actualizar Redux: limpiar todas las anotaciones
                 dispatch(eliminarTodasAnotaciones());
@@ -390,7 +390,7 @@ export default function ModalConfirmacion({ textoPregunta, textoAccion, restaura
 
                 const data = await eliminarTodasDefinitivamente(anotacionesSeleccionadas, false);
 
-                logDesarrollo('✅ Notas eliminadas definitivamente:', data);
+                logDesarrollo(' Notas eliminadas definitivamente:', data);
 
                 // Eliminar las anotaciones de la vista
                 dispatch(eliminarMultiplesAnotaciones(anotacionesSeleccionadas));
@@ -490,7 +490,7 @@ export default function ModalConfirmacion({ textoPregunta, textoAccion, restaura
 
     // Función para manejar la acción de Aceptar
     const handleAceptar = async () => {
-        // ✅ Marcar que el proceso ha iniciado
+        //  Marcar que el proceso ha iniciado
         setProcesando(true);
 
         if (verModalCrearNota) {

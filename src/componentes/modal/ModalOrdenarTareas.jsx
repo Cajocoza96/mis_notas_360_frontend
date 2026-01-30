@@ -18,7 +18,7 @@ export default function ModalOrdenarTareas() {
     const handleSeleccionOrden = (tipoOrden) => {
         dispatch(setOrdenTareasTemporal(tipoOrden));
         
-        // ✅ Si ya estaba seleccionado antes, aplicar inmediatamente
+        //  Si ya estaba seleccionado antes, aplicar inmediatamente
         if (tipoOrden === ordenTareasSeleccionado) {
             dispatch(aplicarOrdenTareas());
             dispatch(toggleVerModalOrdenTareas());
@@ -26,7 +26,7 @@ export default function ModalOrdenarTareas() {
     }
 
     const handleAceptar = () => {
-        // ✅ Solo aplicar si es diferente al actual
+        //  Solo aplicar si es diferente al actual
         if (ordenTareasTemporal !== ordenTareasSeleccionado) {
             dispatch(aplicarOrdenTareas());
         }

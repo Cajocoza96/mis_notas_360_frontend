@@ -77,7 +77,7 @@ export default function BuscarContenido() {
         coincidenciasRef.current = [];
     };
 
-    // ✅ Función para guardar la posición del cursor
+    //  Función para guardar la posición del cursor
     const guardarPosicionCursor = (elemento) => {
         const selection = window.getSelection();
         if (!selection.rangeCount) return null;
@@ -91,7 +91,7 @@ export default function BuscarContenido() {
         return offset;
     };
 
-    // ✅ Función para restaurar la posición del cursor
+    //  Función para restaurar la posición del cursor
     const restaurarPosicionCursor = (elemento, offset) => {
         if (offset === null || offset === undefined) return;
 
@@ -143,7 +143,7 @@ export default function BuscarContenido() {
         const resaltarTexto = (elemento, texto, campo, tareaId = null) => {
             if (!texto) return;
 
-            // ✅ Guardar posición del cursor ANTES de modificar
+            //  Guardar posición del cursor ANTES de modificar
             const esFocused = document.activeElement === elemento;
             const cursorOffset = esFocused ? guardarPosicionCursor(elemento) : null;
 
@@ -187,7 +187,7 @@ export default function BuscarContenido() {
             elemento.innerHTML = "";
             fragments.forEach(frag => elemento.appendChild(frag));
 
-            // ✅ Restaurar posición del cursor DESPUÉS de modificar
+            //  Restaurar posición del cursor DESPUÉS de modificar
             if (esFocused && cursorOffset !== null) {
                 requestAnimationFrame(() => {
                     restaurarPosicionCursor(elemento, cursorOffset);
@@ -249,7 +249,7 @@ export default function BuscarContenido() {
         if (coincidencia && coincidencia.elemento) {
             coincidencia.elemento.classList.add('busqueda-highlight-active');
 
-            // ✅ Hacer scroll solo dentro del contenedor, no de toda la página
+            //  Hacer scroll solo dentro del contenedor, no de toda la página
             // Buscar el contenedor con scroll (CuerpoEdicion o Cabecera)
             let contenedor = coincidencia.elemento.closest('.overflow-y-auto');
 
@@ -304,7 +304,7 @@ export default function BuscarContenido() {
         scrollACoincidencia(anterior - 1);
     };
 
-    // ✅ Detectar cuando el usuario está escribiendo
+    //  Detectar cuando el usuario está escribiendo
     useEffect(() => {
         const handleInput = () => {
             setIsUserTyping(true);
@@ -352,7 +352,7 @@ export default function BuscarContenido() {
         };
     }, []);
 
-    // ✅ Efecto que tiene objetivo de actualizar búsqueda cuando cambia el contenido (pero NO cuando el usuario está escribiendo)
+    //  Efecto que tiene objetivo de actualizar búsqueda cuando cambia el contenido (pero NO cuando el usuario está escribiendo)
     useEffect(() => {
         if (verInputBusqueda && terminoBusqueda && !isUserTyping) {
             buscarCoincidencias(terminoBusqueda);

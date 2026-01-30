@@ -16,11 +16,11 @@ import { toggleVerMenuHamburguesa } from "../../../../store/layoutSlice";
 import { validarFortalezaContrasena, obtenerMensajesRequisitos } from "../../../../utils/validacionContrasenaUtils";
 import { obtenerMensajeError, registrarError, logDesarrollo } from "../../../../utils/errorHandler";
 
-// ✅ CONSTANTES DE LÍMITES
+//  CONSTANTES DE LÍMITES
 const LIMITE_USUARIO = 100;
 const LIMITE_CONTRASENA = 255;
 
-// ✅ FUNCIÓN PARA LIMPIAR Y VALIDAR TEXTO PLANO
+//  FUNCIÓN PARA LIMPIAR Y VALIDAR TEXTO PLANO
 const limpiarTextoPlano = (texto) => {
     // Eliminar caracteres de control y líneas nuevas
     return texto
@@ -56,20 +56,20 @@ export default function CorreoContrasena({ textoContrasena, restablecer, noResta
     const esRegistro = location.pathname === "/registrar";
     const textoBoton = esRegistro ? infoRegIniSesion.registrate.accionBoton : infoRegIniSesion.iniciar.accionBoton;
 
-    // ✅ REF para saber si estamos navegando exitosamente
+    //  REF para saber si estamos navegando exitosamente
     const navegandoExitoso = useRef(false);
 
     const MiBoton = motion.create(BotonAccion);
 
-    // ✅ LEER ESTADO GLOBAL DE REDUX
+    //  LEER ESTADO GLOBAL DE REDUX
     const { autenticando } = useSelector((state) => state.acceso);
 
-    // ✅ RESETEAR ESTADO AL CAMBIAR DE RUTA
+    //  RESETEAR ESTADO AL CAMBIAR DE RUTA
     useEffect(() => {
         dispatch(finalizarAutenticacion());
     }, [location.pathname, dispatch]);
 
-    // ✅ RESETEAR ESTADO AL DESMONTAR COMPONENTE
+    //  RESETEAR ESTADO AL DESMONTAR COMPONENTE
     useEffect(() => {
         return () => {
             dispatch(finalizarAutenticacion());
@@ -101,7 +101,7 @@ export default function CorreoContrasena({ textoContrasena, restablecer, noResta
         }, 3000);
     };
 
-    // ✅ MANEJADOR PARA NOMBRE DE USUARIO CON VALIDACIONES
+    //  MANEJADOR PARA NOMBRE DE USUARIO CON VALIDACIONES
     const handleUsuarioChange = (e) => {
         let valor = e.target.value;
 
@@ -117,7 +117,7 @@ export default function CorreoContrasena({ textoContrasena, restablecer, noResta
         setNombreUsuario(valor);
     };
 
-    // ✅ MANEJADOR PARA CONTRASEÑA CON VALIDACIONES
+    //  MANEJADOR PARA CONTRASEÑA CON VALIDACIONES
     const handleContrasenaChange = (e) => {
         let valor = e.target.value;
 
@@ -133,7 +133,7 @@ export default function CorreoContrasena({ textoContrasena, restablecer, noResta
         setContrasena(valor);
     };
 
-    // ✅ MANEJADOR PARA PEGADO EN NOMBRE DE USUARIO
+    //  MANEJADOR PARA PEGADO EN NOMBRE DE USUARIO
     const handleUsuarioPaste = (e) => {
         e.preventDefault();
 
@@ -152,7 +152,7 @@ export default function CorreoContrasena({ textoContrasena, restablecer, noResta
         setNombreUsuario(textoPegado);
     };
 
-    // ✅ MANEJADOR PARA PEGADO EN CONTRASEÑA
+    //  MANEJADOR PARA PEGADO EN CONTRASEÑA
     const handleContrasenaPaste = (e) => {
         e.preventDefault();
 
@@ -184,7 +184,7 @@ export default function CorreoContrasena({ textoContrasena, restablecer, noResta
 
     const handleSubmit = async () => {
 
-        // ✅ VALIDAR SI YA HAY AUTENTICACIÓN EN CURSO
+        //  VALIDAR SI YA HAY AUTENTICACIÓN EN CURSO
         if (autenticando) {
             mostrarToast("Ya hay un proceso de autenticación en curso");
             return;
@@ -215,7 +215,7 @@ export default function CorreoContrasena({ textoContrasena, restablecer, noResta
             }
         }
 
-        // ✅ USAR DISPATCH DE REDUX
+        //  USAR DISPATCH DE REDUX
         dispatch(iniciarAutenticacion('local'));
 
         setCargando(true);
@@ -228,7 +228,7 @@ export default function CorreoContrasena({ textoContrasena, restablecer, noResta
                     dispatch(toggleVerMenuHamburguesa());
                 }
 
-                // ✅ Marcar que la navegación es exitosa
+                //  Marcar que la navegación es exitosa
                 navegandoExitoso.current = true;
 
                 setTimeout(() => {
@@ -242,7 +242,7 @@ export default function CorreoContrasena({ textoContrasena, restablecer, noResta
                     dispatch(toggleVerMenuHamburguesa());
                 }
 
-                // ✅ Marcar que la navegación es exitosa
+                //  Marcar que la navegación es exitosa
                 navegandoExitoso.current = true;
 
                 setTimeout(() => {
@@ -257,7 +257,7 @@ export default function CorreoContrasena({ textoContrasena, restablecer, noResta
             );
             mostrarToast(mensajeSeguro);
 
-            // ✅ USAR DISPATCH DE REDUX
+            //  USAR DISPATCH DE REDUX
             dispatch(finalizarAutenticacion());
         } finally {
             setCargando(false);
@@ -266,7 +266,7 @@ export default function CorreoContrasena({ textoContrasena, restablecer, noResta
 
     const handleRestablecerContrasena = async () => {
 
-        // ✅ VALIDAR SI YA HAY AUTENTICACIÓN EN CURSO
+        //  VALIDAR SI YA HAY AUTENTICACIÓN EN CURSO
         if (autenticando) {
             mostrarToast("Ya hay un proceso de autenticación en curso");
             return;
@@ -289,7 +289,7 @@ export default function CorreoContrasena({ textoContrasena, restablecer, noResta
             return;
         }
 
-        // ✅ USAR DISPATCH DE REDUX
+        //  USAR DISPATCH DE REDUX
         dispatch(iniciarAutenticacion('local'));
 
         setCargando(true);
@@ -298,7 +298,7 @@ export default function CorreoContrasena({ textoContrasena, restablecer, noResta
             await restablecerContrasena(nombreUsuario, contrasena);
             mostrarToast("Contraseña restablecida exitosamente");
 
-            // ✅ Marcar que la navegación es exitosa
+            //  Marcar que la navegación es exitosa
             navegandoExitoso.current = true;
 
             setTimeout(() => {
@@ -313,7 +313,7 @@ export default function CorreoContrasena({ textoContrasena, restablecer, noResta
             );
             mostrarToast(mensajeSeguro);
 
-            // ✅ USAR DISPATCH DE REDUX
+            //  USAR DISPATCH DE REDUX
             dispatch(finalizarAutenticacion());
 
         } finally {
@@ -342,7 +342,7 @@ export default function CorreoContrasena({ textoContrasena, restablecer, noResta
         if (blurTimerUsuario.current) clearTimeout(blurTimerUsuario.current);
         if (blurTimerContrasena.current) clearTimeout(blurTimerContrasena.current);
 
-        // ✅ VALIDAR QUE NO ESTÉ CARGANDO NI AUTENTICANDO
+        //  VALIDAR QUE NO ESTÉ CARGANDO NI AUTENTICANDO
         if (!cargando && !autenticando) {
             callback();
         }

@@ -27,7 +27,7 @@ export default function ModalGenerarContenido({ tituloRef, notaRef, addToHistory
 
     const MAX_CARACTERES = 255;
 
-    // ✅ Calcular caracteres actuales
+    //  Calcular caracteres actuales
     const caracteresActuales = promptUsuario.length;
     const caracteresRestantes = MAX_CARACTERES - caracteresActuales;
     const limiteAlcanzado = caracteresActuales >= MAX_CARACTERES;
@@ -56,7 +56,7 @@ export default function ModalGenerarContenido({ tituloRef, notaRef, addToHistory
         dispatch(setVerModalGenerarContenido(false));
     };
 
-    // ✅ Manejar cambios en el textarea con límite
+    //  Manejar cambios en el textarea con límite
     const handleTextareaChange = (e) => {
         const nuevoTexto = e.target.value;
         
@@ -66,7 +66,7 @@ export default function ModalGenerarContenido({ tituloRef, notaRef, addToHistory
         }
     };
 
-    // ✅ Manejar pegado con límite
+    //  Manejar pegado con límite
     const handlePaste = (e) => {
         e.preventDefault();
         
@@ -126,7 +126,7 @@ export default function ModalGenerarContenido({ tituloRef, notaRef, addToHistory
                     dispatch(setNota('')); // Nota vacía
                     dispatch(setTareas(tareasFormateadas));
 
-                    // ✅ Esperar a que los refs se actualicen y agregar al historial
+                    //  Esperar a que los refs se actualicen y agregar al historial
                     setTimeout(() => {
                         if (addToHistoryImmediate && tituloRef?.current && notaRef?.current) {
                             addToHistoryImmediate({
@@ -143,7 +143,7 @@ export default function ModalGenerarContenido({ tituloRef, notaRef, addToHistory
                     dispatch(setNota(result.nota));
                     dispatch(setTareas([])); // Tareas vacías
 
-                    // ✅ Esperar a que los refs se actualicen y agregar al historial
+                    //  Esperar a que los refs se actualicen y agregar al historial
                     setTimeout(() => {
                         if (addToHistoryImmediate && tituloRef?.current && notaRef?.current) {
                             addToHistoryImmediate({
@@ -227,7 +227,7 @@ export default function ModalGenerarContenido({ tituloRef, notaRef, addToHistory
                                 placeholder="Ej: Dame los pasos para hacer flexiones / Escribe un poema sobre el mar / Investiga sobre la fotosíntesis"
                             />
 
-                            {/* ✅ Contador de caracteres */}
+                            {/*  Contador de caracteres */}
                             <div className="px-2 pb-2 z-10 w-full">
                                 <p className={`text-sm md:text-base text-right
                                             ${limiteAlcanzado 

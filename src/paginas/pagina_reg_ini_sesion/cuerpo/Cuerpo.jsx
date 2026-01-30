@@ -27,30 +27,30 @@ export default function Cuerpo() {
 
     const [fbSDKLoaded, setFbSDKLoaded] = useState(false);
 
-    // ✅ ESTADO UNIFICADO PARA CONTROLAR PROCESOS DE AUTENTICACIÓN
+    //  ESTADO UNIFICADO PARA CONTROLAR PROCESOS DE AUTENTICACIÓN
     const { autenticando, tipoAutenticacion } = useSelector((state) => state.acceso);
 
     const [esHTTPS, setEsHTTPS] = useState(false);
 
-    // ✅ REF para saber si estamos navegando exitosamente
+    //  REF para saber si estamos navegando exitosamente
     const navegandoExitoso = useRef(false);
 
     const esRegistro = location.pathname === "/registrar";
     const textoAccion = esRegistro ? infoRegIniSesion.registrate.accionCuenta : infoRegIniSesion.iniciar.accionCuenta;
 
-    // ✅ Verificar si estamos en HTTPS
+    //  Verificar si estamos en HTTPS
     useEffect(() => {
         setEsHTTPS(window.location.protocol === 'https:');
     }, []);
 
-    // ✅ RESETEAR ESTADO AL CAMBIAR DE RUTA
+    //  RESETEAR ESTADO AL CAMBIAR DE RUTA
     useEffect(() => {
         if (!navegandoExitoso.current) {
             dispatch(finalizarAutenticacion());
         }
     }, [location.pathname, dispatch]);
 
-    // ✅ RESETEAR ESTADO AL DESMONTAR COMPONENTE
+    //  RESETEAR ESTADO AL DESMONTAR COMPONENTE
     useEffect(() => {
         return () => {
             if (!navegandoExitoso.current) {
@@ -59,7 +59,7 @@ export default function Cuerpo() {
         };
     }, [dispatch]);
 
-    // ✅ Cargar Facebook SDK
+    //  Cargar Facebook SDK
     useEffect(() => {
         if (window.FB) {
             setFbSDKLoaded(true);
@@ -79,7 +79,7 @@ export default function Cuerpo() {
                 version: 'v18.0'
             });
             setFbSDKLoaded(true);
-            //logDesarrollo('✅ Facebook SDK cargado');
+            //logDesarrollo(' Facebook SDK cargado');
         };
 
         const script = document.createElement('script');
@@ -108,19 +108,19 @@ export default function Cuerpo() {
         dispatch(toggleVerModalRestablecerContrasena());
     };
 
-    // ✅ GOOGLE LOGIN CON REDIRECT (ESTÁNDAR PROFESIONAL)
+    //  GOOGLE LOGIN CON REDIRECT (ESTÁNDAR PROFESIONAL)
     const loginGoogle = useGoogleLogin({
         onSuccess: async (tokenResponse) => {
             dispatch(iniciarAutenticacion('google'));
             try {
-                // ✅ Enviar access_token al backend
+                //  Enviar access_token al backend
                 await autenticarConGoogle(tokenResponse.access_token);
 
                 if (verMenuHamburguesa) {
                     dispatch(toggleVerMenuHamburguesa());
                 }
 
-                // ✅ Marcar que la navegación es exitosa
+                //  Marcar que la navegación es exitosa
                 navegandoExitoso.current = true;
 
                 setTimeout(() => {
@@ -138,12 +138,12 @@ export default function Cuerpo() {
             mostrarToast("Error al iniciar sesión con Google");
             dispatch(finalizarAutenticacion());
         },
-        // ✅ MODO REDIRECT PROFESIONAL
+        //  MODO REDIRECT PROFESIONAL
         ux_mode: 'redirect',
         redirect_uri: window.location.origin + (esRegistro ? '/registrar' : '/iniciar-sesion')
     });
 
-    // ✅ MANEJADOR PARA GOOGLE CON VALIDACIÓN
+    //  MANEJADOR PARA GOOGLE CON VALIDACIÓN
     const handleGoogleLogin = () => {
         if (autenticando) {
             mostrarToast(`Ya hay un proceso de autenticación en curso (${tipoAutenticacion})`);
@@ -152,7 +152,7 @@ export default function Cuerpo() {
         loginGoogle();
     };
 
-    // ✅ AUTENTICACIÓN SEGURA CON FACEBOOK
+    //  AUTENTICACIÓN SEGURA CON FACEBOOK
     const handleFacebookLogin = () => {
         if (autenticando) {
             mostrarToast(`Ya hay un proceso de autenticación en curso (${tipoAutenticacion})`);
@@ -173,19 +173,19 @@ export default function Cuerpo() {
 
         window.FB.login((response) => {
             if (response.authResponse) {
-                // ✅ CAMBIO CRÍTICO: Obtener el accessToken
+                //  CAMBIO CRÍTICO: Obtener el accessToken
                 const accessToken = response.authResponse.accessToken;
 
-                logDesarrollo('✅ Access Token obtenido de Facebook');
+                logDesarrollo(' Access Token obtenido de Facebook');
 
-                // ✅ Enviar SOLO el accessToken al backend
+                //  Enviar SOLO el accessToken al backend
                 autenticarConFacebook({ accessToken })
                     .then(() => {
                         if (verMenuHamburguesa) {
                             dispatch(toggleVerMenuHamburguesa());
                         }
 
-                        // ✅ Marcar que la navegación es exitosa
+                        //  Marcar que la navegación es exitosa
                         navegandoExitoso.current = true;
 
                         setTimeout(() => {
@@ -224,7 +224,7 @@ export default function Cuerpo() {
 
             <div className="w-full flex flex-col justify-center items-center gap-2">
 
-                {/* ✅ BOTÓN PERSONALIZADO DE GOOGLE - 100% CLICKEABLE */}
+                {/*  BOTÓN PERSONALIZADO DE GOOGLE - 100% CLICKEABLE */}
                 <button
                     onClick={handleGoogleLogin}
                     disabled={autenticando}

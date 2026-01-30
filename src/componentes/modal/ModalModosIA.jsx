@@ -36,13 +36,9 @@ export default function ModalModosIA() {
 
     const handleCancelar = () => {
         dispatch(toggleVerModalModosIA());
-
-        /*setModoSeleccionado(null);
-        dispatch(setModoIASeleccionado(null));
-        */
     };
 
-    // ✅ Validar si se puede aceptar según el modo y contenido disponible
+    //  Validar si se puede aceptar según el modo y contenido disponible
     const puedeAceptar = () => {
         if (!modoSeleccionado) return false;
 
@@ -50,12 +46,12 @@ export default function ModalModosIA() {
         const tienNota = nota && nota.trim() !== '';
         const tieneTareas = tareas && tareas.length > 0;
 
-        // ✅ Punto 3: Si no hay nada en ningún lado, deshabilitar
+        //  Punto 3: Si no hay nada en ningún lado, deshabilitar
         if (!tieneTitulo && !tienNota && !tieneTareas && !generarContenido) {
             return false;
         }
 
-        // ✅ Punto 2: Si solo hay tareas y el modo es 'summarize' o 'text-to-tasks', deshabilitar
+        //  Punto 2: Si solo hay tareas y el modo es 'summarize' o 'text-to-tasks', deshabilitar
         if (tieneTareas && !tieneTitulo && !tienNota) {
             if (modoSeleccionado === 'summarize' || modoSeleccionado === 'text-to-tasks') {
                 return false;
@@ -68,10 +64,10 @@ export default function ModalModosIA() {
     const handleAceptar = () => {
         if (!puedeAceptar()) return;
 
-        // ✅ Resetear secciones seleccionadas
+        //  Resetear secciones seleccionadas
         dispatch(resetSeccionesSeleccionadas());
 
-        // ✅ Cerrar modal de modos y abrir modal de secciones
+        //  Cerrar modal de modos y abrir modal de secciones
         dispatch(toggleVerModalModosIA());
 
         if (!generarContenido) {

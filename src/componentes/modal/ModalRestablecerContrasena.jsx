@@ -13,11 +13,11 @@ export default function ModalRestablecerContrasena() {
 
     const [cargando] = useState(false);
     
-    // ✅ LEER ESTADO GLOBAL DE REDUX
+    //  LEER ESTADO GLOBAL DE REDUX
     const { autenticando } = useSelector((state) => state.acceso);
 
     const handleCerrarModal = () => {
-        // ✅ NO PERMITIR CERRAR SI ESTÁ CARGANDO O AUTENTICANDO
+        //  NO PERMITIR CERRAR SI ESTÁ CARGANDO O AUTENTICANDO
         if (!cargando) {
             dispatch(toggleVerModalRestablecerContrasena());
             dispatch(setVerToast(false));
@@ -66,7 +66,7 @@ export default function ModalRestablecerContrasena() {
                     <div className="flex-1 overflow-y-auto overflow-x-hidden
                                     p-4 min-h-0">
 
-                        {/* ✅ PASAR LAS PROPS DE AUTENTICACIÓN */}
+                        {/*  PASAR LAS PROPS DE AUTENTICACIÓN */}
                         <CorreoContrasena
                             textoContrasena="Nueva contraseña"
                             restablecer={true}

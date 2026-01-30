@@ -8,7 +8,7 @@ import { logDesarrollo, errorDesarrollo, obtenerMensajeError } from "../utils/er
 const API_URL = import.meta.env.VITE_API_URL;
 
 // ===============================
-// ✅ CONFIGURACIÓN DE TIMEOUTS
+//  CONFIGURACIÓN DE TIMEOUTS
 // ===============================
 const TIMEOUTS = {
     AUTH: 45000,      // 45 segundos para login/registro (servidor puede estar dormido)
@@ -18,7 +18,7 @@ const TIMEOUTS = {
 };
 
 // ===============================
-// ✅ FUNCIONES AUXILIARES
+//  FUNCIONES AUXILIARES
 // ===============================
 
 // Establecer sesión después del login
@@ -37,7 +37,7 @@ const limpiarSesion = () => {
     store.dispatch({ type: 'auth/cerrarSesionLocal' });
 };
 
-// ✅ NUEVO: Manejar cierre de sesión por rate limit
+//  Manejar cierre de sesión por rate limit
 const manejarRateLimitExcedido = (mensaje = 'Demasiadas solicitudes, intenta más tarde') => {
     limpiarSesion();
 
@@ -50,7 +50,7 @@ const manejarRateLimitExcedido = (mensaje = 'Demasiadas solicitudes, intenta má
     }, 4000);
 };
 
-// ✅ NUEVO: Función para hacer warm-up del servidor
+//  Función para hacer warm-up del servidor
 const warmUpServer = async () => {
     try {
         const controller = new AbortController();
@@ -62,7 +62,7 @@ const warmUpServer = async () => {
         });
 
         clearTimeout(timeoutId);
-        logDesarrollo('✅ Servidor despierto');
+        logDesarrollo(' Servidor despierto');
         return true;
     } catch (error) {
         logDesarrollo('⚠️ Servidor podría estar durmiendo:', error.message);
@@ -70,7 +70,7 @@ const warmUpServer = async () => {
     }
 };
 
-// ✅ MEJORADO: Fetch con timeout y manejo de rate limit
+//  Fetch con timeout y manejo de rate limit
 const fetchConTimeout = async (url, options = {}, timeout = TIMEOUTS.NORMAL, intentos = 1) => {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), timeout);
@@ -84,7 +84,7 @@ const fetchConTimeout = async (url, options = {}, timeout = TIMEOUTS.NORMAL, int
 
         clearTimeout(timeoutId);
 
-        // ✅ CRÍTICO: Verificar si es error 429 (Rate Limit Exceeded)
+        //  CRÍTICO: Verificar si es error 429 (Rate Limit Exceeded)
         if (response.status === 429) {
             const data = await response.json();
 
@@ -140,7 +140,7 @@ const manejarRespuestaAuth = async (response) => {
     const data = await response.json();
 
     if (!response.ok) {
-        // ✅ NUEVO: Manejar bloqueo temporal por rate limit
+        //  Manejar bloqueo temporal por rate limit
         if (response.status === 429 && data.bloqueadoTemporalmente) {
             const minutos = data.minutosRestantes || 15;
             throw new Error(`Tu cuenta está temporalmente bloqueada por exceder el límite de solicitudes. Intenta nuevamente en ${minutos} minutos.`);
@@ -159,10 +159,10 @@ const manejarRespuestaAuth = async (response) => {
 };
 
 // ===============================
-// ✅ FUNCIONES DE AUTENTICACIÓN
+//  FUNCIONES DE AUTENTICACIÓN
 // ===============================
 
-// ✅ MEJORADO: Registrar usuario con warm-up
+//  Registrar usuario con warm-up
 export const registrarUsuario = async (nombreUsuario, contrasena) => {
     try {
         // Intentar despertar el servidor primero
@@ -179,7 +179,7 @@ export const registrarUsuario = async (nombreUsuario, contrasena) => {
         );
 
         const data = await manejarRespuestaAuth(response);
-        logDesarrollo('✅ Usuario registrado:', data);
+        logDesarrollo(' Usuario registrado:', data);
 
         establecerSesionUsuario(data.token, data.usuario);
         return data;
@@ -189,7 +189,7 @@ export const registrarUsuario = async (nombreUsuario, contrasena) => {
     }
 };
 
-// ✅ MEJORADO: Iniciar sesión con warm-up
+//  Iniciar sesión con warm-up
 export const iniciarSesion = async (nombreUsuario, contrasena) => {
     try {
         // Intentar despertar el servidor primero
@@ -206,7 +206,7 @@ export const iniciarSesion = async (nombreUsuario, contrasena) => {
         );
 
         const data = await manejarRespuestaAuth(response);
-        logDesarrollo('✅ Usuario ha iniciado sesión:', data);
+        logDesarrollo(' Usuario ha iniciado sesión:', data);
 
         establecerSesionUsuario(data.token, data.usuario);
         return data;
@@ -216,7 +216,7 @@ export const iniciarSesion = async (nombreUsuario, contrasena) => {
     }
 };
 
-// ✅ Autenticación con Google usando access_token
+//  Autenticación con Google usando access_token
 export const autenticarConGoogle = async (accessToken) => {
     try {
         await warmUpServer();
@@ -226,13 +226,13 @@ export const autenticarConGoogle = async (accessToken) => {
             {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ accessToken }), // ✅ CAMBIO: Enviamos accessToken
+                body: JSON.stringify({ accessToken }), //  CAMBIO: Enviamos accessToken
             },
             TIMEOUTS.AUTH
         );
 
         const data = await manejarRespuestaAuth(response);
-        logDesarrollo('✅ Usuario autenticado con Google:', data);
+        logDesarrollo(' Usuario autenticado con Google:', data);
 
         establecerSesionUsuario(data.token, data.usuario);
         return data;
@@ -242,7 +242,7 @@ export const autenticarConGoogle = async (accessToken) => {
     }
 };
 
-// ✅ MEJORADO: Autenticación con Facebook
+//  Autenticación con Facebook
 export const autenticarConFacebook = async (facebookData) => {
     try {
         await warmUpServer();
@@ -258,7 +258,7 @@ export const autenticarConFacebook = async (facebookData) => {
         );
 
         const data = await manejarRespuestaAuth(response);
-        logDesarrollo('✅ Usuario autenticado con Facebook:', data);
+        logDesarrollo(' Usuario autenticado con Facebook:', data);
 
         establecerSesionUsuario(data.token, data.usuario);
         return data;
@@ -268,7 +268,7 @@ export const autenticarConFacebook = async (facebookData) => {
     }
 };
 
-// ✅ Verificar token con reintentos
+//  Verificar token con reintentos
 export const verificarToken = async (reintentos = 2) => {
     try {
         const token = localStorage.getItem('token');
@@ -414,7 +414,7 @@ export const marcarBienvenidaVista = async () => {
             localStorage.setItem('usuario', JSON.stringify(usuario));
         }
         
-        logDesarrollo('✅ Bienvenida marcada como vista');
+        logDesarrollo(' Bienvenida marcada como vista');
         return data;
     } catch (error) {
         errorDesarrollo('❌ Error al marcar bienvenida vista:', error);
@@ -423,7 +423,7 @@ export const marcarBienvenidaVista = async () => {
 };
 
 // ===============================
-// ✅ FUNCIÓN PARA PETICIONES AUTENTICADAS
+//  FUNCIÓN PARA PETICIONES AUTENTICADAS
 // ===============================
 
 export const fetchConAuth = async (url, options = {}) => {
@@ -448,7 +448,7 @@ export const fetchConAuth = async (url, options = {}) => {
             TIMEOUTS.NORMAL
         );
 
-        // ✅ Verificar respuestas de error que requieren acción
+        //  Verificar respuestas de error que requieren acción
         if (!response.ok) {
             const data = await response.json();
 
@@ -466,7 +466,7 @@ export const fetchConAuth = async (url, options = {}) => {
                     throw new Error('RATE_LIMIT_SESSION_CLOSED');
                 }
 
-                // ✅ Rate limit específico (favoritos, crear, editar)
+                //  Rate limit específico (favoritos, crear, editar)
                 // Usar el mensaje "detail" si existe, sino "error"
                 const mensaje = data.detail || data.error || 'Demasiadas solicitudes, intenta más tarde';
                 throw new Error(mensaje);
@@ -494,7 +494,7 @@ export const fetchConAuth = async (url, options = {}) => {
 };
 
 // ===============================
-// ✅ FUNCIONES AUXILIARES PÚBLICAS
+//  FUNCIONES AUXILIARES PÚBLICAS
 // ===============================
 
 export const obtenerToken = () => {

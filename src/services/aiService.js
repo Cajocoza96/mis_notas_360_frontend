@@ -4,7 +4,7 @@ import { logDesarrollo, errorDesarrollo, registrarError } from "../utils/errorHa
 import { fetchConAuth } from "./authService";
 
 // ===============================
-// ✅ HELPER: Maneja errores de las peticiones HTTP
+//  HELPER: Maneja errores de las peticiones HTTP
 // ===============================
 const procesarError = (error, mensajeGenerico) => {
     // 1️⃣ Si es rate limit de sesión (429 general - 200 req/15min)
@@ -75,7 +75,7 @@ export const corregirTexto = async (titulo, nota, tareas) => {
 
         const data = await response.json();
 
-        // ✅ Manejo de código 207 (Multi-Status): Éxito parcial con advertencias
+        //  Manejo de código 207 (Multi-Status): Éxito parcial con advertencias
         if (response.status === 207) {
             logDesarrollo('⚠️ Texto corregido con advertencias:', data.mensaje);
             
@@ -88,14 +88,14 @@ export const corregirTexto = async (titulo, nota, tareas) => {
             };
         }
 
-        // ✅ Éxito completo (código 200)
+        //  Éxito completo (código 200)
         if (response.ok) {
-            logDesarrollo('✅ Texto corregido exitosamente');
+            logDesarrollo(' Texto corregido exitosamente');
             return {
                 ...data,
                 success: true,
                 hasWarnings: false,
-                successMessage: data.mensaje // ✅ Mensaje de éxito
+                successMessage: data.mensaje //  Mensaje de éxito
             };
         }
 
@@ -126,7 +126,7 @@ export const mejorarRedaccion = async (titulo, nota, tareas) => {
 
         const data = await response.json();
 
-        // ✅ Manejo de código 207 (Multi-Status): Éxito parcial con advertencias
+        //  Manejo de código 207 (Multi-Status): Éxito parcial con advertencias
         if (response.status === 207) {
             logDesarrollo('⚠️ Texto mejorado con advertencias:', data.mensaje);
             
@@ -139,14 +139,14 @@ export const mejorarRedaccion = async (titulo, nota, tareas) => {
             };
         }
 
-        // ✅ Éxito completo (código 200)
+        //  Éxito completo (código 200)
         if (response.ok) {
-            logDesarrollo('✅ Texto mejorado exitosamente');
+            logDesarrollo(' Texto mejorado exitosamente');
             return {
                 ...data,
                 success: true,
                 hasWarnings: false,
-                successMessage: data.mensaje // ✅ Mensaje de éxito
+                successMessage: data.mensaje //  Mensaje de éxito
             };
         }
 
@@ -177,7 +177,7 @@ export const resumirTexto = async (titulo, nota, tareas) => {
 
         const data = await response.json();
         
-        // ✅ Manejo de código 207 (Multi-Status): Éxito parcial con advertencias
+        //  Manejo de código 207 (Multi-Status): Éxito parcial con advertencias
         if (response.status === 207) {
             logDesarrollo('⚠️ Texto resumido con advertencias:', data.mensaje);
             
@@ -190,14 +190,14 @@ export const resumirTexto = async (titulo, nota, tareas) => {
             };
         }
 
-        // ✅ Éxito completo (código 200)
+        //  Éxito completo (código 200)
         if (response.ok) {
-            logDesarrollo('✅ Texto resumido exitosamente');
+            logDesarrollo(' Texto resumido exitosamente');
             return {
                 ...data,
                 success: true,
                 hasWarnings: false,
-                successMessage: data.mensaje // ✅ Mensaje de éxito
+                successMessage: data.mensaje //  Mensaje de éxito
             };
         }
 
@@ -228,7 +228,7 @@ export const convertirTextoATareas = async (titulo, nota, tareas) => {
 
         const data = await response.json();
 
-        // ✅ Manejo de código 207 (Multi-Status): Éxito parcial con advertencias
+        //  Manejo de código 207 (Multi-Status): Éxito parcial con advertencias
         if (response.status === 207) {
             logDesarrollo('⚠️ Tareas extraidas con advertencias:', data.mensaje);
             
@@ -241,14 +241,14 @@ export const convertirTextoATareas = async (titulo, nota, tareas) => {
             };
         }
 
-        // ✅ Éxito completo (código 200)
+        //  Éxito completo (código 200)
         if (response.ok) {
-            logDesarrollo('✅ Tareas extraidas exitosamente');
+            logDesarrollo(' Tareas extraidas exitosamente');
             return {
                 ...data,
                 success: true,
                 hasWarnings: false,
-                successMessage: data.mensaje // ✅ Mensaje de éxito
+                successMessage: data.mensaje //  Mensaje de éxito
             };
         }
 
@@ -278,13 +278,13 @@ export const generarContenido = async (prompt) => {
 
         const data = await response.json();
 
-        // ✅ Éxito completo (código 200)
+        //  Éxito completo (código 200)
         if (response.ok) {
-            logDesarrollo('✅ Contenido generado exitosamente');
+            logDesarrollo(' Contenido generado exitosamente');
             return {
                 ...data,
                 success: true,
-                successMessage: data.mensaje // ✅ Mensaje de éxito
+                successMessage: data.mensaje //  Mensaje de éxito
             };
         }
 

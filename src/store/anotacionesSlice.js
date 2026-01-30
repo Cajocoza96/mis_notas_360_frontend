@@ -3,7 +3,7 @@ import { obtenerAnotaciones } from "../services/anotacionesService";
 
 import { obtenerMensajeError, registrarError, logDesarrollo } from "../utils/errorHandler";
 
-// ✅ Thunk para cargar anotaciones
+//  Thunk para cargar anotaciones
 export const cargarAnotaciones = createAsyncThunk(
     'anotaciones/cargarAnotaciones',
     async (_, { rejectWithValue }) => {
@@ -11,10 +11,10 @@ export const cargarAnotaciones = createAsyncThunk(
             const anotacionesData = await obtenerAnotaciones();
             return anotacionesData;
         } catch (error) {
-            // ✅ Registrar el error con contexto
+            //  Registrar el error con contexto
             registrarError('Cargar anotaciones', error);
 
-            // ✅ Retornar mensaje de error seguro
+            //  Retornar mensaje de error seguro
             const mensajeSeguro = obtenerMensajeError(
                 error,
                 'Error al cargar las anotaciones.'
@@ -31,19 +31,19 @@ const initialState = {
     mostrandoResultados: false,
     error: null,
 
-    // ✅ Nuevos estados para controlar la carga completa
+    //  Estados para controlar la carga completa
     cargandoCabecera: false,
     cargandoCuerpo: false,
 
     //Administrar anotacion
     verAdminAnotacion: false,
 
-    // ✅ Estado para el modal de éxito/error
+    //  Estado para el modal de éxito/error
     mostrarModalNotificacion: false,
     mensajeNotificacion: '',
     esErrorNotificacion: false,
 
-    // ✅ Estados mejorados para selección
+    //  Estados mejorados para selección
     seleccionar: false,
     seleccionarTodo: false,
     anotacionesSeleccionadas: []
@@ -61,7 +61,7 @@ const anotacionesSlice = createSlice({
             state.verAdminAnotacion = action.payload
         },
 
-        // ✅ NUEVO: Toggle selección de una anotación específica
+        //  NUEVO: Toggle selección de una anotación específica
         toggleSeleccionAnotacion: (state, action) => {
             const anotacionId = action.payload;
             const index = state.anotacionesSeleccionadas.indexOf(anotacionId);
@@ -88,7 +88,7 @@ const anotacionesSlice = createSlice({
             }
         },
 
-        // ✅ NUEVO: Seleccionar/deseleccionar todas
+        //  NUEVO: Seleccionar/deseleccionar todas
         toggleSeleccionarTodasAnotaciones: (state) => {
             if (state.seleccionarTodo) {
                 // Deseleccionar todas
@@ -114,7 +114,7 @@ const anotacionesSlice = createSlice({
             state.seleccionarTodo = false;
         },
 
-        // ✅ NUEVO: Limpiar selección
+        //  NUEVO: Limpiar selección
         limpiarSeleccion: (state) => {
             state.anotacionesSeleccionadas = [];
             state.seleccionar = false;
@@ -139,7 +139,7 @@ const anotacionesSlice = createSlice({
             }
         },
 
-        // ✅ Nuevas acciones para controlar la carga por componente
+        //  Nuevas acciones para controlar la carga por componente
         setCargandoCabecera: (state, action) => {
             state.cargandoCabecera = action.payload;
         },
@@ -147,7 +147,7 @@ const anotacionesSlice = createSlice({
             state.cargandoCuerpo = action.payload;
         },
 
-        // ✅ Acciones para el modal de notificación
+        //  Acciones para el modal de notificación
         mostrarNotificacion: (state, action) => {
             state.mostrarModalNotificacion = true;
             state.mensajeNotificacion = action.payload.mensaje;
@@ -184,7 +184,7 @@ const anotacionesSlice = createSlice({
             }
         },
 
-        // ✅ Actualizar favorito local (sin filtrado)
+        //  Actualizar favorito local (sin filtrado)
         actualizarFavoritoLocal: (state, action) => {
             const { anotacionId, favorito } = action.payload;
 
@@ -233,14 +233,14 @@ export const {
     toggleSeleccionarTodo,
     setSeleccionarTodo,
 
-    // ✅ EXPORTAR NUEVAS ACCIONES
+    //  EXPORTAR NUEVAS ACCIONES
     toggleSeleccionAnotacion,
     toggleSeleccionarTodasAnotaciones,
     limpiarSeleccion,
 
     eliminarMultiplesAnotaciones,
 
-    // ✅ Exportar las nuevas acciones
+    //  Exportar las nuevas acciones
     mostrarNotificacion,
     ocultarNotificacion,
 

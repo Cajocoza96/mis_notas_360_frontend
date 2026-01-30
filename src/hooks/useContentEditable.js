@@ -5,12 +5,12 @@ export const useContentEditable = (initialState, undoRedoHook, tareasActuales = 
     const [titulo, setTitulo] = useState(initialState.titulo || "");
     const [nota, setNota] = useState(initialState.nota || "");
 
-    // ✅ Referencias para acceder siempre a los valores más recientes
+    //  Referencias para acceder siempre a los valores más recientes
     const tituloRefValue = useRef(titulo);
     const notaRefValue = useRef(nota);
     const tareasRefValue = useRef(tareasActuales);
     
-    // ✅ Referencias a los elementos DOM
+    //  Referencias a los elementos DOM
     const elementRefsCache = useRef({ titulo: null, nota: null });
 
     const {
@@ -33,7 +33,7 @@ export const useContentEditable = (initialState, undoRedoHook, tareasActuales = 
         notaRefValue.current = nota;
     }, [nota]);
 
-    // ✅ NUEVO: Actualizar la referencia de tareas
+    // Actualizar la referencia de tareas
     useEffect(() => {
         tareasRefValue.current = tareasActuales;
     }, [tareasActuales]);
@@ -54,7 +54,7 @@ export const useContentEditable = (initialState, undoRedoHook, tareasActuales = 
         setNota(state.nota || "");
     };
 
-    // ✅ Obtener valores actuales incluyendo tareas
+    //  Obtener valores actuales incluyendo tareas
     const getValoresActuales = () => {
         const tituloActual = elementRefsCache.current.titulo?.innerText || tituloRefValue.current || "";
         const notaActual = elementRefsCache.current.nota?.innerText || notaRefValue.current || "";
@@ -104,7 +104,7 @@ export const useContentEditable = (initialState, undoRedoHook, tareasActuales = 
         const undoRedoResult = handleUndoRedoKeys(e);
         if (undoRedoResult) {
             updateContentEditable(undoRedoResult, tituloRef, notaRef);
-            return undoRedoResult; // ✅ Retornar el estado para que PaginaCrearEditNota actualice tareas
+            return undoRedoResult; //  Retornar el estado para que PaginaCrearEditNota actualice tareas
         }
 
         if (e.key === 'Enter') {
@@ -135,7 +135,7 @@ export const useContentEditable = (initialState, undoRedoHook, tareasActuales = 
         const undoRedoResult = handleUndoRedoKeys(e);
         if (undoRedoResult) {
             updateContentEditable(undoRedoResult, tituloRef, notaRef);
-            return undoRedoResult; // ✅ Retornar el estado para que PaginaCrearEditNota actualice tareas
+            return undoRedoResult; //  Retornar el estado para que PaginaCrearEditNota actualice tareas
         }
         return null;
     };
@@ -150,7 +150,7 @@ export const useContentEditable = (initialState, undoRedoHook, tareasActuales = 
         if (prevState) {
             logDesarrollo('Restaurando estado previo:', prevState);
             updateContentEditable(prevState, tituloRef, notaRef);
-            return prevState; // ✅ Retornar el estado completo incluyendo tareas
+            return prevState; //  Retornar el estado completo incluyendo tareas
         }
         return null;
     };
@@ -165,7 +165,7 @@ export const useContentEditable = (initialState, undoRedoHook, tareasActuales = 
         if (nextState) {
             logDesarrollo('Restaurando estado siguiente:', nextState);
             updateContentEditable(nextState, tituloRef, notaRef);
-            return nextState; // ✅ Retornar el estado completo incluyendo tareas
+            return nextState; //  Retornar el estado completo incluyendo tareas
         }
         return null;
     };
@@ -182,6 +182,6 @@ export const useContentEditable = (initialState, undoRedoHook, tareasActuales = 
         handleUndoClick,
         handleRedoClick,
         updateContentEditable,
-        getValoresActuales // ✅ Exportar para uso externo
+        getValoresActuales //  Exportar para uso externo
     };
 };

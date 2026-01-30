@@ -44,7 +44,7 @@ export default function ModalTiNoTa({ tituloRef, notaRef, addToHistoryImmediate 
         seccionesSeleccionadas
     } = useSelector((state) => state.tareas);
 
-    // ✅ Obtener el nombre legible del método de IA
+    //  Obtener el nombre legible del método de IA
     const obtenerNombreMetodoIA = () => {
         switch (modoIASeleccionado) {
             case 'correct':
@@ -72,7 +72,7 @@ export default function ModalTiNoTa({ tituloRef, notaRef, addToHistoryImmediate 
     const handleToggleSeccion = (seccion) => {
         if (procesandoIA) return;
 
-        // ✅ Si es 'text-to-tasks' y se intenta seleccionar tareas, no hacer nada
+        //  Si es 'text-to-tasks' y se intenta seleccionar tareas, no hacer nada
         if (modoIASeleccionado === 'text-to-tasks' && seccion === 'tareas') {
             return;
 
@@ -101,9 +101,6 @@ export default function ModalTiNoTa({ tituloRef, notaRef, addToHistoryImmediate 
         if (procesandoIA) return;
 
         dispatch(toggleVerModalTiNoTa());
-        
-        //dispatch(resetSeccionesSeleccionadas());
-        //dispatch(setModoIASeleccionado(null));
     };
 
     const hayAlgunaSeccionSeleccionada = () => {
@@ -112,7 +109,7 @@ export default function ModalTiNoTa({ tituloRef, notaRef, addToHistoryImmediate 
             seccionesSeleccionadas.tareas;
     };
 
-    // ✅ Función mejorada para aplicar resultados
+    //  Función mejorada para aplicar resultados
     const aplicarResultado = (resultado, esConversionATareas = false) => {
 
         // Guardar estados previos para el historial
@@ -122,7 +119,7 @@ export default function ModalTiNoTa({ tituloRef, notaRef, addToHistoryImmediate 
             tareas: tareas || []
         };
 
-        // ✅ CASO ESPECIAL: Convertir texto a tareas
+        //  CASO ESPECIAL: Convertir texto a tareas
         if (esConversionATareas) {
 
             // Variables para el nuevo estado
@@ -148,14 +145,14 @@ export default function ModalTiNoTa({ tituloRef, notaRef, addToHistoryImmediate 
                 }
             }
 
-            // ✅ SIEMPRE actualizar tareas cuando hay tareas en el resultado
+            //  SIEMPRE actualizar tareas cuando hay tareas en el resultado
             if (resultado.tareas !== undefined && Array.isArray(resultado.tareas) && resultado.tareas.length > 0) {
 
                 // Solo enviar los textos, el reducer se encarga de crear los objetos
                 const textosTareas = resultado.tareas.map(texto => texto.substring(0, 500));
                 dispatch(reemplazarTareasConIA(textosTareas)); // Agregar en lugar de setTareas
 
-                // ✅ Calcular el orden_creacion basado en las tareas existentes
+                //  Calcular el orden_creacion basado en las tareas existentes
                 const maxOrden = nuevasTareas.length > 0
                     ? Math.max(...nuevasTareas.map(t => t.orden_creacion ?? -1))
                     : -1;
@@ -165,14 +162,14 @@ export default function ModalTiNoTa({ tituloRef, notaRef, addToHistoryImmediate 
                     id: Date.now() + index,
                     texto: texto.substring(0, 500),
                     completada: false,
-                    orden_creacion: maxOrden + 1 + index // ✅ Continuar desde el último orden
+                    orden_creacion: maxOrden + 1 + index //  Continuar desde el último orden
                 }));
 
-                // ✅ AGREGAR las nuevas tareas a las existentes
+                //  AGREGAR las nuevas tareas a las existentes
                 nuevasTareas = [...nuevasTareas, ...tareasGeneradasPorIA];
             }
 
-            // ✅ Agregar al historial DESPUÉS de aplicar todos los cambios
+            //  Agregar al historial DESPUÉS de aplicar todos los cambios
             if (addToHistoryImmediate) {
                 const nuevoEstado = {
                     titulo: nuevoTitulo,
@@ -193,13 +190,13 @@ export default function ModalTiNoTa({ tituloRef, notaRef, addToHistoryImmediate 
             return;
         }
 
-        // ✅ OTROS CASOS: Corregir, Mejorar, Resumir
+        //  OTROS CASOS: Corregir, Mejorar, Resumir
         // Variables para el nuevo estado
         let nuevoTitulo = titulo;
         let nuevaNota = nota;
         let nuevasTareas = tareas || [];
 
-        // ✅ OTROS CASOS: Corregir, Mejorar, Resumir
+        //  OTROS CASOS: Corregir, Mejorar, Resumir
         // Actualizar título si fue seleccionado
         if (seccionesSeleccionadas.titulo && resultado.titulo !== undefined) {
             nuevoTitulo = resultado.titulo.substring(0, 255);
@@ -220,15 +217,15 @@ export default function ModalTiNoTa({ tituloRef, notaRef, addToHistoryImmediate 
 
         // Actualizar tareas PRESERVANDO completada e id
         if (seccionesSeleccionadas.tareas && resultado.tareas !== undefined && Array.isArray(resultado.tareas)) {
-            // ✅ Mapear las tareas modificadas preservando completada, id y orden_creacion
+            //  Mapear las tareas modificadas preservando completada, id y orden_creacion
             const tareasModificadas = resultado.tareas.map((textoModificado, index) => {
                 const tareaOriginal = tareas[index]; // Obtener la tarea original correspondiente
 
                 return {
-                    id: tareaOriginal?.id || Date.now() + index, // ✅ Preservar ID original
-                    texto: textoModificado.substring(0, 500), // ✅ Nuevo texto de la IA
-                    completada: tareaOriginal?.completada ?? false, // ✅ PRESERVAR estado completada
-                    orden_creacion: tareaOriginal?.orden_creacion ?? index // ✅ PRESERVAR orden
+                    id: tareaOriginal?.id || Date.now() + index, //  Preservar ID original
+                    texto: textoModificado.substring(0, 500), //  Nuevo texto de la IA
+                    completada: tareaOriginal?.completada ?? false, //  PRESERVAR estado completada
+                    orden_creacion: tareaOriginal?.orden_creacion ?? index //  PRESERVAR orden
                 };
             });
 
@@ -236,7 +233,7 @@ export default function ModalTiNoTa({ tituloRef, notaRef, addToHistoryImmediate 
             nuevasTareas = tareasModificadas;
         }
 
-        // ✅ Agregar al historial DESPUÉS de aplicar todos los cambios
+        //  Agregar al historial DESPUÉS de aplicar todos los cambios
         if (addToHistoryImmediate) {
             const nuevoEstado = {
                 titulo: nuevoTitulo,
@@ -277,7 +274,7 @@ export default function ModalTiNoTa({ tituloRef, notaRef, addToHistoryImmediate 
                     resultado = await corregirTexto(tituloParaEnviar, notaParaEnviar, tareasParaEnviar);
                     aplicarResultado(resultado.result, false);
 
-                    // ✅ Mostrar advertencia si hay tareas con problemas
+                    //  Mostrar advertencia si hay tareas con problemas
                     if (resultado.hasWarnings) {
                         mostrarToast(resultado.warningMessage);
                     } else {
@@ -290,7 +287,7 @@ export default function ModalTiNoTa({ tituloRef, notaRef, addToHistoryImmediate 
                     resultado = await mejorarRedaccion(tituloParaEnviar, notaParaEnviar, tareasParaEnviar);
                     aplicarResultado(resultado.result, false);
 
-                    // ✅ Mostrar advertencia si hay tareas con problemas
+                    //  Mostrar advertencia si hay tareas con problemas
                     if (resultado.hasWarnings) {
                         mostrarToast(resultado.warningMessage);
                     } else {
@@ -303,7 +300,7 @@ export default function ModalTiNoTa({ tituloRef, notaRef, addToHistoryImmediate 
                     resultado = await resumirTexto(tituloParaEnviar, notaParaEnviar, tareasParaEnviar);
                     aplicarResultado(resultado.result, false);
 
-                    // ✅ Mostrar advertencia si hay tareas con problemas
+                    //  Mostrar advertencia si hay tareas con problemas
                     if (resultado.hasWarnings) {
                         mostrarToast(resultado.warningMessage);
                     } else {
@@ -314,10 +311,10 @@ export default function ModalTiNoTa({ tituloRef, notaRef, addToHistoryImmediate 
 
                 case 'text-to-tasks':
                     resultado = await convertirTextoATareas(tituloParaEnviar, notaParaEnviar, tareasParaEnviar);
-                    // ✅ Pasar true para indicar que es conversión a tareas
+                    //  Pasar true para indicar que es conversión a tareas
                     aplicarResultado(resultado.result, true);
 
-                    // ✅ Mostrar advertencia si hay tareas con problemas
+                    //  Mostrar advertencia si hay tareas con problemas
                     if (resultado.hasWarnings) {
                         mostrarToast(resultado.warningMessage);
                     } else {
@@ -340,16 +337,16 @@ export default function ModalTiNoTa({ tituloRef, notaRef, addToHistoryImmediate 
         } catch (error) {
             errorDesarrollo('Error en IA:', error);
 
-            // ✅ Mostrar error en Toast
+            //  Mostrar error en Toast
             mostrarToast(error.message || 'Error al procesar con IA');
 
             dispatch(setProcesandoIA(false));
         }
     };
 
-    // ✅ Verificar si una sección está disponible
+    //  Verificar si una sección está disponible
     const seccionDisponible = (seccion) => {
-        // ✅ Si es 'text-to-tasks', deshabilitar la sección de tareas
+        //  Si es 'text-to-tasks', deshabilitar la sección de tareas
         if (modoIASeleccionado === 'text-to-tasks' && seccion === 'tareas') {
             return false;
         }

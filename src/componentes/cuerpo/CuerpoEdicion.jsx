@@ -25,7 +25,7 @@ const CuerpoEdicion = forwardRef(({ handleNotaChange, handleNotaKeyDown,
         dispatch(setEstadoAutomatico());
     }, [tareas, dispatch]);
 
-    // ✅ Función helper para normalizar solo formato de saltos de línea
+    //  Función helper para normalizar solo formato de saltos de línea
     const normalizarTexto = (texto) => {
         if (!texto) return '';
         // Solo normalizar diferentes formatos de saltos de línea a \n
@@ -34,7 +34,7 @@ const CuerpoEdicion = forwardRef(({ handleNotaChange, handleNotaKeyDown,
             .replace(/\r/g, '\n');
     };
 
-    // ✅ Sincronizar el ref cuando Redux cambia desde fuera (al cargar desde BD)
+    //  Sincronizar el ref cuando Redux cambia desde fuera (al cargar desde BD)
     useEffect(() => {
         if (notaRef.current && nota !== undefined && nota !== null) {
             const notaActual = notaRef.current.innerText || "";
@@ -47,7 +47,7 @@ const CuerpoEdicion = forwardRef(({ handleNotaChange, handleNotaKeyDown,
         }
     }, [nota, notaRef]);
 
-    // ✅ Callback ref para inicializar el contenido
+    //  Callback ref para inicializar el contenido
     const setRefWithContent = useCallback((element) => {
         if (element) {
             if (typeof notaRef === 'function') {
@@ -115,7 +115,7 @@ const CuerpoEdicion = forwardRef(({ handleNotaChange, handleNotaKeyDown,
         }
     };
 
-    // ✅ Manejador para forzar texto plano al pegar
+    //  Manejador para forzar texto plano al pegar
     const handlePaste = (e) => {
         if (esModoVistaPrevia) return;
 

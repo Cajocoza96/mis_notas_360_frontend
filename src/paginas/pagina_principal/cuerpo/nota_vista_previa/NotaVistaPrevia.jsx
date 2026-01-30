@@ -44,17 +44,17 @@ export default function NotaVistaPrevia({ anotacionId, iconoFavorito, texto, no_
 
     const [error, setError] = useState(null);
 
-    // ✅ Obtener el estado de verSoloFavoritos
+    //  Obtener el estado de verSoloFavoritos
     const verSoloFavoritos = useSelector((state) => state.preferencia.verSoloFavoritos);
 
     const [actualizandoFavorito, setActualizandoFavorito] = useState(false);
 
-    // ✅ Estados de selección
+    //  Estados de selección
     const seleccionar = useSelector((state) => state.anotaciones.seleccionar);
     const anotacionesSeleccionadas = useSelector((state) => state.anotaciones.anotacionesSeleccionadas);
     const estaSeleccionada = anotacionesSeleccionadas.includes(anotacionId);
 
-    // ✅ Estados y refs para long press
+    //  Estados y refs para long press
     const [isLongPressing, setIsLongPressing] = useState(false);
     const longPressTimer = useRef(null);
     const isLongPress = useRef(false);
@@ -62,17 +62,17 @@ export default function NotaVistaPrevia({ anotacionId, iconoFavorito, texto, no_
     
     // Activar modo seleccion al presionar por 1.5 segundos
     const handleSeleccionar = () => {
-        // ✅ Solo activar si no estamos en papelera y no está ya en modo selección
+        //  Solo activar si no estamos en papelera y no está ya en modo selección
         if (esVistaPapelera || esVistaBusqueda || seleccionar) return;
 
-        // ✅ Activar modo selección
+        //  Activar modo selección
         dispatch(toggleSeleccionar());
 
-        // ✅ Seleccionar automáticamente esta anotación
+        //  Seleccionar automáticamente esta anotación
         dispatch(toggleSeleccionAnotacion(anotacionId));
     }
 
-    // ✅ Manejar inicio de long press (funciona para mouse y touch)
+    //  Manejar inicio de long press (funciona para mouse y touch)
     const handlePressStart = useCallback((e) => {
         // No iniciar long press si ya estamos en modo selección, papelera o en busqueda
         if (seleccionar || esVistaPapelera || esVistaBusqueda) return;
@@ -103,7 +103,7 @@ export default function NotaVistaPrevia({ anotacionId, iconoFavorito, texto, no_
         }, 1500);
     }, [seleccionar, esVistaPapelera, esVistaBusqueda]);
 
-    // ✅ Manejar movimiento durante el press
+    //  Manejar movimiento durante el press
     const handlePressMove = useCallback((e) => {
         if (!longPressTimer.current) return;
 
@@ -122,7 +122,7 @@ export default function NotaVistaPrevia({ anotacionId, iconoFavorito, texto, no_
         }
     }, []);
 
-    // ✅ Manejar fin de press
+    //  Manejar fin de press
     const handlePressEnd = useCallback(() => {
         if (longPressTimer.current) {
             clearTimeout(longPressTimer.current);
@@ -130,7 +130,7 @@ export default function NotaVistaPrevia({ anotacionId, iconoFavorito, texto, no_
         }
         setIsLongPressing(false);
 
-        // ✅ SOLUCIÓN: Resetear isLongPress después de un breve delay
+        //  Resetear isLongPress después de un breve delay
         // Esto evita que el evento de click se procese inmediatamente después del long press
         // pero permite que clics posteriores funcionen correctamente
         if (isLongPress.current) {
@@ -140,7 +140,7 @@ export default function NotaVistaPrevia({ anotacionId, iconoFavorito, texto, no_
         }
     }, []);
 
-    // ✅ Cleanup al desmontar
+    //  Cleanup al desmontar
     React.useEffect(() => {
         return () => {
             if (longPressTimer.current) {
@@ -149,7 +149,7 @@ export default function NotaVistaPrevia({ anotacionId, iconoFavorito, texto, no_
         };
     }, []);
 
-    // ✅ Manejar clic en el círculo de selección
+    //  Manejar clic en el círculo de selección
     const handleToggleSeleccion = (e) => {
         e.stopPropagation();
         dispatch(toggleSeleccionAnotacion(anotacionId));
@@ -161,12 +161,12 @@ export default function NotaVistaPrevia({ anotacionId, iconoFavorito, texto, no_
     }
 
     const handleVerVistaPrevia = (e) => {
-        // ✅ Si fue un long press, no hacer nada (solo en este evento)
+        //  Si fue un long press, no hacer nada (solo en este evento)
         if (isLongPress.current) {
             return;
         }
 
-        // ✅ Si está en modo selección, toggle la selección
+        //  Si está en modo selección, toggle la selección
         if (seleccionar && !esVistaPapelera) {
             e.stopPropagation();
             dispatch(toggleSeleccionAnotacion(anotacionId));
@@ -204,7 +204,7 @@ export default function NotaVistaPrevia({ anotacionId, iconoFavorito, texto, no_
         try {
             setActualizandoFavorito(true);
 
-            const nuevoEstadoFavorito = !esFavorito;  // ✅ Cambiar a boolean
+            const nuevoEstadoFavorito = !esFavorito;  //  Cambiar a boolean
 
             // Actualizar en el backend PRIMERO
             await actualizarFavorito(anotacionId, nuevoEstadoFavorito);
@@ -221,9 +221,9 @@ export default function NotaVistaPrevia({ anotacionId, iconoFavorito, texto, no_
             }
 
         } catch (error) {
-            // ✅ DETECTAR ERROR DE RATE LIMIT
+            //  DETECTAR ERROR DE RATE LIMIT
             if (error.code === 'RATE_LIMIT_EXCEEDED') {
-                // ✅ Mostrar Toast con el mensaje del backend (detail)
+                //  Mostrar Toast con el mensaje del backend (detail)
                 // El mensaje ya viene en error.message desde anotacionesService
                 dispatch(setMensajeToast(error.message));
                 dispatch(setVerToast(true));
@@ -292,7 +292,7 @@ export default function NotaVistaPrevia({ anotacionId, iconoFavorito, texto, no_
                             </div>
                         )}
 
-                        {/* ✅ Ocultar estado cuando seleccionar = true */}
+                        {/*  Ocultar estado cuando seleccionar = true */}
                         {!seleccionar && (
                             <div className="text-2xl md:text-3xl">
 
@@ -323,7 +323,7 @@ export default function NotaVistaPrevia({ anotacionId, iconoFavorito, texto, no_
                         )}
 
 
-                        {/* ✅ Mostrar círculo de selección cuando seleccionar = true */}
+                        {/*  Mostrar círculo de selección cuando seleccionar = true */}
                         {seleccionar && (
                             <div onClick={handleToggleSeleccion}>
                                 {estaSeleccionada

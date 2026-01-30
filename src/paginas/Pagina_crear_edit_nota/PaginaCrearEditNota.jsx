@@ -44,7 +44,7 @@ import CargandoNoHayNada from "../../componentes/cargando_no_hay_nada/CargandoNo
 
 export default function PaginaCrearEditNota() {
 
-    // ✅ Hook de reintento inteligente
+    //  Hook de reintento inteligente
     const {
         ejecutarConReintento,
         resetearIntentos,
@@ -71,16 +71,16 @@ export default function PaginaCrearEditNota() {
         }
     }, [id, navigate]);
 
-    // ✅ Estado para controlar si la anotación fue validada
+    //  Estado para controlar si la anotación fue validada
     const [anotacionValidada, setAnotacionValidada] = useState(false);
 
-    // ✅ Estado local para los datos cargados
+    //  Estado local para los datos cargados
     const [anotacionCargada, setAnotacionCargada] = useState(null);
 
-    // ✅ Estado local simple para controlar la carga
+    //  Estado local simple para controlar la carga
     const [cargando, setCargando] = useState(true);
 
-    // ✅ NUEVO: Estado para controlar errores de carga
+    //  Estado para controlar errores de carga
     const [errorCarga, setErrorCarga] = useState(false);
 
     const [notaNoEncontrada, setNotaNoEncontrada] = useState(false);
@@ -118,10 +118,10 @@ export default function PaginaCrearEditNota() {
         handleRedoClick
     } = useContentEditable({ titulo: "", nota: "" }, undoRedoHook, tareas);
 
-    // ✅ Cargar la anotación SOLO UNA VEZ al montar
+    //  Cargar la anotación SOLO UNA VEZ al montar
     useEffect(() => {
         const cargarDatos = async () => {
-            // ✅ Si NO estamos en modo edición, desactivar carga inmediatamente
+            //  Si NO estamos en modo edición, desactivar carga inmediatamente
             if (!esModoEdicion) {
                 setAnotacionValidada(true);
                 setCargando(false);
@@ -129,7 +129,7 @@ export default function PaginaCrearEditNota() {
                 return;
             }
 
-            // ✅ Si estamos en modo edición pero no hay ID, error
+            //  Si estamos en modo edición pero no hay ID, error
             if (!id) {
                 errorDesarrollo('❌ Modo edición sin ID');
                 setCargando(false);
@@ -139,7 +139,7 @@ export default function PaginaCrearEditNota() {
                 return;
             }
 
-            // ✅ Si no hay conexión en modo edición, mantener el estado de carga
+            //  Si no hay conexión en modo edición, mantener el estado de carga
             if (!isOnline) {
                 logDesarrollo('⚠️ Sin conexión - manteniendo estado de carga');
                 setCargando(true);
@@ -147,14 +147,14 @@ export default function PaginaCrearEditNota() {
                 return;
             }
 
-            // ✅ Cargar datos en modo edición
+            //  Cargar datos en modo edición
             try {
                 setCargando(true);
                 setErrorCarga(false);
                 logDesarrollo('🔄 Iniciando carga de anotación...');
                 const anotacion = await obtenerAnotacionPorId(id);
 
-                // ✅ VALIDACIÓN: Si no existe, redirigir ANTES de actualizar estados
+                //  VALIDACIÓN: Si no existe, redirigir ANTES de actualizar estados
                 if (anotacion === undefined || anotacion === null || !anotacion || !anotacion.id) {
                     errorDesarrollo('❌ Anotación no encontrada (retornó null/undefined)');
                     setNotaNoEncontrada(true);
@@ -164,9 +164,9 @@ export default function PaginaCrearEditNota() {
                     return;
                 }
 
-                resetearIntentos(); // ✅ Resetear intentos SOLO si hay éxito
+                resetearIntentos(); //  Resetear intentos SOLO si hay éxito
 
-                logDesarrollo('✅ Anotación obtenida:', anotacion);
+                logDesarrollo(' Anotación obtenida:', anotacion);
 
                 // Guardar en Redux
                 dispatch(setAnotacionActual(anotacion));
@@ -184,21 +184,21 @@ export default function PaginaCrearEditNota() {
                     id: t.id,
                     texto: t.texto_tarea,
                     completada: t.tarea_completada === true || t.tarea_completada === 1,
-                    orden_creacion: t.orden_creacion // ✅ Agregar orden_creacion
+                    orden_creacion: t.orden_creacion //  Agregar orden_creacion
                 }));
 
                 logDesarrollo('Tareas formateadas con orden_creacion:', tareasFormateadas);
 
                 dispatch(setTareas(tareasFormateadas));
 
-                // ✅ Guardar la anotación en estado local
+                //  Guardar la anotación en estado local
                 setAnotacionCargada(anotacion);
                 setAnotacionValidada(true);
                 setErrorCarga(false);
                 setCargando(false);
             } catch (error) {
                 errorDesarrollo('❌ Error al cargar la anotación:', error);
-                // ✅ CRÍTICO: Verificar si es un error 404 (nota no encontrada)
+                //  CRÍTICO: Verificar si es un error 404 (nota no encontrada)
                 if (error?.response?.status === 404 || error?.status === 404 || error?.message?.includes('404')) {
                     errorDesarrollo('❌ Nota no encontrada (404)');
                     setNotaNoEncontrada(true);
@@ -211,7 +211,7 @@ export default function PaginaCrearEditNota() {
                     setErrorCarga(true);
                 }
             } finally {
-                // ✅ IMPORTANTE: Solo desactivar carga si hubo éxito
+                //  IMPORTANTE: Solo desactivar carga si hubo éxito
                 if (isOnline) {
                     setCargando(false);
                 }
@@ -226,7 +226,7 @@ export default function PaginaCrearEditNota() {
         };
     }, [id, esModoEdicion, isOnline, dispatch]);
 
-    // ✅ Efecto SEPARADO para manejar reintentos
+    //  Efecto SEPARADO para manejar reintentos
     useEffect(() => {
         // Solo reintentar si hay error, hay conexión y NO es una nota no encontrada
         if (errorCarga && isOnline && esModoEdicion && !notaNoEncontrada) {
@@ -274,7 +274,7 @@ export default function PaginaCrearEditNota() {
         }
     }, [errorCarga, isOnline, esModoEdicion, notaNoEncontrada]);
 
-    // ✅ Efecto SEPARADO para actualizar los refs cuando la anotación esté lista Y los refs estén montados
+    //  Efecto SEPARADO para actualizar los refs cuando la anotación esté lista Y los refs estén montados
     useEffect(() => {
         if (anotacionValidada && anotacionCargada && tituloRef.current && notaRef.current) {
             logDesarrollo('🎯 Actualizando refs con datos de anotación...');
@@ -282,7 +282,7 @@ export default function PaginaCrearEditNota() {
             const tituloInicial = anotacionCargada.titulo || "";
             const notaInicial = anotacionCargada.nota || "";
 
-            // ✅ Obtener tareas iniciales
+            //  Obtener tareas iniciales
             const tareasIniciales = anotacionCargada.tareas?.map(t => ({
                 id: t.id,
                 texto: t.texto_tarea,
@@ -304,27 +304,27 @@ export default function PaginaCrearEditNota() {
             dispatch(setTitulo(tituloInicial));
             dispatch(setNota(notaInicial));
 
-            // ✅ CRÍTICO: Esperar un tick antes de resetear el historial
+            //  CRÍTICO: Esperar un tick antes de resetear el historial
             // para asegurar que los elementos DOM estén actualizados
             setTimeout(() => {
                 if (undoRedoHook?.resetHistory) {
                     undoRedoHook.resetHistory({
                         titulo: tituloInicial,
                         nota: notaInicial,
-                        tareas: tareasIniciales // ✅ Incluir tareas en el historial inicial
+                        tareas: tareasIniciales //  Incluir tareas en el historial inicial
                     });
-                    logDesarrollo('✅ Historial reiniciado con valores iniciales incluyendo tareas');
+                    logDesarrollo(' Historial reiniciado con valores iniciales incluyendo tareas');
                 }
             }, 0);
         }
     }, [anotacionValidada, anotacionCargada, dispatch]);
 
-    // ✅ Efecto para resetear intentos al cambiar de ruta
+    //  Efecto para resetear intentos al cambiar de ruta
     useEffect(() => {
         resetearIntentos();
     }, [location.pathname]);
 
-    // ✅ Limpiar timeouts al desmontar
+    //  Limpiar timeouts al desmontar
     useEffect(() => {
         return () => {
             limpiar();
@@ -334,7 +334,7 @@ export default function PaginaCrearEditNota() {
     useEffect(() => {
         if (justReconnected) {
             setErrorCarga(false);
-            resetearIntentos(); // ✅ Resetear intentos al reconectar
+            resetearIntentos(); //  Resetear intentos al reconectar
         }
     }, [justReconnected]);
 
@@ -376,7 +376,7 @@ export default function PaginaCrearEditNota() {
     const handleTituloKeyDownAdapter = (e, ref) => {
         const result = handleTituloKeyDown(e, ref, notaRef);
         if (result && result.tareas !== undefined) {
-            // ✅ Actualizar tareas en Redux si hay cambios
+            //  Actualizar tareas en Redux si hay cambios
             dispatch(setTareas(result.tareas));
         }
     };
@@ -384,7 +384,7 @@ export default function PaginaCrearEditNota() {
     const handleNotaKeyDownAdapter = (e, ref) => {
         const result = handleNotaKeyDown(e, tituloRef, ref);
         if (result && result.tareas !== undefined) {
-            // ✅ Actualizar tareas en Redux si hay cambios
+            //  Actualizar tareas en Redux si hay cambios
             dispatch(setTareas(result.tareas));
         }
     };
@@ -393,11 +393,11 @@ export default function PaginaCrearEditNota() {
         const prevState = handleUndoClick(tituloRef, notaRef);
         if (prevState && prevState.tareas !== undefined) {
             logDesarrollo('🔄 Restaurando tareas desde undo:', prevState.tareas);
-            // ✅ Actualizar tareas en Redux
+            //  Actualizar tareas en Redux
             dispatch(setTareas(prevState.tareas));
         }
 
-        // ✅ Actualizar Redux con los valores de los refs después del undo
+        //  Actualizar Redux con los valores de los refs después del undo
         setTimeout(() => {
             if (tituloRef.current && notaRef.current) {
                 dispatch(setTitulo(tituloRef.current.innerText || ""));
@@ -410,11 +410,11 @@ export default function PaginaCrearEditNota() {
         const nextState = handleRedoClick(tituloRef, notaRef);
         if (nextState && nextState.tareas !== undefined) {
             logDesarrollo('🔄 Restaurando tareas desde redo:', nextState.tareas);
-            // ✅ Actualizar tareas en Redux
+            //  Actualizar tareas en Redux
             dispatch(setTareas(nextState.tareas));
         }
 
-        // ✅ Actualizar Redux con los valores de los refs después del redo
+        //  Actualizar Redux con los valores de los refs después del redo
         setTimeout(() => {
             if (tituloRef.current && notaRef.current) {
                 dispatch(setTitulo(tituloRef.current.innerText || ""));
@@ -434,7 +434,7 @@ export default function PaginaCrearEditNota() {
         if (justReconnected) {
             logDesarrollo('🔄 Reconexión detectada - Restaurando historial');
 
-            // ✅ Capturar el estado actual ANTES de resetear
+            //  Capturar el estado actual ANTES de resetear
             const estadoActual = {
                 titulo: tituloRef.current?.innerText || "",
                 nota: notaRef.current?.innerText || "",
@@ -443,10 +443,10 @@ export default function PaginaCrearEditNota() {
 
             logDesarrollo('📸 Estado capturado tras reconexión:', estadoActual);
 
-            // ✅ Reiniciar el historial con el estado actual
+            //  Reiniciar el historial con el estado actual
             if (undoRedoHook?.resetHistory) {
                 undoRedoHook.resetHistory(estadoActual);
-                logDesarrollo('✅ Historial reiniciado con estado actual');
+                logDesarrollo(' Historial reiniciado con estado actual');
             }
 
             // Actualizar Redux para sincronizar
@@ -486,7 +486,7 @@ export default function PaginaCrearEditNota() {
         }
     }
 
-    // ✅ Logica: Determinar qué mostrar
+    //  Logica: Determinar qué mostrar
     const mostrarSkeleton = cargando && isOnline;
     const mostrarSinConexion = !isOnline && (cargando || esModoEdicion || esModoCrear);
     const mostrarError = errorCarga && isOnline;

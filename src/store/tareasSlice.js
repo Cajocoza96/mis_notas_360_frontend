@@ -30,7 +30,7 @@ const initialState = {
     verModalGenerarContenido: false,
     modoIASeleccionado: null, // 'correct', 'improve', 'summarize', 'text-to-tasks'
 
-    // ✅ Nuevos estados para las secciones seleccionadas
+    //  Nuevos estados para las secciones seleccionadas
     seccionesSeleccionadas: {
         titulo: false,
         nota: false,
@@ -64,12 +64,12 @@ const initialState = {
     }
 }
 
-// ✅ Función helper para reordenar tareas según el orden activo
+//  Función helper para reordenar tareas según el orden activo
 function reordenarTareasSegunOrden(state) {
     const tipoOrden = state.ordenTareasSeleccionado;
 
     if (tipoOrden === 'creacion') {
-        // ✅ Ordenar por orden_creacion (viene de la BD)
+        //  Ordenar por orden_creacion (viene de la BD)
         state.tareas = [...state.tareas].sort((a, b) => {
             const ordenA = a.orden_creacion !== undefined ? a.orden_creacion : 999999;
             const ordenB = b.orden_creacion !== undefined ? b.orden_creacion : 999999;
@@ -238,7 +238,7 @@ const tareasSlice = createSlice({
             state.modoIASeleccionado = action.payload;
         },
 
-        // ✅ IA - Toggle secciones individuales
+        //  IA - Toggle secciones individuales
         toggleSeccionTitulo: (state) => {
             state.seccionesSeleccionadas.titulo = !state.seccionesSeleccionadas.titulo;
         },
@@ -249,7 +249,7 @@ const tareasSlice = createSlice({
             state.seccionesSeleccionadas.tareas = !state.seccionesSeleccionadas.tareas;
         },
 
-        // ✅ IA - Resetear secciones
+        //  IA - Resetear secciones
         resetSeccionesSeleccionadas: (state) => {
             state.seccionesSeleccionadas = {
                 titulo: false,
@@ -296,13 +296,13 @@ const tareasSlice = createSlice({
             state.ordenTareasTemporal = action.payload;
         },
 
-        // ✅ Establecer orden al cargar anotación
+        //  Establecer orden al cargar anotación
         setOrdenTareasSeleccionado: (state, action) => {
             state.ordenTareasSeleccionado = action.payload;
             state.ordenTareasTemporal = action.payload;
         },
 
-        // ✅ CORREGIDO: Solo usa la función helper
+        //  CORREGIDO: Solo usa la función helper
         aplicarOrdenTareas: (state) => {
             state.ordenTareasSeleccionado = state.ordenTareasTemporal;
             reordenarTareasSegunOrden(state);
@@ -321,13 +321,13 @@ const tareasSlice = createSlice({
 
         setTareas: (state, action) => {
             state.tareas = action.payload
-            // ✅ Aplicar ordenamiento según el orden seleccionado
+            //  Aplicar ordenamiento según el orden seleccionado
             reordenarTareasSegunOrden(state);
         },
 
         agregarTarea: (state, action) => {
 
-            // ✅ Calcular el siguiente orden_creacion
+            //  Calcular el siguiente orden_creacion
             const siguienteOrdenCreacion = state.tareas.length > 0 ? Math.max(...state.tareas.map(t => t.orden_creacion ?? -1)) + 1 : 0;
 
             const nuevaTarea = {
@@ -338,7 +338,7 @@ const tareasSlice = createSlice({
             }
             state.tareas.push(nuevaTarea);
 
-            // ✅ Reordenar automáticamente según el orden activo
+            //  Reordenar automáticamente según el orden activo
             reordenarTareasSegunOrden(state);
         },
 
@@ -348,7 +348,7 @@ const tareasSlice = createSlice({
             if (tarea) {
                 tarea.texto = texto;
 
-                // ✅ Reordenar automáticamente según el orden activo
+                //  Reordenar automáticamente según el orden activo
                 reordenarTareasSegunOrden(state);
             }
         },

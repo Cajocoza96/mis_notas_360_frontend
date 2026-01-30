@@ -5,7 +5,7 @@ import { logDesarrollo, errorDesarrollo, registrarError } from "../utils/errorHa
 import { fetchConAuth } from "./authService";
 
 // ===============================
-// ✅ HELPER: Maneja errores de las peticiones HTTP
+//  HELPER: Maneja errores de las peticiones HTTP
 // Esta versión trabaja con errores que ya vienen de fetchConAuth
 // ===============================
 const procesarError = (error, mensajeGenerico) => {
@@ -22,11 +22,11 @@ const procesarError = (error, mensajeGenerico) => {
         error.message.includes('límite') ||
         error.message.includes('Rate limit')
     )) {
-        // ✅ Mostrar en consola para debugging
+        //  Mostrar en consola para debugging
         errorDesarrollo('🚫 Rate Limit:', error.message);
         logDesarrollo('📛 Error de rate limit detectado');
 
-        // ✅ Crear error con código para que Cabecera lo detecte
+        //  Crear error con código para que Cabecera lo detecte
         const rateLimitError = new Error(error.message);
         rateLimitError.code = 'RATE_LIMIT_EXCEEDED';
         rateLimitError.status = 429;
@@ -74,10 +74,10 @@ export const obtenerContadores = async () => {
             }
         });
 
-        // ✅ fetchConAuth ya verificó que response.ok === true
+        //  fetchConAuth ya verificó que response.ok === true
         const data = await response.json();
 
-        logDesarrollo('✅ Contadores obtenidos:', data);
+        logDesarrollo(' Contadores obtenidos:', data);
 
         return data;
     } catch (error) {
@@ -102,10 +102,10 @@ export const obtenerAnotaciones = async () => {
             }
         });
 
-        // ✅ fetchConAuth ya verificó que response.ok === true
+        //  fetchConAuth ya verificó que response.ok === true
         const data = await response.json();
 
-        logDesarrollo('✅ Notas obtenidas:', data);
+        logDesarrollo(' Notas obtenidas:', data);
 
         return data.anotaciones;
     } catch (error) {
@@ -129,10 +129,10 @@ export const obtenerAnotacionesEliminadas = async () => {
             }
         });
 
-        // ✅ fetchConAuth ya verificó que response.ok === true
+        //  fetchConAuth ya verificó que response.ok === true
         const data = await response.json();
 
-        logDesarrollo('✅ Notas eliminadas obtenidas:', data);
+        logDesarrollo(' Notas eliminadas obtenidas:', data);
 
         return data.anotaciones;
     } catch (error) {
@@ -157,10 +157,10 @@ export const actualizarFavorito = async (anotacionId, favorito) => {
             body: JSON.stringify({ favorito })
         });
 
-        // ✅ fetchConAuth ya verificó que response.ok === true
+        //  fetchConAuth ya verificó que response.ok === true
         const data = await response.json();
 
-        logDesarrollo('✅ Nota asignada como favorita:', data);
+        logDesarrollo(' Nota asignada como favorita:', data);
 
         return data;
     } catch (error) {
@@ -184,10 +184,10 @@ export const moverAPapelera = async (id) => {
             }
         });
 
-        // ✅ fetchConAuth ya verificó que response.ok === true
+        //  fetchConAuth ya verificó que response.ok === true
         const data = await response.json();
 
-        logDesarrollo('✅ Nota movida a papelera:', data);
+        logDesarrollo(' Nota movida a papelera:', data);
 
         return data;
     } catch (error) {
@@ -212,10 +212,10 @@ export const moverTodasAPapelera = async (anotacionesIds, aplicarFiltros = false
             body: JSON.stringify({ anotacionesIds, aplicarFiltros })
         });
 
-        // ✅ fetchConAuth ya verificó que response.ok === true
+        //  fetchConAuth ya verificó que response.ok === true
         const data = await response.json();
 
-        logDesarrollo('✅ Notas movidas a papelera:', data);
+        logDesarrollo(' Notas movidas a papelera:', data);
 
         return data;
     } catch (error) {
@@ -239,10 +239,10 @@ export const restaurarDesdePapelera = async (anotacionId) => {
             }
         });
 
-        // ✅ fetchConAuth ya verificó que response.ok === true
+        //  fetchConAuth ya verificó que response.ok === true
         const data = await response.json();
 
-        logDesarrollo('✅ Nota restaurada desde la papelera:', data);
+        logDesarrollo(' Nota restaurada desde la papelera:', data);
 
         return data;
     } catch (error) {
@@ -266,10 +266,10 @@ export const eliminarDefinitivamente = async (anotacionId) => {
             }
         });
 
-        // ✅ fetchConAuth ya verificó que response.ok === true
+        //  fetchConAuth ya verificó que response.ok === true
         const data = await response.json();
 
-        logDesarrollo('✅ Nota eliminada definitivamente:', data);
+        logDesarrollo(' Nota eliminada definitivamente:', data);
 
         return data;
     } catch (error) {
@@ -294,10 +294,10 @@ export const eliminarTodasDefinitivamente = async (anotacionesIds, aplicarFiltro
             body: JSON.stringify({ anotacionesIds, aplicarFiltros })
         });
 
-        // ✅ fetchConAuth ya verificó que response.ok === true
+        //  fetchConAuth ya verificó que response.ok === true
         const data = await response.json();
 
-        logDesarrollo('✅ Notas eliminadas definitivamente:', data);
+        logDesarrollo(' Notas eliminadas definitivamente:', data);
 
         return data;
     } catch (error) {
@@ -321,10 +321,10 @@ export const vaciarPorId = async (anotacionId) => {
             }
         });
 
-        // ✅ fetchConAuth ya verificó que response.ok === true
+        //  fetchConAuth ya verificó que response.ok === true
         const data = await response.json();
 
-        logDesarrollo('✅ Nota eliminada definitivamente desde la papelera:', data);
+        logDesarrollo(' Nota eliminada definitivamente desde la papelera:', data);
 
         return data;
     } catch (error) {
@@ -348,10 +348,10 @@ export const vaciarPapelera = async () => {
             }
         });
 
-        // ✅ fetchConAuth ya verificó que response.ok === true
+        //  fetchConAuth ya verificó que response.ok === true
         const data = await response.json();
 
-        logDesarrollo('✅ Papelera vaciada:', data);
+        logDesarrollo(' Papelera vaciada:', data);
 
         return data;
     } catch (error) {
@@ -378,10 +378,10 @@ export const buscarAnotaciones = async (termino) => {
             }
         );
 
-        // ✅ fetchConAuth ya verificó que response.ok === true
+        //  fetchConAuth ya verificó que response.ok === true
         const data = await response.json();
 
-        logDesarrollo('✅ Nota buscada:', data);
+        logDesarrollo(' Nota buscada:', data);
 
         return data.anotaciones;
     } catch (error) {
@@ -405,16 +405,16 @@ export const obtenerAnotacionPorId = async (id) => {
             }
         });
 
-        // ✅ fetchConAuth ya verificó que response.ok === true
+        //  fetchConAuth ya verificó que response.ok === true
         const data = await response.json();
 
-        logDesarrollo('✅ Obtenida id de nota:', data);
+        logDesarrollo(' Obtenida id de nota:', data);
 
         return data.anotacion;
     } catch (error) {
         registrarError('obtenerAnotacionPorId', error);
 
-        // ✅ CRÍTICO: Si el error indica que la nota no fue encontrada (404)
+        //  CRÍTICO: Si el error indica que la nota no fue encontrada (404)
         if (error.message?.includes('404') ||
             error.message?.toLowerCase().includes('no encontrada') ||
             error.message?.toLowerCase().includes('not found')) {
@@ -422,7 +422,7 @@ export const obtenerAnotacionPorId = async (id) => {
             return null; // ← Retornar null para notas inexistentes
         }
 
-        // ✅ Para cualquier otro error (conexión, servidor, etc.)
+        //  Para cualquier otro error (conexión, servidor, etc.)
         procesarError(error, 'Error al obtener notas por id');
         // ❌ procesarError lanza el error, pero necesitas propagarlo explícitamente
         // Como procesarError ya hace throw, técnicamente no llegas aquí,
@@ -436,7 +436,7 @@ export const crearAnotacion = async (datosAnotacion) => {
     try {
         const token = obtenerToken();
 
-        // ✅ Log solo en desarrollo
+        //  Log solo en desarrollo
         logDesarrollo('📤 Enviando nota:', datosAnotacion);
 
         const response = await fetchConAuth(`${API_URL}/anotaciones/guardar`, {
@@ -448,15 +448,15 @@ export const crearAnotacion = async (datosAnotacion) => {
             body: JSON.stringify(datosAnotacion)
         });
 
-        // ✅ fetchConAuth ya verificó que response.ok === true
+        //  fetchConAuth ya verificó que response.ok === true
         const data = await response.json();
 
-        // ✅ Log solo en desarrollo
-        logDesarrollo('✅ Nota guardada:', data);
+        //  Log solo en desarrollo
+        logDesarrollo(' Nota guardada:', data);
 
         return data;
     } catch (error) {
-        // ✅ Registrar error de forma segura
+        //  Registrar error de forma segura
         registrarError('crearAnotacion', error);
         procesarError(error, 'Error al crear nota');
     }
@@ -467,7 +467,7 @@ export const actualizarAnotacion = async (anotacionId, datosAnotacion) => {
     try {
         const token = obtenerToken();
 
-        // ✅ Log solo en desarrollo
+        //  Log solo en desarrollo
         logDesarrollo('📤 Actualizando anotación:', anotacionId, datosAnotacion);
 
         const response = await fetchConAuth(`${API_URL}/anotaciones/actualizar/${anotacionId}`, {
@@ -479,10 +479,10 @@ export const actualizarAnotacion = async (anotacionId, datosAnotacion) => {
             body: JSON.stringify(datosAnotacion)
         });
 
-        // ✅ fetchConAuth ya verificó que response.ok === true
+        //  fetchConAuth ya verificó que response.ok === true
         const data = await response.json();
 
-        logDesarrollo('✅ Nota actualizada:', data);
+        logDesarrollo(' Nota actualizada:', data);
 
         return data;
     } catch (error) {

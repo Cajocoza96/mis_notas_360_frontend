@@ -10,7 +10,8 @@
         "texto8fechaReservado": "© 2026.",
         "texto9DerechosReservados": "Todos los derechos reservados.",
         "texto10Correo": "carloscogoza@gmail.com",
-        "texto11Eliminacion": "Eliminación de datos de usuario"
+        "texto11Eliminacion": "Eliminación de datos de usuario",
+        "texto12Problemas": "Problemas conocidos"
     },
 
     "terminosDeServicio":{
@@ -114,5 +115,23 @@
         "texto10B": "Información obtenida del inicio de sesión con Google",
         "texto10C": "En el futuro cuando se integre la autenticación con Facebook tambien podrá ser eliminada",
         "texto11": "Si no puedes acceder a tu cuenta o necesitas asistencia, puedes escribir al correo:"
+    },
+
+    "problemasConocidos": {
+        "causa": "Posible causa:",
+        "texto1": "Actualmente",
+        "texto1_1": "se encuentra en constante mejora. A continuación se listan algunos comportamientos que pueden presentarse de forma ocasional:",
+        "texto2": "1. Espacios extra en los saltos de línea de las notas",
+        "texto3": "En algunos casos, al guardar o visualizar una nota, pueden aparecer espacios adicionales entre líneas.",
+        "texto4": "Puede estar relacionado con latencia en la comunicación con el servidor, procesamiento de texto en el backend o normalización de saltos de línea en la base de datos.",
+        "texto5": "2. Retraso al aplicar el tema de color y otras preferencias",
+        "texto6": "Al iniciar sesión o recargar la página, el tema visual y otras preferencias pueden tardar unos segundos en aplicarse correctamente.",
+        "texto7": "Carga asíncrona de preferencias desde el servidor o demoras temporales en la respuesta de la base de datos.",
+        "texto8": "3. Respuestas de IA fuera de contexto",
+        "texto9": "En algunas ocasiones, las herramientas de inteligencia artificial pueden generar respuestas que no están totalmente alineadas con la solicitud realizada.",
+        "texto10": "Limitaciones del modelo de IA utilizado (Groq), variaciones en la interpretación del contexto o latencia en el procesamiento de prompts.",
+        "texto11": "Soporte y retroalimentación",
+        "texto12": "Si presentas otros errores, tienes sugerencias o ideas de mejora, puedes comunicarte al correo:",
+        "texto13": "Tu feedback es muy importante para seguir mejorando la aplicación."
     }
 }

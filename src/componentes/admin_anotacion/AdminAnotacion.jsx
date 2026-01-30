@@ -26,10 +26,10 @@ export default function AdminAnotacion() {
             dispatch(toggleVerAdminAnotacion())
         }
 
-        // ✅ Activar modo selección
+        //  Activar modo selección
         dispatch(toggleSeleccionar());
         
-        // ✅ Seleccionar automáticamente esta anotación
+        //  Seleccionar automáticamente esta anotación
         dispatch(toggleSeleccionAnotacion(anotacionId));
     }
 

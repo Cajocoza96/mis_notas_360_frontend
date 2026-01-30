@@ -4,12 +4,12 @@ import SubOpcionesCabecera from "../SubOpcionesCabecera";
 import { formatearFechaConHora } from "../../../../utils/dateUtils";
 
 export default function VerFechaCreaModCantText() {
-    // ✅ Obtener la anotación actual desde Redux
+    //  Obtener la anotación actual desde Redux
     const { anotacionActual } = useSelector((state) => state.anotaciones);
 
     const [cargando, setCargando] = useState(false);
 
-    // ✅ Calcular totales de caracteres usando useMemo para optimizar
+    //  Calcular totales de caracteres usando useMemo para optimizar
     const totales = useMemo(() => {
         if (!anotacionActual) {
             return {
@@ -31,7 +31,7 @@ export default function VerFechaCreaModCantText() {
             return total + (tarea.cant_caract_tarea || 0);
         }, 0) || 0;
 
-        // ✅ NUEVO: Calcular estadísticas de tareas
+        // Calcular estadísticas de tareas
         const cantidadTareas = anotacionActual.cantidad_tareas ||
             anotacionActual.tareas?.length || 0;
 
@@ -74,7 +74,7 @@ export default function VerFechaCreaModCantText() {
         );
     }
 
-    // ✅ Comparar fechas usando timestamps (más robusto y preciso)
+    //  Comparar fechas usando timestamps (más robusto y preciso)
     const fechasIguales = new Date(anotacionActual.fecha_creacion).getTime() ===
         new Date(anotacionActual.fecha_modificacion).getTime();
 
@@ -122,7 +122,7 @@ export default function VerFechaCreaModCantText() {
                 fechaCantNumero={totales.total}
             />
 
-            {/* ✅ NUEVO: Estadísticas de tareas */}
+            {/*  NUEVO: Estadísticas de tareas */}
             <SubOpcionesCabecera
                 className="justify-between"
                 textoFechaCanttexto="Cantidad de tareas"

@@ -46,7 +46,7 @@ export default function VerOrden() {
             setError(true);
             setCargando(true);
         } finally {
-            // ✅ IMPORTANTE: Solo desactivar carga si hubo éxito
+            //  IMPORTANTE: Solo desactivar carga si hubo éxito
             if (isOnline) {
                 setCargando(false);
             }

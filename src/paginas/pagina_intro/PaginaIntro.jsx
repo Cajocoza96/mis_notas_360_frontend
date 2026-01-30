@@ -36,7 +36,7 @@ export default function PaginaIntro() {
 
     const verToast = useSelector((state) => state.acceso.verToast);
 
-    // ✅ Bloquear navegación hacia atrás
+    //  Bloquear navegación hacia atrás
     useEffect(() => {
         const handlePopState = (e) => {
             e.preventDefault();

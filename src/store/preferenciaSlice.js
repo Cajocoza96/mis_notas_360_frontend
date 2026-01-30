@@ -209,7 +209,7 @@ const initialState = {
     errorPreferencia: null
 }
 
-// ✅ Función para aplicar tema inmediatamente
+//  Función para aplicar tema inmediatamente
 const aplicarTemaInmediato = (tema) => {
     const root = document.documentElement;
     const mediaquery = window.matchMedia("(prefers-color-scheme: dark)");
@@ -288,7 +288,7 @@ const preferenciaSlice = createSlice({
                 state.ordenAnotaciones = action.payload.ordenAnotaciones;
                 state.cargandoPreferencia = false;
                 
-                // ✅ Aplicar tema inmediatamente al cargar preferencias
+                //  Aplicar tema inmediatamente al cargar preferencias
                 aplicarTemaInmediato(action.payload.tema);
             })
             .addCase(cargarPreferencia.rejected, (state, action) => {

@@ -11,7 +11,7 @@ export default function useReintentoInteligente() {
     const intentosRef = useRef(0);
     const maxIntentosRef = useRef(3); // Máximo 3 intentos
     
-    // ✅ Estado para rastrear intentos en tiempo real
+    //  Estado para rastrear intentos en tiempo real
     const [intentosActuales, setIntentosActuales] = useState(0);
     const [intentosAgotados, setIntentosAgotados] = useState(false);
 
@@ -27,9 +27,6 @@ export default function useReintentoInteligente() {
 
     /**
      * Ejecuta la función con reintentos inteligentes
-     * @param {Function} funcionReintento - Función async a ejecutar
-     * @param {boolean} isOnline - Estado de conexión
-     * @param {Function} onError - Callback cuando se agotan los reintentos (opcional)
      */
     const ejecutarConReintento = useCallback((funcionReintento, isOnline, onError) => {
         // Limpiar reintento previo
@@ -53,7 +50,7 @@ export default function useReintentoInteligente() {
         intentosRef.current += 1;
         const intentoActual = intentosRef.current;
         
-        // ✅ Actualizar estado de intentos
+        //  Actualizar estado de intentos
         setIntentosActuales(intentoActual);
         
         const delay = calcularDelay(intentoActual);

@@ -9,7 +9,7 @@ export const useUndoRedo = (initialState = {}) => {
 
     const timeoutRef = useRef(null);
 
-    // ✅ Función para obtener el estado actual del historial
+    //  Función para obtener el estado actual del historial
     const getCurrentState = useCallback(() => {
         return history[currentIndex];
     }, [history, currentIndex]);
@@ -110,7 +110,7 @@ export const useUndoRedo = (initialState = {}) => {
         return null;
     }, [undo, redo]);
 
-    //Nueva función para reiniciar el historial (necesaria para modo edición)
+    // Reiniciar el historial (necesaria para modo edición)
     const resetHistory = useCallback((newInitialState) => {
         // Limpiar cualquier timeout pendiente
         if (timeoutRef.current) {
@@ -119,7 +119,7 @@ export const useUndoRedo = (initialState = {}) => {
 
         logDesarrollo('🔄 Reiniciando historial con:', newInitialState);
 
-        // ✅ Asegurar que el nuevo estado tenga la estructura correcta
+        //  Asegurar que el nuevo estado tenga la estructura correcta
         const estadoNormalizado = {
             titulo: newInitialState.titulo || "",
             nota: newInitialState.nota || "",
@@ -130,7 +130,7 @@ export const useUndoRedo = (initialState = {}) => {
         setCurrentIndex(0);
         setIsUndoRedoAction(false);
 
-        logDesarrollo('✅ Historial reiniciado. Nuevo estado:', estadoNormalizado);
+        logDesarrollo(' Historial reiniciado. Nuevo estado:', estadoNormalizado);
     }, []);
 
     // Verificar si se puede deshacer o rehacer

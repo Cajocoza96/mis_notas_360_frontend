@@ -24,7 +24,7 @@ export default function CargandoNoHayNada({
     const verSoloFavoritos = useSelector((state) => state.preferencia.verSoloFavoritos);
     const verAnotacEstado = useSelector((state) => state.preferencia.verAnotacEstado);
 
-    // ✅ Verificar si la autenticación está inicializando
+    //  Verificar si la autenticación está inicializando
     const { inicializando } = useSelector((state) => state.auth);
 
     const [cargando, setCargando] = useState(false);
@@ -49,12 +49,12 @@ export default function CargandoNoHayNada({
 
     const ModosCrearEdicion = esModoCrear || esModoEdicion;
 
-    // ✅ Función para refrescar la página
+    //  Función para refrescar la página
     const handleRefrescarPagina = () => {
         window.location.reload();
     };
 
-    // ✅ Si está inicializando auth, mostrar loader
+    //  Si está inicializando auth, mostrar loader
     if (inicializando && CargandoAnotaciones) {
         return (
             <div className="col-span-full text-center p-4 select-none
@@ -167,7 +167,7 @@ export default function CargandoNoHayNada({
 
                     <BiErrorAlt className="text-6xl md:text-7xl" />
 
-                    {/* ✅ Mostrar diferentes mensajes según el estado de los intentos */}
+                    {/*  Mostrar diferentes mensajes según el estado de los intentos */}
                     {!intentosAgotados ? (
                         <div className="flex flex-col items-center justify-center gap-1">
                             <p className="text-base md:text-lg">
@@ -191,7 +191,7 @@ export default function CargandoNoHayNada({
                                 Por favor, refresque la página para intentar nuevamente
                             </span>
 
-                            {/* ✅ Botón para refrescar la página */}
+                            {/*  Botón para refrescar la página */}
                             <button
                                 onClick={handleRefrescarPagina}
                                 className="mt-2 px-6 py-2 bg-blue-600 hover:bg-blue-700 

@@ -47,6 +47,13 @@ export default function PaginaInfoUsuario() {
         navigate("/terminos-de-servicio");
     }
 
+    const handleIrProblemasConocidos = () => {
+        if (!isOnline) {
+            return;
+        }
+        navigate("/problemas-conocidos");
+    }
+
     const handleEliminarCuenta = () => {
         if (!isOnline) {
             return;
@@ -181,6 +188,16 @@ export default function PaginaInfoUsuario() {
                             rounded-md transition-colors duration-200`}
                         iconoInfoUsua={<HiOutlineInformationCircle />}
                         titulo="Acerca de"
+                    />
+
+                    <ContIconoInfoUsua
+                        onClick={handleIrProblemasConocidos}
+                        className={`text-black dark:text-white 
+                            ${!isOnline ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
+                            hover:bg-gray-300 active:bg-gray-300
+                            dark:hover:bg-gray-700 dark:active:bg-gray-700
+                            rounded-md transition-colors duration-200`}
+                        titulo="Problemas conocidos"
                     />
 
                     {/*Eliminar cuenta*/}

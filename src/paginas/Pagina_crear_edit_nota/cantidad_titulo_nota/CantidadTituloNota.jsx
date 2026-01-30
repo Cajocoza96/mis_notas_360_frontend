@@ -4,11 +4,11 @@ import { useSelector } from "react-redux";
 export default function CantidadTituloNota() {
     const { titulo, nota } = useSelector((state) => state.tareas);
 
-    // ✅ Limpiar espacios y saltos de línea para contar correctamente
+    //  Limpiar espacios y saltos de línea para contar correctamente
     const tituloLimpio = titulo ? titulo.trim() : "";
     const notaLimpia = nota ? nota.trim() : "";
     
-    // ✅ Si está vacío después de limpiar, es 0
+    //  Si está vacío después de limpiar, es 0
     const cantTitulo = tituloLimpio === "" ? 0 : titulo.length;
     const cantNota = notaLimpia === "" ? 0 : nota.length;
 

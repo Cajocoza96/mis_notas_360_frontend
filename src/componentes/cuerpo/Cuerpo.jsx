@@ -38,7 +38,7 @@ import useConexionInternet from "../../hooks/useConexionInternet";
 export default function Cuerpo({ notaNoEliminada,
     verContenidoCuerpo, verNotaBusqueda, verNotaEliminada, verTodosEstados }) {
 
-    // ✅ Hook de reintento inteligente
+    //  Hook de reintento inteligente
     const {
         ejecutarConReintento,
         resetearIntentos,
@@ -66,18 +66,13 @@ export default function Cuerpo({ notaNoEliminada,
 
     const verAdminAnotacion = useSelector((state) => state.anotaciones.verAdminAnotacion);
 
-    // ✅ Obtener también mostrandoResultados
+    //  Obtener también mostrandoResultados
     const { anotaciones = [] } = useSelector((state) => state.anotaciones);
 
     const { terminoBusqueda, resultadosBusqueda, cargandoBusqueda } = useSelector((state) => state.busqueda);
 
     // Obtener los contadores del estado de Redux
     const contadores = useSelector(state => state.tareas.contadores);
-
-    // ✅ useRef para controlar el timeout
-    //const timeoutRef = useRef(null);
-    
-    //const reintentoRef = useRef(null); // ✅ Nuevo ref para el reintento
 
     // Cargar contadores al montar el componente
     useEffect(() => {
@@ -90,10 +85,10 @@ export default function Cuerpo({ notaNoEliminada,
 
     const [procesando, setProcesando] = useState(false);
 
-    const [error, setError] = useState(false); // ✅ Cambiar a boolean
-    const [cargaInicial, setCargaInicial] = useState(true); // ✅ Controlar primera carga
+    const [error, setError] = useState(false); //  Cambiar a boolean
+    const [cargaInicial, setCargaInicial] = useState(true); //  Controlar primera carga
 
-    // ✅ NUEVA FUNCIÓN: Reordenar tareas según el tipo de orden
+    //  Reordenar tareas según el tipo de orden
     const reordenarTareasPorOrden = (tareas, tipoOrden) => {
         if (!tareas || tareas.length === 0) return [];
 
@@ -151,7 +146,7 @@ export default function Cuerpo({ notaNoEliminada,
         return tareasFormateadas;
     };
 
-    // ✅ Cargar contadores con manejo de errores mejorado
+    //  Cargar contadores con manejo de errores mejorado
     const cargarContadores = async () => {
         try {
             setProcesando(true);
@@ -160,7 +155,7 @@ export default function Cuerpo({ notaNoEliminada,
             dispatch(setContadores(datos));
             setError(false);
             setCargaInicial(false);
-            resetearIntentos(); // ✅ Resetear intentos en éxito
+            resetearIntentos(); //  Resetear intentos en éxito
             setCargando(false);
             setProcesando(false);
         } catch (error) {
@@ -168,10 +163,10 @@ export default function Cuerpo({ notaNoEliminada,
             setCargando(false);
             setProcesando(false);
 
-            // ✅ Solo mostrar error si hay intentos (ya sea en proceso o agotados)
+            //  Solo mostrar error si hay intentos (ya sea en proceso o agotados)
             setError(true);
 
-            // ✅ Ejecutar reintento inteligente
+            //  Ejecutar reintento inteligente
             ejecutarConReintento(
                 cargarContadores,
                 isOnline,
@@ -184,7 +179,7 @@ export default function Cuerpo({ notaNoEliminada,
         }
     };
 
-    // ✅ Cargar anotaciones usando el thunk cuando cambien los filtros
+    //  Cargar anotaciones usando el thunk cuando cambien los filtros
     useEffect(() => {
         if (verContenidoCuerpo && isOnline) {
             cargarAnotaciones();
@@ -193,11 +188,11 @@ export default function Cuerpo({ notaNoEliminada,
         }
     }, [verContenidoCuerpo, verNotaEliminada, verSoloFavoritos, verAnotacEstado, ordenAnotaciones, location.pathname]);
 
-    // ✅ Efecto para resetear intentos cuando se recupera la conexión
+    //  Efecto para resetear intentos cuando se recupera la conexión
     useEffect(() => {
         if (justReconnected) {
             setError(false);
-            resetearIntentos(); // ✅ Resetear intentos al reconectar
+            resetearIntentos(); //  Resetear intentos al reconectar
 
             // Recargar datos según contexto
             if (verContenidoCuerpo) {
@@ -216,12 +211,12 @@ export default function Cuerpo({ notaNoEliminada,
         }
     }, [justReconnected]);
 
-    // ✅ Efecto para resetear intentos al cambiar de ruta
+    //  Efecto para resetear intentos al cambiar de ruta
     useEffect(() => {
         resetearIntentos();
     }, [location.pathname]);
 
-    // ✅ Limpiar timeouts al desmontar
+    //  Limpiar timeouts al desmontar
     useEffect(() => {
         return () => {
             limpiar();
@@ -237,35 +232,7 @@ export default function Cuerpo({ notaNoEliminada,
         }
     }, [location.pathname, verTodosEstados]);
 
-    /*
-    // ✅ Función de reintento automático
-    const reintentoAutomatico = (funcionReintento) => {
-        // Limpiar reintento anterior si existe
-        if (reintentoRef.current) {
-            clearTimeout(reintentoRef.current);
-        }
-
-        // Reintentar después de 3 segundos
-        reintentoRef.current = setTimeout(() => {
-            if (isOnline) {
-                errorDesarrollo('Reintentando cargar datos...');
-                funcionReintento();
-            }
-        }, 3000);
-    };
-    
-
-    // ✅ Limpiar timeout al desmontar
-    useEffect(() => {
-        return () => {
-            if (reintentoRef.current) {
-                clearTimeout(reintentoRef.current);
-            }
-        };
-    }, []);
-    */
-
-    // ✅ Cargar anotaciones con manejo de errores mejorado
+    //  Cargar anotaciones con manejo de errores mejorado
     const cargarAnotaciones = async () => {
         try {
             setCargando(true);
@@ -279,16 +246,16 @@ export default function Cuerpo({ notaNoEliminada,
             dispatch(setAnotaciones(anotacionesConOrden));
             setError(false);
             setCargaInicial(false);
-            resetearIntentos(); // ✅ Resetear intentos en éxito
+            resetearIntentos(); //  Resetear intentos en éxito
             setCargando(false);
         } catch (error) {
             errorDesarrollo('Error al cargar las anotaciones:', error);
             setCargando(false);
 
-            // ✅ Mostrar error
+            //  Mostrar error
             setError(true);
 
-            // ✅ Ejecutar reintento inteligente
+            //  Ejecutar reintento inteligente
             ejecutarConReintento(
                 cargarAnotaciones,
                 isOnline,
@@ -300,7 +267,7 @@ export default function Cuerpo({ notaNoEliminada,
         }
     }
 
-    // ✅ Cargar anotaciones eliminadas con manejo de errores mejorado
+    //  Cargar anotaciones eliminadas con manejo de errores mejorado
     const cargarAnotacionesEliminadas = async () => {
         try {
             setCargando(true);
@@ -314,16 +281,16 @@ export default function Cuerpo({ notaNoEliminada,
             dispatch(setAnotaciones(anotacionesConOrden));
             setError(false);
             setCargaInicial(false);
-            resetearIntentos(); // ✅ Resetear intentos en éxito
+            resetearIntentos(); //  Resetear intentos en éxito
             setCargando(false);
         } catch (error) {
             errorDesarrollo('Error al cargar las anotaciones eliminadas:', error);
             setCargando(false);
 
-            // ✅ Mostrar error
+            //  Mostrar error
             setError(true);
 
-            // ✅ Ejecutar reintento inteligente
+            //  Ejecutar reintento inteligente
             ejecutarConReintento(
                 cargarAnotacionesEliminadas,
                 isOnline,
@@ -375,13 +342,13 @@ export default function Cuerpo({ notaNoEliminada,
 
         // 3. Si no tiene título ni nota, mostrar la primera tarea
         if (anotacion.tareas && anotacion.tareas.length > 0) {
-            // ✅ Reordenar las tareas según el orden_tareas de la anotación
+            //  Reordenar las tareas según el orden_tareas de la anotación
             const tareasOrdenadas = reordenarTareasPorOrden(
                 anotacion.tareas,
                 anotacion.orden_tareas || 'creacion'
             );
 
-            // ✅ Devolver la primera tarea del orden correcto
+            //  Devolver la primera tarea del orden correcto
             return {
                 texto: tareasOrdenadas[0]?.texto || '',
                 completada: tareasOrdenadas[0]?.completada || false
@@ -421,7 +388,7 @@ export default function Cuerpo({ notaNoEliminada,
                                         intentosAgotados={intentosAgotados} />
                                 ) :
 
-                                    /* ✅ Mostrar spinner mientras carga O mientras no se deben mostrar resultados */
+                                    /*  Mostrar spinner mientras carga O mientras no se deben mostrar resultados */
                                     cargando ? (
                                         <CargandoNoHayNada CargandoAnotaciones={true} />
 

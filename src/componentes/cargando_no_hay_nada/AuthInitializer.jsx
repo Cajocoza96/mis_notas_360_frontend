@@ -12,7 +12,7 @@ export default function AuthInitializer({ children }) {
     const { inicializando, autenticado } = useSelector((state) => state.auth);
 
     useEffect(() => {
-        // ✅ Verificar token solo una vez al montar la aplicación
+        //  Verificar token solo una vez al montar la aplicación
         const inicializar = async () => {
             const result = await dispatch(inicializarAuth());
 
@@ -23,7 +23,7 @@ export default function AuthInitializer({ children }) {
         };
 
         inicializar();
-    }, [dispatch]); // ✅ Solo se ejecuta una vez
+    }, [dispatch]); //  Solo se ejecuta una vez
 
     // Mostrar pantalla de carga mientras inicializa
     if (inicializando) {

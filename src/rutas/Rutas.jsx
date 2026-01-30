@@ -230,6 +230,15 @@ export default function Rutas() {
             />
 
             <Route
+                path="/problemas-conocidos"
+                element={
+                    <PageTransition>
+                        <PaginaTerminosPoliticas />
+                    </PageTransition>
+                }
+            />
+
+            <Route
                 path="/nota-no-encontrada"
                 element={
                     <RutaProtegida>

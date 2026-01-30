@@ -47,7 +47,7 @@ export default function ContOpSubCabecera() {
 
     const dispatch = useDispatch();
 
-    // ✅ Estados de selección
+    //  Estados de selección
     const seleccionar = useSelector((state) => state.anotaciones.seleccionar);
     const seleccionarTodo = useSelector((state) => state.anotaciones.seleccionarTodo);
     const anotacionesSeleccionadas = useSelector((state) => state.anotaciones.anotacionesSeleccionadas);
@@ -66,7 +66,7 @@ export default function ContOpSubCabecera() {
         }
     }
 
-    // ✅ Manejar seleccionar todo / anular selección
+    //  Manejar seleccionar todo / anular selección
     const handleSeleccionarTodo = () => {
         if (verOpcionesCabecera) {
             dispatch(toggleVerOpcionesCabecera());
@@ -166,7 +166,7 @@ export default function ContOpSubCabecera() {
 
                         {verOpcionesCabecera && !verModo && !verOrden && (
                             <>
-                                {/* ✅ Opciones cuando NO está en modo selección */}
+                                {/*  Opciones cuando NO está en modo selección */}
                                 {!seleccionar && (
                                     <>
                                         {anotaciones.length > 0 && isOnline && (
@@ -232,7 +232,7 @@ export default function ContOpSubCabecera() {
                                 )}
 
 
-                                {/* ✅ Opciones cuando SÍ está en modo selección */}
+                                {/*  Opciones cuando SÍ está en modo selección */}
                                 {seleccionar && (
                                     <>
                                         {isOnline && (

@@ -47,7 +47,7 @@ export default function Footer({ handleUndoClick, handleRedoClick, esModoEdicion
 
     const handleGuardarYRedirigir = async () => {
         try {
-            // IMPORTANTE: Obtener los valores actuales directamente de los refs
+            // Obtener los valores actuales directamente de los refs
             let tituloActual = '';
             let notaActual = '';
 
@@ -59,7 +59,7 @@ export default function Footer({ handleUndoClick, handleRedoClick, esModoEdicion
                 notaActual = notaRef.current.innerText || '';
             }
 
-            // ✅ LIMPIEZA: Remover placeholders si se colaron
+            //  LIMPIEZA: Remover placeholders si se colaron
             const placeholdersTitulo = ['Sin título', 'Colocar título'];
             const placeholdersNota = ['Sin nota', 'Colocar nota'];
 
@@ -71,7 +71,7 @@ export default function Footer({ handleUndoClick, handleRedoClick, esModoEdicion
                 notaActual = '';
             }
 
-            // ✅ Trim para remover espacios en blanco innecesarios
+            //  Trim para remover espacios en blanco innecesarios
             tituloActual = tituloActual.trim();
             notaActual = notaActual.trim();
 
@@ -82,7 +82,7 @@ export default function Footer({ handleUndoClick, handleRedoClick, esModoEdicion
             logDesarrollo('Tareas:', tareas);
             logDesarrollo('==================');
 
-            // ✅ IMPORTANTE: Ordenar tareas por orden_creacion antes de guardar
+            //  IMPORTANTE: Ordenar tareas por orden_creacion antes de guardar
             const tareasParaGuardar = [...tareas]
                 .sort((a, b) => {
                     const ordenA = a.orden_creacion !== undefined ? a.orden_creacion : 999999;
@@ -97,7 +97,7 @@ export default function Footer({ handleUndoClick, handleRedoClick, esModoEdicion
             logDesarrollo('Tareas ANTES de ordenar:', tareas);
             logDesarrollo('Tareas DESPUES de ordenar por creacion', tareasParaGuardar);
 
-            // ✅ Obtener el orden de tareas seleccionado
+            //  Obtener el orden de tareas seleccionado
             const ordenTareasActual = ordenTareasSeleccionado; // Desde Redux
 
             // Preparar el payload
@@ -106,7 +106,7 @@ export default function Footer({ handleUndoClick, handleRedoClick, esModoEdicion
                 nota: notaActual,
                 estado: estadoSeleccionado,
                 tareas: tareasParaGuardar,
-                ordenTareas: ordenTareasActual // ✅ Agregar orden de tareas
+                ordenTareas: ordenTareasActual //  Agregar orden de tareas
             };
 
             logDesarrollo('Payload a enviar:', payload);
@@ -121,7 +121,7 @@ export default function Footer({ handleUndoClick, handleRedoClick, esModoEdicion
                 setProcesando(false);
                 logDesarrollo('Actualización exitosa:', data);
 
-                // ✅ Mostrar notificación de éxito para actualización
+                //  Mostrar notificación de éxito para actualización
                 dispatch(mostrarNotificacion({
                     mensaje: '¡Nota actualizada!',
                     esError: false
@@ -133,7 +133,7 @@ export default function Footer({ handleUndoClick, handleRedoClick, esModoEdicion
                 setProcesando(false);
                 logDesarrollo('Guardado exitoso:', data);
 
-                // ✅ Mostrar notificación de éxito para creación
+                //  Mostrar notificación de éxito para creación
                 dispatch(mostrarNotificacion({
                     mensaje: '¡Nota guardada!',
                     esError: false
@@ -147,7 +147,7 @@ export default function Footer({ handleUndoClick, handleRedoClick, esModoEdicion
                 dispatch(ocultarNotificacion());
             }, 2000);
 
-            // ✅ Redirigir después de un pequeño delay para que se vea el modal
+            //  Redirigir después de un pequeño delay para que se vea el modal
             setTimeout(() => {
                 navigate('/panel-principal', { state: { recargar: true } });
 
@@ -161,9 +161,9 @@ export default function Footer({ handleUndoClick, handleRedoClick, esModoEdicion
             setProcesando(false);
             errorDesarrollo('Error al guardar y redirigir:', error);
 
-            // ✅ DETECTAR ERROR DE RATE LIMIT
+            //  DETECTAR ERROR DE RATE LIMIT
             if (error.code === 'RATE_LIMIT_EXCEEDED') {
-                // ✅ Mostrar Toast con el mensaje del backend (detail)
+                //  Mostrar Toast con el mensaje del backend (detail)
                 // El mensaje ya viene en error.message desde anotacionesService
                 dispatch(setMensajeToast(error.message));
                 dispatch(setVerToast(true));
@@ -172,7 +172,7 @@ export default function Footer({ handleUndoClick, handleRedoClick, esModoEdicion
                     dispatch(setVerToast(false));
                 }, 3000);
             } else {
-                // ✅ Para otros errores, mostrar notificación normal
+                //  Para otros errores, mostrar notificación normal
                 dispatch(mostrarNotificacion({
                     mensaje: '¡Error al guardar la nota!',
                     esError: true

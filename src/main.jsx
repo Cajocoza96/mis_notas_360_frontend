@@ -22,7 +22,7 @@ createRoot(document.getElementById('root')).render(
       <Provider store={store}>
         <BrowserRouter>
           <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
-            {/* ✅ AuthInitializer verifica el token UNA SOLA VEZ */}
+            {/*  AuthInitializer verifica el token UNA SOLA VEZ */}
             <AuthInitializer>
               <App />
             </AuthInitializer>
