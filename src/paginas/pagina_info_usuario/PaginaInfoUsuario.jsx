@@ -172,12 +172,14 @@ export default function PaginaInfoUsuario() {
                             : 'No disponible'}
                     />
 
+                    {/*
                     <ContIconoInfoUsua
                         className="text-black dark:text-white"
                         iconoInfoUsua={<HiOutlinePhone />}
                         titulo="Número de teléfono"
                         texto="No disponible"
                     />
+                    */}
 
                     <ContIconoInfoUsua
                         onClick={handleIrTerminosPoliticas}
