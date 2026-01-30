@@ -67,7 +67,7 @@ export default function PaginaErrorNotaNoEncontrada() {
 
 
                 <MiBoton
-                    className="bg-violet-800 text-white
+                    className="bg-violet-800 text-white cursor-pointer
                                     hover:bg-violet-800 active:bg-violet-800
                         rounded-full mb-4"
                     accion="Volver a inicio"

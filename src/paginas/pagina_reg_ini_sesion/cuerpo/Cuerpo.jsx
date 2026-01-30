@@ -1,7 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { setVerToast, setMensajeToast, toggleVerModalRestablecerContrasena } from "../../../store/accesoSlice";
+import {
+    setVerToast, setMensajeToast,
+    toggleVerModalRestablecerContrasena,
+    iniciarAutenticacion, finalizarAutenticacion
+} from "../../../store/accesoSlice";
 import CorreoContrasena from "./correo_contrasena/CorreoContrasena";
 import infoRegIniSesion from "../../../data/infoRegIniSesion.json";
 import { autenticarConGoogle, autenticarConFacebook } from "../../../services/authService";
@@ -22,9 +26,14 @@ export default function Cuerpo() {
     const verMenuHamburguesa = useSelector((state) => state.layout.verMenuHamburguesa);
 
     const [fbSDKLoaded, setFbSDKLoaded] = useState(false);
-    const [cargandoFB, setCargandoFB] = useState(false);
-    const [cargandoGoogle, setCargandoGoogle] = useState(false);
+
+    // ✅ ESTADO UNIFICADO PARA CONTROLAR PROCESOS DE AUTENTICACIÓN
+    const { autenticando, tipoAutenticacion } = useSelector((state) => state.acceso);
+
     const [esHTTPS, setEsHTTPS] = useState(false);
+
+    // ✅ REF para saber si estamos navegando exitosamente
+    const navegandoExitoso = useRef(false);
 
     const esRegistro = location.pathname === "/registrar";
     const textoAccion = esRegistro ? infoRegIniSesion.registrate.accionCuenta : infoRegIniSesion.iniciar.accionCuenta;
@@ -33,6 +42,22 @@ export default function Cuerpo() {
     useEffect(() => {
         setEsHTTPS(window.location.protocol === 'https:');
     }, []);
+
+    // ✅ RESETEAR ESTADO AL CAMBIAR DE RUTA
+    useEffect(() => {
+        if (!navegandoExitoso.current) {
+            dispatch(finalizarAutenticacion());
+        }
+    }, [location.pathname, dispatch]);
+
+    // ✅ RESETEAR ESTADO AL DESMONTAR COMPONENTE
+    useEffect(() => {
+        return () => {
+            if (!navegandoExitoso.current) {
+                dispatch(finalizarAutenticacion());
+            }
+        };
+    }, [dispatch]);
 
     // ✅ Cargar Facebook SDK
     useEffect(() => {
@@ -86,7 +111,7 @@ export default function Cuerpo() {
     // ✅ GOOGLE LOGIN CON REDIRECT (ESTÁNDAR PROFESIONAL)
     const loginGoogle = useGoogleLogin({
         onSuccess: async (tokenResponse) => {
-            setCargandoGoogle(true);
+            dispatch(iniciarAutenticacion('google'));
             try {
                 // ✅ Enviar access_token al backend
                 await autenticarConGoogle(tokenResponse.access_token);
@@ -94,26 +119,46 @@ export default function Cuerpo() {
                 if (verMenuHamburguesa) {
                     dispatch(toggleVerMenuHamburguesa());
                 }
-                navigate("/panel-principal");
+
+                // ✅ Marcar que la navegación es exitosa
+                navegandoExitoso.current = true;
+
+                setTimeout(() => {
+                    navigate("/panel-principal");
+                }, 100);
 
             } catch (error) {
                 registrarError('Autenticar con Google', error);
                 const mensajeSeguro = obtenerMensajeError(error, 'Error al autenticar con Google');
                 mostrarToast(mensajeSeguro);
-                setCargandoGoogle(false);
+                dispatch(finalizarAutenticacion());
             }
         },
         onError: () => {
             mostrarToast("Error al iniciar sesión con Google");
-            setCargandoGoogle(false);
+            dispatch(finalizarAutenticacion());
         },
         // ✅ MODO REDIRECT PROFESIONAL
         ux_mode: 'redirect',
         redirect_uri: window.location.origin + (esRegistro ? '/registrar' : '/iniciar-sesion')
     });
 
+    // ✅ MANEJADOR PARA GOOGLE CON VALIDACIÓN
+    const handleGoogleLogin = () => {
+        if (autenticando) {
+            mostrarToast(`Ya hay un proceso de autenticación en curso (${tipoAutenticacion})`);
+            return;
+        }
+        loginGoogle();
+    };
+
     // ✅ AUTENTICACIÓN SEGURA CON FACEBOOK
     const handleFacebookLogin = () => {
+        if (autenticando) {
+            mostrarToast(`Ya hay un proceso de autenticación en curso (${tipoAutenticacion})`);
+            return;
+        }
+
         if (!esHTTPS) {
             mostrarToast("Facebook Login requiere HTTPS.");
             return;
@@ -124,7 +169,7 @@ export default function Cuerpo() {
             return;
         }
 
-        setCargandoFB(true);
+        dispatch(iniciarAutenticacion('facebook'));
 
         window.FB.login((response) => {
             if (response.authResponse) {
@@ -139,7 +184,14 @@ export default function Cuerpo() {
                         if (verMenuHamburguesa) {
                             dispatch(toggleVerMenuHamburguesa());
                         }
-                        navigate("/panel-principal");
+
+                        // ✅ Marcar que la navegación es exitosa
+                        navegandoExitoso.current = true;
+
+                        setTimeout(() => {
+                            navigate("/panel-principal");
+                        }, 100);
+
                     })
                     .catch((error) => {
                         registrarError('Autenticar con Facebook', error);
@@ -148,13 +200,11 @@ export default function Cuerpo() {
                             'Error al autenticar con Facebook'
                         );
                         mostrarToast(mensajeSeguro);
-                    })
-                    .finally(() => {
-                        setCargandoFB(false);
+                        dispatch(finalizarAutenticacion());
                     });
             } else {
                 mostrarToast("Inicio de sesión cancelado");
-                setCargandoFB(false);
+                dispatch(finalizarAutenticacion());
             }
         }, {
             scope: 'public_profile,email',
@@ -176,15 +226,15 @@ export default function Cuerpo() {
 
                 {/* ✅ BOTÓN PERSONALIZADO DE GOOGLE - 100% CLICKEABLE */}
                 <button
-                    onClick={() => loginGoogle()}
-                    disabled={cargandoGoogle}
+                    onClick={handleGoogleLogin}
+                    disabled={autenticando}
                     className={`
                         w-full h-12 
                         flex items-center justify-center gap-3
                         rounded-md border-2
                         font-medium text-sm md:text-base
                         transition-all duration-200
-                        ${cargandoGoogle
+                        ${autenticando
                             ? 'opacity-50 cursor-not-allowed'
                             : 'hover:bg-gray-50 dark:hover:bg-gray-700 hover:shadow-md cursor-pointer active:scale-[0.98]'
                         }
@@ -194,7 +244,7 @@ export default function Cuerpo() {
                         shadow-sm
                     `}
                 >
-                    {cargandoGoogle ? (
+                    {autenticando && tipoAutenticacion === 'google' ? (
                         <>
                             <CargandoNoHayNada iconoDeCarga={true} />
                             <span>Autenticando...</span>
@@ -219,16 +269,16 @@ export default function Cuerpo() {
                 <div className="w-full flex flex-col justify-center items-center">
                     <button
                         onClick={handleFacebookLogin}
-                        disabled={!fbSDKLoaded || cargandoFB || !esHTTPS || !FACEBOOK_CLIENT_ID}
+                        disabled={!fbSDKLoaded || autenticando || !esHTTPS || !FACEBOOK_CLIENT_ID}
                         className={`
                         w-full h-auto p-1 overflow-hidden rounded-full
                         text-white transition-all
-                        ${fbSDKLoaded && !cargandoFB && esHTTPS && FACEBOOK_CLIENT_ID
+                        ${fbSDKLoaded && !autenticando && esHTTPS && FACEBOOK_CLIENT_ID
                                 ? 'bg-[#1877F2] hover:bg-[#166FE5] cursor-pointer'
                                 : 'bg-gray-400 cursor-not-allowed'}
                     `}
                     >
-                        {cargandoFB ? (
+                        {autenticando && tipoAutenticacion === 'facebook' ? (
                             <div className="flex flex-row items-center justify-center gap-2">
                                 <CargandoNoHayNada iconoDeCarga={true} />
                                 <span className="text-sm">Autenticando...</span>

@@ -136,7 +136,7 @@ export default function CargandoNoHayNada({
 
                     {!esPaginaPanelPrincipal && (
                         <MiBoton
-                            className="bg-violet-800 text-white
+                            className="bg-violet-800 text-white cursor-pointer
                                         hover:bg-violet-800 active:bg-violet-800
                                         rounded-full"
                             accion="Volver a inicio"

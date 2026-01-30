@@ -143,7 +143,7 @@ export default function PaginaBienvenida() {
 
                 {autenticado && (
                     <MiBoton
-                        className="bg-orange-400 text-white
+                        className="bg-orange-400 text-white cursor-pointer
                                     hover:bg-orange-600 active:bg-orange-500
                         rounded-full"
                         accion="Explorar notas"
@@ -163,7 +163,7 @@ export default function PaginaBienvenida() {
                 {!autenticado && (
                     <div className="flex flex-col items-center gap-5">
                         <MiBoton
-                            className="bg-white text-purple-900 
+                            className="bg-white text-purple-900 cursor-pointer
                                     hover:text-red-600 active:text-red-600
                                     hover:bg-gray-300 active:bg-gray-200
                                 rounded-full"
@@ -181,7 +181,7 @@ export default function PaginaBienvenida() {
                         />
 
                         <MiBoton
-                            className=" bg-green-700 text-white
+                            className=" bg-green-700 text-white cursor-pointer
                                     hover:bg-green-800 active:bg-green-700
                                     rounded-full"
                             accion="Registrarse"

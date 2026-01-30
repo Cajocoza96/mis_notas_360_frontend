@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { HiX } from "react-icons/hi";
 import { toggleVerModalRestablecerContrasena, setVerToast } from "../../store/accesoSlice";
 
@@ -12,11 +12,14 @@ export default function ModalRestablecerContrasena() {
     const dispatch = useDispatch();
 
     const [cargando] = useState(false);
+    
+    // ✅ LEER ESTADO GLOBAL DE REDUX
+    const { autenticando } = useSelector((state) => state.acceso);
 
     const handleCerrarModal = () => {
+        // ✅ NO PERMITIR CERRAR SI ESTÁ CARGANDO O AUTENTICANDO
         if (!cargando) {
             dispatch(toggleVerModalRestablecerContrasena());
-
             dispatch(setVerToast(false));
         }
     };
@@ -24,54 +27,56 @@ export default function ModalRestablecerContrasena() {
     return (
         <>
             <motion.div
-            onClick={handleCerrarModal}
-            className="fixed inset-0 z-50 bg-black/70
-                        flex items-center justify-center p-4"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}>
+                onClick={handleCerrarModal}
+                className="fixed inset-0 z-50 bg-black/70
+                            flex items-center justify-center p-4"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.2 }}>
 
-            <div
-                onClick={(e) => e.stopPropagation()}
-                className="bg-white dark:bg-gray-800
-                        z-50 rounded-lg shadow-2xl
-                        w-[80%] 2xs:w-[45%] lg:w-[25%]
-                        max-h-[90dvh] flex flex-col">
+                <div
+                    onClick={(e) => e.stopPropagation()}
+                    className="bg-white dark:bg-gray-800
+                            z-50 rounded-lg shadow-2xl
+                            w-[80%] 2xs:w-[45%] lg:w-[25%]
+                            max-h-[90dvh] flex flex-col">
 
-                {/* Header fijo (no hace scroll) */}
-                <div className="flex flex-row justify-between items-start
-                                p-4 border-b border-gray-200 dark:border-gray-700
-                                flex-shrink-0">
+                    {/* Header fijo (no hace scroll) */}
+                    <div className="flex flex-row justify-between items-start
+                                    p-4 border-b border-gray-200 dark:border-gray-700
+                                    flex-shrink-0">
 
-                    <p className="text-base md:text-lg
-                                text-black dark:text-white font-semibold">
-                        Restablecer contraseña
-                    </p>
+                        <p className="text-base md:text-lg
+                                    text-black dark:text-white font-semibold">
+                            Restablecer contraseña
+                        </p>
 
-                    <div className="text-2xl md:text-3xl text-red-600 dark:text-red-500">
-                        <HiX
-                            onClick={handleCerrarModal}
-                            className={`cursor-pointer ${cargando ? 'opacity-50 cursor-not-allowed' : ''}`}
+                        <div className="text-2xl md:text-3xl text-red-600 dark:text-red-500">
+                            <HiX
+                                onClick={handleCerrarModal}
+                                className={`${(cargando || autenticando) ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
+                                style={{ cursor: (cargando || autenticando) ? 'not-allowed' : 'pointer' }}
+                            />
+                        </div>
+
+                    </div>
+
+                    {/* Contenido con scroll */}
+                    <div className="flex-1 overflow-y-auto overflow-x-hidden
+                                    p-4 min-h-0">
+
+                        {/* ✅ PASAR LAS PROPS DE AUTENTICACIÓN */}
+                        <CorreoContrasena
+                            textoContrasena="Nueva contraseña"
+                            restablecer={true}
                         />
+
                     </div>
 
                 </div>
 
-                {/* Contenido con scroll */}
-                <div className="flex-1 overflow-y-auto overflow-x-hidden
-                                p-4 min-h-0">
-
-                    <CorreoContrasena
-                        textoContrasena="Nueva contraseña"
-                        restablecer={true}
-                    />
-
-                </div>
-
-            </div>
-
-        </motion.div>
+            </motion.div>
         </>
     );
 }

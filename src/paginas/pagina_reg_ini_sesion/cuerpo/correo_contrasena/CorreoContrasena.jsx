@@ -1,11 +1,15 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { setVerToast, setMensajeToast, toggleVerModalRestablecerContrasena } from "../../../../store/accesoSlice";
+import {
+    setVerToast, setMensajeToast,
+    toggleVerModalRestablecerContrasena,
+    iniciarAutenticacion, finalizarAutenticacion
+} from "../../../../store/accesoSlice";
 import { motion } from "framer-motion";
 import { useLocation, useNavigate } from "react-router-dom";
 import BotonAccion from "../../../../componentes/botones/BotonAccion";
 import { HiEye, HiEyeOff } from "react-icons/hi";
-import { FaSpinner, FaCheck, FaTimes } from "react-icons/fa";
+import { FaSpinner, FaLock, FaCheck, FaTimes } from "react-icons/fa";
 import infoRegIniSesion from "../../../../data/infoRegIniSesion.json";
 import { registrarUsuario, iniciarSesion, restablecerContrasena } from "../../../../services/authService";
 import { toggleVerMenuHamburguesa } from "../../../../store/layoutSlice";
@@ -25,6 +29,7 @@ const limpiarTextoPlano = (texto) => {
 };
 
 export default function CorreoContrasena({ textoContrasena, restablecer, noRestablecer }) {
+
     const [verContrasena, setVerContrasena] = useState(false);
     const [nombreUsuario, setNombreUsuario] = useState("");
     const [contrasena, setContrasena] = useState("");
@@ -51,7 +56,25 @@ export default function CorreoContrasena({ textoContrasena, restablecer, noResta
     const esRegistro = location.pathname === "/registrar";
     const textoBoton = esRegistro ? infoRegIniSesion.registrate.accionBoton : infoRegIniSesion.iniciar.accionBoton;
 
+    // ✅ REF para saber si estamos navegando exitosamente
+    const navegandoExitoso = useRef(false);
+
     const MiBoton = motion.create(BotonAccion);
+
+    // ✅ LEER ESTADO GLOBAL DE REDUX
+    const { autenticando } = useSelector((state) => state.acceso);
+
+    // ✅ RESETEAR ESTADO AL CAMBIAR DE RUTA
+    useEffect(() => {
+        dispatch(finalizarAutenticacion());
+    }, [location.pathname, dispatch]);
+
+    // ✅ RESETEAR ESTADO AL DESMONTAR COMPONENTE
+    useEffect(() => {
+        return () => {
+            dispatch(finalizarAutenticacion());
+        };
+    }, [dispatch]);
 
     useEffect(() => {
         return () => {
@@ -81,70 +104,70 @@ export default function CorreoContrasena({ textoContrasena, restablecer, noResta
     // ✅ MANEJADOR PARA NOMBRE DE USUARIO CON VALIDACIONES
     const handleUsuarioChange = (e) => {
         let valor = e.target.value;
-        
+
         // Limpiar texto (eliminar saltos de línea y caracteres de control)
         valor = limpiarTextoPlano(valor);
-        
+
         // Validar límite de caracteres
         if (valor.length > LIMITE_USUARIO) {
             mostrarToast(`El nombre de usuario solo permite ${LIMITE_USUARIO} carácteres`);
             valor = valor.slice(0, LIMITE_USUARIO);
         }
-        
+
         setNombreUsuario(valor);
     };
 
     // ✅ MANEJADOR PARA CONTRASEÑA CON VALIDACIONES
     const handleContrasenaChange = (e) => {
         let valor = e.target.value;
-        
+
         // Limpiar texto (eliminar saltos de línea y caracteres de control)
         valor = limpiarTextoPlano(valor);
-        
+
         // Validar límite de caracteres
         if (valor.length > LIMITE_CONTRASENA) {
             mostrarToast(`La contraseña solo permite ${LIMITE_CONTRASENA} carácteres`);
             valor = valor.slice(0, LIMITE_CONTRASENA);
         }
-        
+
         setContrasena(valor);
     };
 
     // ✅ MANEJADOR PARA PEGADO EN NOMBRE DE USUARIO
     const handleUsuarioPaste = (e) => {
         e.preventDefault();
-        
+
         // Obtener texto del portapapeles
         let textoPegado = e.clipboardData.getData('text/plain');
-        
+
         // Limpiar texto
         textoPegado = limpiarTextoPlano(textoPegado);
-        
+
         // Validar y cortar si excede el límite
         if (textoPegado.length > LIMITE_USUARIO) {
             mostrarToast(`El nombre de usuario solo permite ${LIMITE_USUARIO} carácteres. Se ha cortado el texto`);
             textoPegado = textoPegado.slice(0, LIMITE_USUARIO);
         }
-        
+
         setNombreUsuario(textoPegado);
     };
 
     // ✅ MANEJADOR PARA PEGADO EN CONTRASEÑA
     const handleContrasenaPaste = (e) => {
         e.preventDefault();
-        
+
         // Obtener texto del portapapeles
         let textoPegado = e.clipboardData.getData('text/plain');
-        
+
         // Limpiar texto
         textoPegado = limpiarTextoPlano(textoPegado);
-        
+
         // Validar y cortar si excede el límite
         if (textoPegado.length > LIMITE_CONTRASENA) {
             mostrarToast(`La contraseña solo permite ${LIMITE_CONTRASENA} carácteres. Se ha cortado el texto`);
             textoPegado = textoPegado.slice(0, LIMITE_CONTRASENA);
         }
-        
+
         setContrasena(textoPegado);
     };
 
@@ -160,6 +183,13 @@ export default function CorreoContrasena({ textoContrasena, restablecer, noResta
     };
 
     const handleSubmit = async () => {
+
+        // ✅ VALIDAR SI YA HAY AUTENTICACIÓN EN CURSO
+        if (autenticando) {
+            mostrarToast("Ya hay un proceso de autenticación en curso");
+            return;
+        }
+
         if (!nombreUsuario && !contrasena) {
             mostrarToast("Ingrese nombre de usuario");
             return;
@@ -185,6 +215,9 @@ export default function CorreoContrasena({ textoContrasena, restablecer, noResta
             }
         }
 
+        // ✅ USAR DISPATCH DE REDUX
+        dispatch(iniciarAutenticacion('local'));
+
         setCargando(true);
 
         try {
@@ -194,7 +227,13 @@ export default function CorreoContrasena({ textoContrasena, restablecer, noResta
                 if (verMenuHamburguesa) {
                     dispatch(toggleVerMenuHamburguesa());
                 }
-                navigate("/");
+
+                // ✅ Marcar que la navegación es exitosa
+                navegandoExitoso.current = true;
+
+                setTimeout(() => {
+                    navigate("/");
+                }, 100);
 
             } else {
                 await iniciarSesion(nombreUsuario, contrasena);
@@ -202,7 +241,13 @@ export default function CorreoContrasena({ textoContrasena, restablecer, noResta
                 if (verMenuHamburguesa) {
                     dispatch(toggleVerMenuHamburguesa());
                 }
-                navigate("/");
+
+                // ✅ Marcar que la navegación es exitosa
+                navegandoExitoso.current = true;
+
+                setTimeout(() => {
+                    navigate("/");
+                }, 100);
             }
         } catch (error) {
             registrarError('Inicio de sesión/Registro', error);
@@ -211,12 +256,22 @@ export default function CorreoContrasena({ textoContrasena, restablecer, noResta
                 esRegistro ? 'Error al registrar usuario' : 'Error al iniciar sesión'
             );
             mostrarToast(mensajeSeguro);
+
+            // ✅ USAR DISPATCH DE REDUX
+            dispatch(finalizarAutenticacion());
         } finally {
             setCargando(false);
         }
     };
 
     const handleRestablecerContrasena = async () => {
+
+        // ✅ VALIDAR SI YA HAY AUTENTICACIÓN EN CURSO
+        if (autenticando) {
+            mostrarToast("Ya hay un proceso de autenticación en curso");
+            return;
+        }
+
         if (!nombreUsuario.trim()) {
             mostrarToast("Ingrese nombre de usuario");
             return;
@@ -234,11 +289,17 @@ export default function CorreoContrasena({ textoContrasena, restablecer, noResta
             return;
         }
 
+        // ✅ USAR DISPATCH DE REDUX
+        dispatch(iniciarAutenticacion('local'));
+
         setCargando(true);
 
         try {
             await restablecerContrasena(nombreUsuario, contrasena);
             mostrarToast("Contraseña restablecida exitosamente");
+
+            // ✅ Marcar que la navegación es exitosa
+            navegandoExitoso.current = true;
 
             setTimeout(() => {
                 handleCerrarModal();
@@ -251,6 +312,10 @@ export default function CorreoContrasena({ textoContrasena, restablecer, noResta
                 'Error al restablecer contraseña. Por favor intenta más tarde'
             );
             mostrarToast(mensajeSeguro);
+
+            // ✅ USAR DISPATCH DE REDUX
+            dispatch(finalizarAutenticacion());
+
         } finally {
             setCargando(false);
         }
@@ -277,7 +342,8 @@ export default function CorreoContrasena({ textoContrasena, restablecer, noResta
         if (blurTimerUsuario.current) clearTimeout(blurTimerUsuario.current);
         if (blurTimerContrasena.current) clearTimeout(blurTimerContrasena.current);
 
-        if (!cargando) {
+        // ✅ VALIDAR QUE NO ESTÉ CARGANDO NI AUTENTICANDO
+        if (!cargando && !autenticando) {
             callback();
         }
     };
@@ -390,8 +456,8 @@ export default function CorreoContrasena({ textoContrasena, restablecer, noResta
                                 />
                             </div>
                             <span className={`text-sm font-semibold ${fortalezaContrasena.fortaleza === 'fuerte' ? 'text-green-600 dark:text-green-400' :
-                                    fortalezaContrasena.fortaleza === 'media' ? 'text-yellow-600 dark:text-yellow-400' :
-                                        'text-red-600 dark:text-red-400'
+                                fortalezaContrasena.fortaleza === 'media' ? 'text-yellow-600 dark:text-yellow-400' :
+                                    'text-red-600 dark:text-red-400'
                                 }`}>
                                 {fortalezaContrasena.fortaleza.charAt(0).toUpperCase() + fortalezaContrasena.fortaleza.slice(1)}
                             </span>
@@ -413,13 +479,21 @@ export default function CorreoContrasena({ textoContrasena, restablecer, noResta
                 <div
                     onTouchEnd={(e) => handleBotonClick(e, handleSubmit)}
                     onMouseDown={(e) => handleBotonClick(e, handleSubmit)}
-                    className="touch-manipulation w-fit">
+                    className={`touch-manipulation w-fit ${(cargando || autenticando) ? 'cursor-not-allowed' : ''}`}>
                     <MiBoton
                         className={`bg-violet-800 text-white hover:bg-violet-800 active:bg-violet-800
-                        ${cargando ? 'opacity-50 cursor-not-allowed' : ''}`}
-                        accion={cargando ? <FaSpinner className="animate-spin text-lg md:text-xl text-white" /> : textoBoton}
-                        disabled={cargando}
-                        whileTap={!cargando ? {
+                            ${(cargando || autenticando) ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
+                        accion={
+                            cargando ? (
+                                <FaSpinner className="animate-spin text-lg md:text-xl text-white" />
+                            ) : autenticando ? (
+                                <FaLock className="text-lg md:text-xl text-white" />
+                            ) : (
+                                textoBoton
+                            )
+                        }
+                        disabled={cargando || autenticando}
+                        whileTap={!(cargando || autenticando) ? {
                             scale: 0.96,
                             boxShadow: "0px 2px 8px rgba(147, 51, 234, 0.3)"
                         } : {}}
@@ -430,21 +504,39 @@ export default function CorreoContrasena({ textoContrasena, restablecer, noResta
 
             {restablecer && (
                 <>
-                    <div
-                        onTouchEnd={(e) => handleBotonClick(e, handleRestablecerContrasena)}
-                        onMouseDown={(e) => handleBotonClick(e, handleRestablecerContrasena)}
-                        className="touch-manipulation">
-                        <MiBoton
-                            className={`w-full bg-violet-800 text-white hover:bg-violet-800 active:bg-violet-800
-                                    ${cargando ? 'opacity-50 cursor-not-allowed' : ''}`}
-                            accion={cargando ? 'Restableciendo...' : 'Restablecer contraseña'}
-                            disabled={cargando}
-                            whileTap={!cargando ? {
-                                scale: 0.96,
-                                boxShadow: "0px 2px 8px rgba(147, 51, 234, 0.3)"
-                            } : {}}
-                            transition={{ type: "spring", stiffness: 300, damping: 15 }}
-                        />
+                    <div className="touch-manipulation">
+                        <div
+                            onTouchEnd={(e) => {
+                                if (cargando || autenticando) return;
+                                handleBotonClick(e, handleRestablecerContrasena);
+                            }}
+                            onMouseDown={(e) => {
+                                if (cargando || autenticando) return;
+                                handleBotonClick(e, handleRestablecerContrasena);
+                            }}
+                            style={{ cursor: (cargando || autenticando) ? 'not-allowed' : 'pointer' }}
+                        >
+                            <MiBoton
+                                className={`w-full bg-violet-800 text-white hover:bg-violet-800 active:bg-violet-800
+                            ${(cargando || autenticando) ? 'opacity-50' : ''}`}
+                                style={{ cursor: (cargando || autenticando) ? 'not-allowed' : 'pointer' }}
+                                accion={
+                                    cargando ? (
+                                        'Restableciendo...'
+                                    ) : autenticando ? (
+                                        <FaLock className="text-lg md:text-xl text-white" />
+                                    ) : (
+                                        'Restablecer contraseña'
+                                    )
+                                }
+                                disabled={cargando || autenticando}
+                                whileTap={!(cargando || autenticando) ? {
+                                    scale: 0.96,
+                                    boxShadow: "0px 2px 8px rgba(147, 51, 234, 0.3)"
+                                } : {}}
+                                transition={{ type: "spring", stiffness: 300, damping: 15 }}
+                            />
+                        </div>
                     </div>
 
                     <p className="text-sm text-gray-600 dark:text-gray-400 text-center">
