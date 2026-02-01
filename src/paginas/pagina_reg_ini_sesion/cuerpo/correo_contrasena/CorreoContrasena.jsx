@@ -38,6 +38,8 @@ export default function CorreoContrasena({ textoContrasena, restablecer, noResta
     const [inputUsuarioFocused, setInputUsuarioFocused] = useState(false);
     const [inputContrasenaFocused, setInputContrasenaFocused] = useState(false);
 
+    const { usuario } = useSelector((state) => state.auth);
+
     const blurTimerUsuario = useRef(null);
     const blurTimerContrasena = useRef(null);
 
@@ -231,9 +233,11 @@ export default function CorreoContrasena({ textoContrasena, restablecer, noResta
                 //  Marcar que la navegación es exitosa
                 navegandoExitoso.current = true;
 
-                setTimeout(() => {
-                    navigate("/");
-                }, 100);
+                if (usuario && usuario.vioBienvenida) {
+                    setTimeout(() => {
+                        navigate("/");
+                    }, 100);
+                }
 
             } else {
                 await iniciarSesion(nombreUsuario, contrasena);
@@ -245,9 +249,11 @@ export default function CorreoContrasena({ textoContrasena, restablecer, noResta
                 //  Marcar que la navegación es exitosa
                 navegandoExitoso.current = true;
 
-                setTimeout(() => {
-                    navigate("/");
-                }, 100);
+                if (usuario && usuario.vioBienvenida) {
+                    setTimeout(() => {
+                        navigate("/");
+                    }, 100);
+                }
             }
         } catch (error) {
             registrarError('Inicio de sesión/Registro', error);

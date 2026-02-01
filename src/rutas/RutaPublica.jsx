@@ -18,7 +18,7 @@ export default function RutaPublica({ children }) {
             return <Navigate to="/pagina-intro" replace state={{ from: location }} />;
         }
         // Si ya vio bienvenida, ir al panel principal
-        return <Navigate to="/panel-principal" replace state={{ from: location }} />;
+        return <Navigate to="/" replace state={{ from: location }} />;
     }
 
 

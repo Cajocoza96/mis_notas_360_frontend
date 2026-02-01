@@ -30,6 +30,8 @@ export default function Cuerpo() {
     //  ESTADO UNIFICADO PARA CONTROLAR PROCESOS DE AUTENTICACIÓN
     const { autenticando, tipoAutenticacion } = useSelector((state) => state.acceso);
 
+    const { usuario } = useSelector((state) => state.auth);
+
     const [esHTTPS, setEsHTTPS] = useState(false);
 
     //  REF para saber si estamos navegando exitosamente
@@ -123,9 +125,12 @@ export default function Cuerpo() {
                 //  Marcar que la navegación es exitosa
                 navegandoExitoso.current = true;
 
-                setTimeout(() => {
-                    navigate("/panel-principal");
-                }, 100);
+                if (usuario && usuario.vioBienvenida) {
+                    setTimeout(() => {
+                        navigate("/");
+                    }, 100);
+                }
+
 
             } catch (error) {
                 registrarError('Autenticar con Google', error);
@@ -188,9 +193,11 @@ export default function Cuerpo() {
                         //  Marcar que la navegación es exitosa
                         navegandoExitoso.current = true;
 
-                        setTimeout(() => {
-                            navigate("/panel-principal");
-                        }, 100);
+                        if (usuario && usuario.vioBienvenida) {
+                            setTimeout(() => {
+                                navigate("/");
+                            }, 100);
+                        }
 
                     })
                     .catch((error) => {
