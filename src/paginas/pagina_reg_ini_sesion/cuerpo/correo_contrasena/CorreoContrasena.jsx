@@ -190,6 +190,9 @@ export default function CorreoContrasena({ textoContrasena, restablecer, noResta
 
 
     const handleSubmit = async () => {
+        if (!isOnline) {
+            return
+        }
 
         //  VALIDAR SI YA HAY AUTENTICACIÓN EN CURSO
         if (autenticando) {
@@ -197,17 +200,17 @@ export default function CorreoContrasena({ textoContrasena, restablecer, noResta
             return;
         }
 
-        if (!nombreUsuario && !contrasena && isOnline) {
+        if (!nombreUsuario && !contrasena) {
             mostrarToast("Ingrese nombre de usuario");
             return;
         }
 
-        if (!nombreUsuario && isOnline) {
+        if (!nombreUsuario) {
             mostrarToast("Ingrese nombre de usuario");
             return;
         }
 
-        if (!contrasena && isOnline) {
+        if (!contrasena) {
             mostrarToast("Ingrese contraseña");
             return;
         }
@@ -277,18 +280,22 @@ export default function CorreoContrasena({ textoContrasena, restablecer, noResta
 
     const handleRestablecerContrasena = async () => {
 
+        if (!isOnline) {
+            return
+        }
+
         //  VALIDAR SI YA HAY AUTENTICACIÓN EN CURSO
         if (autenticando) {
             mostrarToast("Ya hay un proceso de autenticación en curso");
             return;
         }
 
-        if (!nombreUsuario.trim() && isOnline) {
+        if (!nombreUsuario.trim()) {
             mostrarToast("Ingrese nombre de usuario");
             return;
         }
 
-        if (!contrasena.trim() && isOnline) {
+        if (!contrasena.trim()) {
             mostrarToast("Ingrese nueva contraseña");
             return;
         }
