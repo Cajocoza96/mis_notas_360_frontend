@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { HiX } from "react-icons/hi";
 import { toggleVerModalRestablecerContrasena, setVerToast } from "../../store/accesoSlice";
@@ -10,15 +10,13 @@ import { motion } from "framer-motion";
 export default function ModalRestablecerContrasena() {
 
     const dispatch = useDispatch();
-
-    const [cargando] = useState(false);
     
     //  LEER ESTADO GLOBAL DE REDUX
     const { autenticando } = useSelector((state) => state.acceso);
 
     const handleCerrarModal = () => {
-        //  NO PERMITIR CERRAR SI ESTÁ CARGANDO O AUTENTICANDO
-        if (!cargando) {
+        //  NO PERMITIR CERRAR SI ESTÁ AUTENTICANDO
+        if (!autenticando) {
             dispatch(toggleVerModalRestablecerContrasena());
             dispatch(setVerToast(false));
         }
@@ -55,8 +53,8 @@ export default function ModalRestablecerContrasena() {
                         <div className="text-2xl md:text-3xl text-red-600 dark:text-red-500">
                             <HiX
                                 onClick={handleCerrarModal}
-                                className={`${(cargando || autenticando) ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
-                                style={{ cursor: (cargando || autenticando) ? 'not-allowed' : 'pointer' }}
+                                className={`${(autenticando) ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
+                                style={{ cursor: (autenticando) ? 'not-allowed' : 'pointer' }}
                             />
                         </div>
 

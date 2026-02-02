@@ -9,11 +9,12 @@ import { motion } from "framer-motion";
 import { useLocation, useNavigate } from "react-router-dom";
 import BotonAccion from "../../../../componentes/botones/BotonAccion";
 import { HiEye, HiEyeOff } from "react-icons/hi";
-import { FaSpinner, FaLock, FaCheck, FaTimes } from "react-icons/fa";
+import { FaSpinner, FaCheck, FaTimes, FaLock } from "react-icons/fa";
 import infoRegIniSesion from "../../../../data/infoRegIniSesion.json";
 import { registrarUsuario, iniciarSesion, restablecerContrasena } from "../../../../services/authService";
 import { toggleVerMenuHamburguesa } from "../../../../store/layoutSlice";
 import { validarFortalezaContrasena, obtenerMensajesRequisitos } from "../../../../utils/validacionContrasenaUtils";
+import useConexionInternet from "../../../../hooks/useConexionInternet";
 import { obtenerMensajeError, registrarError, logDesarrollo } from "../../../../utils/errorHandler";
 
 //  CONSTANTES DE LÍMITES
@@ -37,6 +38,8 @@ export default function CorreoContrasena({ textoContrasena, restablecer, noResta
     const [fortalezaContrasena, setFortalezaContrasena] = useState(null);
     const [inputUsuarioFocused, setInputUsuarioFocused] = useState(false);
     const [inputContrasenaFocused, setInputContrasenaFocused] = useState(false);
+
+    const { isOnline } = useConexionInternet();
 
     const { usuario } = useSelector((state) => state.auth);
 
@@ -173,6 +176,7 @@ export default function CorreoContrasena({ textoContrasena, restablecer, noResta
         setContrasena(textoPegado);
     };
 
+
     const handleCerrarModal = () => {
         if (!cargando) {
             dispatch(toggleVerModalRestablecerContrasena());
@@ -184,6 +188,7 @@ export default function CorreoContrasena({ textoContrasena, restablecer, noResta
         }
     };
 
+
     const handleSubmit = async () => {
 
         //  VALIDAR SI YA HAY AUTENTICACIÓN EN CURSO
@@ -192,17 +197,17 @@ export default function CorreoContrasena({ textoContrasena, restablecer, noResta
             return;
         }
 
-        if (!nombreUsuario && !contrasena) {
+        if (!nombreUsuario && !contrasena && isOnline) {
             mostrarToast("Ingrese nombre de usuario");
             return;
         }
 
-        if (!nombreUsuario) {
+        if (!nombreUsuario && isOnline) {
             mostrarToast("Ingrese nombre de usuario");
             return;
         }
 
-        if (!contrasena) {
+        if (!contrasena && isOnline) {
             mostrarToast("Ingrese contraseña");
             return;
         }
@@ -278,12 +283,12 @@ export default function CorreoContrasena({ textoContrasena, restablecer, noResta
             return;
         }
 
-        if (!nombreUsuario.trim()) {
+        if (!nombreUsuario.trim() && isOnline) {
             mostrarToast("Ingrese nombre de usuario");
             return;
         }
 
-        if (!contrasena.trim()) {
+        if (!contrasena.trim() && isOnline) {
             mostrarToast("Ingrese nueva contraseña");
             return;
         }
@@ -309,7 +314,8 @@ export default function CorreoContrasena({ textoContrasena, restablecer, noResta
 
             setTimeout(() => {
                 handleCerrarModal();
-            }, 1000);
+            }, 2000);
+
 
         } catch (error) {
             registrarError('Restablecer contraseña', error);
@@ -361,12 +367,14 @@ export default function CorreoContrasena({ textoContrasena, restablecer, noResta
                 <div className={`border-2 rounded-md shadow-sm
                                 flex flex-row items-center justify-between
                                 transition-all duration-200
+                                ${cargando || !isOnline ? 'opacity-50' : ''}
                                 ${inputUsuarioFocused ? 'border-violet-800' : 'border-gray-300 dark:border-gray-700'}
                                 ${!cargando && 'active:bg-gray-200 dark:active:bg-gray-700'}`}>
                     <input
-                        className="w-full text-base md:text-lg p-2 pt-6 pb-2
+                        className={`w-full text-base md:text-lg p-2 pt-6 pb-2
                                 focus:outline-none bg-transparent
-                                text-black dark:text-white"
+                                ${!isOnline ? 'cursor-not-allowed' : 'cursor-default'}
+                                text-black dark:text-white`}
                         type="text"
                         value={nombreUsuario}
                         onChange={handleUsuarioChange}
@@ -376,7 +384,7 @@ export default function CorreoContrasena({ textoContrasena, restablecer, noResta
                             setInputUsuarioFocused(true);
                         }}
                         onBlur={handleUsuarioBlur}
-                        disabled={cargando}
+                        disabled={cargando || !isOnline}
                         maxLength={LIMITE_USUARIO}
                     />
 
@@ -400,12 +408,14 @@ export default function CorreoContrasena({ textoContrasena, restablecer, noResta
                     <div className={`border-2 rounded-md shadow-sm
                                     flex flex-row items-center justify-between
                                     transition-all duration-200
+                                    ${cargando || !isOnline ? 'opacity-50' : ''}
                                     ${inputContrasenaFocused ? 'border-violet-800' : 'border-gray-300 dark:border-gray-700'}
                                     ${!cargando && 'active:bg-gray-200 dark:active:bg-gray-700'}`}>
                         <input
-                            className="w-full text-base md:text-lg p-2 pt-6 pb-2
+                            className={`w-full text-base md:text-lg p-2 pt-6 pb-2
                                     focus:outline-none bg-transparent
-                                    text-black dark:text-white"
+                                    ${!isOnline ? 'cursor-not-allowed' : 'cursor-default'}
+                                    text-black dark:text-white`}
                             type={verContrasena ? "text" : "password"}
                             value={contrasena}
                             onChange={handleContrasenaChange}
@@ -415,7 +425,7 @@ export default function CorreoContrasena({ textoContrasena, restablecer, noResta
                                 setInputContrasenaFocused(true);
                             }}
                             onBlur={handleContrasenaBlur}
-                            disabled={cargando}
+                            disabled={cargando || !isOnline}
                             maxLength={LIMITE_CONTRASENA}
                             onKeyDown={(e) => {
                                 if (e.key === 'Enter' && !cargando && noRestablecer) {
@@ -437,17 +447,20 @@ export default function CorreoContrasena({ textoContrasena, restablecer, noResta
                             {textoContrasena}
                         </label>
 
-                        <button
-                            type="button"
-                            className="text-base md:text-lg mr-2 p-2
+                        {isOnline && (
+                            <button
+                                type="button"
+                                className="text-base md:text-lg mr-2 p-2
                                 text-black dark:text-white cursor-pointer z-10 
                                 touch-manipulation select-none"
-                            onMouseDown={handleVerContrasena}
-                            onTouchEnd={handleVerContrasena}
-                            tabIndex={-1}
-                        >
-                            {verContrasena ? <HiEye /> : <HiEyeOff />}
-                        </button>
+                                onMouseDown={handleVerContrasena}
+                                onTouchEnd={handleVerContrasena}
+                                tabIndex={-1}
+                            >
+                                {verContrasena ? <HiEye /> : <HiEyeOff />}
+                            </button>
+                        )}
+
                     </div>
                 </div>
 
@@ -485,20 +498,18 @@ export default function CorreoContrasena({ textoContrasena, restablecer, noResta
                 <div
                     onTouchEnd={(e) => handleBotonClick(e, handleSubmit)}
                     onMouseDown={(e) => handleBotonClick(e, handleSubmit)}
-                    className={`touch-manipulation w-fit ${(cargando || autenticando) ? 'cursor-not-allowed' : ''}`}>
+                    className={`touch-manipulation w-fit ${(cargando || autenticando || !isOnline) ? 'cursor-not-allowed' : ''}`}>
                     <MiBoton
                         className={`bg-violet-800 text-white hover:bg-violet-800 active:bg-violet-800
-                            ${(cargando || autenticando) ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
+                            ${(cargando || autenticando || !isOnline) ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
                         accion={
                             cargando ? (
                                 <FaSpinner className="animate-spin text-lg md:text-xl text-white" />
-                            ) : autenticando ? (
-                                <FaLock className="text-lg md:text-xl text-white" />
                             ) : (
                                 textoBoton
                             )
                         }
-                        disabled={cargando || autenticando}
+                        disabled={cargando || autenticando || !isOnline}
                         whileTap={!(cargando || autenticando) ? {
                             scale: 0.96,
                             boxShadow: "0px 2px 8px rgba(147, 51, 234, 0.3)"
@@ -513,29 +524,31 @@ export default function CorreoContrasena({ textoContrasena, restablecer, noResta
                     <div className="touch-manipulation">
                         <div
                             onTouchEnd={(e) => {
-                                if (cargando || autenticando) return;
+                                if (cargando || autenticando || !isOnline) return;
                                 handleBotonClick(e, handleRestablecerContrasena);
                             }}
                             onMouseDown={(e) => {
-                                if (cargando || autenticando) return;
+                                if (cargando || autenticando || !isOnline) return;
                                 handleBotonClick(e, handleRestablecerContrasena);
                             }}
                             style={{ cursor: (cargando || autenticando) ? 'not-allowed' : 'pointer' }}
                         >
                             <MiBoton
                                 className={`w-full bg-violet-800 text-white hover:bg-violet-800 active:bg-violet-800
-                            ${(cargando || autenticando) ? 'opacity-50' : ''}`}
-                                style={{ cursor: (cargando || autenticando) ? 'not-allowed' : 'pointer' }}
+                            ${(cargando || autenticando || !isOnline) ? 'opacity-50' : ''}`}
+                                style={{ cursor: (cargando || autenticando || !isOnline) ? 'not-allowed' : 'pointer' }}
                                 accion={
                                     cargando ? (
                                         'Restableciendo...'
-                                    ) : autenticando ? (
-                                        <FaLock className="text-lg md:text-xl text-white" />
-                                    ) : (
-                                        'Restablecer contraseña'
-                                    )
+                                    ) :
+                                        autenticando ? (
+                                            <FaLock className="text-lg md:text-xl text-white" />
+                                        )
+                                            : (
+                                                'Restablecer contraseña'
+                                            )
                                 }
-                                disabled={cargando || autenticando}
+                                disabled={cargando || autenticando || !isOnline}
                                 whileTap={!(cargando || autenticando) ? {
                                     scale: 0.96,
                                     boxShadow: "0px 2px 8px rgba(147, 51, 234, 0.3)"

@@ -14,6 +14,7 @@ import { toggleVerMenuHamburguesa } from "../../../store/layoutSlice";
 import { obtenerMensajeError, registrarError, logDesarrollo, errorDesarrollo } from "../../../utils/errorHandler";
 import { FcGoogle } from "react-icons/fc";
 import { FaFacebook } from "react-icons/fa";
+import useConexionInternet from "../../../hooks/useConexionInternet";
 import CargandoNoHayNada from "../../../componentes/cargando_no_hay_nada/CargandoNoHayNada";
 
 const FACEBOOK_CLIENT_ID = import.meta.env.VITE_FACEBOOK_CLIENT_ID;
@@ -22,6 +23,8 @@ export default function Cuerpo() {
     const location = useLocation();
     const navigate = useNavigate();
     const dispatch = useDispatch();
+
+    const { isOnline } = useConexionInternet();
 
     const verMenuHamburguesa = useSelector((state) => state.layout.verMenuHamburguesa);
 
@@ -106,6 +109,11 @@ export default function Cuerpo() {
     };
 
     const handleRestablecerContrasena = () => {
+        if (autenticando || !isOnline) {
+            return
+        }
+        //  USAR DISPATCH DE REDUX
+        dispatch(iniciarAutenticacion('olvidaContrasena'));
         dispatch(setVerToast(false));
         dispatch(toggleVerModalRestablecerContrasena());
     };
@@ -150,7 +158,7 @@ export default function Cuerpo() {
 
     //  MANEJADOR PARA GOOGLE CON VALIDACIÓN
     const handleGoogleLogin = () => {
-        if (autenticando) {
+        if (autenticando || !isOnline) {
             mostrarToast(`Ya hay un proceso de autenticación en curso (${tipoAutenticacion})`);
             return;
         }
@@ -159,7 +167,7 @@ export default function Cuerpo() {
 
     //  AUTENTICACIÓN SEGURA CON FACEBOOK
     const handleFacebookLogin = () => {
-        if (autenticando) {
+        if (autenticando || !isOnline) {
             mostrarToast(`Ya hay un proceso de autenticación en curso (${tipoAutenticacion})`);
             return;
         }
@@ -234,14 +242,14 @@ export default function Cuerpo() {
                 {/*  BOTÓN PERSONALIZADO DE GOOGLE - 100% CLICKEABLE */}
                 <button
                     onClick={handleGoogleLogin}
-                    disabled={autenticando}
+                    disabled={autenticando || !isOnline}
                     className={`
                         w-full h-12 
                         flex items-center justify-center gap-3
                         rounded-md border-2
                         font-medium text-sm md:text-base
                         transition-all duration-200
-                        ${autenticando
+                        ${autenticando || !isOnline
                             ? 'opacity-50 cursor-not-allowed'
                             : 'hover:bg-gray-50 dark:hover:bg-gray-700 hover:shadow-md cursor-pointer active:scale-[0.98]'
                         }
@@ -276,11 +284,11 @@ export default function Cuerpo() {
                 <div className="w-full flex flex-col justify-center items-center">
                     <button
                         onClick={handleFacebookLogin}
-                        disabled={!fbSDKLoaded || autenticando || !esHTTPS || !FACEBOOK_CLIENT_ID}
+                        disabled={!fbSDKLoaded || autenticando || !isOnline || !esHTTPS || !FACEBOOK_CLIENT_ID}
                         className={`
                         w-full h-auto p-1 overflow-hidden rounded-full
                         text-white transition-all
-                        ${fbSDKLoaded && !autenticando && esHTTPS && FACEBOOK_CLIENT_ID
+                        ${fbSDKLoaded && !autenticando && esHTTPS && FACEBOOK_CLIENT_ID && isOnline
                                 ? 'bg-[#1877F2] hover:bg-[#166FE5] cursor-pointer'
                                 : 'bg-gray-400 cursor-not-allowed'}
                     `}
@@ -331,9 +339,10 @@ export default function Cuerpo() {
                 <div
                     onClick={handleRestablecerContrasena}
                     className="w-fit">
-                    <p className="mt-1 text-left text-base md:text-lg 
-                                select-none cursor-pointer
-                            text-black dark:text-white">
+                    <p className={`mt-1 text-left text-base md:text-lg 
+                                select-none
+                                ${autenticando || !isOnline ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
+                            text-black dark:text-white`}>
                         ¿Olvidó su contraseña?
                     </p>
                 </div>
