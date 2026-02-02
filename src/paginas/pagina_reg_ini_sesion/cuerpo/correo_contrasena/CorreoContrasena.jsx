@@ -376,13 +376,13 @@ export default function CorreoContrasena({ textoContrasena, restablecer, noResta
                 <div className={`border-2 rounded-md shadow-sm
                                 flex flex-row items-center justify-between
                                 transition-all duration-200
-                                ${cargando || !isOnline ? 'opacity-50' : ''}
+                                ${cargando || !isOnline || autenticando ? 'opacity-50' : ''}
                                 ${inputUsuarioFocused ? 'border-violet-800' : 'border-gray-300 dark:border-gray-700'}
                                 ${!cargando && 'active:bg-gray-200 dark:active:bg-gray-700'}`}>
                     <input
                         className={`w-full text-base md:text-lg p-2 pt-6 pb-2
                                 focus:outline-none bg-transparent
-                                ${!isOnline ? 'cursor-not-allowed' : 'cursor-default'}
+                                ${!isOnline || autenticando ? 'cursor-not-allowed' : 'cursor-default'}
                                 text-black dark:text-white`}
                         type="text"
                         value={nombreUsuario}
@@ -393,7 +393,7 @@ export default function CorreoContrasena({ textoContrasena, restablecer, noResta
                             setInputUsuarioFocused(true);
                         }}
                         onBlur={handleUsuarioBlur}
-                        disabled={cargando || !isOnline}
+                        disabled={cargando || !isOnline || autenticando}
                         maxLength={LIMITE_USUARIO}
                     />
 
@@ -417,13 +417,13 @@ export default function CorreoContrasena({ textoContrasena, restablecer, noResta
                     <div className={`border-2 rounded-md shadow-sm
                                     flex flex-row items-center justify-between
                                     transition-all duration-200
-                                    ${cargando || !isOnline ? 'opacity-50' : ''}
+                                    ${cargando || !isOnline || autenticando ? 'opacity-50' : ''}
                                     ${inputContrasenaFocused ? 'border-violet-800' : 'border-gray-300 dark:border-gray-700'}
                                     ${!cargando && 'active:bg-gray-200 dark:active:bg-gray-700'}`}>
                         <input
                             className={`w-full text-base md:text-lg p-2 pt-6 pb-2
                                     focus:outline-none bg-transparent
-                                    ${!isOnline ? 'cursor-not-allowed' : 'cursor-default'}
+                                    ${!isOnline || autenticando ? 'cursor-not-allowed' : 'cursor-default'}
                                     text-black dark:text-white`}
                             type={verContrasena ? "text" : "password"}
                             value={contrasena}
@@ -434,7 +434,7 @@ export default function CorreoContrasena({ textoContrasena, restablecer, noResta
                                 setInputContrasenaFocused(true);
                             }}
                             onBlur={handleContrasenaBlur}
-                            disabled={cargando || !isOnline}
+                            disabled={cargando || !isOnline || autenticando}
                             maxLength={LIMITE_CONTRASENA}
                             onKeyDown={(e) => {
                                 if (e.key === 'Enter' && !cargando && noRestablecer) {
