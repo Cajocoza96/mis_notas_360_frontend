@@ -191,7 +191,8 @@ export default function CorreoContrasena({ textoContrasena, restablecer, noResta
 
     const handleSubmit = async () => {
         if (!isOnline) {
-            return
+            mostrarToast("Al parecer no hay conexión a internet");
+            return;
         }
 
         //  VALIDAR SI YA HAY AUTENTICACIÓN EN CURSO
@@ -281,6 +282,7 @@ export default function CorreoContrasena({ textoContrasena, restablecer, noResta
     const handleRestablecerContrasena = async () => {
 
         if (!isOnline) {
+            mostrarToast("Al parecer no hay conexión a internet");
             return
         }
 
