@@ -92,15 +92,12 @@ La aplicación cuenta con un frontend desarrollado en React + Vite, un backend e
 -tsParticles
 -Despliegue: Vercel
 
-⚙️ Backend
+⚙️ Backend (privado por seguridad)
 -Node.js
 -Express
--PostgreSQL
--Supabase (Base de datos PostgreSQL)
 -JSON Web Tokens (JWT)
 -Bcrypt.js
 -Groq SDK (IA)
--Google Auth Library
 -Axios
 -Helmet
 -Express Rate Limit
@@ -108,13 +105,9 @@ La aplicación cuenta con un frontend desarrollado en React + Vite, un backend e
 -Dotenv
 -Despliegue: Render
 
-📋 Prerrequisitos
-1 Antes de ejecutar el proyecto localmente asegúrate de tener instalado:
--Node.js (versión recomendada: 18 o superior)
--npm o yarn
--Git
--Cuenta en Supabase (para la base de datos o PostgreSQL localmente)
--Credenciales OAuth de Google
+🛢️ Base de datos (privado por seguridad)
+-PostgreSQL
+-Supabase (Base de datos PostgreSQL)
 
 📦 Instalación
 🔹 Frontend
@@ -122,77 +115,11 @@ git clone https://github.com/Cajocoza96/mis_notas_360_frontend.git
 cd mis_notas_360_frontend
 npm install
 
-🔹 Backend
-git clone https://github.com/Cajocoza96/mis_notas_360_backend.git
-cd mis_notas_360_backend
-npm install
-
-🔐 Configuraciones Importantes (.env)
-⚙️ Backend (.env)
-# Configuración puerto local
-PORT=
-
-# Configuración del servidor Supabase
-DB_PORT=
-
-# Entorno
-NODE_ENV=development
-
-# Configuración base de datos PostgreSQL
-DB_HOST=
-DB_USER=
-DB_PASSWORD=
-DB_NAME=
-
-# JWT
-JWT_SECRET=
-
-# API Key Groq (IA)
-GROQ_API_KEY=
-
-# OAuth Google
-GOOGLE_CLIENT_ID=
-GOOGLE_CLIENT_SECRET=
-
-# OAuth Facebook (no disponible aún)
-FACEBOOK_APP_ID=
-FACEBOOK_APP_SECRET=
-
-# URL del frontend (CORS)
-ALLOWED_ORIGINS=
-
-🖥️ Frontend (.env)
-# Ruta del backend
-VITE_API_URL=
-
-# OAuth Google
-VITE_GOOGLE_CLIENT_ID=
-
-# OAuth Facebook (no disponible aún)
-VITE_FACEBOOK_CLIENT_ID=
-
-# Modo mantenimiento y entorno
-VITE_MAINTENANCE=
-VITE_MODE=development
-
-▶️ Ejecutar el Proyecto Localmente
-🔹 Backend
-npm run dev
-
-El servidor se ejecutará por defecto en:
-
-http://localhost:PORT
-
-🔹 Frontend
-npm run dev
-
-
-La aplicación estará disponible en:
-
-http://localhost:5173
+🔒 Sobre el backend
+El código del backend y la base de datos se mantienen privados por motivos de seguridad y buenas prácticas profesionales.
+La aplicación en producción funciona con una API real protegida mediante autenticación y control de acceso.
 
 📌 Estado del Proyecto
-
 🚧 En desarrollo continuo
 Se planea agregar nuevas integraciones de autenticación, mejoras de IA, optimización de rendimiento
 y corrección de errores.
