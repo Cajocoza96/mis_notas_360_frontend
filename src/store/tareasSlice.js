@@ -30,7 +30,7 @@ const initialState = {
     verModalGenerarContenido: false,
     modoIASeleccionado: null, // 'correct', 'improve', 'summarize', 'text-to-tasks'
 
-    //  Nuevos estados para las secciones seleccionadas
+    // Estados para las secciones seleccionadas
     seccionesSeleccionadas: {
         titulo: false,
         nota: false,
@@ -422,7 +422,7 @@ const tareasSlice = createSlice({
         },
 
 
-        // Nuevo: Actualizar contadores
+        // Actualizar contadores
         setContadores: (state, action) => {
             state.contadores = action.payload
         },

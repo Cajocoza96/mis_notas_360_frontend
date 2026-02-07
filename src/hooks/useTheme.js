@@ -19,7 +19,7 @@ const applyThemeToDOM = (theme) => {
     root.classList.toggle("dark", isDark);
     root.classList.toggle("light", !isDark);
 
-    // 🔥 NUEVO: Actualiza el theme-color del navegador
+    // Actualiza el theme-color del navegador
     const themeColor = isDark ? "#1f2937" : "#ffffff"; // gray-800 : white
     
     let metaThemeColor = document.querySelector('meta[name="theme-color"]');
@@ -30,7 +30,7 @@ const applyThemeToDOM = (theme) => {
     }
     metaThemeColor.setAttribute('content', themeColor);
 
-    // 🔥 NUEVO: Fuerza el background en html para evitar el fondo blanco
+    // Fuerza el background en html para evitar el fondo blanco
     root.style.backgroundColor = themeColor;
 
     // Actualizar localStorage

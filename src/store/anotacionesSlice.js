@@ -61,7 +61,7 @@ const anotacionesSlice = createSlice({
             state.verAdminAnotacion = action.payload
         },
 
-        //  NUEVO: Toggle selección de una anotación específica
+        // Toggle selección de una anotación específica
         toggleSeleccionAnotacion: (state, action) => {
             const anotacionId = action.payload;
             const index = state.anotacionesSeleccionadas.indexOf(anotacionId);
@@ -88,7 +88,7 @@ const anotacionesSlice = createSlice({
             }
         },
 
-        //  NUEVO: Seleccionar/deseleccionar todas
+        //  Seleccionar/deseleccionar todas
         toggleSeleccionarTodasAnotaciones: (state) => {
             if (state.seleccionarTodo) {
                 // Deseleccionar todas
@@ -114,7 +114,7 @@ const anotacionesSlice = createSlice({
             state.seleccionarTodo = false;
         },
 
-        //  NUEVO: Limpiar selección
+        // Limpiar selección
         limpiarSeleccion: (state) => {
             state.anotacionesSeleccionadas = [];
             state.seleccionar = false;
@@ -139,7 +139,7 @@ const anotacionesSlice = createSlice({
             }
         },
 
-        //  Nuevas acciones para controlar la carga por componente
+        //  Acciones para controlar la carga por componente
         setCargandoCabecera: (state, action) => {
             state.cargandoCabecera = action.payload;
         },
@@ -207,11 +207,11 @@ const anotacionesSlice = createSlice({
         eliminarAnotacion: (state, action) => {
             state.anotaciones = state.anotaciones.filter(a => a.id !== action.payload)
         },
-        // Nueva acción para restaurar nota (la elimina de la vista de papelera)
+        // Acción para restaurar nota (la elimina de la vista de papelera)
         restaurarAnotacion: (state, action) => {
             state.anotaciones = state.anotaciones.filter(a => a.id !== action.payload)
         },
-        // Nueva acción para eliminar todas las notas (limpiar el array)
+        // Acción para eliminar todas las notas (limpiar el array)
         eliminarTodasAnotaciones: (state) => {
             state.anotaciones = []
         },
@@ -233,14 +233,12 @@ export const {
     toggleSeleccionarTodo,
     setSeleccionarTodo,
 
-    //  EXPORTAR NUEVAS ACCIONES
     toggleSeleccionAnotacion,
     toggleSeleccionarTodasAnotaciones,
     limpiarSeleccion,
 
     eliminarMultiplesAnotaciones,
 
-    //  Exportar las nuevas acciones
     mostrarNotificacion,
     ocultarNotificacion,
 

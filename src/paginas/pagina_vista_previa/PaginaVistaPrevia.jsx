@@ -64,7 +64,7 @@ export default function PaginaVistaPrevia() {
     const [cargando, setCargando] = useState(true);
     //  Estado para controlar si hubo error
     const [errorCarga, setErrorCarga] = useState(false);
-    //  NUEVO: Estado para identificar si la nota no existe (404)
+    //  Estado para identificar si la nota no existe (404)
     const [notaNoEncontrada, setNotaNoEncontrada] = useState(false);
 
     const { isOnline, justReconnected, resetReconnectionState } = useConexionInternet();
@@ -85,7 +85,7 @@ export default function PaginaVistaPrevia() {
         }
     }, [id]);
 
-    //  NUEVO: Reintentar cargar cuando se recupere la conexión
+    // Reintentar cargar cuando se recupere la conexión
     useEffect(() => {
         // Si estaba sin conexión y ahora hay conexión, reintentar carga
         // También reintenta si hubo error previo

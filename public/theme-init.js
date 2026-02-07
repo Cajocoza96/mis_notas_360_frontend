@@ -8,7 +8,7 @@
     document.documentElement.classList.toggle("dark", isDark);
     document.documentElement.classList.toggle("light", !isDark);
 
-    // 🔥 NUEVO: Actualiza el theme-color
+    // Actualiza el theme-color
     const themeColor = isDark ? "#1f2937" : "#ffffff";
     
     let metaThemeColor = document.querySelector('meta[name="theme-color"]');
@@ -19,7 +19,7 @@
     }
     metaThemeColor.setAttribute('content', themeColor);
 
-    // 🔥 NUEVO: Fuerza el background
+    // Fuerza el background
     document.documentElement.style.backgroundColor = themeColor;
 
   } catch (_) {}

@@ -122,7 +122,6 @@ export default function VerFechaCreaModCantText() {
                 fechaCantNumero={totales.total}
             />
 
-            {/*  NUEVO: Estadísticas de tareas */}
             <SubOpcionesCabecera
                 className="justify-between"
                 textoFechaCanttexto="Cantidad de tareas"

@@ -13,12 +13,12 @@
   html {
     overscroll-behavior: none;
     -webkit-overflow-scrolling: touch;
-    background-color: #ffffff; /* 🔥 NUEVO - Fondo por defecto */
+    background-color: #ffffff; 
     min-height: 100dvh;
   }
 
   html.dark {
-    background-color: #1f2937; /* 🔥 NUEVO - gray-800 en dark mode */
+    background-color: #1f2937; 
   }
 
   body {
@@ -26,7 +26,7 @@
     overflow-x: hidden;
     min-height: 100dvh;
     position: relative;
-    background-color: inherit; /* 🔥 NUEVO - Hereda de html */
+    background-color: inherit; 
   }
 
   @keyframes fadeIn {

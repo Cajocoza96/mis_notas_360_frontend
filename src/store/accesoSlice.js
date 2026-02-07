@@ -7,7 +7,7 @@ const initialState = {
     verModalCerrarSesion: false,
     verModalRestablecerContrasena: false,
 
-    //  NUEVO ESTADO GLOBAL
+    // ESTADO GLOBAL
     autenticando: false,
     tipoAutenticacion: null, // 'google', 'facebook', 'local', 'restaContra', null
 }
@@ -73,8 +73,8 @@ export const {
     setVerModalCerrarSesion,
     toggleVerModalRestablecerContrasena,
     setVerModalRestablecerContrasena,
-    iniciarAutenticacion,      //  NUEVO
-    finalizarAutenticacion,    //  NUEVO
+    iniciarAutenticacion,      
+    finalizarAutenticacion,    
 
     resetAllAccesoState
 } = accesoSlice.actions
